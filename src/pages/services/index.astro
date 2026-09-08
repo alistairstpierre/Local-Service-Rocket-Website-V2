@@ -1,0 +1,199 @@
+---
+/* Services overview — six service cards linking to detail pages (Paid Ads live).
+   Design source: Services.dc.html */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const BOOKING = 'https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg9d1R';
+
+const cards = [
+  {
+    href: '/services',
+    icon: '/assets/icon-local-seo-reviews-v2.svg',
+    title: 'Local SEO & Reviews',
+    body: 'Rank in your service area, own the map pack, and build a review engine that keeps working.',
+  },
+  {
+    href: '/services/paid-ads',
+    icon: '/assets/icon-paid-ads-lsas-v2.svg',
+    title: 'Paid Ads & LSAs',
+    body: 'Google Ads and Local Services Ads managed to booked jobs, not clicks. We prove ads profitable before scaling spend.',
+  },
+  {
+    href: '/services',
+    icon: '/assets/icon-websites-that-convert-v2.svg',
+    title: 'Websites That Convert',
+    body: 'Fast, trust-building sites you own outright: design, code, and content.',
+  },
+  {
+    href: '/services',
+    icon: '/assets/icon-hiring-recruiting-v2.svg',
+    title: 'Hiring & Recruiting',
+    body: 'Fill your trucks with skilled, reliable techs: job marketing, screening, and a pipeline in about 10 days.',
+  },
+  {
+    href: '/services',
+    icon: '/assets/icon-branding-v2.svg',
+    title: 'Branding',
+    body: "Logo, trucks, uniforms: a brand your whole city remembers. We built Dry Duck's from scratch.",
+  },
+  {
+    href: '/services',
+    icon: '/assets/icon-tracking-reporting-v2.svg',
+    title: 'Tracking & Reporting',
+    body: 'Every call and job tracked to its source. You see what we see, always.',
+  },
+];
+---
+
+<BaseLayout
+  title="Services — Local Service Rocket"
+  description="Six services, one system for home service companies. Local SEO, paid ads, websites, hiring, branding, and tracking."
+  nav="simple"
+  showFooter={false}
+>
+  <main>
+    <div class="intro container">
+      <div class="eyebrow">WHAT WE DO</div>
+      <h1>Everything you need to dominate on Google. One team.</h1>
+      <p>
+        Six services, one system. Start with what you need today — most clients start at $500/month
+        — and add the rest as your revenue grows.
+      </p>
+    </div>
+
+    <div class="grid container">
+      {
+        cards.map((c) => (
+          <a href={c.href} class="card">
+            <img src={c.icon} alt="" width="38" height="38" />
+            <div class="card-title">{c.title}</div>
+            <p>{c.body}</p>
+            <div class="learn">Learn more →</div>
+          </a>
+        ))
+      }
+    </div>
+
+    <div class="cta container">
+      <div class="cta-panel">
+        <h2>Not sure where to start?</h2>
+        <p>
+          That's what onboarding is for. We look at your market and tell you the one thing to fix
+          first — even if it's not the most expensive thing.
+        </p>
+        <div class="cta-btns">
+          <a href="/get-started" class="btn btn-primary">See how it works</a>
+          <a href={BOOKING} class="btn btn-ghost-dark">Schedule onboarding</a>
+        </div>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .intro {
+    max-width: 760px;
+    padding-top: 64px;
+    text-align: center;
+  }
+
+  h1 {
+    margin-top: 14px;
+    font-size: clamp(30px, 5vw, 44px);
+    line-height: 1.08;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+
+  .intro p {
+    margin-top: 16px;
+    font-size: 15.5px;
+    line-height: 1.6;
+    color: var(--muted);
+    text-wrap: pretty;
+  }
+
+  .grid {
+    margin-top: 44px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .card {
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    color: var(--ink);
+    display: block;
+    transition: border-color 0.2s;
+  }
+
+  .card:hover {
+    border-color: var(--orange);
+    color: var(--ink);
+  }
+
+  .card-title {
+    font-weight: 800;
+    font-size: 16.5px;
+    margin-top: 12px;
+  }
+
+  .card p {
+    margin-top: 6px;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  .learn {
+    margin-top: 14px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--orange);
+  }
+
+  .cta {
+    max-width: 760px;
+    margin-top: 64px;
+    padding-bottom: 72px;
+    text-align: center;
+  }
+
+  .cta-panel {
+    background: var(--dark);
+    border-radius: var(--radius-panel);
+    padding: 36px;
+    color: var(--dark-text);
+  }
+
+  .cta-panel h2 {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .cta-panel p {
+    margin-top: 10px;
+    font-size: 13.5px;
+    color: var(--dark-muted);
+    line-height: 1.6;
+  }
+
+  .cta-btns {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 900px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

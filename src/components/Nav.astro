@@ -1,0 +1,114 @@
+---
+/* Site header: sticky nav with brand, section links, phone, and booking CTA.
+   Used by BaseLayout on marketing pages. Homepage uses full links; inner pages can simplify. */
+import Logo from './Logo.astro';
+
+interface Props {
+  variant?: 'full' | 'simple';
+}
+
+const { variant = 'full' } = Astro.props;
+const BOOKING = 'https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg9d1R';
+---
+
+<header class="nav">
+  <a href="/" class="nav-brand">
+    <Logo size={28} maskId="lsrCutNav" />
+    <span>Local Service Rocket</span>
+  </a>
+
+  {
+    variant === 'full' && (
+      <nav class="nav-links" aria-label="Primary">
+        <a href="/#case-studies">Results</a>
+        <a href="/#system">The System</a>
+        <a href="/services">Services</a>
+        <a href="/#who-we-help">Who We Help</a>
+        <a href="/#about">About</a>
+      </nav>
+    )
+  }
+
+  <div class="nav-actions">
+    <a href="tel:8883716365" class="nav-phone">(888) 371-6365</a>
+    <a href={BOOKING} class="btn btn-primary btn-sm">Schedule onboarding</a>
+  </div>
+</header>
+
+<style>
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px var(--pad-x);
+    border-bottom: 1px solid var(--hairline);
+    background: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    gap: 16px;
+  }
+
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+    flex-shrink: 0;
+  }
+
+  .nav-brand:hover {
+    color: var(--ink);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 26px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .nav-links a {
+    color: var(--muted);
+  }
+
+  .nav-links a:hover {
+    color: var(--ink);
+  }
+
+  .nav-actions {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .nav-phone {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  .nav-phone:hover {
+    color: var(--ink);
+  }
+
+  @media (max-width: 960px) {
+    .nav-links {
+      display: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .nav-phone {
+      display: none;
+    }
+
+    .nav-brand span {
+      font-size: 13px;
+    }
+  }
+</style>

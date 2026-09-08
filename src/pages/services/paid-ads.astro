@@ -1,0 +1,275 @@
+---
+/* Individual service page template — Paid Ads & LSAs.
+   Pattern for future service pages (SEO, Websites, Hiring, etc.).
+   Design source: Service - Paid Ads.dc.html */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const BOOKING = 'https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg9d1R';
+
+const included = [
+  {
+    title: 'Google Ads, built from scratch',
+    body: 'Campaigns rebuilt around your trade and service area — no recycled account from the last agency.',
+  },
+  {
+    title: 'Local Services Ads',
+    body: 'Google Guaranteed setup and management — the green checkmark that wins the call.',
+  },
+  {
+    title: 'Budget control',
+    body: 'Too busy to answer the phone? We turn the flow down. Ready to grow? We turn it up. You stay in control.',
+  },
+  {
+    title: 'Landing pages that convert',
+    body: 'Ad traffic lands on pages built to turn a click into a phone call.',
+  },
+  {
+    title: 'Call tracking',
+    body: 'Every lead tracked to the ad that produced it, so we both know what your money is doing.',
+  },
+  {
+    title: 'Honest reporting',
+    body: "If something isn't working, you hear it from us first — with the plan to fix it.",
+  },
+];
+---
+
+<BaseLayout
+  title="Paid Ads & LSAs — Local Service Rocket"
+  description="Google Ads and Local Services Ads for home service companies. Managed to booked jobs, not clicks."
+  nav="simple"
+  showFooter={false}
+>
+  <main>
+    <div class="hero container">
+      <div class="crumbs">
+        <a href="/">Home</a>
+        <span>/</span>
+        <a href="/services">Services</a>
+        <span>/</span>
+        <span class="current">Paid Ads &amp; LSAs</span>
+      </div>
+
+      <div class="hero-grid">
+        <div>
+          <img src="/assets/icon-paid-ads-lsas-v2.svg" alt="" width="44" height="44" />
+          <h1>Ads managed to booked jobs, not clicks.</h1>
+          <p>
+            Google Ads and Local Services Ads for home service companies. We start small, prove your
+            ads make money, and only scale spend once they do. Your ad budget is your money — we treat
+            it that way.
+          </p>
+          <div class="hero-ctas">
+            <a href="/get-started" class="btn btn-primary">See how it works</a>
+            <a href="/case-studies/rewired" class="btn btn-secondary">Read a case study</a>
+          </div>
+        </div>
+
+        <div class="proof">
+          <div class="eyebrow on-dark">PROOF</div>
+          <div class="proof-title">7 agencies failed. We made ads profitable in month one.</div>
+          <p>
+            Rewired had paid seven marketing companies with nothing to show for it. Their ads made
+            money in our first month — and they've grown 600% in a year since.
+          </p>
+          <a href="/case-studies/rewired" class="proof-link">Read the Rewired story →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="included container">
+      <div class="eyebrow">WHAT'S INCLUDED</div>
+      <h2>Everything between your budget and a booked job.</h2>
+      <div class="included-grid">
+        {
+          included.map((item) => (
+            <div class="included-card">
+              <div class="included-title">{item.title}</div>
+              <p>{item.body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="bottom container">
+      <h2>Burned by ad agencies before?</h2>
+      <p>
+        You're exactly who we built this for. Watch how it works, then book your onboarding call —
+        no sales calls.
+      </p>
+      <div class="bottom-ctas">
+        <a href="/get-started" class="btn btn-primary">See how it works</a>
+        <a href={BOOKING} class="btn btn-secondary">Schedule onboarding</a>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-top: 56px;
+  }
+
+  .crumbs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--muted-3);
+  }
+
+  .crumbs a {
+    color: var(--muted-3);
+  }
+
+  .crumbs a:hover {
+    color: var(--ink);
+  }
+
+  .current {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 48px;
+    align-items: center;
+    margin-top: 26px;
+  }
+
+  h1 {
+    margin-top: 16px;
+    font-size: clamp(28px, 4vw, 42px);
+    line-height: 1.08;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+
+  .hero-grid > div > p {
+    margin-top: 16px;
+    font-size: 15.5px;
+    line-height: 1.6;
+    color: var(--muted);
+    text-wrap: pretty;
+  }
+
+  .hero-ctas {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+
+  .proof {
+    background: var(--dark);
+    border-radius: var(--radius-panel);
+    padding: 30px;
+    color: var(--dark-text);
+  }
+
+  .eyebrow.on-dark {
+    color: var(--orange-on-dark);
+  }
+
+  .proof-title {
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-top: 10px;
+  }
+
+  .proof p {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--dark-muted);
+    line-height: 1.6;
+  }
+
+  .proof-link {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--orange-on-dark);
+  }
+
+  .proof-link:hover {
+    color: #ffb07a;
+  }
+
+  .included {
+    margin-top: 64px;
+  }
+
+  .included h2 {
+    margin-top: 10px;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .included-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-top: 24px;
+  }
+
+  .included-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 20px;
+  }
+
+  .included-title {
+    font-weight: 800;
+    font-size: 14.5px;
+  }
+
+  .included-card p {
+    margin-top: 6px;
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  .bottom {
+    max-width: 760px;
+    margin-top: 64px;
+    padding-bottom: 72px;
+    text-align: center;
+  }
+
+  .bottom h2 {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .bottom > p {
+    margin-top: 10px;
+    font-size: 14px;
+    color: var(--muted);
+    text-wrap: pretty;
+  }
+
+  .bottom-ctas {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 22px;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 900px) {
+    .hero-grid,
+    .included-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

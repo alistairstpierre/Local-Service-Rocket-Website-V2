@@ -1,0 +1,236 @@
+---
+/* Get Started funnel page — video placeholder + 3 steps + pricing transparency.
+   Primary conversion path from homepage CTAs. Design: Get Started.dc.html */
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const BOOKING = 'https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg9d1R';
+---
+
+<BaseLayout
+  title="Get Started — Local Service Rocket"
+  description="See exactly how Local Service Rocket works, then book your onboarding call. No sales calls. Starts at $500/month."
+  nav="simple"
+  showFooter={false}
+>
+  <main>
+    <div class="intro container">
+      <div class="badge">NO SALES CALLS. EVER.</div>
+      <h1>See exactly how it works, then book your onboarding call.</h1>
+      <p>
+        This video walks you through what we do, what it costs, and what your first month looks
+        like. If it makes sense for your business, your next call is onboarding — not a pitch.
+      </p>
+    </div>
+
+    <div class="video-wrap container">
+      <div class="video-placeholder">
+        <div class="play">▶</div>
+        <div class="placeholder-note">
+          [PLACEHOLDER: Loom walkthrough video — send me the link]
+        </div>
+      </div>
+    </div>
+
+    <div class="steps container">
+      <div class="step">
+        <div class="num">1</div>
+        <div class="title">Watch the video</div>
+        <p>Everything upfront: our system, our pricing, our expectations of you.</p>
+      </div>
+      <div class="step">
+        <div class="num">2</div>
+        <div class="title">Book your onboarding call</div>
+        <p>Not a sales call. We map your market, your goals, and your first 90 days.</p>
+      </div>
+      <div class="step">
+        <div class="num">3</div>
+        <div class="title">We get to work</div>
+        <p>Foundations first. We prove results before we ever scale your costs.</p>
+      </div>
+    </div>
+
+    <div class="pricing container">
+      <div class="pricing-card">
+        <div>
+          <div class="pricing-title">Know the number before you book.</div>
+          <p>
+            Our services start at <b>$500/month</b>. No $5,000 retainers, no long contracts — your
+            costs only step up once we've proven results.
+          </p>
+        </div>
+        <a href={BOOKING} class="btn btn-primary btn-lg">Schedule my onboarding call</a>
+      </div>
+      <div class="pricing-meta">
+        <span>★★★★★ 5.0 on Google</span>
+        <span>Google Partner</span>
+        <span>6 companies scaled</span>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .intro {
+    max-width: 860px;
+    padding-top: 64px;
+    text-align: center;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 14px;
+    border-radius: 99px;
+    border: 1px solid #e5e5e5;
+    background: var(--section-bg);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--orange);
+    letter-spacing: 0.05em;
+  }
+
+  h1 {
+    margin-top: 18px;
+    font-size: clamp(30px, 5vw, 44px);
+    line-height: 1.08;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+
+  .intro p {
+    margin: 16px auto 0;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 560px;
+    text-wrap: pretty;
+  }
+
+  .video-wrap {
+    max-width: 860px;
+    margin-top: 36px;
+  }
+
+  .video-placeholder {
+    position: relative;
+    border-radius: var(--radius-panel);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: #f4f4f4;
+    aspect-ratio: 16 / 9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .play {
+    width: 60px;
+    height: 60px;
+    border-radius: 99px;
+    background: var(--orange);
+    color: #fff;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .placeholder-note {
+    font-size: 11px;
+    color: #aaa;
+    margin-top: 12px;
+  }
+
+  .steps {
+    max-width: 860px;
+    margin-top: 56px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+
+  .step {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 20px;
+  }
+
+  .num {
+    width: 26px;
+    height: 26px;
+    border-radius: 99px;
+    background: var(--orange);
+    color: #fff;
+    font-weight: 800;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .title {
+    font-weight: 800;
+    font-size: 14.5px;
+    margin-top: 10px;
+  }
+
+  .step p {
+    margin-top: 5px;
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  .pricing {
+    max-width: 860px;
+    margin-top: 48px;
+    padding-bottom: 64px;
+  }
+
+  .pricing-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-panel);
+    padding: 28px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .pricing-title {
+    font-weight: 800;
+    font-size: 17px;
+  }
+
+  .pricing-card p {
+    margin-top: 6px;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.55;
+    max-width: 420px;
+  }
+
+  .pricing-card b {
+    color: var(--ink);
+  }
+
+  .pricing-meta {
+    display: flex;
+    gap: 22px;
+    justify-content: center;
+    margin-top: 22px;
+    font-size: 12px;
+    color: var(--muted-2);
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 720px) {
+    .steps {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

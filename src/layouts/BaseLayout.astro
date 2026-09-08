@@ -1,0 +1,43 @@
+---
+/* Base HTML shell for all marketing pages: fonts, global CSS, optional Nav/Footer.
+   Pages pass title/description via props and content via the default slot. */
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  nav?: 'full' | 'simple' | 'none';
+  showFooter?: boolean;
+}
+
+const {
+  title,
+  description = 'Marketing, recruiting, and AI systems for home service companies ready to scale. Starts at $500/month. No sales calls.',
+  nav = 'full',
+  showFooter = true,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/assets/lsr-logo.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <title>{title}</title>
+  </head>
+  <body>
+    {nav !== 'none' && <Nav variant={nav} />}
+    <slot />
+    {showFooter && <Footer />}
+  </body>
+</html>

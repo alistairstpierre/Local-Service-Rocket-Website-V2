@@ -1,0 +1,141 @@
+---
+/* Site footer with brand blurb, service/company links, and booking CTA.
+   Shared across all marketing pages via BaseLayout. */
+import Logo from './Logo.astro';
+
+const BOOKING = 'https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg9d1R';
+---
+
+<footer class="footer">
+  <div class="footer-grid container">
+    <div>
+      <div class="footer-brand">
+        <Logo size={24} maskId="lsrCutFoot" />
+        <span>Local Service Rocket</span>
+      </div>
+      <p class="footer-blurb">
+        Marketing and hiring for residential home service businesses. Run from Wellington, New
+        Zealand. Serving the US, Australia, and New Zealand.
+      </p>
+    </div>
+
+    <div>
+      <div class="footer-col-title">SERVICES</div>
+      <div class="footer-links">
+        <a href="/services">Local SEO &amp; Reviews</a>
+        <a href="/services/paid-ads">Paid Ads &amp; LSAs</a>
+        <a href="/services">Websites</a>
+        <a href="/services">Hiring &amp; Recruiting</a>
+        <a href="/services">Tracking &amp; Reporting</a>
+      </div>
+    </div>
+
+    <div>
+      <div class="footer-col-title">COMPANY</div>
+      <div class="footer-links">
+        <a href="/#system">The Flight Plan</a>
+        <a href="/#case-studies">Case Studies</a>
+        <a href="/#about">About</a>
+        <a href="/get-started">Contact</a>
+      </div>
+    </div>
+
+    <div>
+      <div class="footer-col-title">GET STARTED</div>
+      <div class="footer-links">
+        <a href="tel:8883716365">(888) 371-6365</a>
+        <a href="mailto:hello@localservicerocket.com">hello@localservicerocket.com</a>
+        <a href={BOOKING} class="btn btn-primary btn-sm footer-cta">Schedule onboarding</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-legal">
+    © 2026 Local Service Rocket · [PLACEHOLDER: privacy policy + terms, required before running
+    Google Ads, Q71]
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--hairline);
+    background: var(--section-bg);
+  }
+
+  .footer-grid {
+    padding-top: 40px;
+    padding-bottom: 40px;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    gap: 32px;
+  }
+
+  .footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 13.5px;
+  }
+
+  .footer-blurb {
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--muted-2);
+    line-height: 1.6;
+    max-width: 260px;
+  }
+
+  .footer-col-title {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--muted-3);
+  }
+
+  .footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+    font-size: 12.5px;
+  }
+
+  .footer-links a {
+    color: var(--muted);
+  }
+
+  .footer-links a:hover {
+    color: var(--ink);
+  }
+
+  .footer-cta {
+    width: fit-content;
+    margin-top: 4px;
+    color: #fff !important;
+  }
+
+  .footer-cta:hover {
+    color: #fff !important;
+  }
+
+  .footer-legal {
+    border-top: 1px solid var(--hairline);
+    padding: 14px var(--pad-x);
+    font-size: 11px;
+    color: #aaa;
+    text-align: center;
+  }
+
+  @media (max-width: 900px) {
+    .footer-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

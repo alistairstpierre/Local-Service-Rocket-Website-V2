@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">Local Service Rocket icon</title>
+  <defs>
+    <mask id="rocket-cutout">
+      <rect width="512" height="512" fill="#fff"></rect>
+      <path fill="#000" stroke="#000" stroke-width="20" stroke-linejoin="round" d="M242 372V292c0-20 5-35 14-46 9 11 14 26 14 46v80l-14-4.5z"></path>
+    </mask>
+  </defs>
+  <rect x="28" y="28" width="456" height="456" rx="86" fill="none" stroke="#1A1A1A" stroke-width="28"></rect>
+  <path fill="#E8590C" stroke="#E8590C" stroke-width="44" stroke-linejoin="round" mask="url(#rocket-cutout)" d="M256 124 396 382 256 347 116 382z"></path>
+</svg>

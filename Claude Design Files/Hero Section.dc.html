@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#fff}a{color:#e8590c;text-decoration:none}a:hover{color:#c2400b}</style></helmet>
+<div data-screen-label="Hero" style="background:#fff;color:#1a1a1a;font-family:'Manrope',sans-serif">
+
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 48px;border-bottom:1px solid #ececec;background:#fff;position:sticky;top:0;z-index:10">
+    <div style="display:flex;align-items:center;gap:9px"><svg width="28" height="28" viewBox="0 0 512 512"><defs><mask id="lsrCutNav"><rect width="512" height="512" fill="#fff"></rect><path fill="#000" stroke="#000" stroke-width="20" stroke-linejoin="round" d="M242 372V292c0-20 5-35 14-46 9 11 14 26 14 46v80l-14-4.5z"></path></mask></defs><rect x="28" y="28" width="456" height="456" rx="86" fill="none" stroke="#1A1A1A" stroke-width="28"></rect><path fill="#E8590C" stroke="#E8590C" stroke-width="44" stroke-linejoin="round" mask="url(#lsrCutNav)" d="M256 124 396 382 256 347 116 382z"></path></svg><span style="font-weight:700;font-size:15px;letter-spacing:-.01em">Local Service Rocket</span></div>
+    <div style="display:flex;gap:26px;font-size:13px;font-weight:500;color:#6b6b6b"><span>Results</span><span>The System</span><span>Services</span><span>Who We Help</span><span>About</span></div>
+    <div style="display:flex;gap:14px;align-items:center"><span style="font-size:13px;font-weight:600;color:#6b6b6b">(888) 371-6365</span><a href="https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg9d1R" style="padding:9px 20px;border-radius:99px;background:#e8590c;color:#fff;font-size:13px;font-weight:700">Schedule onboarding</a></div>
+  </div>
+
+  <div style="max-width:1160px;margin:0 auto;display:grid;grid-template-columns:1fr 1.15fr;gap:36px;padding:48px 48px 40px;align-items:center;position:relative">
+    <div style="position:relative;z-index:5">
+      <div style="display:flex;align-items:center;gap:10px">
+        <img src="assets/badge-google-partner.png" alt="Google Partner" style="height:34px;border-radius:6px;border:1px solid #e5e5e5">
+        <div style="display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 14px;border-radius:6px;border:1px solid #e5e5e5;background:#fff;box-sizing:border-box"><span style="color:#e8590c;font-size:12px;letter-spacing:1px">★★★★★</span><span style="font-size:11.5px;font-weight:800;color:#1a1a1a">5.0 on Google</span></div>
+      </div>
+      <h1 style="margin:18px 0 0;font-size:52px;line-height:1.05;font-weight:800;letter-spacing:-.03em;text-wrap:balance">Real growth, real fast — for home service companies ready to scale.</h1>
+      <p style="margin:16px 0 0;max-width:380px;font-size:16px;line-height:1.55;color:#6b6b6b;text-wrap:pretty">Marketing, recruiting, &amp; AI systems — so you can build a bigger team and a name your whole city recognizes.</p>
+      <div style="display:flex;gap:12px;margin-top:24px">
+        <div style="padding:12px 26px;border-radius:99px;background:#e8590c;color:#fff;font-weight:700;font-size:14.5px">See client results</div>
+        <div style="padding:12px 26px;border-radius:99px;border:1.5px solid #d9d9d9;font-weight:600;font-size:14.5px">How it works</div>
+      </div>
+    </div>
+
+    <div>
+      <!-- carousel stage: no arrows, oversized image bleeding left, white edge gradients -->
+      <div style="position:relative;height:440px;overflow:hidden;margin-left:-360px;margin-right:-48px">
+        <div style="position:absolute;inset:0">{{ slides }}</div>
+        <div style="position:absolute;top:0;bottom:0;left:0;width:265px;background:linear-gradient(90deg,#fff 55%,rgba(255,255,255,.7) 78%,rgba(255,255,255,0));z-index:3;pointer-events:none"></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="border-top:1px solid #ececec;background:#fafafa">
+    <div style="max-width:1160px;margin:0 auto;padding:26px 48px;display:grid;grid-template-columns:repeat(4,1fr);gap:24px;text-align:center">
+      <div><div style="font-size:30px;font-weight:800;letter-spacing:-.02em">6</div><div style="font-size:12.5px;color:#8a8a8a;margin-top:2px">home service companies scaled — every one named on this page</div></div>
+      <div><div style="font-size:30px;font-weight:800;letter-spacing:-.02em;color:#e8590c">$10M+</div><div style="font-size:12.5px;color:#8a8a8a;margin-top:2px">in new revenue generated for our clients</div></div>
+      <div><div style="font-size:30px;font-weight:800;letter-spacing:-.02em">10 days</div><div style="font-size:12.5px;color:#8a8a8a;margin-top:2px">on average to bring a client qualified hiring candidates</div></div>
+      <div><div style="font-size:30px;font-weight:800;letter-spacing:-.02em">$0 → $200k/mo</div><div style="font-size:12.5px;color:#8a8a8a;margin-top:2px">one client's first 6 months, from launch to today</div></div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:760}}">
+class Component extends DCLogic {
+  state = { idx: 0, prev: -1 };
+  clients = [
+    { name: 'Rewired Iowa', since: 'Client for 2 years', img: 'assets/client-rewired.png', stats: [['STARTED','5 techs'],['TODAY','15 techs'],['MONTHLY REV','$60k → $220k+']] },
+    { name: 'Motha Electric', since: '46+ years in business', img: 'assets/client-motha-electric.png', stats: [['LEADS / DAY','0 → 3'],['MONTHLY REV','$60k, steady'],['THE GOAL','Consistency']] },
+    { name: 'Honest Hanks', since: 'Client for 8 months', img: 'assets/client-honest-hanks.png', stats: [['STARTED','1 tech'],['TODAY','3 techs'],['MONTHLY REV','$25k → $80k']] },
+    { name: 'Hooked Up Electric', since: 'Client for 1.5 years', img: 'assets/client-hooked-up.png', stats: [['YEAR ONE','600% growth'],['COUNTIES','1 → 37'],['LOCATIONS','1 → 4']] },
+    { name: 'Dry Duck', since: 'Founded together 6 months ago', img: 'assets/client-dry-duck.png', stats: [['MONTHLY REV','$200k'],['TEAM','5 employees'],['SCOPE','Brand + marketing']] },
+  ];
+  componentDidMount() { this.timer = setInterval(() => this.setState(s => ({ idx: (s.idx + 1) % this.clients.length, prev: s.idx })), 6500); }
+  componentWillUnmount() { clearInterval(this.timer); }
+  slide(c, i) {
+    // oversized client render, shifted left so its left side crops out of frame
+    const active = i === this.state.idx, leaving = i === this.state.prev;
+    // only the active and outgoing slides animate; all others are parked off-frame right, hidden, with no transition
+    return React.createElement('div', { key: i, style: { position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', transform: 'translateX(' + (active ? '0' : (leaving ? '-950px' : '620px')) + ')', transition: (active || leaving) ? 'transform 1.1s ease-in-out' : 'none', visibility: (active || leaving) ? 'visible' : 'hidden', pointerEvents: 'none' } },
+      React.createElement('div', { style: { position: 'absolute', top: 0, bottom: 0, right: 150, display: 'flex', alignItems: 'center' } },
+        React.createElement('img', { src: c.img, style: { display: 'block', height: 430,
+          WebkitMaskImage: 'linear-gradient(90deg,transparent 0,#000 4%,#000 96%,transparent 100%), linear-gradient(0deg,transparent 0,#000 5%,#000 95%,transparent 100%)',
+          maskImage: 'linear-gradient(90deg,transparent 0,#000 4%,#000 96%,transparent 100%), linear-gradient(0deg,transparent 0,#000 5%,#000 95%,transparent 100%)',
+          WebkitMaskComposite: 'source-in', maskComposite: 'intersect' } })
+      ),
+      React.createElement('div', { style: { position: 'absolute', bottom: 26, right: 40, background: 'rgba(255,255,255,.78)', backdropFilter: 'blur(14px)', border: '1px solid rgba(26,26,26,.08)', borderRadius: 14, padding: '14px 20px', color: '#1a1a1a', display: 'flex', gap: 22, alignItems: 'center', boxShadow: '0 8px 24px rgba(0,0,0,.08)' } },
+        React.createElement('div', { style: { paddingRight: 20, borderRight: '1px solid rgba(26,26,26,.12)' } },
+          React.createElement('div', { style: { fontSize: 13, fontWeight: 800, whiteSpace: 'nowrap' } }, c.name),
+          React.createElement('div', { style: { fontSize: 10, color: '#6b6b6b', marginTop: 2, whiteSpace: 'nowrap' } }, c.since)),
+        ...c.stats.map((s, k) => React.createElement('div', { key: k },
+          React.createElement('div', { style: { fontSize: 8.5, color: k === 1 ? '#e8590c' : '#6b6b6b', letterSpacing: '.06em' } }, s[0]),
+          React.createElement('div', { style: { fontSize: 15, fontWeight: 800, marginTop: 1, whiteSpace: 'nowrap', color: k === 1 ? '#e8590c' : '#1a1a1a' } }, s[1]))))
+    );
+  }
+  renderVals() {
+    return {
+      slides: React.createElement('div', { style: { position: 'absolute', inset: 0 } }, this.clients.map((c, i) => this.slide(c, i))),
+    };
+  }
+}
+</script>
+</body>
+</html>
