@@ -79,6 +79,7 @@ Manrope is self-hosted from `public/fonts/`, so no Google Fonts request is made.
 │   ├── CONTENT-GAPS-AND-INTERVIEW.md  # Gaps checklist + dump prompts
 │   └── VSL-SCRIPT.md             # As-recorded transcript + timecoded graphics brief for the /get-started video
 ├── docs/
+│   ├── BLOG-FRAMEWORK.md         # Editorial standard for src/pages/blog + the Evidence Bank of real client numbers
 │   └── SITE-STRUCTURE-AND-SEO-GUIDE.md  # Client home-service site SEO/IA playbook
 ├── scripts/
 │   ├── optimize-images.mjs       # assets-src -> AVIF/WebP/fallback + image-sizes.json
@@ -101,7 +102,7 @@ Manrope is self-hosted from `public/fonts/`, so no Google Fonts request is made.
 │   │   └── trades.ts             # Who We Help trade landing copy + slugs
 │   ├── layouts/
 │   │   ├── BaseLayout.astro      # Shell + canonical/OG/Twitter (+ optional JSON-LD)
-│   │   ├── BlogLayout.astro      # Blog article shell
+│   │   ├── BlogLayout.astro      # Blog article shell + author block, FAQ block, BlogPosting/FAQPage JSON-LD
 │   │   ├── CaseStudyLayout.astro # Shared client story template
 │   │   ├── LegalLayout.astro
 │   │   ├── ServiceLayout.astro   # Shared service detail template
@@ -169,6 +170,7 @@ The site ships no third-party requests and ~2 kB of JavaScript. Keep it that way
 
 - **Agency site (this repo):** `BaseLayout` sets canonical, Open Graph, Twitter Card, `lang=en-US`, and `rel=sitemap`. Pages emit JSON-LD via `src/data/schema.ts` (Organization, WebSite, WebPage/Service/FAQ/Breadcrumb as relevant). Document titles and meta descriptions follow Part 7 length/keyword rules where adapted for a national agency (location omitted when scope is US-wide). H1s are kept reader-first; trade landings and services use keyword-led titles. Homepage is intentionally left as the brand entry.
 - **Client trade sites:** Follow `docs/SITE-STRUCTURE-AND-SEO-GUIDE.md` (one location, service/city pages, schema, Part 7 copy rules). Do not force that full client page map onto the LSR agency marketing site.
+- **Blog posts:** Follow `docs/BLOG-FRAMEWORK.md`. Every post must carry a *receipt* — a real client number, a named company, or a mistake we made — and score 7+ on the Ship Test before it goes live. Posts open with the answer in sentence one (BLUF), use question-shaped H2s, and pass a `faqs` array to `BlogLayout` so `FAQPage` schema and the FAQ block render. Keep `readTime` honest: measure it, don't guess. Any client figure used in a post must already exist on a case study page, and the Evidence Bank in the framework doc is the canonical list.
 ## Design tokens (summary)
 
 - Font: Manrope (400–800), self-hosted variable woff2 from `public/fonts/`

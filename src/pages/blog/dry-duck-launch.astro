@@ -1,115 +1,185 @@
 ---
-/* Blog post: Dry Duck launch / local SEO / AI site build from Dry Duck brain dumps. */
+/* Blog post: the Dry Duck launch, start to $200k months. Our only zero-to-scale
+   receipt, and the one place we document the month-two new-brand cliff.
+   Written to docs/BLOG-FRAMEWORK.md. Figures must stay in step with
+   src/pages/case-studies/dry-duck.astro. */
 import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  {
+    q: 'How much does it cost to launch a trade company on Google from scratch?',
+    a: 'Dry Duck started with roughly $500 for the initial build and grew from there as revenue arrived. Our published starting point is $500 a month for SEO and profile work, plus around $2k if a website is needed. The expensive part of most launches is a big upfront setup fee, and we do not charge one.',
+  },
+  {
+    q: 'How long before a brand-new website ranks locally?',
+    a: 'Dry Duck was booking estimates within weeks and ranking well across Des Moines inside about two months. That is faster than typical because the foundation was right on day one and the owner was excellent at getting reviews. Expect real, durable local visibility somewhere in the three to six month range.',
+  },
+  {
+    q: 'Why did leads drop off in month two?',
+    a: 'New Google Business Profiles and domains often get an early visibility surge, then average out hard. Dry Duck launched strong, went quiet in month two, and recovered in month three at a lower but real level that kept climbing. It is normal, it is temporary, and it is the point where most owners wrongly fire their agency.',
+  },
+  {
+    q: 'Should I build service area pages for every town right away?',
+    a: 'No. Rank your actual home city first. Publishing hundreds of thin location pages on a brand-new domain spreads your trust thin and can look manipulative to Google. Dry Duck won Des Moines, then expanded outward into West Des Moines, Ankeny and Urbandale once the core was solid.',
+  },
+  {
+    q: 'Is an AI-built website worse for SEO?',
+    a: 'Google does not detect or penalise how a site was built. It evaluates structure, relevance, speed and usefulness. An AI-assisted build held to a real SEO standard outperforms a slow page-builder site, because iteration is cheap and the checklist gets applied every time.',
+  },
+];
 ---
 
 <BlogLayout
-  title="How Dry Duck went from a $500 brief to ranking Des Moines for basement waterproofing"
-  seoTitle="Dry Duck Launch From $500 Brief to Ranking"
-  description="Brand, StoryBrand structure, local SEO, reviews, and AI-assisted builds: the Dry Duck waterproofing launch playbook from a tiny brief to booked estimates."
+  title="How Dry Duck went from a $500 brief to a $200k/month waterproofing company"
+  seoTitle="Dry Duck: $500 Brief to $200k/Month in Six Months"
+  description="A waterproofing company that didn't exist hit roughly $200k months in six months, on a ~$500 brief, with SEO before ads. The full launch sequence, including the month-two cliff."
   date="April 2026"
   datePublished="2026-04-01"
-  readTime="9 min"
+  dateModified="2026-09-10"
+  updated="September 2026"
+  readTime="6 min"
+  faqs={faqs}
 >
   <p>
-    Dry Duck is the clearest example of
-    <a href="/services/websites">structure-first websites</a> plus
-    <a href="/services/local-seo">local SEO</a> launching a trade brand fast. Here’s how a roughly
-    $500 brief became a ranked Des Moines waterproofing company. Full story also on the
-    <a href="/case-studies/dry-duck">Dry Duck case study</a>.
+    Dry Duck went from not existing to roughly <strong>$200k months and five full-time staff in
+    about six months</strong>, starting from a brief worth around $500. It did it on
+    <a href="/services/local-seo">local SEO</a> and a
+    <a href="/services/websites">structure-first website</a> before paid ads did any real work —
+    including roughly $80k of revenue in a three-week stretch while the ad account was still cold.
+  </p>
+  <p>
+    It’s our clearest proof that the foundation is the growth lever, not the budget. It’s also the
+    account that taught us the most uncomfortable lesson we pass on to every new brand: month two
+    is going to hurt.
   </p>
 
-  <h2>The brief</h2>
+  <h2>The brief was $500 and one sentence</h2>
   <p>
-    An owner I already worked with on another business said, essentially: here’s about
-    <strong>$500</strong>. Spin up a quick one-pager for a new waterproofing company. That was the
-    whole mandate. Two months later we weren’t looking at a brochure. We were looking at a ranked
-    local brand booking estimates.
+    An owner I already worked with on another business came to me with, essentially: here’s about
+    $500, spin up a quick one-pager for a new waterproofing company. That was the entire mandate.
+    Nobody involved thought they were commissioning a company.
+  </p>
+  <p>
+    Two months later we weren’t looking at a brochure site. We were looking at a ranked local brand
+    booking estimates faster than it could staff them. The
+    <a href="/case-studies/dry-duck">full numbers are on the case study</a>; this is how it was
+    actually built, in order.
   </p>
 
-  <h2>Brand first: show the promise</h2>
+  <h2>Brand first: show the promise, don’t describe it</h2>
   <p>
-    We started with names and marks. “Dry Duck” stuck. Influenced by ideas from
-    <em>Branded Not Blended</em> and StoryBrand, the goal was simple: <strong>show, don’t tell</strong>.
-    Dry Duck stops moisture. So we built a character holding a shield against a tidal wave:
-    the promise in one image, no speech required.
+    We started with the name and the mark. “Dry Duck” stuck immediately. Borrowing from
+    <em>Branded Not Blended</em> and StoryBrand, the rule was <strong>show, don’t tell</strong>. Dry
+    Duck stops water. So the mark is a duck holding a shield against a tidal wave — the entire value
+    proposition in one image, before a homeowner reads a single word.
   </p>
   <p>
-    Intuitive brands that emerge quickly often beat over-workshopped ones. This one felt obvious the
-    moment it clicked, and it carried the whole site.
+    Brands that arrive quickly and obviously tend to beat workshopped ones. This one felt inevitable
+    the moment it clicked, and it carried the whole site. If you’re staring at a moodboard in week
+    three, the idea probably isn’t there yet.
   </p>
 
-  <h2>Website structure: StoryBrand + E-E-A-T</h2>
+  <h2>What does a homepage need to do for a trade?</h2>
   <p>
-    Google cares about experience, expertise, authority, and trust. Users care about whether you can
-    help them in the next thirty seconds. So the homepage is built to hit both:
+    Google is grading experience, expertise, authority and trust. The homeowner is deciding whether
+    you can help them in the next thirty seconds. A good homepage serves both with the same
+    structure, in the order the questions arrive in someone’s head:
   </p>
   <ul>
-    <li>Hero loaded with trust and authority (most people never scroll).</li>
-    <li>Services listed with clear descriptions when they wonder “do you do my job?”</li>
-    <li>Service areas when they wonder “do you cover me?”</li>
-    <li>Simple 1-2-3 process when they wonder “what happens if I call?”</li>
-    <li>Risk / “what if it gets worse” framing instead of empty “why us” fluff.</li>
-    <li>FAQs as expertise signals, then a final CTA.</li>
+    <li><strong>Hero:</strong> trust and authority immediately, because most people never scroll.</li>
+    <li><strong>Services with real descriptions:</strong> answers “do you even do my job?”</li>
+    <li><strong>Service areas:</strong> answers “do you come to me?”</li>
+    <li><strong>A 1-2-3 process:</strong> answers “what actually happens if I call?”</li>
+    <li>
+      <strong>Risk framing:</strong> what happens if this gets worse — far stronger than a “why us”
+      section listing values nobody reads.
+    </li>
+    <li><strong>FAQs, then a final CTA:</strong> expertise signals that double as schema.</li>
   </ul>
   <p>
-    Keywords come from Google Keyword Planner first (basement waterproofing was the head term),
-    then UX frameworks, not the other way around. We put relevance in titles and headers. We don’t
-    spam the body.
+    Keywords came from Google Keyword Planner before any of that — “basement waterproofing” was the
+    head term, with thousands of monthly searches in market. Relevance goes in the title tags and
+    headers. It does not go in every paragraph.
   </p>
 
-  <h2>Local SEO: win the home city, then expand</h2>
+  <h2>Win one city before you chase the state</h2>
   <p>
-    Dry Duck serves a wide Iowa footprint, but the Google Business Profile lives in
-    <strong>Des Moines</strong>. Trying to rank “all of Iowa” on day one confuses Google. Our
-    approach:
+    Dry Duck serves a wide Iowa footprint, but the Google Business Profile lives in Des Moines.
+    Trying to rank “all of Iowa” on day one just tells Google you’re not confidently anything. So:
   </p>
-  <ul>
-    <li>Reinforce the true home location (Des Moines) on the site and profile.</li>
-    <li>Use honest <strong>“we serve”</strong> language for surrounding cities, not fake “offices everywhere.”</li>
-    <li>Build service-area pages that expand the circle after the core city is strong.</li>
-    <li>Don’t explode the site with hundreds of thin AI pages on week one. Grow domain trust, then add.</li>
-  </ul>
+  <ol>
+    <li>Reinforce the true home city — Des Moines — on both the site and the profile.</li>
+    <li>Use honest “we serve” language for surrounding towns, never fake offices.</li>
+    <li>Add service-area pages outward only once the core city is genuinely strong.</li>
+    <li>Don’t publish hundreds of thin pages in week one. Earn trust, then spend it.</li>
+  </ol>
   <p>
-    Within roughly two months, heatmap-style rank tracking showed strong visibility across a wide
-    radius for the main keyword (on the order of thousands of monthly searches in-market), with
-    average positions in the top few results in key zones, and a clear next push into West Des
-    Moines, Ankeny, Urbandale, and similar.
+    Within roughly two months, heatmap rank tracking showed strong visibility across a wide radius
+    on the head term, with average positions in the top few results in the key zones — and an
+    obvious next push into West Des Moines, Ankeny and Urbandale.
   </p>
 
-  <h2>Reviews: velocity beats vanity totals</h2>
+  <h2>Review velocity beats a big review total</h2>
   <p>
-    Dry Duck racked up dozens of reviews unusually fast (the owner already knew how to ask). That’s
-    not typical, but the lesson is universal: <strong>recent review pace</strong> matters more than
-    a dusty pile of old five-stars. Watch what top competitors earn per week. Beat that cadence.
+    Dry Duck collected dozens of reviews unusually fast, mostly because the owner already knew how
+    to ask at the right moment. That part isn’t typical. The lesson is: <strong>recent pace matters
+    more than a dusty pile of old five-stars.</strong> Look at what the top competitors in your city
+    earn per week, then beat that cadence. A company with 40 reviews and four this month outranks a
+    company with 300 reviews and none since 2023.
   </p>
 
-  <h2>Results while ads were still cold</h2>
+  <h2>Then month two happened</h2>
   <p>
-    Early on, paid ads weren’t the engine yet. Organic + profile + site structure were. We saw days
-    with multiple estimates booked, and the owner reported roughly
-    <strong>$80k in revenue within about three weeks</strong> of the first customers landing, the
-    kind of signal that tells you the foundation is real.
+    This is the part most agencies leave out of the case study.
+  </p>
+  <div class="receipt">
+    <div class="receipt-label">THE NEW-BRAND CLIFF</div>
+    <p>
+      Dry Duck launched hot, staffed and equipped into that momentum — then watched leads fall off a
+      cliff in month two. Organic came back in month three, weaker than the launch spike but real,
+      and climbed from there toward $200k months and a five-person team.
+    </p>
+  </div>
+  <p>
+    New profiles and domains often get an early visibility surge and then a brutal average-out.
+    We’ve now seen it enough times to warn people in advance, because month two is precisely when a
+    panicking owner fires the agency that was actually doing it right — or worse, staffs permanently
+    against a temporary spike.
+  </p>
+  <blockquote>
+    Don’t treat a hot first month as permanent capacity.
+  </blockquote>
+  <p>
+    The reason foundation quality matters is that it’s the only thing holding you up when the
+    honeymoon ends. Dry Duck survived month two because the site structure, categories and reviews
+    were right — not because anyone spent more money.
   </p>
 
   <h2>Why we build with AI-assisted development</h2>
   <p>
-    Same SEO standards. Completely different speed. Spinning a new service-area page, or changing a
-    layout across dozens of pages, is painful in classic WordPress/page-builder land, waiting on
-    loads, fighting templates, drifting meta tags. With a code-based site and AI-assisted workflows
-    (Cursor / similar), those changes are minutes, and we can enforce an SEO checklist every time.
+    Same SEO standards, completely different speed. Spinning up a new service-area page or changing
+    a layout across dozens of pages is genuinely painful in page-builder land: waiting on loads,
+    fighting templates, meta tags drifting out of sync. On a code-based site with AI-assisted
+    workflows, those changes take minutes and we can enforce the same SEO checklist every single
+    time.
   </p>
   <p>
-    Roughly speaking, it’s often an order of magnitude faster than even a well-optimized WordPress
-    process, and design exploration gets faster too.
+    That speed is why a $500 brief could keep compounding instead of hardening into a brochure. If
+    you want the longer argument, we wrote it up in
+    <a href="/blog/ai-websites-arent-slop">AI websites aren’t automatically slop</a>.
   </p>
 
-  <h2>Takeaways for trade owners</h2>
+  <h2>What to take from this if you're starting out</h2>
   <ul>
-    <li>Start with Keyword Planner truth, not agency poetry.</li>
-    <li>Make the hero earn trust immediately.</li>
+    <li>Start with Keyword Planner reality, not agency poetry.</li>
+    <li>Make the hero earn trust in the first screen, because that’s all most people see.</li>
     <li>Rank your real home city before you chase the whole state.</li>
-    <li>Review velocity is a ranking and conversion weapon.</li>
-    <li>Your website stack should make iteration cheap, because SEO is never “set and forget.”</li>
+    <li>Review velocity is both a ranking factor and a conversion weapon.</li>
+    <li>Budget for month two emotionally before it arrives.</li>
+    <li>Pick a stack where iteration is cheap, because SEO is never set-and-forget.</li>
   </ul>
+  <p>
+    None of this required a big budget. It required someone doing the unglamorous things in the
+    right order, and then not flinching in month two.
+  </p>
 </BlogLayout>

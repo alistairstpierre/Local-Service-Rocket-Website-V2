@@ -1,43 +1,123 @@
 ---
-/* Blog: AI website myths, from 2026.09.10 content dump (Q40). */
+/* Blog: the AI-built website objection, answered with Dry Duck and with this site's
+   own build stats as the receipt. Our contrarian POV piece.
+   Written to docs/BLOG-FRAMEWORK.md. */
 import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  {
+    q: 'Does Google penalise AI-generated websites?',
+    a: 'No. Google has been explicit that it rewards helpful content regardless of how it was produced, and there is no reliable way to detect how a site was built from the outside. What gets penalised is thin, duplicated, unhelpful content — which humans have been producing at scale for twenty years without any help from AI.',
+  },
+  {
+    q: 'Is an AI-built website cheaper than WordPress?',
+    a: 'Usually, and the bigger saving is ongoing. Dry Duck launched from a brief worth around $500. Our typical website build is around $2k. The real difference is that changes cost minutes instead of hours, so the site keeps improving rather than freezing the day it launches.',
+  },
+  {
+    q: 'What are the actual risks of an AI-built site?',
+    a: 'Generic copy that says nothing, invented facts, missing conversion structure, broken forms nobody tested, and hundreds of near-identical location pages. Every one of those comes from a lazy brief rather than the tool. They are all caught by a human who knows what a trade website needs to do.',
+  },
+  {
+    q: 'Will I own an AI-built website?',
+    a: 'You should own it outright, and with us you do. This matters more than the build method. A site you cannot take with you is a bigger commercial risk than any question about how the code was written, because it means leaving your agency means starting over.',
+  },
+  {
+    q: 'Should I rebuild my existing site?',
+    a: 'Only if it is genuinely losing you work, and never carelessly. Rebuilds that ignore existing URLs and page relevance can erase years of ranking overnight — we have cleaned up after several. If your current site converts and ranks, fix the Google Business Profile first. That is usually where the money is.',
+  },
+];
 ---
 
 <BlogLayout
   title="AI websites aren’t automatically slop. Lazy briefs are."
   seoTitle="AI Websites Aren't Slop When Structure Is Right"
-  description="Google doesn’t care whether AI helped build your trade website. It cares about structure, relevance, and speed. Here’s how we use AI without shipping slop."
+  description="Google doesn't detect how your site was built — it evaluates structure, relevance and speed. Dry Duck launched from a ~$500 AI-assisted brief and reached $200k months. Here's the difference."
   date="September 2026"
   datePublished="2026-09-01"
-  readTime="5 min"
+  dateModified="2026-09-10"
+  updated="September 2026"
+  readTime="4 min"
+  faqs={faqs}
 >
   <p>
-    Yes: if you type “build me a beautiful SEO website” into a chatbot and ship the first draft,
-    you’ll get slop. That says nothing about whether
-    <a href="/services/websites">AI-assisted builds</a> can outperform slow page-builder workflows
-    when you already know what Google and homeowners need.
+    Google has no way of knowing whether AI helped build your website, and no interest in the
+    question. It evaluates structure, relevance, speed and whether the page helps the person who
+    landed on it. <a href="/case-studies/dry-duck">Dry Duck</a> launched from an AI-assisted build on
+    a brief worth roughly $500 and reached ~$200k months inside six months, ranking Des Moines for
+    its head term in about two.
+  </p>
+  <p>
+    That said — yes, if you type “build me a beautiful SEO website” into a chatbot and ship the
+    first draft, you will get slop. The tool isn’t the variable. The brief is.
   </p>
 
-  <h2>What Google actually cares about</h2>
+  <h2>What Google is actually grading</h2>
   <p>
-    Fundamentals: clear relevance for the jobs people search, trustworthy proof, usable pages, fast
-    loads, honest service-area architecture. The CMS or generator is irrelevant. A carefully
-    structured AI-built site and a carefully structured hand-coded site play the same game.
+    Clear relevance for the jobs people search. Trustworthy proof. Pages a homeowner can use on a
+    phone. Fast loads. Honest service-area architecture instead of fifty near-identical town pages.
+  </p>
+  <p>
+    The CMS is irrelevant to every one of those. A carefully structured AI-assisted site and a
+    carefully structured hand-coded site are playing precisely the same game — and both beat a
+    carelessly structured anything. The reason “AI website” became an insult is that AI made it
+    cheap to skip the structure, not that it made structure impossible.
   </p>
 
-  <h2>Where AI wins for trades</h2>
+  <h2>Where AI genuinely wins for trades</h2>
   <p>
-    Speed. Once keywords and page framework are locked (hero, proof, services, areas, process,
-    stakes, FAQ), AI drafts and iterates in a fraction of the WordPress timeline, including new
-    service-area pages. That’s how a company like
-    <a href="/blog/dry-duck-launch">Dry Duck</a> could launch on a tiny budget without waiting six
-    months for a brochure site.
+    Speed, and specifically the speed of the second, tenth and fiftieth change.
+  </p>
+  <p>
+    Once the keyword work and the page framework are locked — hero, proof, services, areas, process,
+    stakes, FAQ — spinning up a new service-area page or restructuring a section across dozens of
+    pages takes minutes. In page-builder land the same work means waiting on loads, fighting
+    templates and watching meta tags drift out of sync until nobody trusts them.
+  </p>
+  <div class="receipt">
+    <div class="receipt-label">THIS SITE, AS THE WORKED EXAMPLE</div>
+    <p>
+      localservicerocket.com is 43 pages, builds in about two seconds, ships zero third-party
+      requests on load, and self-hosts its fonts and images in modern formats. It was built the way
+      we build client sites. You’re reading the demo.
+    </p>
+  </div>
+  <p>
+    That’s why a $500 brief could keep compounding into a real company instead of hardening into a
+    brochure nobody ever edits. SEO is never set-and-forget, so the cost of your hundredth change
+    matters more than the cost of your first.
   </p>
 
-  <h2>What we never outsource to the model</h2>
+  <h2>What we never hand to the model</h2>
+  <ul>
+    <li>
+      <strong>Keyword strategy against real competitors.</strong> A model will happily optimise for
+      a term nobody in your city searches. Motha Electric’s whole problem was a plausible-sounding
+      category that <a href="/blog/google-category-relevance">nobody types</a>.
+    </li>
+    <li>
+      <strong>The conversion framework.</strong> What goes in the hero, in what order, and what a
+      homeowner needs to see before they call. That comes from having watched real accounts, not
+      from pattern-matching other websites.
+    </li>
+    <li>
+      <strong>Every factual claim.</strong> Numbers, guarantees, licences, service areas. If it
+      can’t be verified against something real, it doesn’t ship.
+    </li>
+    <li>
+      <strong>QA.</strong> Broken forms, dead links, layout collapse on a phone in a truck, and
+      actual load performance on a bad connection.
+    </li>
+  </ul>
+
+  <h2>The honest summary</h2>
+  <blockquote>
+    “Make it look cool” with no spine is how AI earned its reputation. With the spine, refusing AI
+    is mostly nostalgia.
+  </blockquote>
   <p>
-    Keyword strategy against real competitors. The conversion framework. QA for broken flows and
-    performance. “Make it look cool” without that spine is how AI earned its bad reputation. With
-    the spine, refusing AI is mostly nostalgia.
+    The question worth asking a web company isn’t whether they use AI. It’s whether they can tell
+    you what your hero section needs to say and why, what your primary category should be, and what
+    happens to your rankings when the new site goes live. If they can answer those three,
+    <a href="/services/websites">how the HTML got written</a> is not your problem.
   </p>
 </BlogLayout>

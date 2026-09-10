@@ -68,9 +68,16 @@ img {
   height: auto;
 }
 
-/* Keeps <picture> from adding inline-gap and inheriting odd sizing */
+/* Keeps <picture> from adding inline-gap and inheriting odd sizing. Because the
+   picture box disappears, its children are promoted into the parent's layout —
+   so the <source> elements must be explicitly removed, or they get placed as
+   grid/flex items alongside the <img> and shove it into the wrong cell. */
 picture {
   display: contents;
+}
+
+picture > source {
+  display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

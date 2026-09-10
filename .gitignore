@@ -20,7 +20,12 @@ pnpm-debug.log*
 # README structure so we know it exists, it just isn't published.
 Found By Friday Brain Dumps/
 content/
-docs/
+
+# docs/* rather than docs/ so the negation below works — git won't look inside a
+# directory it has already excluded. BLOG-FRAMEWORK.md is an editorial standard the
+# site depends on, so it ships; the client SEO playbook stays private.
+docs/*
+!docs/BLOG-FRAMEWORK.md
 
 # macOS / editors
 .DS_Store

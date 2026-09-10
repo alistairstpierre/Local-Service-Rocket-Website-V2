@@ -1,56 +1,180 @@
 ---
-/* Blog: realistic marketing expectations, onboarding reading list from 2026.09.10 dump (Q39). */
+/* Blog: honest timelines and ceilings, using real timeframes from all four case
+   studies. The expectation-setting piece we want read before onboarding.
+   Written to docs/BLOG-FRAMEWORK.md. Figures must match /case-studies. */
 import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  {
+    q: 'How long does local SEO take to work for a home service company?',
+    a: 'Expect meaningful map-pack movement in three to six months and compounding results after that. Dry Duck ranked Des Moines in about two months, which is fast and was helped by unusually quick review collection. Paid ads can prove or disprove your economics in weeks, which is why we usually start there while SEO builds.',
+  },
+  {
+    q: 'Why did my leads drop after a good first month?',
+    a: 'New Google Business Profiles and domains often get an early visibility surge and then average out hard in month two. We saw exactly this with Dry Duck: a strong launch, a quiet month two, then organic returning in month three and climbing from there. It is Google recalibrating, not a permanent ceiling.',
+  },
+  {
+    q: 'Will doubling my ad budget double my booked jobs?',
+    a: 'No, and raising budget 50% overnight can actively stall a working campaign while Google relearns the account. Spend increases work best in smaller steps timed to capacity you actually have. Past a point, more budget buys worse jobs rather than more of the good ones.',
+  },
+  {
+    q: 'What revenue can marketing realistically get me to?',
+    a: 'In our experience a well-run Google presence can carry a home service company into the low-to-mid hundreds of thousands per month. Rewired reached $220k+ months over three years. Past that the constraint is almost always people and operations, not lead flow — marketing cannot invent trucks or closing skill.',
+  },
+  {
+    q: 'Should I fire my agency if results plateau?',
+    a: 'Not automatically. Plateaus are normal and usually mean the bottleneck moved. Ask what the constraint is now. If the honest answer is hiring, ops or your own follow-up speed, changing agencies just resets your progress. If they cannot tell you where the constraint is, that is a different problem.',
+  },
+];
 ---
 
 <BlogLayout
   title="Realistic expectations for home-service marketing"
   seoTitle="Realistic Expectations for Home Service Marketing"
-  description="What Google can and can’t do for a trade company, timelines, plateaus, and why more budget isn’t always more booked jobs. Set expectations before you spend."
+  description="Real timelines from real accounts: two months, eight months, three years. What Google can do for a trade company, when it plateaus, and why more budget isn't always more booked jobs."
   date="September 2026"
   datePublished="2026-09-01"
-  readTime="6 min"
+  dateModified="2026-09-10"
+  updated="September 2026"
+  readTime="4 min"
+  faqs={faqs}
 >
   <p>
-    Most disappointment with
-    <a href="/services/local-seo">SEO</a> and
-    <a href="/services/paid-ads">ads</a> isn’t “Google is broken.” It’s mismatched expectations. This
-    is the second piece we want owners to read before onboarding with
-    <a href="/get-started">Local Service Rocket</a>.
+    Most disappointment with SEO and ads isn’t Google being broken — it’s a mismatch between what an
+    owner was promised and how long this actually takes. Across our accounts, meaningful growth has
+    landed somewhere between <strong>two months and three years</strong> depending on where the
+    company started. Here are the real timeframes, so you can judge your own situation against
+    something other than a sales pitch.
+  </p>
+
+  <h2>What growth actually looked like, by account</h2>
+  <p>
+    These are our four case studies, with the honest elapsed time rather than the headline number:
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>Company</th>
+        <th>Starting point</th>
+        <th>Where it got to</th>
+        <th>How long</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a href="/case-studies/dry-duck">Dry Duck</a></td>
+        <td>Didn’t exist</td>
+        <td>~$200k months, 5 staff</td>
+        <td>6 months</td>
+      </tr>
+      <tr>
+        <td><a href="/case-studies/honest-hanks">Honest Hank’s</a></td>
+        <td>$25k months, 1 tech</td>
+        <td>$80k months, 3 techs</td>
+        <td>~8 months</td>
+      </tr>
+      <tr>
+        <td><a href="/case-studies/rewired">Rewired</a></td>
+        <td>$60k months, 5 crew</td>
+        <td>$220k+ months, 12 crew</td>
+        <td>3+ years</td>
+      </tr>
+      <tr>
+        <td><a href="/case-studies/hooked-up">Hooked Up Electric</a></td>
+        <td>1 county</td>
+        <td>4 counties, 100–200 leads/mo</td>
+        <td>2+ years</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    Dry Duck is the outlier, not the template. It moved that fast because it was a brand-new brand
+    with no legacy problems, built correctly on day one, with an owner who was exceptional at
+    collecting reviews. Rewired is the more normal shape: steady compounding over years, with the
+    biggest jumps coming when hiring caught up to demand.
   </p>
 
   <h2>Marketing is a system, not a slot machine</h2>
   <p>
-    Local Services Ads, Search ads, your Google Business Profile, and your website influence each
-    other. Someone may click an ad, read reviews on the map pack, then call from the profile. Perfect
-    source tags are often impossible, which is why we care more about
-    <a href="/services/tracking">booked jobs and revenue vs spend</a> than a pretty pie chart.
+    Local Services Ads, Search ads, your <a href="/services/local-seo">Google Business Profile</a>
+    and your <a href="/services/websites">website</a> all feed each other. Someone clicks an ad,
+    goes and reads your reviews in the map pack, then calls the number on your profile two days
+    later. That job is attributed to nothing in particular.
+  </p>
+  <p>
+    Perfect source tagging is frequently impossible, which is why we care about
+    <a href="/services/tracking">booked jobs and revenue against total spend</a> rather than a tidy
+    pie chart. An agency that shows you clean channel attribution for a local trade business is
+    showing you a simplification, at best.
   </p>
 
-  <h2>Timelines that don’t lie to you</h2>
+  <h2>Timelines that don't lie to you</h2>
+  <ul>
+    <li>
+      <strong>Weeks:</strong> paid ads prove or disprove your economics — assuming the site
+      converts. This is why we usually start with cheap paid proof.
+    </li>
+    <li>
+      <strong>One to two months:</strong> foundation fixes can land fast. Motha Electric went from
+      nothing to one to three calls a day
+      <a href="/blog/google-category-relevance">in about a week</a>, purely from a corrected
+      profile category.
+    </li>
+    <li>
+      <strong>Three to six months:</strong> organic map-pack gains become real and stable, moving
+      with review velocity, competition and category relevance.
+    </li>
+    <li>
+      <strong>A year plus:</strong> the compounding part, where organic carries volume that would
+      cost a fortune in ads.
+    </li>
+  </ul>
+
+  <h2>Month two might be worse than month one</h2>
+  <div class="receipt">
+    <div class="receipt-label">THE NEW-BRAND CLIFF</div>
+    <p>
+      Dry Duck launched hot, staffed into the momentum, then watched leads fall off a cliff in month
+      two. Organic returned in month three — weaker than the launch spike but real — and climbed
+      from there to $200k months.
+    </p>
+  </div>
   <p>
-    Ads can prove (or disprove) economics relatively fast when the site converts. Organic map-pack
-    gains take longer and move with reviews, competition, and category relevance. A hot first month
-    for a brand-new profile can fade in month two, that’s Google testing, not a permanent ceiling or
-    a permanent victory.
+    A hot first month on a brand-new profile is Google testing you, not a permanent victory. The
+    fade that follows is not a permanent ceiling either. Knowing this in advance is worth real
+    money, because month two is exactly when owners panic, fire the agency doing it right, or hire
+    permanent staff against temporary demand.
   </p>
   <p>
-    Raising budget 50% overnight can stall a working campaign while Google “learns.” Smaller steps,
-    timed well, beat panic spend.
+    Similarly: raising your budget 50% overnight can stall a campaign that was working, because
+    Google re-enters a learning phase. Smaller steps, timed to capacity you actually have, beat
+    panic spend every time.
   </p>
 
-  <h2>Plateaus are normal</h2>
+  <h2>Where marketing stops being the constraint</h2>
   <p>
-    Many shops can grow hard on ads and SEO into the low-mid hundreds of thousands per month, then
-    need hiring, ops, and offer work to break the next ceiling. Marketing can’t invent trucks or
-    closing skill. When lead flow is healthy and the calendar is full, the next bottleneck is usually
-    <a href="/services/hiring">people</a>, not another agency pitch deck.
+    Most trade companies can grow hard on ads and SEO into the low-to-mid hundreds of thousands per
+    month. Then it gets difficult, and not because the marketing stopped working.
+  </p>
+  <blockquote>
+    Marketing can’t invent trucks or closing skill.
+  </blockquote>
+  <p>
+    Rewired’s jump to $220k months required going from five crew to twelve. That’s why we run
+    <a href="/services/hiring">hiring sprints</a> at all — at a certain point the highest-leverage
+    marketing work is filling a van, not buying another click. When the lead flow is healthy and
+    the calendar is full, the next bottleneck is people, and another agency pitch deck won’t
+    touch it.
   </p>
 
   <h2>What you should expect from a partner</h2>
   <p>
-    Clear stages, no fake guarantees, and honesty when the constraint is you (reviews, follow-up,
-    pricing) versus us (campaigns, site, profile). If someone promises overnight domination with no
-    work on your side, they’re selling a story, not a system.
+    Clear stages, no fake guarantees, and honesty about which side the constraint sits on — your
+    reviews, follow-up and pricing versus our campaigns, site and profile. You should be told when a
+    channel is soft rather than finding out from your own bank balance.
+  </p>
+  <p>
+    If someone promises overnight domination with no work on your side, they’re selling you a story.
+    The real version is slower, less dramatic, and considerably more durable.
   </p>
 </BlogLayout>

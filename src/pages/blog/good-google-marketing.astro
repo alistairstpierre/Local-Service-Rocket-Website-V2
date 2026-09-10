@@ -1,60 +1,142 @@
 ---
-/* Blog: what good Google marketing looks like, onboarding reading list from 2026.09.10 dump (Q39). */
+/* Blog: what a competent Google setup looks like for a trade, with the real numbers
+   from all four case studies instead of directional claims. The "category" post for
+   owners shopping for Google marketing. Written to docs/BLOG-FRAMEWORK.md. */
 import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  {
+    q: 'Should I start with Local Services Ads or Google Search ads?',
+    a: 'Start with Local Services Ads in almost every case. You pay per lead rather than per click, the Google Guaranteed badge does trust work a new brand cannot do on its own, and it sits above everything else on the page. Hooked Up Electric has run 100 to 200 leads a month on an LSA-led setup for over two years.',
+  },
+  {
+    q: 'Do I need a new website before running Google ads?',
+    a: 'Not always, but you need one that converts. If organic visitors are not calling, paid visitors will not either — you will just be paying for the privilege. We would rather fix a homepage for around $2k than spend the same amount driving traffic to a page that loses people in the first screen.',
+  },
+  {
+    q: 'What return should I expect from Google marketing?',
+    a: 'Measure revenue against total Google spend at the business level rather than per channel. Healthy accounts run at a several-times return once the site converts and the profile is right. Honest Hank\'s went from $25k to $80k months in about eight months on staged spend that started small.',
+  },
+  {
+    q: 'How important is my Google Business Profile compared to my website?',
+    a: 'For a local trade it is usually more important, and it is free. The profile is what appears in the map pack, carries your reviews, and decides whether Google thinks you are relevant at all. Motha Electric got one to three calls a day from a profile fix alone, with no website change.',
+  },
+  {
+    q: 'How many Google reviews do I need to compete?',
+    a: 'Fewer than you think, arriving more often than you think. Recent review velocity matters more than a large historical total. Look at what the top three competitors in your city earn per week and beat that pace — a company with 40 reviews and four this month will outrank one with 300 and none this year.',
+  },
+];
 ---
 
 <BlogLayout
   title="What good Google marketing looks like for trades"
   seoTitle="What Good Google Marketing Looks Like for Trades"
-  description="LSA, Search, map pack, and website as one system for home service companies, and what winning should look like in booked work, not vanity metrics."
+  description="Four home service companies, four entry points, one Google spine. What competent local SEO and paid Google actually produce — in booked jobs and revenue, not vanity metrics."
   date="September 2026"
   datePublished="2026-09-01"
-  readTime="7 min"
+  dateModified="2026-09-10"
+  updated="September 2026"
+  readTime="4 min"
+  faqs={faqs}
 >
   <p>
-    “Do Google” is not a strategy. Here’s what competent
-    <a href="/services/local-seo">local SEO</a> and
-    <a href="/services/paid-ads">paid Google</a> look like for home service companies, and what they
-    can realistically achieve when the
-    <a href="/services/websites">website</a> and ops keep up.
+    Good Google marketing for a home service company is four things working as one system: a
+    correctly categorised Business Profile, a website that converts, Local Services Ads for cheap
+    proof, then Search ads for scale. Run properly, that spine took
+    <a href="/case-studies/honest-hanks">Honest Hank’s from $25k to $80k months in eight months</a>
+    and <a href="/case-studies/rewired">Rewired from $60k to $220k+ over three years</a>.
+  </p>
+  <p>
+    “Do Google” is not a strategy. This is what the actual work looks like, and what it produces.
   </p>
 
-  <h2>The pieces that matter</h2>
+  <h2>The Google Business Profile does the heaviest lifting</h2>
   <p>
-    <strong>Google Business Profile</strong>: correct primary category, complete services, real
-    address when you can show one, reviews that keep coming, NAP that matches the site.
+    It’s free, it sits above the organic results, and for most local trades it drives more calls
+    than the website. What matters on it is unglamorous: the correct primary category, a complete
+    services list, a real address where you can show one, consistent name and phone details matching
+    your site, and reviews that keep arriving.
   </p>
   <p>
-    <strong>Website</strong>: keyword-led pages that convert map and ad traffic into calls. If
-    organic visitors don’t book, ads won’t save you.
-  </p>
-  <p>
-    <strong>Local Services Ads</strong>: usually the first paid lane. Pay per lead, cheaper proof,
-    Google Guaranteed trust. Then Search ads when you need more volume or higher-quality jobs and
-    can afford the CPA.
-  </p>
-
-  <h2>What “good” looks like in numbers</h2>
-  <p>
-    Directionally: revenue climbing faster than Google spend (healthy systems often land in a
-    several-times return range when tracked at the business level). Calendar filling with
-    <em>booked</em> estimates, not a CRM full of tire-kickers an agency calls “leads.” Map-pack
-    presence in the neighborhoods you actually want to serve.
-  </p>
-  <p>
-    Case studies on this site (Rewired, Honest Hank’s, Dry Duck, Hooked Up) show different entry
-    points, scale what you have, grow the crew, or start from nothing, but the Google spine is the
-    same.
+    The category is the one people get wrong, and it’s catastrophic when they do. Motha Electric’s
+    profile said “electrical installation service” instead of “electrician,” which meant Google
+    quietly declined to show them for the term everybody searches. Correcting it produced one to
+    three calls a day within about a week —
+    <a href="/blog/google-category-relevance">the full story is here</a>.
   </p>
 
-  <h2>What it can’t do alone</h2>
+  <h2>The website's job is conversion, not decoration</h2>
   <p>
-    Google won’t fix a broken sales process, a brand nobody trusts, or an empty truck roster. It
-    won’t make Max Conversions invent high-ticket jobs if your account is optimized for the cheapest
-    click. And it won’t stay stable forever without reviews and competitive pressure.
+    Keyword-led pages that turn map and ad traffic into phone calls. If your organic visitors aren’t
+    booking, ads won’t rescue you — you’ll just pay more per person who doesn’t call.
   </p>
   <p>
-    Good Google marketing is disciplined fundamentals, honest measurement, and patience where organic
-    needs time, plus the guts to turn spend down when you’re full and up when you’re ready.
+    The structure that works answers a homeowner’s questions in the order they arrive: can I trust
+    you, do you do my job, do you come to my area, what happens if I call, what happens if I don’t.
+    <a href="/case-studies/dry-duck">Dry Duck</a> was built on exactly that skeleton from a roughly
+    $500 brief and was booking estimates within weeks of launch, before ads did anything at all.
+    Details on <a href="/services/websites">how we build them</a>.
+  </p>
+
+  <h2>Local Services Ads first, Search ads second</h2>
+  <p>
+    LSAs are usually the right first paid lane. You pay per lead instead of per click, the Google
+    Guaranteed badge borrows trust a newer brand hasn’t earned yet, and the placement sits at the
+    very top of the page.
+  </p>
+  <div class="receipt">
+    <div class="receipt-label">WHAT LSA-LED LOOKS LIKE AT SCALE</div>
+    <p>
+      Hooked Up Electric has run 100 to 200 Google leads a month for over two years on an LSA-led
+      setup, expanding from one county to four. In Jason’s words, the company grew 600% in 2024.
+    </p>
+  </div>
+  <p>
+    <a href="/services/paid-ads">Search ads</a> come after — when you need volume LSAs can’t supply,
+    or higher-ticket work, and you can afford a cost per acquisition that’s honestly higher. Running
+    Search first is how owners end up convinced Google doesn’t work for their trade.
+  </p>
+
+  <h2>What does "good" actually look like in numbers?</h2>
+  <p>
+    Three things, in this order of importance:
+  </p>
+  <ol>
+    <li>
+      <strong>Revenue climbing faster than Google spend</strong>, measured at the business level.
+      Not per-channel attribution, which is largely fiction for local trades.
+    </li>
+    <li>
+      <strong>Booked estimates on the calendar</strong> — jobs a human has qualified — rather than a
+      CRM full of form fills an agency calls leads.
+    </li>
+    <li>
+      <strong>Map-pack presence in the neighbourhoods you want</strong>, not a citywide average that
+      hides the fact you’re invisible in the wealthy suburb.
+    </li>
+  </ol>
+  <p>
+    Our four case studies entered from completely different places — scale what you have, grow the
+    crew, start from nothing, expand the territory — and the Google spine underneath was the same
+    every time. That’s the actual argument for fundamentals over tactics.
+  </p>
+
+  <h2>What Google can't do for you</h2>
+  <p>
+    It won’t fix a sales process where nobody calls back within the hour. It won’t make a brand
+    nobody trusts trustworthy. It won’t conjure a truck roster you don’t have — Rewired’s jump to
+    $220k months needed twelve crew, not twelve more clicks.
+  </p>
+  <p>
+    It also won’t invent high-ticket jobs if the account is optimised for the cheapest possible
+    click, and it won’t stay stable on its own while competitors keep earning reviews and you don’t.
+  </p>
+  <blockquote>
+    Good Google marketing is disciplined fundamentals, honest measurement, and the guts to turn
+    spend down when you’re full and up when you’re ready.
+  </blockquote>
+  <p>
+    None of that is a growth hack. It’s the boring version, and it’s the one that compounds for
+    three years.
   </p>
 </BlogLayout>

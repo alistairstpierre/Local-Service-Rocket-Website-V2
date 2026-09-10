@@ -1,11 +1,16 @@
 ---
 /* Blog article layout. Full --max container; body in .measure rail.
    Part 7: keep H1 as `title`; optional `seoTitle` for the document title (60–90 with brand).
-   JSON-LD: BlogPosting + Breadcrumb. Intro service links belong in each post body (guide §14). */
+   JSON-LD: BlogPosting + Breadcrumb, plus FAQPage when a post passes `faqs`.
+   Editorial standard for what goes in the slot: docs/BLOG-FRAMEWORK.md.
+   Posts get an author block (E-E-A-T / AI citation) and an FAQ section for free —
+   pass `faqs` and the schema, the markup and the styling are all handled here. */
 import BaseLayout from './BaseLayout.astro';
+import Picture from '../components/Picture.astro';
 import {
   absoluteUrl,
   breadcrumbList,
+  faqPageNode,
   graph,
   webPageNode,
 } from '../data/schema';
@@ -19,9 +24,25 @@ interface Props {
   readTime: string;
   /** ISO date for Article schema when known */
   datePublished?: string;
+  /** ISO date of the last meaningful edit. Shown in the meta line and in schema. */
+  dateModified?: string;
+  /** Displayed as "Updated {updated}" next to the publish date. */
+  updated?: string;
+  /** 3-5 real follow-up questions. Renders the FAQ block and emits FAQPage schema. */
+  faqs?: { q: string; a: string }[];
 }
 
-const { title, seoTitle, description, date, readTime, datePublished } = Astro.props;
+const {
+  title,
+  seoTitle,
+  description,
+  date,
+  readTime,
+  datePublished,
+  dateModified,
+  updated,
+  faqs = [],
+} = Astro.props;
 const docTitle = `${seoTitle ?? title} | Local Service Rocket`;
 const pageUrl = absoluteUrl(Astro.url.pathname);
 
@@ -32,10 +53,14 @@ const jsonLd = graph([
     headline: title,
     description,
     datePublished: datePublished ?? undefined,
+    dateModified: dateModified ?? datePublished ?? undefined,
     inLanguage: 'en-US',
     author: {
       '@type': 'Person',
       name: 'Alistair St Pierre',
+      jobTitle: 'Founder',
+      image: absoluteUrl('/assets/alistair-photo.jpg'),
+      url: absoluteUrl('/about/'),
       worksFor: { '@id': 'https://localservicerocket.com/#business' },
     },
     publisher: { '@id': 'https://localservicerocket.com/#business' },
@@ -48,6 +73,7 @@ const jsonLd = graph([
     description,
     mainEntityId: `${pageUrl}#article`,
   }),
+  ...(faqs.length ? [faqPageNode(pageUrl, faqs)] : []),
   breadcrumbList(pageUrl, [
     { name: 'Home', path: '/' },
     { name: 'Blog', path: '/blog' },
@@ -66,7 +92,9 @@ const jsonLd = graph([
         <span>/</span>
         <span class="current">{title}</span>
       </div>
-      <div class="meta">{date} · {readTime} read</div>
+      <div class="meta">
+        {date} · {readTime} read{updated ? ` · updated ${updated}` : ''}
+      </div>
       <h1>{title}</h1>
       <p class="dek">{description}</p>
     </div>
@@ -84,6 +112,40 @@ const jsonLd = graph([
     </div>
 
     <div class="container">
+      <div class="byline">
+        <Picture
+          name="alistair-photo"
+          alt="Alistair St Pierre"
+          class="byline-photo"
+          width={96}
+          height={96}
+        />
+        <div>
+          <div class="byline-name">Alistair St Pierre</div>
+          <p class="byline-bio">
+            Founder of Local Service Rocket. I run Google marketing and hiring for home service
+            companies from Wellington, New Zealand — the numbers in this post come from accounts I
+            work on myself. <a href="/about">More about how I work →</a>
+          </p>
+        </div>
+      </div>
+
+      {
+        faqs.length > 0 && (
+          <div class="faq-block">
+            <h2>Questions owners ask us about this</h2>
+            <div class="faq-list">
+              {faqs.map((item) => (
+                <div class="faq-item">
+                  <div class="faq-q">{item.q}</div>
+                  <p>{item.a}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )
+      }
+
       <div class="post-cta">
         <h2>Want this done for your trade business?</h2>
         <p>See how Local Service Rocket works, then book onboarding. No sales calls.</p>
@@ -167,17 +229,184 @@ const jsonLd = graph([
     color: var(--body);
   }
 
-  .body :global(ul) {
+  /* The opening paragraph carries the answer (see docs/BLOG-FRAMEWORK.md), so it
+     gets more weight than the rest of the body. */
+  .body :global(p:first-child) {
+    font-size: 17.5px;
+    line-height: 1.65;
+    color: var(--ink);
+  }
+
+  .body :global(h3) {
+    margin-top: 24px;
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+
+  .body :global(ul),
+  .body :global(ol) {
     margin: 12px 0 0;
     padding-left: 1.2em;
+  }
+
+  .body :global(li + li) {
+    margin-top: 6px;
   }
 
   .body :global(a) {
     font-weight: 600;
   }
 
-  .post-cta {
+  .body :global(strong) {
+    color: var(--ink);
+  }
+
+  /* Pull quote: the one line from the post worth remembering. */
+  .body :global(blockquote) {
+    margin: 24px 0 0;
+    padding: 4px 0 4px 22px;
+    border-left: 3px solid var(--orange);
+    font-size: 19px;
+    line-height: 1.5;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    text-wrap: pretty;
+  }
+
+  .body :global(blockquote p) {
+    margin: 0;
+    font-size: inherit;
+    line-height: inherit;
+    color: inherit;
+  }
+
+  /* Callout for the receipt: the number or fact only we can report. */
+  .body :global(.receipt) {
+    margin-top: 24px;
+    border: 1px solid rgba(232, 89, 12, 0.28);
+    background: var(--orange-tint);
+    border-radius: var(--radius-card);
+    padding: 18px 20px;
+  }
+
+  .body :global(.receipt-label) {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    color: var(--orange);
+  }
+
+  .body :global(.receipt p) {
+    margin-top: 6px;
+  }
+
+  .body :global(table) {
+    margin-top: 20px;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14.5px;
+  }
+
+  .body :global(th),
+  .body :global(td) {
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--hairline);
+    line-height: 1.5;
+  }
+
+  .body :global(th) {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--muted-2);
+    border-bottom-color: var(--border);
+  }
+
+  .body :global(td:last-child) {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .byline {
     margin-top: 48px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-panel);
+    padding: 22px 24px;
+    background: var(--section-bg);
+  }
+
+  /* :global() because <Picture> renders the <img> from a child component. */
+  .byline :global(.byline-photo) {
+    width: 56px;
+    height: 56px;
+    flex: none;
+    border-radius: 99px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .byline-name {
+    font-size: 15.5px;
+    font-weight: 800;
+  }
+
+  .byline-bio {
+    margin-top: 4px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 62ch;
+  }
+
+  .byline-bio a {
+    color: var(--orange);
+    font-weight: 600;
+  }
+
+  .faq-block {
+    margin-top: 40px;
+  }
+
+  .faq-block h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .faq-list {
+    margin-top: 18px;
+    display: grid;
+    gap: 12px;
+  }
+
+  .faq-item {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 18px 20px;
+  }
+
+  .faq-q {
+    font-weight: 800;
+    font-size: 15px;
+  }
+
+  .faq-item p {
+    margin-top: 8px;
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: var(--muted);
+  }
+
+  .post-cta {
+    margin-top: 40px;
     border: 1px solid var(--border);
     border-radius: var(--radius-panel);
     padding: 32px;
