@@ -22,7 +22,7 @@ const FEATURE_SIZES = '(max-width: 900px) 100vw, 640px';
 
 const title = 'Home Service Case Studies and Results | Local Service Rocket';
 const description =
-  "Real Google growth stories: scale what you have (Rewired), grow the crew (Honest Hank's), or start from nothing (Dry Duck). Pick the path that looks like yours.";
+  "Real Google growth stories: start from nothing (Dry Duck), grow the crew (Honest Hank's), or scale what you have (Rewired). Pick the path that looks like yours.";
 const pageUrl = absoluteUrl('/case-studies/');
 const jsonLd = graph([
   webPageNode({ pageUrl, name: title, description }),
@@ -45,17 +45,17 @@ const jsonLd = graph([
         </p>
       </div>
 
-      <!-- 1 · Scale what you have -->
+      <!-- 1 · Start from nothing -->
       <div class="section-head">
         <div class="section-num">1</div>
-        <h2>Scale what you have</h2>
+        <h2>Start from nothing</h2>
         <div class="section-line" aria-hidden="true"></div>
       </div>
 
-      <a href="/case-studies/rewired" class="feature">
+      <a href="/case-studies/dry-duck" class="feature">
         <Picture
-          name="team-rewired"
-          alt="The Rewired team and fleet"
+          name="team-dry-duck"
+          alt="Dry Duck team"
           class="feature-media"
           sizes={FEATURE_SIZES}
           loading="eager"
@@ -64,34 +64,34 @@ const jsonLd = graph([
         <div class="feature-body">
           <div class="brand-row">
             <div class="logo-box">
-              <Picture name="logo-rewired" alt="" height={28} />
+              <Picture name="logo-dry-duck" alt="" height={28} />
             </div>
             <div>
-              <div class="brand-name">Rewired</div>
-              <div class="brand-meta">Electrical · Des Moines, IA</div>
+              <div class="brand-name">Dry Duck</div>
+              <div class="brand-meta">Basement waterproofing · Iowa</div>
             </div>
           </div>
           <p>
-            John had burned through multiple agencies that never made ads work. We got Google
-            producing on a scuffed setup, stayed through the rebuild detours, then owned site, SEO,
-            ads, and hiring. Years later he’s still a client, with a much larger Des Moines crew and
-            high six-figure months.
+            The company didn’t exist. Brand idea, site, and Google profile launched on starter
+            economics, then survived the classic new-brand month-two cliff. Organic came back, ads
+            layered on, and the shop scaled toward $200k months with a real crew, SEO first, ads
+            later.
           </p>
           <div class="stats">
             <div>
-              <div class="stat accent">$60k → $220k+</div>
-              <div class="stat-label">avg monthly revenue</div>
+              <div class="stat accent">$0 → $200k</div>
+              <div class="stat-label">monthly revenue</div>
             </div>
             <div>
-              <div class="stat">5 → 12</div>
-              <div class="stat-label">crew</div>
+              <div class="stat">0 → 5</div>
+              <div class="stat-label">full-time staff</div>
             </div>
             <div>
-              <div class="stat">1.5 → 6</div>
-              <div class="stat-label">avg booked calls / day</div>
+              <div class="stat">6 mo</div>
+              <div class="stat-label">to serious scale</div>
             </div>
           </div>
-          <div class="more">Read the Rewired story →</div>
+          <div class="more">Read the Dry Duck story →</div>
         </div>
       </a>
 
@@ -143,51 +143,51 @@ const jsonLd = graph([
         />
       </a>
 
-      <!-- 3 · Start from nothing -->
+      <!-- 3 · Scale what you have -->
       <div class="section-head">
         <div class="section-num">3</div>
-        <h2>Start from nothing</h2>
+        <h2>Scale what you have</h2>
         <div class="section-line" aria-hidden="true"></div>
       </div>
 
-      <a href="/case-studies/dry-duck" class="feature">
+      <a href="/case-studies/rewired" class="feature">
         <Picture
-          name="team-dry-duck"
-          alt="Dry Duck team"
+          name="team-rewired"
+          alt="The Rewired team and fleet"
           class="feature-media"
           sizes={FEATURE_SIZES}
         />
         <div class="feature-body">
           <div class="brand-row">
             <div class="logo-box">
-              <Picture name="logo-dry-duck" alt="" height={28} />
+              <Picture name="logo-rewired" alt="" height={28} />
             </div>
             <div>
-              <div class="brand-name">Dry Duck</div>
-              <div class="brand-meta">Basement waterproofing · Iowa</div>
+              <div class="brand-name">Rewired</div>
+              <div class="brand-meta">Electrical · Des Moines, IA</div>
             </div>
           </div>
           <p>
-            The company didn’t exist. Brand idea, site, and Google profile launched on starter
-            economics, then survived the classic new-brand month-two cliff. Organic came back, ads
-            layered on, and the shop scaled toward $200k months with a real crew, SEO first, ads
-            later.
+            John had burned through multiple agencies that never made ads work. We got Google
+            producing on a scuffed setup, stayed through the rebuild detours, then owned site, SEO,
+            ads, and hiring. Years later he’s still a client, with a much larger Des Moines crew and
+            high six-figure months.
           </p>
           <div class="stats">
             <div>
-              <div class="stat accent">$0 → $200k</div>
-              <div class="stat-label">monthly revenue</div>
+              <div class="stat accent">$60k → $220k+</div>
+              <div class="stat-label">avg monthly revenue</div>
             </div>
             <div>
-              <div class="stat">0 → 5</div>
-              <div class="stat-label">full-time staff</div>
+              <div class="stat">5 → 12</div>
+              <div class="stat-label">crew</div>
             </div>
             <div>
-              <div class="stat">6 mo</div>
-              <div class="stat-label">to serious scale</div>
+              <div class="stat">1.5 → 6</div>
+              <div class="stat-label">avg booked calls / day</div>
             </div>
           </div>
-          <div class="more">Read the Dry Duck story →</div>
+          <div class="more">Read the Rewired story →</div>
         </div>
       </a>
 
@@ -318,10 +318,6 @@ const jsonLd = graph([
     min-height: 300px;
     object-fit: cover;
     display: block;
-  }
-
-  :global(.feature-media.hanks) {
-    object-position: center 60%;
   }
 
   .feature-body {
@@ -483,6 +479,12 @@ const jsonLd = graph([
     :global(.feature-media) {
       min-height: 220px;
       max-height: 280px;
+    }
+
+    /* Stacked, the card is very wide and short. The Hank's photo has a deep grass
+       foreground, so bias the crop down or the crew's feet get clipped. */
+    :global(.feature-media.hanks) {
+      object-position: center 60%;
     }
 
     .feature-body {

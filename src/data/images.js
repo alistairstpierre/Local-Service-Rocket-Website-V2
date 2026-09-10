@@ -44,6 +44,10 @@ export const images = {
   'lewis-carter': { source: 'lewis-carter.png', widths: [96], fallback: 'jpg', flatten: true },
   'jason-hooked-up': { source: 'jason-hooked-up.png', widths: [96], fallback: 'jpg', flatten: true },
 
+  // Alistair's portrait on /about, shown at 96px. The original is only 200x200,
+  // so 200 is the ceiling here - swap in a larger source before rendering bigger.
+  'alistair-photo': { source: 'alistair-photo.jpg', widths: [200], fallback: 'jpg' },
+
   // Poster frame for the founder story facade. Self-hosted so the homepage makes
   // no third-party request until someone actually clicks play.
   'video-founder-story': { source: 'video-founder-story.jpg', widths: [640, 1280], fallback: 'jpg' },
