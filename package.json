@@ -9,6 +9,7 @@
     "weight": "node scripts/page-weight.mjs",
     "blog:publish-next": "node scripts/publish-next-blog.mjs",
     "blog:publish-dry": "node scripts/publish-next-blog.mjs --dry-run",
+    "blog:generate-trade-queue": "node scripts/generate-trade-queue-posts.mjs",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"

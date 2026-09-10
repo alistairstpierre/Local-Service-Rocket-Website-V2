@@ -112,7 +112,8 @@ Details: `blog-queue/README.md`.
 │   ├── optimize-images.mjs       # assets-src -> AVIF/WebP/fallback + image-sizes.json
 │   ├── optimize-svg.mjs          # Strips C2PA metadata, minifies public/assets SVGs
 │   ├── page-weight.mjs           # Reports first-load transfer weight of built pages
-│   └── publish-next-blog.mjs     # Moves next due queue post onto src/pages/blog/
+│   ├── publish-next-blog.mjs     # Moves next due queue post onto src/pages/blog/
+│   └── generate-trade-queue-posts.mjs  # Seeds trade-specific drafts into blog-queue/
 ├── public/
 │   ├── assets/                   # GENERATED images + trade/service SVGs (do not hand-edit)
 │   └── fonts/                    # Self-hosted Manrope variable woff2

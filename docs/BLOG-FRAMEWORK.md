@@ -100,11 +100,13 @@ studies — do not invent new numbers):
 | Done | Rewired: big-agency rebuild hurt ads | `/blog/rewired-big-agency-rebuild` | Rewired $60k→$220k+, dozen agencies |
 | Done | Hooked Up: LSA for electricians | `/blog/electrician-local-services-ads` | 1→4 counties, 100–200 leads/mo |
 | Done | Hiring: Facebook vs Indeed | `/blog/hiring-electricians-facebook-vs-indeed` | Indeed burn, ~10-day Meta sprint |
-| Queued 2026-09-14 | Honest Hank's: stack $500 wins | `blog-queue/posts/honest-hanks-stack-small-wins.astro` | ~$500 LSA first, $25k→$80k |
-| Queued 2026-09-21 | Orbit fees = risk cover | `blog-queue/posts/orbit-fees-risk-not-hours.astro` | ~$1.5k + 20% ad spend |
-| Queued 2026-09-28 | Max Conversions junk jobs | `blog-queue/posts/max-conversions-junk-jobs.astro` | Bid-strategy failure mode |
-| Queued 2026-10-05 | Review velocity vs count | `blog-queue/posts/review-velocity-beats-count.astro` | Dry Duck review pace |
-| Later | Trade spins | e.g. "LSA for plumbers" only when we have a plumber receipt | New evidence required |
+| Queued 2026-09-15 | Honest Hank's: stack $500 wins | `blog-queue/posts/honest-hanks-stack-small-wins.astro` | ~$500 LSA first, $25k→$80k |
+| Queued 2026-09-22 | Orbit fees = risk cover | `blog-queue/posts/orbit-fees-risk-not-hours.astro` | ~$1.5k + 20% ad spend |
+| Queued 2026-09-29 | Max Conversions junk jobs | `blog-queue/posts/max-conversions-junk-jobs.astro` | Bid-strategy failure mode |
+| Queued 2026-10-06 | Review velocity vs count | `blog-queue/posts/review-velocity-beats-count.astro` | Dry Duck review pace |
+| Queued 2026-10-13 → 2027-02-02 | 17 trade Google-marketing posts | `blog-queue/posts/*-google-marketing.astro` | Trade SEO titles + named case-study spine (no fake trade clients) |
+
+Regenerate trade queue drafts (idempotent skip if slug exists): `npm run blog:generate-trade-queue`.
 
 **Weekly shipping:** ready drafts live in `blog-queue/`. GitHub Action
 `.github/workflows/publish-blog.yml` runs `0 20 * * 0` UTC (Monday 08:00 NZ), commits
