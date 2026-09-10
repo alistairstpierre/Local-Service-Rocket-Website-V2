@@ -1,0 +1,45 @@
+{
+  "timezoneNote": "Cron is Sunday 20:00 UTC = Monday 08:00 Pacific/Auckland (NZST, UTC+12).",
+  "items": [
+    {
+      "slug": "honest-hanks-stack-small-wins",
+      "file": "honest-hanks-stack-small-wins.astro",
+      "title": "Honest Hank's: stack $500 electrician wins before the $10k package",
+      "dek": "Rewired referral, ~$500 LSA setup first, $25k to $80k months and a third van, without a bet-the-shop invoice.",
+      "date": "September 2026",
+      "publishAfter": "2026-09-14",
+      "status": "ready",
+      "seo": "electrician marketing cost / LSA setup for electricians"
+    },
+    {
+      "slug": "orbit-fees-risk-not-hours",
+      "file": "orbit-fees-risk-not-hours.astro",
+      "title": "Why marketing fees go up at $200k months (it's risk, not busywork)",
+      "dek": "Orbit is ~$1.5k/mo + 20% of ad spend so the calendar and the trucks don't collapse when budgets scale. Rewired's plateau made the point.",
+      "date": "September 2026",
+      "publishAfter": "2026-09-21",
+      "status": "ready",
+      "seo": "Google ads management cost home service"
+    },
+    {
+      "slug": "max-conversions-junk-jobs",
+      "file": "max-conversions-junk-jobs.astro",
+      "title": "Max Conversions is why your electrician ads book fan installs",
+      "dek": "Google's recommended bid strategy optimises for easy conversions, not profitable jobs. How multi-service trades get a calendar full of the wrong work.",
+      "date": "September 2026",
+      "publishAfter": "2026-09-28",
+      "status": "ready",
+      "seo": "Google Ads Max Conversions electrician"
+    },
+    {
+      "slug": "review-velocity-beats-count",
+      "file": "review-velocity-beats-count.astro",
+      "title": "Review velocity beats review count for local SEO",
+      "dek": "Dry Duck racked up reviews in weeks. A dusty pile of old five-stars loses to whoever earns more this week, including competitors like Thrasher's weekly pace.",
+      "date": "October 2026",
+      "publishAfter": "2026-10-05",
+      "status": "ready",
+      "seo": "Google reviews for local SEO trades"
+    }
+  ]
+}

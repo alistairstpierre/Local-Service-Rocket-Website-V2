@@ -55,6 +55,61 @@ other agencies.
 Avoid pure top-of-funnel ("what is SEO"). It ranks for people who will never hire us, and it's
 exactly the content AI answers for free.
 
+### Trade keywords — owners type their trade
+
+Home service owners almost never search "local SEO tips." They search
+**"electrician Google ads"**, **"plumber marketing company"**, **"HVAC Local Services Ads"**,
+**"how to hire roofers on Facebook"**. The trade word is part of the query. Our blog has to
+match that, or we lose to whoever put "electrician" in the title.
+
+**How the site is organised for this:**
+
+| Layer | What it is | Where it lives |
+| --- | --- | --- |
+| **Trade landing (rank + convert)** | Dedicated page per trade: offer, proof, FAQs, CTA | `/for/{trade}-marketing` from `src/data/trades.ts` |
+| **Pillar blog (receipt + lesson)** | One deep post with the real story/numbers, trade-named in the title when the receipt is a trade | `/blog/...` |
+| **Trade spin (when worth it)** | Same lesson, rewritten for a second trade with that trade's language + link back to the pillar and the `/for/` page | `/blog/...` |
+
+**Rules for trade-named content:**
+
+1. **Put the trade in the title, H1, or first paragraph** when the receipt belongs to that
+   trade. "GBP mistake that kills electrician leads" beats "GBP category mistakes." Owners
+   searching their trade will bounce from a generic H1.
+2. **Do not clone the same post eighteen times** with find-and-replace trade names. Thin
+   variants fail the Ship Test (no new receipt) and look like spam. Prefer one strong pillar
+   plus internal links into `/for/electrician-marketing`, `/for/plumber-marketing`, etc.
+3. **Spin a second trade post only when you have a real second receipt** — e.g. an LSA post
+   rooted in Hooked Up Electric, then later a plumber LSA story if we get one. Same framework,
+   different evidence.
+4. **Primary SEO targets look like:** `{trade} marketing`, `{trade} Google ads`,
+   `{trade} Local Services Ads`, `{trade} Google Business Profile`, `hire {trade}s Facebook`,
+   `{trade} SEO agency`. Document the intended primary phrase in the post file header comment.
+5. **Always cross-link** the blog post ↔ matching `/for/` landing ↔ relevant case study /
+   service page. The landing converts; the blog earns the citation and the long-tail.
+
+**Trades we already have landings for** (keep blog language in sync with these slugs):
+electrician, plumber, HVAC, roofing, waterproofing, garage door, pest control, locksmith,
+appliance repair, water damage, tree service, landscaping, towing, junk removal, pressure
+washing, septic, fencing, painting.
+
+**Queued pillar topics** (write next; each already has receipts in the Evidence Bank or case
+studies — do not invent new numbers):
+
+| Priority | Working title | Primary SEO angle | Receipt |
+| --- | --- | --- | --- |
+| Done | Rewired: big-agency rebuild hurt ads | `/blog/rewired-big-agency-rebuild` | Rewired $60k→$220k+, dozen agencies |
+| Done | Hooked Up: LSA for electricians | `/blog/electrician-local-services-ads` | 1→4 counties, 100–200 leads/mo |
+| Done | Hiring: Facebook vs Indeed | `/blog/hiring-electricians-facebook-vs-indeed` | Indeed burn, ~10-day Meta sprint |
+| Queued 2026-09-14 | Honest Hank's: stack $500 wins | `blog-queue/posts/honest-hanks-stack-small-wins.astro` | ~$500 LSA first, $25k→$80k |
+| Queued 2026-09-21 | Orbit fees = risk cover | `blog-queue/posts/orbit-fees-risk-not-hours.astro` | ~$1.5k + 20% ad spend |
+| Queued 2026-09-28 | Max Conversions junk jobs | `blog-queue/posts/max-conversions-junk-jobs.astro` | Bid-strategy failure mode |
+| Queued 2026-10-05 | Review velocity vs count | `blog-queue/posts/review-velocity-beats-count.astro` | Dry Duck review pace |
+| Later | Trade spins | e.g. "LSA for plumbers" only when we have a plumber receipt | New evidence required |
+
+**Weekly shipping:** ready drafts live in `blog-queue/`. Vercel Cron (`0 20 * * 0` UTC) hits
+`/api/cron/publish-blog`, which dispatches `.github/workflows/publish-blog.yml`. That runs
+`npm run blog:publish-next`, commits, and pushes — one post per week. See `blog-queue/README.md`.
+
 ### 2. Find the receipt before you write a word
 
 **No receipt, no post.** A receipt is a specific, verifiable, first-hand thing. Pull from the

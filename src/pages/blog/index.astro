@@ -1,47 +1,9 @@
 ---
-/* Blog index. Titles and deks must match the post they point at — deks lead with the
-   receipt (the real number or named client), per docs/BLOG-FRAMEWORK.md. */
+/* Blog index. Listing comes from src/data/blog-posts.js so the weekly
+   publish cron can prepend a card without editing this file by hand. */
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { blogPosts as posts } from '../../data/blog-posts.js';
 import { absoluteUrl, breadcrumbList, graph } from '../../data/schema';
-
-const posts = [
-  {
-    href: '/blog/bad-vs-good-agency',
-    title: 'What a bad home-service agency looks like (vs a good one)',
-    dek: 'Rewired went through a dozen agencies before us. Motha paid one for months while a single wrong setting kept them invisible. How to tell the difference before you sign.',
-    date: 'September 2026',
-  },
-  {
-    href: '/blog/realistic-marketing-expectations',
-    title: 'Realistic expectations for home-service marketing',
-    dek: 'Two months, eight months, three years — the real timelines from four accounts, plus the month-two cliff nobody warns you about.',
-    date: 'September 2026',
-  },
-  {
-    href: '/blog/good-google-marketing',
-    title: 'What good Google marketing looks like for trades',
-    dek: 'Profile, site, LSA, then Search. The spine that took Honest Hank’s from $25k to $80k months and Rewired to $220k+.',
-    date: 'September 2026',
-  },
-  {
-    href: '/blog/ai-websites-arent-slop',
-    title: 'AI websites aren’t automatically slop. Lazy briefs are.',
-    dek: 'Google can’t tell how your site was built. Dry Duck launched from a ~$500 AI-assisted brief and hit $200k months.',
-    date: 'September 2026',
-  },
-  {
-    href: '/blog/google-category-relevance',
-    title: 'The Google Business Profile mistake that silently kills electrician leads',
-    dek: 'Motha Electric’s category said “electrical installation service.” Changing one dropdown produced 1–3 calls a day within a week.',
-    date: 'May 2026',
-  },
-  {
-    href: '/blog/dry-duck-launch',
-    title: 'How Dry Duck went from a $500 brief to a $200k/month waterproofing company',
-    dek: 'Zero to roughly $200k months and five staff in six months, on SEO before ads — including the month-two collapse in the middle.',
-    date: 'April 2026',
-  },
-];
 
 const title = 'Home Service Marketing Notes and Lessons | Local Service Rocket';
 const description =

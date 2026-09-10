@@ -7,6 +7,8 @@
     "images": "node scripts/optimize-images.mjs && node scripts/optimize-svg.mjs",
     "svg": "node scripts/optimize-svg.mjs",
     "weight": "node scripts/page-weight.mjs",
+    "blog:publish-next": "node scripts/publish-next-blog.mjs",
+    "blog:publish-dry": "node scripts/publish-next-blog.mjs --dry-run",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"

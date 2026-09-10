@@ -1,0 +1,45 @@
+# Publish next queued blog post every week.
+# Triggered by Vercel Cron (api/cron/publish-blog.js) via workflow_dispatch,
+# and as a backup on the same schedule so a missed Vercel ping still ships.
+# Idempotent: if nothing is due, the script no-ops and exits 0.
+name: Publish next blog post
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Sunday 20:00 UTC = Monday 08:00 New Zealand (UTC+12)
+    - cron: '0 20 * * 0'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-blog
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Publish next ready post
+        run: node scripts/publish-next-blog.mjs
+
+      - name: Commit and push if the tree changed
+        run: |
+          if git diff --quiet && [ -z "$(git ls-files --others --exclude-standard)" ]; then
+            echo "No publishable post due — nothing to commit."
+            exit 0
+          fi
+          git config user.name "lsr-blog-bot"
+          git config user.email "blog-bot@localservicerocket.com"
+          git add src/pages/blog src/data/blog-posts.js blog-queue
+          git commit -m "Publish weekly blog post from queue"
+          git push

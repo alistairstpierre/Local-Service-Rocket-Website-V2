@@ -38,6 +38,25 @@ Manrope is self-hosted from `public/fonts/`, so no Google Fonts request is made.
 3. Build command: `npm run build` · Output: `dist`
 4. Deploy. No adapter needed — `output: 'static'` in `astro.config.mjs`.
 
+### Weekly blog cron
+
+One queued post ships each week (Sunday 20:00 UTC / Monday 08:00 NZ):
+
+1. In the Vercel project → Settings → Environment Variables, set:
+   - `CRON_SECRET` — long random string (Vercel sends it as `Authorization: Bearer …`)
+   - `BLOG_PUBLISH_GITHUB_TOKEN` — GitHub PAT with `actions:write` on this repo
+2. Confirm **Cron Jobs** shows `/api/cron/publish-blog` after the next production deploy
+   (`vercel.json`).
+3. Keep drafts in `blog-queue/posts/` with entries in `blog-queue/queue.json` (`status: ready`,
+   future `publishAfter`). Details: `blog-queue/README.md`.
+
+Manual test:
+
+```powershell
+npm run blog:publish-dry
+# After secrets are set, trigger the GitHub Action "Publish next blog post" from the Actions tab
+```
+
 ## Pages
 
 | Route | Notes |
@@ -60,6 +79,9 @@ Manrope is self-hosted from `public/fonts/`, so no Google Fonts request is made.
 | `/case-studies/dry-duck` | Dry Duck case study |
 | `/case-studies/hooked-up` | Hooked Up Electric case study |
 | `/blog` | Blog index |
+| `/blog/rewired-big-agency-rebuild` | Rewired big-agency rebuild story |
+| `/blog/electrician-local-services-ads` | Hooked Up / LSA for electricians |
+| `/blog/hiring-electricians-facebook-vs-indeed` | Facebook hiring vs Indeed |
 | `/blog/bad-vs-good-agency` | Bad vs good agencies |
 | `/blog/realistic-marketing-expectations` | Marketing expectations |
 | `/blog/good-google-marketing` | What good Google marketing looks like |
@@ -78,13 +100,23 @@ Manrope is self-hosted from `public/fonts/`, so no Google Fonts request is made.
 ├── content/
 │   ├── CONTENT-GAPS-AND-INTERVIEW.md  # Gaps checklist + dump prompts
 │   └── VSL-SCRIPT.md             # As-recorded transcript + timecoded graphics brief for the /get-started video
+├── blog-queue/                   # Weekly publish queue (ready drafts + queue.json)
+│   ├── README.md                 # How cron publishes one post/week
+│   ├── queue.json                 # Ordered schedule (publishAfter + status)
+│   └── posts/                    # .astro drafts waiting to go live
+├── api/
+│   └── cron/
+│       └── publish-blog.js       # Vercel Cron → GitHub Action dispatch
+├── .github/workflows/
+│   └── publish-blog.yml          # Runs scripts/publish-next-blog.mjs, commits, pushes
 ├── docs/
-│   ├── BLOG-FRAMEWORK.md         # Editorial standard for src/pages/blog + the Evidence Bank of real client numbers
+│   ├── BLOG-FRAMEWORK.md         # Editorial standard, Evidence Bank, trade-keyword SEO + topic queue
 │   └── SITE-STRUCTURE-AND-SEO-GUIDE.md  # Client home-service site SEO/IA playbook
 ├── scripts/
 │   ├── optimize-images.mjs       # assets-src -> AVIF/WebP/fallback + image-sizes.json
 │   ├── optimize-svg.mjs          # Strips C2PA metadata, minifies public/assets SVGs
-│   └── page-weight.mjs           # Reports first-load transfer weight of built pages
+│   ├── page-weight.mjs           # Reports first-load transfer weight of built pages
+│   └── publish-next-blog.mjs     # Moves next due queue post onto src/pages/blog/
 ├── public/
 │   ├── assets/                   # GENERATED images + trade/service SVGs (do not hand-edit)
 │   └── fonts/                    # Self-hosted Manrope variable woff2
@@ -96,6 +128,7 @@ Manrope is self-hosted from `public/fonts/`, so no Google Fonts request is made.
 │   │   ├── Nav.astro
 │   │   └── Picture.astro         # <picture> AVIF/WebP wrapper used for every raster
 │   ├── data/
+│   │   ├── blog-posts.js         # Blog hub cards (cron prepends here on publish)
 │   │   ├── images.js             # Image manifest (widths, formats) shared by script + Picture
 │   │   ├── image-sizes.json      # GENERATED intrinsic sizes, prevents layout shift
 │   │   ├── schema.ts             # Shared JSON-LD helpers (Part 5 of SEO guide)
@@ -121,9 +154,12 @@ Manrope is self-hosted from `public/fonts/`, so no Google Fonts request is made.
 │   │   │   ├── ai-websites-arent-slop.astro
 │   │   │   ├── bad-vs-good-agency.astro
 │   │   │   ├── dry-duck-launch.astro
+│   │   │   ├── electrician-local-services-ads.astro
 │   │   │   ├── good-google-marketing.astro
 │   │   │   ├── google-category-relevance.astro
-│   │   │   └── realistic-marketing-expectations.astro
+│   │   │   ├── hiring-electricians-facebook-vs-indeed.astro
+│   │   │   ├── realistic-marketing-expectations.astro
+│   │   │   └── rewired-big-agency-rebuild.astro
 │   │   ├── case-studies/
 │   │   │   ├── index.astro
 │   │   │   ├── dry-duck.astro
@@ -170,7 +206,7 @@ The site ships no third-party requests and ~2 kB of JavaScript. Keep it that way
 
 - **Agency site (this repo):** `BaseLayout` sets canonical, Open Graph, Twitter Card, `lang=en-US`, and `rel=sitemap`. Pages emit JSON-LD via `src/data/schema.ts` (Organization, WebSite, WebPage/Service/FAQ/Breadcrumb as relevant). Document titles and meta descriptions follow Part 7 length/keyword rules where adapted for a national agency (location omitted when scope is US-wide). H1s are kept reader-first; trade landings and services use keyword-led titles. Homepage is intentionally left as the brand entry.
 - **Client trade sites:** Follow `docs/SITE-STRUCTURE-AND-SEO-GUIDE.md` (one location, service/city pages, schema, Part 7 copy rules). Do not force that full client page map onto the LSR agency marketing site.
-- **Blog posts:** Follow `docs/BLOG-FRAMEWORK.md`. Every post must carry a *receipt* — a real client number, a named company, or a mistake we made — and score 7+ on the Ship Test before it goes live. Posts open with the answer in sentence one (BLUF), use question-shaped H2s, and pass a `faqs` array to `BlogLayout` so `FAQPage` schema and the FAQ block render. Keep `readTime` honest: measure it, don't guess. Any client figure used in a post must already exist on a case study page, and the Evidence Bank in the framework doc is the canonical list.
+- **Blog posts:** Follow `docs/BLOG-FRAMEWORK.md`. Every post must carry a *receipt* — a real client number, a named company, or a mistake we made — and score 7+ on the Ship Test before it goes live. Posts open with the answer in sentence one (BLUF), use question-shaped H2s, and pass a `faqs` array to `BlogLayout` so `FAQPage` schema and the FAQ block render. Keep `readTime` honest: measure it, don't guess. Any client figure used in a post must already exist on a case study page, and the Evidence Bank in the framework doc is the canonical list. Owners search with their **trade in the query** (`electrician Local Services Ads`, `hire electricians Facebook`) — put the trade in the title when the receipt belongs to that trade, cross-link `/for/{trade}-marketing`, and only write trade spins when you have a second real receipt (see the framework’s trade-keyword section).
 ## Design tokens (summary)
 
 - Font: Manrope (400–800), self-hosted variable woff2 from `public/fonts/`
