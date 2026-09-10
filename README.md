@@ -16,6 +16,21 @@ npm run build
 npm run preview
 ```
 
+### Images and fonts
+
+Raster originals live in `assets-src/` (never deployed). `public/assets/` holds only
+generated output, so **do not edit files in `public/assets/` by hand**.
+
+```powershell
+npm run images    # regenerate AVIF + WebP + fallbacks, then minify SVGs
+npm run weight    # after a build: report real first-load transfer weight
+```
+
+To add an image: drop the original in `assets-src/`, add an entry to
+`src/data/images.js` (source file, the widths it renders at, fallback format),
+run `npm run images`, then use it with `<Picture name="your-key" alt="..." />`.
+Manrope is self-hosted from `public/fonts/`, so no Google Fonts request is made.
+
 ## Deploy to Vercel
 
 1. Push this repo to GitHub (or import the folder in the Vercel dashboard).
@@ -25,54 +40,148 @@ npm run preview
 
 ## Pages
 
-| Route | Source design |
+| Route | Notes |
 | --- | --- |
 | `/` | Homepage + Hero Section |
+| `/about` | Alistair + agency story (from brain dumps) |
+| `/flight-plan` | The System: Pre-flight / Liftoff / Orbit stages |
 | `/get-started` | Get Started funnel |
 | `/services` | Services overview |
+| `/services/local-seo` | Local SEO & Reviews |
 | `/services/paid-ads` | Paid Ads & LSAs |
+| `/services/websites` | Websites That Convert |
+| `/services/hiring` | Hiring & Recruiting |
+| `/services/branding` | Branding |
+| `/services/tracking` | Tracking & Reporting |
+| `/for/electrician-marketing` (etc.) | Trade SEO/ad landings for each Who We Help trade |
+| `/case-studies` | Case studies hub: three ways in (Rewired / Honest Hank's / Dry Duck) |
 | `/case-studies/rewired` | Rewired case study |
+| `/case-studies/honest-hanks` | Honest Hank's case study |
+| `/case-studies/dry-duck` | Dry Duck case study |
+| `/case-studies/hooked-up` | Hooked Up Electric case study |
+| `/blog` | Blog index |
+| `/blog/bad-vs-good-agency` | Bad vs good agencies |
+| `/blog/realistic-marketing-expectations` | Marketing expectations |
+| `/blog/good-google-marketing` | What good Google marketing looks like |
+| `/blog/ai-websites-arent-slop` | AI website myths |
+| `/blog/google-category-relevance` | GBP category lesson |
+| `/blog/dry-duck-launch` | Dry Duck launch story |
+| `/privacy` | Privacy Policy |
+| `/terms` | Terms of Service |
 
 ## Project structure
 
 ```
-├── Claude Design Files/     # Design handoff (reference only — not shipped)
+├── Claude Design Files/          # Design handoff (reference only)
+├── Found By Friday Brain Dumps/  # Source transcripts for content
+├── assets-src/                   # Raster ORIGINALS (not deployed) - input to npm run images
+├── content/
+│   ├── CONTENT-GAPS-AND-INTERVIEW.md  # Gaps checklist + dump prompts
+│   └── VSL-SCRIPT.md             # As-recorded transcript + timecoded graphics brief for the /get-started video
+├── docs/
+│   └── SITE-STRUCTURE-AND-SEO-GUIDE.md  # Client home-service site SEO/IA playbook
+├── scripts/
+│   ├── optimize-images.mjs       # assets-src -> AVIF/WebP/fallback + image-sizes.json
+│   ├── optimize-svg.mjs          # Strips C2PA metadata, minifies public/assets SVGs
+│   └── page-weight.mjs           # Reports first-load transfer weight of built pages
 ├── public/
-│   └── assets/              # Logos, icons, photos, trade SVGs
+│   ├── assets/                   # GENERATED images + trade/service SVGs (do not hand-edit)
+│   └── fonts/                    # Self-hosted Manrope variable woff2
 ├── src/
 │   ├── components/
-│   │   ├── Footer.astro     # Shared site footer
-│   │   ├── Hero.astro       # Homepage hero + client carousel
-│   │   ├── Logo.astro       # LSR logo mark SVG
-│   │   └── Nav.astro        # Sticky header / nav
+│   │   ├── Footer.astro
+│   │   ├── Hero.astro
+│   │   ├── Logo.astro
+│   │   ├── Nav.astro
+│   │   └── Picture.astro         # <picture> AVIF/WebP wrapper used for every raster
+│   ├── data/
+│   │   ├── images.js             # Image manifest (widths, formats) shared by script + Picture
+│   │   ├── image-sizes.json      # GENERATED intrinsic sizes, prevents layout shift
+│   │   ├── schema.ts             # Shared JSON-LD helpers (Part 5 of SEO guide)
+│   │   └── trades.ts             # Who We Help trade landing copy + slugs
 │   ├── layouts/
-│   │   └── BaseLayout.astro # HTML shell, fonts, global CSS
+│   │   ├── BaseLayout.astro      # Shell + canonical/OG/Twitter (+ optional JSON-LD)
+│   │   ├── BlogLayout.astro      # Blog article shell
+│   │   ├── CaseStudyLayout.astro # Shared client story template
+│   │   ├── LegalLayout.astro
+│   │   ├── ServiceLayout.astro   # Shared service detail template
+│   │   └── TradeLayout.astro     # /for/[slug] SEO/ad landings (guide service order)
 │   ├── pages/
-│   │   ├── index.astro      # Homepage
+│   │   ├── index.astro
+│   │   ├── about.astro
+│   │   ├── flight-plan.astro     # Stage layout w/ tilted photo cards (design: The Flight Plan.dc.html)
 │   │   ├── get-started.astro
+│   │   ├── privacy.astro
+│   │   ├── terms.astro
+│   │   ├── for/
+│   │   │   └── [slug].astro      # Trade landings (electrician-marketing, etc.)
+│   │   ├── blog/
+│   │   │   ├── index.astro
+│   │   │   ├── ai-websites-arent-slop.astro
+│   │   │   ├── bad-vs-good-agency.astro
+│   │   │   ├── dry-duck-launch.astro
+│   │   │   ├── good-google-marketing.astro
+│   │   │   ├── google-category-relevance.astro
+│   │   │   └── realistic-marketing-expectations.astro
 │   │   ├── case-studies/
+│   │   │   ├── index.astro
+│   │   │   ├── dry-duck.astro
+│   │   │   ├── hooked-up.astro
+│   │   │   ├── honest-hanks.astro
 │   │   │   └── rewired.astro
 │   │   └── services/
 │   │       ├── index.astro
-│   │       └── paid-ads.astro
+│   │       ├── branding.astro
+│   │       ├── hiring.astro
+│   │       ├── local-seo.astro
+│   │       ├── paid-ads.astro
+│   │       ├── tracking.astro
+│   │       └── websites.astro
 │   └── styles/
-│       └── global.css       # Design tokens + base styles
-├── astro.config.mjs
+│       └── global.css
+├── astro.config.mjs              # static + sitemap + prefetch + inlined CSS
+├── vercel.json                   # Cache-Control for /fonts, /_astro, /assets
 ├── package.json
 └── tsconfig.json
 ```
 
+## Performance
+
+The site ships no third-party requests and ~2 kB of JavaScript. Keep it that way:
+
+- **Images** always go through `<Picture>` (AVIF → WebP → JPG/PNG fallback, intrinsic
+  width/height, `loading="lazy"` by default). Only the LCP image on a page should get
+  `loading="eager" fetchpriority="high"`.
+- **Fonts** are one self-hosted variable woff2 (24 kB, weights 400–800), preloaded in
+  `BaseLayout` with `font-display: swap`.
+- **CSS** is inlined per page (`build.inlineStylesheets: 'always'`) so nothing blocks
+  render; `prefetch` on hover makes internal navigation feel instant.
+- **Scoped styles gotcha:** `<Picture>` renders its `<img>` from a child component, so
+  parent rules must use `:global()` (e.g. `.cs-media :global(img)`) or they will not match.
+- **Video is always click-to-play.** Never ship a YouTube or Loom `<iframe>` in the initial
+  HTML — it would undo the zero-third-party-request rule on its own. Both players
+  (`.why-video-facade` on `/`, `.vsl-facade` on `/get-started`) render a styled button and
+  inject the iframe on click. The injected iframe needs **inline** styles: Astro's scoped CSS
+  can't reach an element created at runtime, and it will otherwise default to 300x150.
+- Run `npm run weight` after a build to check a page has not regressed.
+
+## SEO notes
+
+- **Agency site (this repo):** `BaseLayout` sets canonical, Open Graph, Twitter Card, `lang=en-US`, and `rel=sitemap`. Pages emit JSON-LD via `src/data/schema.ts` (Organization, WebSite, WebPage/Service/FAQ/Breadcrumb as relevant). Document titles and meta descriptions follow Part 7 length/keyword rules where adapted for a national agency (location omitted when scope is US-wide). H1s are kept reader-first; trade landings and services use keyword-led titles. Homepage is intentionally left as the brand entry.
+- **Client trade sites:** Follow `docs/SITE-STRUCTURE-AND-SEO-GUIDE.md` (one location, service/city pages, schema, Part 7 copy rules). Do not force that full client page map onto the LSR agency marketing site.
 ## Design tokens (summary)
 
-- Font: Manrope (400–800)
-- Accent: `#e8590c` · Dark panels: `#1b1d23` · Max width: 1160px
+- Font: Manrope (400–800), self-hosted variable woff2 from `public/fonts/`
+- Accent: `#e8590c` · Dark panels: `#1b1d23` · Page shell max width: **1280px** (`--max`, `.container`) — same on every page as the homepage
+- Long-form reading uses `.measure` (orange spine + hatch rail) so copy can stay narrower without shrinking the page shell; `--prose` / `--prose-wide` are only for that rail, never for whole-page containers
+- Soft section bands: `.band` / `.band-tight`
 - Booking CTA: `https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg9d1R`
 
 ## Still placeholders / later
 
+See `content/CONTENT-GAPS-AND-INTERVIEW.md` for the full checklist and interview prompts.
+
 - Loom video on `/get-started`
 - Rewired “Where they started” copy
 - Case studies: Honest Hank's, Dry Duck, others
-- Service detail pages: Local SEO, Websites, Hiring, Branding, Tracking
-- Privacy policy / terms (footer)
 - Hooked Up Electric team photo

@@ -1,0 +1,206 @@
+---
+/* Blog article layout. Full --max container; body in .measure rail.
+   Part 7: keep H1 as `title`; optional `seoTitle` for the document title (60–90 with brand).
+   JSON-LD: BlogPosting + Breadcrumb. Intro service links belong in each post body (guide §14). */
+import BaseLayout from './BaseLayout.astro';
+import {
+  absoluteUrl,
+  breadcrumbList,
+  graph,
+  webPageNode,
+} from '../data/schema';
+
+interface Props {
+  title: string;
+  /** Document title segment before brand; defaults to title */
+  seoTitle?: string;
+  description: string;
+  date: string;
+  readTime: string;
+  /** ISO date for Article schema when known */
+  datePublished?: string;
+}
+
+const { title, seoTitle, description, date, readTime, datePublished } = Astro.props;
+const docTitle = `${seoTitle ?? title} | Local Service Rocket`;
+const pageUrl = absoluteUrl(Astro.url.pathname);
+
+const jsonLd = graph([
+  {
+    '@type': 'BlogPosting',
+    '@id': `${pageUrl}#article`,
+    headline: title,
+    description,
+    datePublished: datePublished ?? undefined,
+    inLanguage: 'en-US',
+    author: {
+      '@type': 'Person',
+      name: 'Alistair St Pierre',
+      worksFor: { '@id': 'https://localservicerocket.com/#business' },
+    },
+    publisher: { '@id': 'https://localservicerocket.com/#business' },
+    mainEntityOfPage: { '@id': `${pageUrl}#webpage` },
+    isPartOf: { '@id': 'https://localservicerocket.com/#website' },
+  },
+  webPageNode({
+    pageUrl,
+    name: docTitle,
+    description,
+    mainEntityId: `${pageUrl}#article`,
+  }),
+  breadcrumbList(pageUrl, [
+    { name: 'Home', path: '/' },
+    { name: 'Blog', path: '/blog' },
+    { name: title, path: Astro.url.pathname },
+  ]),
+]);
+---
+
+<BaseLayout title={docTitle} description={description} jsonLd={jsonLd}>
+  <main class="post">
+    <div class="container">
+      <div class="crumbs">
+        <a href="/">Home</a>
+        <span>/</span>
+        <a href="/blog">Blog</a>
+        <span>/</span>
+        <span class="current">{title}</span>
+      </div>
+      <div class="meta">{date} · {readTime} read</div>
+      <h1>{title}</h1>
+      <p class="dek">{description}</p>
+    </div>
+
+    <div class="body-band band">
+      <div class="container">
+        <div class="measure">
+          <div class="measure__spine" aria-hidden="true"></div>
+          <div class="measure__copy body">
+            <slot />
+          </div>
+          <div class="measure__rail" aria-hidden="true"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="post-cta">
+        <h2>Want this done for your trade business?</h2>
+        <p>See how Local Service Rocket works, then book onboarding. No sales calls.</p>
+        <div class="cta-row">
+          <a href="/get-started" class="btn btn-primary">Schedule onboarding</a>
+          <a href="/case-studies" class="btn btn-secondary">See client results</a>
+        </div>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .post {
+    padding: 56px 0 72px;
+  }
+
+  .crumbs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--muted-3);
+    flex-wrap: wrap;
+  }
+
+  .crumbs a {
+    color: var(--muted-3);
+  }
+
+  .current {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .meta {
+    margin-top: 22px;
+    font-size: 13px;
+    color: var(--muted-2);
+    font-weight: 600;
+  }
+
+  h1 {
+    margin-top: 14px;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    text-wrap: balance;
+    max-width: 18ch;
+  }
+
+  .dek {
+    margin-top: 14px;
+    font-size: 16.5px;
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 52ch;
+  }
+
+  .body-band {
+    margin-top: 36px;
+  }
+
+  .body :global(h2) {
+    margin-top: 32px;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .body :global(h2:first-child) {
+    margin-top: 0;
+  }
+
+  .body :global(p),
+  .body :global(li) {
+    margin-top: 12px;
+    font-size: 15.5px;
+    line-height: 1.7;
+    color: var(--body);
+  }
+
+  .body :global(ul) {
+    margin: 12px 0 0;
+    padding-left: 1.2em;
+  }
+
+  .body :global(a) {
+    font-weight: 600;
+  }
+
+  .post-cta {
+    margin-top: 48px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-panel);
+    padding: 32px;
+    text-align: center;
+    background: var(--section-bg);
+  }
+
+  .post-cta h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 800;
+  }
+
+  .post-cta p {
+    margin-top: 8px;
+    color: var(--muted);
+  }
+
+  .cta-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+</style>

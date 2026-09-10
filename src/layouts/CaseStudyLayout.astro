@@ -1,0 +1,556 @@
+---
+/* Shared case study layout, hero, stats, story sections, quote, CTA.
+   Used by Rewired, Honest Hank's, Dry Duck, and Hooked Up.
+   JSON-LD: WebPage + Breadcrumb (Article-like About page for the client story). */
+import BaseLayout from './BaseLayout.astro';
+import Picture from '../components/Picture.astro';
+import { imagePath } from '../data/images.js';
+import {
+  absoluteUrl,
+  breadcrumbList,
+  graph,
+  schemaImageObject,
+  webPageNode,
+} from '../data/schema';
+
+interface Stat {
+  value: string;
+  label: string;
+  accent?: boolean;
+}
+
+interface Step {
+  title: string;
+  body: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  crumb: string;
+  /** Keys in src/data/images.js, not file paths. */
+  logo: string;
+  brandName: string;
+  brandMeta: string;
+  headline: string;
+  intro: string;
+  teamImg: string;
+  teamAlt: string;
+  teamObjectPosition?: string;
+  stats: Stat[];
+  startedEyebrow?: string;
+  startedHeadline: string;
+  didHeadline?: string;
+  steps: Step[];
+  quote?: string;
+  quoteName?: string;
+  quoteMeta?: string;
+  quoteImg?: string;
+  quoteVideo?: string;
+  quoteVideoLabel?: string;
+  ctaHeadline: string;
+}
+
+const {
+  title,
+  description,
+  crumb,
+  logo,
+  brandName,
+  brandMeta,
+  headline,
+  intro,
+  teamImg,
+  teamAlt,
+  teamObjectPosition,
+  stats,
+  startedEyebrow = 'WHERE THEY STARTED',
+  startedHeadline,
+  didHeadline = 'What we did',
+  steps,
+  quote,
+  quoteName,
+  quoteMeta,
+  quoteImg,
+  quoteVideo,
+  quoteVideoLabel = 'Watch the video',
+  ctaHeadline,
+} = Astro.props;
+
+const pageUrl = absoluteUrl(Astro.url.pathname);
+const teamAbs = absoluteUrl(imagePath(teamImg));
+
+const jsonLd = graph([
+  webPageNode({
+    pageUrl,
+    name: title,
+    description,
+    primaryImageUrl: teamAbs,
+  }),
+  {
+    '@type': 'Article',
+    '@id': `${pageUrl}#article`,
+    headline,
+    description,
+    image: schemaImageObject(teamAbs, { id: `${pageUrl}#primary-image` }),
+    author: {
+      '@type': 'Person',
+      name: 'Alistair St Pierre',
+      worksFor: { '@id': 'https://localservicerocket.com/#business' },
+    },
+    publisher: { '@id': 'https://localservicerocket.com/#business' },
+    about: brandName,
+    mainEntityOfPage: { '@id': `${pageUrl}#webpage` },
+  },
+  breadcrumbList(pageUrl, [
+    { name: 'Home', path: '/' },
+    { name: 'Case Studies', path: '/case-studies' },
+    { name: crumb, path: Astro.url.pathname },
+  ]),
+]);
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <main>
+    <div class="top container">
+      <div class="top-grid">
+        <div>
+          <div class="crumbs">
+            <a href="/">Home</a>
+            <span>/</span>
+            <a href="/case-studies">Case studies</a>
+            <span>/</span>
+            <span class="current">{crumb}</span>
+          </div>
+          <div class="brand-row">
+            <Picture name={logo} alt={brandName} class="brand-logo" height={44} loading="eager" />
+            <div>
+              <div class="brand-name">{brandName}</div>
+              <div class="brand-meta">{brandMeta}</div>
+            </div>
+          </div>
+          <h1>{headline}</h1>
+          <p>{intro}</p>
+        </div>
+        <Picture
+          name={teamImg}
+          alt={teamAlt}
+          class="team-photo"
+          sizes="(max-width: 900px) 100vw, 620px"
+          loading="eager"
+          fetchpriority="high"
+          style={teamObjectPosition ? `object-position:${teamObjectPosition}` : undefined}
+        />
+      </div>
+
+      <div class="stats">
+        {
+          stats.map((s) => (
+            <div class="stat">
+              <div class:list={['stat-num', { orange: s.accent }]}>{s.value}</div>
+              <div class="stat-label">{s.label}</div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="story band">
+      <div class="container">
+        <div class="measure measure-wide">
+          <div class="measure__spine" aria-hidden="true"></div>
+          <div class="measure__copy">
+            <div class="eyebrow">{startedEyebrow}</div>
+            <h2>{startedHeadline}</h2>
+            <div class="story-body">
+              <slot name="started" />
+            </div>
+
+            <div class="eyebrow spaced">WHAT WE DID</div>
+            <h2>{didHeadline}</h2>
+            <div class="steps">
+              {
+                steps.map((step, i) => (
+                  <div class="step">
+                    <div class="num">{i + 1}</div>
+                    <div>
+                      <div class="step-title">{step.title}</div>
+                      <div class="step-body">{step.body}</div>
+                    </div>
+                  </div>
+                ))
+              }
+            </div>
+
+            <div class="story-extra">
+              <slot />
+            </div>
+          </div>
+          <div class="measure__rail" aria-hidden="true"></div>
+        </div>
+      </div>
+    </div>
+
+    {
+      quote && quoteName && quoteImg && (
+        <div class="quote-wrap container">
+          <div class="quote">
+            <div class="stars">★★★★★</div>
+            <p>“{quote}”</p>
+            <div class="quote-footer">
+              <div class="author">
+                <Picture name={quoteImg} alt={quoteName} width={36} height={36} />
+                <div>
+                  <div class="author-name">{quoteName}</div>
+                  {quoteMeta && <div class="author-meta">{quoteMeta}</div>}
+                </div>
+              </div>
+              {quoteVideo && (
+                <a href={quoteVideo} target="_blank" rel="noopener" class="watch">
+                  <span class="play">▶</span>
+                  {quoteVideoLabel}
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    <div class="bottom container">
+      <div class="bottom-panel">
+        <h2>{ctaHeadline}</h2>
+        <p>
+          See exactly how it works and what it costs, then book your onboarding call. No sales calls.
+        </p>
+        <div class="bottom-ctas">
+          <a href="/get-started" class="btn btn-primary">Schedule onboarding</a>
+          <a href="/case-studies" class="btn btn-ghost-dark">See client results</a>
+        </div>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .top {
+    padding-top: 56px;
+  }
+
+  .top-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+
+  .crumbs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--muted-3);
+    flex-wrap: wrap;
+  }
+
+  .crumbs a {
+    color: var(--muted-3);
+  }
+
+  .current {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .brand-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 22px;
+  }
+
+  /* :global() because <Picture> renders these images from a child component. */
+  :global(.brand-logo) {
+    height: 52px;
+    width: auto;
+  }
+
+  .brand-name {
+    font-weight: 800;
+    font-size: 18px;
+  }
+
+  .brand-meta {
+    font-size: 13px;
+    color: var(--muted-3);
+  }
+
+  h1 {
+    margin-top: 20px;
+    font-size: clamp(28px, 4vw, 46px);
+    line-height: 1.08;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+
+  .top-grid > div > p {
+    margin-top: 16px;
+    font-size: 16.5px;
+    line-height: 1.6;
+    color: var(--muted);
+    text-wrap: pretty;
+  }
+
+  :global(.team-photo) {
+    width: 100%;
+    border-radius: var(--radius-panel);
+    border: 1px solid var(--border);
+    display: block;
+    object-fit: cover;
+    max-height: 360px;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-top: 36px;
+  }
+
+  .stat {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 18px 20px;
+  }
+
+  .stat-num {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .stat-num.orange {
+    color: var(--orange);
+  }
+
+  .stat-label {
+    font-size: 12.5px;
+    color: var(--muted-2);
+    margin-top: 3px;
+  }
+
+  .story {
+    margin-top: 64px;
+  }
+
+  .story h2 {
+    margin-top: 10px;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .story-body :global(p),
+  .story-extra :global(p) {
+    margin-top: 12px;
+    font-size: 15.5px;
+    line-height: 1.7;
+    color: var(--body);
+    text-wrap: pretty;
+  }
+
+  .story-extra:empty {
+    display: none;
+  }
+
+  .story-extra:not(:empty) {
+    margin-top: 36px;
+  }
+
+  .story-extra :global(h2) {
+    margin-top: 28px;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .eyebrow.spaced {
+    margin-top: 40px;
+  }
+
+  .steps {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 18px;
+  }
+
+  .step {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 16px 20px;
+    display: flex;
+    gap: 14px;
+  }
+
+  .num {
+    width: 28px;
+    height: 28px;
+    border-radius: 99px;
+    background: var(--orange);
+    color: #fff;
+    font-weight: 800;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+
+  .step-title {
+    font-weight: 800;
+    font-size: 15px;
+  }
+
+  .step-body {
+    font-size: 14px;
+    color: var(--muted);
+    margin-top: 3px;
+    line-height: 1.6;
+  }
+
+  .quote-wrap {
+    margin-top: 56px;
+  }
+
+  .quote {
+    background: var(--dark);
+    border-radius: var(--radius-panel);
+    padding: 36px 40px;
+    color: var(--dark-text);
+  }
+
+  .stars {
+    color: var(--orange-on-dark);
+    font-size: 15px;
+    letter-spacing: 2px;
+  }
+
+  .quote p {
+    margin-top: 14px;
+    font-size: 20px;
+    line-height: 1.55;
+    font-weight: 600;
+    text-wrap: pretty;
+    max-width: 52ch;
+  }
+
+  .quote-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 18px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .author {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .author :global(img) {
+    width: 36px;
+    height: 36px;
+    border-radius: 99px;
+    object-fit: cover;
+  }
+
+  .author-name {
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .author-meta {
+    font-size: 12px;
+    color: var(--dark-muted);
+  }
+
+  .watch {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    color: var(--orange-on-dark);
+    font-weight: 700;
+  }
+
+  .play {
+    width: 20px;
+    height: 20px;
+    border-radius: 99px;
+    background: var(--orange);
+    color: #fff;
+    font-size: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .bottom {
+    margin-top: 56px;
+    padding-bottom: 72px;
+  }
+
+  .bottom-panel {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-panel);
+    padding: 40px 48px;
+    text-align: center;
+    background:
+      linear-gradient(90deg, rgba(232, 89, 12, 0.08), transparent 28%),
+      var(--section-bg);
+  }
+
+  .bottom h2 {
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .bottom-panel > p {
+    margin: 10px auto 0;
+    font-size: 15px;
+    color: var(--muted);
+    max-width: 52ch;
+  }
+
+  .bottom-ctas {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 22px;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 900px) {
+    .top-grid,
+    .stats,
+    .steps {
+      grid-template-columns: 1fr;
+    }
+
+    .bottom-panel {
+      padding: 28px 22px;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .stats {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

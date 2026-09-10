@@ -1,77 +1,431 @@
 ---
-/* Get Started funnel page — video placeholder + 3 steps + pricing transparency.
-   Primary conversion path from homepage CTAs. Design: Get Started.dc.html */
+/* Get Started funnel page and primary conversion path from every CTA on the site.
+   Structure mirrors the VSL beat for beat (content/VSL-SCRIPT.md is the source of
+   truth for the wording): click-to-play video -> big booking CTA -> 3 steps ->
+   fit / anti-fit -> what to expect -> pricing -> objections -> exits for people
+   who aren't ready. Keep this page and the video saying the same thing.
+   Design origin: Get Started.dc.html */
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Picture from '../components/Picture.astro';
+import {
+  absoluteUrl,
+  breadcrumbList,
+  faqPageNode,
+  graph,
+  webPageNode,
+} from '../data/schema';
 
 const BOOKING = 'https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg9d1R';
+
+/* Pricing tiers mirror the three Flight Plan stages, so /flight-plan and this page
+   have to move together. `band` is the monthly revenue a company is doing when that
+   tier fits, not what the tier promises. */
+const tiers = [
+  {
+    step: '1',
+    name: 'Pre-flight',
+    band: '$20-25K MONTHS',
+    price: 'from $500',
+    unit: '/mo',
+    sub: 'SEO / GBP / consulting',
+    featured: false,
+    rows: [
+      { label: 'Website build (if needed)', value: '~$2k' },
+      { label: 'LSA setup', value: '$500' },
+      { label: 'Per booked call we QA', value: '~$25' },
+    ],
+  },
+  {
+    step: '2',
+    name: 'Liftoff',
+    band: '$40-50K MONTHS',
+    price: '~$1.5k',
+    unit: '/mo',
+    sub: 'SEO and ad management, together',
+    featured: true,
+    rows: [
+      { label: 'Deeper SEO and Google Search', value: 'included' },
+      { label: 'Branding — logo, colors, truck, cards, shirts', value: '~$3k' },
+      { label: 'Search ad spend to start', value: '~$50/day' },
+      { label: 'Traffic you own, not rented', value: 'the goal' },
+    ],
+  },
+  {
+    step: '3',
+    name: 'Orbit',
+    band: '$100-200K MONTHS',
+    price: '~$1.5k',
+    unit: '/mo + 20% of ad spend',
+    sub: 'scaled Search, hiring, managed risk',
+    featured: false,
+    rows: [
+      { label: 'Hiring sprint setup', value: '~$500' },
+      { label: 'Hiring sprint while live', value: '~$500/mo' },
+      { label: 'Hiring ads, roughly 10 days', value: '~$30-50/day' },
+      { label: 'Risk cover as budgets scale', value: 'built in' },
+    ],
+  },
+];
+
+const title = 'Schedule Onboarding With No Sales Calls | Local Service Rocket';
+const description =
+  'See exactly how Local Service Rocket works for home service companies, then book your onboarding call online. No sales calls. Starts around $500/month.';
+const pageUrl = absoluteUrl('/get-started/');
+
+const faqs = [
+  {
+    q: 'I’ve hired agencies before and got burned. Why trust you?',
+    a: 'Look up the companies we name, they’re active and doing well today. Multiple home-service examples beat a single hero case study. Scalable fees mean we’re incentivized to get you to Orbit, not extract a giant setup and disappear.',
+  },
+  {
+    q: 'I don’t want to start today.',
+    a: 'Foundations take time; meaningful movement is often on a ~two-month clock. If you’re not ready for a serious multi-year partnership, we’re not the right fit.',
+  },
+  {
+    q: 'I’ll only pay on results.',
+    a: 'This is a partnership: we already price below typical big-agency day-one fees because we trust you’ll sell and run the company. Pure pay-on-results without CRM access / equity isn’t how we work. LSA is already pay-per-booked-call on that lane.',
+  },
+  {
+    q: 'We tried Google / Facebook and it doesn’t work.',
+    a: 'It’s a skill game. Wrong category, weak site, or lazy accounts kill results, not “Google is dead.” For search-intent trades, Google is still the spine.',
+  },
+  {
+    q: 'Do I get Alistair, or someone else?',
+    a: 'You get one expert who owns your account start to finish, either Alistair or one of our specialists depending on what your company needs. We call it the surgeon model: the person who diagnoses you is the person who does the work. No account manager, no handoff, no junior learning on your budget.',
+  },
+  {
+    q: 'What do you do differently?',
+    a: 'One expert accountable for the result rather than a task list, fees that scale with you, Google as a system (profile + site + ads), and booked jobs over lead theater.',
+  },
+  {
+    q: 'Am I locked into a contract?',
+    a: 'No. Every engagement is month to month and we have never locked a client into a term. Fees start low and only step up as results do. People stay for years because it is working, not because they signed something.',
+  },
+];
+
+const jsonLd = graph([
+  webPageNode({ pageUrl, name: title, description }),
+  faqPageNode(pageUrl, faqs),
+  breadcrumbList(pageUrl, [
+    { name: 'Home', path: '/' },
+    { name: 'Get Started', path: '/get-started' },
+  ]),
+]);
 ---
 
-<BaseLayout
-  title="Get Started — Local Service Rocket"
-  description="See exactly how Local Service Rocket works, then book your onboarding call. No sales calls. Starts at $500/month."
-  nav="simple"
-  showFooter={false}
->
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
   <main>
     <div class="intro container">
-      <div class="badge">NO SALES CALLS. EVER.</div>
+      <div class="badge">OWN GOOGLE IN YOUR SERVICE AREA</div>
       <h1>See exactly how it works, then book your onboarding call.</h1>
-      <p>
-        This video walks you through what we do, what it costs, and what your first month looks
-        like. If it makes sense for your business, your next call is onboarding — not a pitch.
-      </p>
     </div>
 
     <div class="video-wrap container">
-      <div class="video-placeholder">
-        <div class="play">▶</div>
-        <div class="placeholder-note">
-          [PLACEHOLDER: Loom walkthrough video — send me the link]
-        </div>
+      <div class="vsl" id="vsl">
+        <button
+          type="button"
+          class="vsl-facade"
+          aria-label="Play the walkthrough video, 6 minutes 15 seconds"
+          data-loom-id="ee9863bff0864f5fa22d4073e1230beb"
+        >
+          <span class="vsl-play" aria-hidden="true">▶</span>
+          <span class="vsl-label">Watch the walkthrough</span>
+          <span class="vsl-meta">6:15 · the whole pitch, then you decide</span>
+        </button>
       </div>
+    </div>
+
+    <div class="vsl-cta container">
+      <a href={BOOKING} class="btn btn-primary">Schedule my onboarding call</a>
+      <p class="vsl-cta-note">
+        <strong>This is not a sales call.</strong> If you book it, come ready to start and we’ll come
+        ready to diagnose. Watched it and you’re not there yet? That’s fine —
+        <a href="#not-ready">here’s what to do instead</a>.
+      </p>
     </div>
 
     <div class="steps container">
       <div class="step">
         <div class="num">1</div>
-        <div class="title">Watch the video</div>
-        <p>Everything upfront: our system, our pricing, our expectations of you.</p>
+        <div class="title">Watch the six minutes</div>
+        <p>
+          The system, the pricing, and what we expect from you. No brochure version, and no
+          discovery call to find out.
+        </p>
       </div>
       <div class="step">
         <div class="num">2</div>
         <div class="title">Book your onboarding call</div>
-        <p>Not a sales call. We map your market, your goals, and your first 90 days.</p>
+        <p>
+          A diagnosis, not a pitch. One expert goes through your Google presence and finds the
+          single biggest thing standing in the way.
+        </p>
       </div>
       <div class="step">
         <div class="num">3</div>
-        <div class="title">We get to work</div>
-        <p>Foundations first. We prove results before we ever scale your costs.</p>
+        <div class="title">Start with that one step</div>
+        <p>
+          Not a twelve-thousand-dollar package on day one. We fix the biggest bottleneck first, and
+          fees only step up as results do.
+        </p>
       </div>
     </div>
 
-    <div class="pricing container">
-      <div class="pricing-card">
-        <div>
-          <div class="pricing-title">Know the number before you book.</div>
-          <p>
-            Our services start at <b>$500/month</b>. No $5,000 retainers, no long contracts — your
-            costs only step up once we've proven results.
-          </p>
-        </div>
-        <a href={BOOKING} class="btn btn-primary btn-lg">Schedule my onboarding call</a>
+    <div class="fit container">
+      <div class="fit-head">
+        <div class="eyebrow">BEFORE YOU BOOK</div>
+        <h2>We work with one type of person.</h2>
       </div>
-      <div class="pricing-meta">
-        <span>★★★★★ 5.0 on Google</span>
-        <span>Google Partner</span>
-        <span>6 companies scaled</span>
+      <div class="fit-grid">
+        <div class="fit-card fit-yes">
+          <div class="fit-title">Book if this is you</div>
+          <ul>
+            <li>
+              You own a home service company — electrical, plumbing, HVAC, waterproofing, roofing
+            </li>
+            <li>Your customers go to Google when they need what you sell</li>
+            <li>You looked at our clients and thought <em>that’s what I want for my shop</em></li>
+            <li>You’re willing to put your own time and effort in to get there</li>
+          </ul>
+        </div>
+        <div class="fit-card fit-no">
+          <div class="fit-title">Don’t book if this is you</div>
+          <ul>
+            <li>You want guaranteed outcomes — nobody honest gives you those</li>
+            <li>You want to pay only on results</li>
+            <li>You’ve already decided Google doesn’t work</li>
+            <li>You need it to pay off next week</li>
+          </ul>
+        </div>
+      </div>
+      <p class="fit-note">
+        If the second list is you, close the tab — and we mean that kindly. The worst outcome for
+        both of us is a client who got talked into it.
+      </p>
+    </div>
+
+    <div class="expect container">
+      <div class="eyebrow">WHAT TO EXPECT</div>
+      <h2>A partnership, not a black box.</h2>
+      <ul>
+        <li>
+          <strong>One expert, not a team.</strong> Either Alistair or one of our specialists owns
+          your account from the first diagnosis through the work — accountable for the result, not
+          for ticking off a task list. No account manager, no handoff.
+        </li>
+        <li>
+          <strong>We bring the Google system.</strong> You sell and service the work, and you show
+          up as a real business online (reviews matter).
+        </li>
+        <li>
+          <strong>Feel it in ~two months.</strong> We’re watching booked jobs and call volume, not a
+          fake perfect source pie chart. If nothing’s moving by then, we talk honestly about fit.
+        </li>
+        <li>
+          <strong>No outcome guarantees.</strong> Clear process, honest timelines, limited early
+          budgets, and problem-solving when something breaks.
+        </li>
+        <li>
+          <strong>Fees scale with you.</strong> Starter lanes stay cheap; we earn more when you’re in
+          Orbit spending real ad money, incentives aligned, not a huge day-one ransom.
+        </li>
+      </ul>
+    </div>
+
+    <div class="pricing container">
+      <div class="pricing-head">
+        <div>
+          <div class="eyebrow">THE NUMBERS</div>
+          <h2>Know the numbers before you book.</h2>
+        </div>
+        <p class="pricing-lede">
+          Fees follow the <a href="/flight-plan">Flight Plan</a> and only step up as your results do.
+          Everything is month to month — we’ve never locked a client into a contract.
+        </p>
+      </div>
+
+      <div class="tiers">
+        {
+          tiers.map((tier) => (
+            <div class:list={['tier', { 'tier-featured': tier.featured }]}>
+              <div class="tier-top">
+                <span class="tier-num">{tier.step}</span>
+                <span class="tier-name">{tier.name}</span>
+                <span class="tier-band">{tier.band}</span>
+              </div>
+              <div class="tier-price">
+                {tier.price}
+                <span class="tier-unit">{tier.unit}</span>
+              </div>
+              <div class="tier-sub">{tier.sub}</div>
+              <div class="tier-rows">
+                {tier.rows.map((row) => (
+                  <div class="tier-row">
+                    <span>{row.label}</span>
+                    <b>{row.value}</b>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="pricing-foot">
+        <div class="pricing-meta">
+          <span><span class="stars">★★★★★</span> 5.0 on Google</span>
+          <Picture
+            name="badge-google-partner"
+            alt="Google Partner"
+            class="partner-badge"
+            width={66}
+            height={30}
+          />
+          <span>Everything explained in the video above</span>
+        </div>
+        <a href={BOOKING} class="btn btn-primary">Schedule my onboarding call</a>
+      </div>
+    </div>
+
+    <div class="faq container">
+      <div class="measure">
+        <div class="measure__spine" aria-hidden="true"></div>
+        <div class="measure__copy">
+          <div class="eyebrow">COMMON OBJECTIONS</div>
+          <h2>Straight answers.</h2>
+          <div class="faq-list">
+            <div class="faq-item">
+              <div class="q">I’ve hired agencies before and got burned. Why trust you?</div>
+              <p>
+                Look up the companies we name, they’re active and doing well today. Multiple home-service
+                examples beat a single “hero” case study. Scalable fees mean we’re incentivized to get you
+                to Orbit, not extract a giant setup and disappear.
+              </p>
+            </div>
+            <div class="faq-item">
+              <div class="q">I don’t want to start today.</div>
+              <p>
+                Foundations take time; meaningful movement is often on a ~two-month clock. If you’re not
+                ready for a serious multi-year partnership, we’re not the right fit, indecision after
+                you’ve seen the model usually means wait.
+              </p>
+            </div>
+            <div class="faq-item">
+              <div class="q">I’ll only pay on results.</div>
+              <p>
+                This is a partnership: we already price below typical big-agency day-one fees because we
+                trust you’ll sell and run the company. Pure pay-on-results without CRM access / equity
+                isn’t how we work. LSA is already pay-per-booked-call on that lane.
+              </p>
+            </div>
+            <div class="faq-item">
+              <div class="q">We tried Google / Facebook and it “doesn’t work.”</div>
+              <p>
+                It’s a skill game. Wrong category, weak site, or lazy accounts kill results, not “Google
+                is dead.” For search-intent trades, Google is still the spine (even AI recommenders lean
+                on it). If you won’t fix Google, we won’t be a fit.
+              </p>
+            </div>
+            <div class="faq-item">
+              <div class="q">Do I get Alistair, or someone else?</div>
+              <p>
+                You get one expert who owns your account start to finish — either Alistair or one of our
+                specialists, depending on what your company needs. We call it the surgeon model: the person
+                who diagnoses you is the person who does the work. No account manager, no handoff, no junior
+                learning on your budget.
+              </p>
+            </div>
+            <div class="faq-item">
+              <div class="q">Am I locked into a contract?</div>
+              <p>
+                No. Every engagement is month to month and we’ve never locked a client into a term. Fees
+                start low and only step up as results do. People stay for years because it’s working, not
+                because they signed something.
+              </p>
+            </div>
+            <div class="faq-item">
+              <div class="q">What do you do differently?</div>
+              <p>
+                One expert accountable for the result rather than a task list, fees that scale with you,
+                Google as a system (profile + site + ads), and booked jobs over lead theater. See the
+                <a href="/flight-plan">Flight Plan</a> and <a href="/case-studies">case studies</a>.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="measure__rail" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <div class="not-ready container" id="not-ready">
+      <div class="nr-inner">
+        <div class="eyebrow">NOT READY TO BOOK?</div>
+        <h2>Three options, and all of them are fine.</h2>
+        <div class="nr-grid">
+          <div class="nr-item">
+            <div class="nr-title">Ask a question</div>
+            <p>
+              Email <a href="mailto:hello@localservicerocket.com">hello@localservicerocket.com</a> and
+              you’ll get a straight answer, not a pitch.
+            </p>
+          </div>
+          <div class="nr-item">
+            <div class="nr-title">Read the numbers</div>
+            <p>
+              The full stories behind the companies in the video are on the
+              <a href="/case-studies">case studies</a>, and the staged plan is on the
+              <a href="/flight-plan">Flight Plan</a>.
+            </p>
+          </div>
+          <div class="nr-item">
+            <div class="nr-title">Go and check us</div>
+            <p>
+              Search our clients in Google yourself. Every company we name is real, trading, and
+              sitting at the top of its market.
+            </p>
+          </div>
+        </div>
+        <p class="nr-note">
+          What won’t happen: chasing, a follow-up sequence, or a rep working your objections. Come
+          back when you’re ready.
+        </p>
       </div>
     </div>
   </main>
 </BaseLayout>
 
+<script>
+  // Click-to-play so the Loom iframe (and its third-party requests) only loads if
+  // someone actually wants the video. Inline styles on the iframe: Astro's scoped
+  // CSS can't reach an element created at runtime.
+  const player = document.getElementById('vsl');
+  const facade = player?.querySelector<HTMLButtonElement>('.vsl-facade');
+
+  facade?.addEventListener('click', () => {
+    const id = facade.dataset.loomId;
+    if (!id || !player) return;
+
+    facade.classList.add('is-loading');
+    facade.setAttribute('aria-busy', 'true');
+
+    const params = 'autoplay=1&hide_owner=true&hide_share=true&hide_title=true&hideEmbedTopBar=true';
+    const iframe = document.createElement('iframe');
+    iframe.src = `https://www.loom.com/embed/${id}?${params}`;
+    iframe.title = 'How Local Service Rocket works';
+    iframe.allow = 'autoplay; fullscreen; picture-in-picture';
+    iframe.allowFullscreen = true;
+    iframe.setAttribute(
+      'style',
+      'position:absolute;inset:0;width:100%;height:100%;border:0;display:block;'
+    );
+
+    iframe.addEventListener('load', () => facade.remove(), { once: true });
+    player.appendChild(iframe);
+  });
+</script>
+
 <style>
   .intro {
-    max-width: 860px;
     padding-top: 64px;
     text-align: center;
   }
@@ -84,7 +438,7 @@ const BOOKING = 'https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg
     border-radius: 99px;
     border: 1px solid #e5e5e5;
     background: var(--section-bg);
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     color: var(--orange);
     letter-spacing: 0.05em;
@@ -92,60 +446,125 @@ const BOOKING = 'https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg
 
   h1 {
     margin-top: 18px;
-    font-size: clamp(30px, 5vw, 44px);
+    font-size: clamp(32px, 5vw, 47px);
     line-height: 1.08;
     font-weight: 800;
     letter-spacing: -0.03em;
     text-wrap: balance;
   }
 
-  .intro p {
-    margin: 16px auto 0;
-    font-size: 16px;
-    line-height: 1.6;
-    color: var(--muted);
-    max-width: 560px;
-    text-wrap: pretty;
-  }
-
   .video-wrap {
-    max-width: 860px;
-    margin-top: 36px;
+    margin-top: 40px;
   }
 
-  .video-placeholder {
+  .vsl {
+    /* Native aspect of the raw Loom (a ~1512x1168 window capture). The edited cut
+       will be exported 16:9 — when it lands, this is the only value to change. */
+    --vsl-aspect: 1.294;
     position: relative;
+    width: 100%;
+    max-width: 1080px;
+    margin: 0 auto;
+    aspect-ratio: var(--vsl-aspect);
     border-radius: var(--radius-panel);
     overflow: hidden;
     border: 1px solid var(--border);
-    background: #f4f4f4;
-    aspect-ratio: 16 / 9;
+    background: var(--dark);
+    isolation: isolate;
+  }
+
+  .vsl-facade {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    padding: 24px;
+    cursor: pointer;
+    color: #f5f5f7;
+    background:
+      radial-gradient(120% 90% at 50% 0%, #2a2d36 0%, var(--dark) 62%);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
   }
 
-  .play {
-    width: 60px;
-    height: 60px;
+  .vsl-play {
+    width: 66px;
+    height: 66px;
     border-radius: 99px;
     background: var(--orange);
     color: #fff;
-    font-size: 20px;
+    font-size: 23px;
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+    transition:
+      transform 0.15s,
+      background 0.15s,
+      opacity 0.2s;
   }
 
-  .placeholder-note {
-    font-size: 11px;
-    color: #aaa;
-    margin-top: 12px;
+  .vsl-label {
+    margin-top: 18px;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .vsl-meta {
+    margin-top: 6px;
+    font-size: 13px;
+    color: #a1a1a6;
+  }
+
+  .vsl-facade:hover .vsl-play {
+    background: var(--orange-hover);
+    transform: scale(1.06);
+  }
+
+  .vsl-facade.is-loading {
+    pointer-events: none;
+  }
+
+  .vsl-facade.is-loading .vsl-play {
+    opacity: 0.55;
+    transform: scale(0.92);
+  }
+
+  .vsl-cta {
+    margin-top: 32px;
+    text-align: center;
+  }
+
+  /* Oversized on purpose: this is the one action the whole video builds toward. */
+  .vsl-cta .btn {
+    padding: 19px 46px;
+    font-size: 18px;
+    border-radius: var(--radius-pill);
+  }
+
+  .vsl-cta-note {
+    margin: 16px auto 0;
+    max-width: 520px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--muted);
+    text-wrap: pretty;
+  }
+
+  .vsl-cta-note strong {
+    color: var(--ink);
+  }
+
+  .vsl-cta-note a {
+    color: var(--orange);
+    font-weight: 600;
   }
 
   .steps {
-    max-width: 860px;
     margin-top: 56px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -165,7 +584,7 @@ const BOOKING = 'https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg
     background: var(--orange);
     color: #fff;
     font-weight: 800;
-    font-size: 12px;
+    font-size: 13px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -173,64 +592,421 @@ const BOOKING = 'https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg
 
   .title {
     font-weight: 800;
-    font-size: 14.5px;
+    font-size: 15.5px;
     margin-top: 10px;
   }
 
   .step p {
     margin-top: 5px;
-    font-size: 12.5px;
+    font-size: 13.5px;
     color: var(--muted);
     line-height: 1.55;
+  }
+
+  .fit {
+    margin-top: 56px;
+  }
+
+  .fit-head h2 {
+    margin-top: 10px;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .fit-grid {
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .fit-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 20px 22px;
+  }
+
+  .fit-yes {
+    border-color: rgba(232, 89, 12, 0.28);
+    background: var(--orange-tint);
+  }
+
+  .fit-no {
+    background: var(--section-bg);
+  }
+
+  .fit-title {
+    font-weight: 800;
+    font-size: 15.5px;
+  }
+
+  .fit-yes .fit-title {
+    color: var(--orange);
+  }
+
+  .fit-no .fit-title {
+    color: var(--muted-2);
+  }
+
+  .fit-card ul {
+    margin: 12px 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 9px;
+  }
+
+  .fit-card li {
+    position: relative;
+    padding-left: 18px;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--body);
+  }
+
+  .fit-card li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 6px;
+    height: 6px;
+    border-radius: 99px;
+    background: var(--orange);
+  }
+
+  .fit-no li {
+    color: var(--muted);
+  }
+
+  .fit-no li::before {
+    background: #c9c9c9;
+  }
+
+  .fit-note {
+    margin-top: 16px;
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--muted);
+    text-wrap: pretty;
+  }
+
+  .expect {
+    margin-top: 56px;
+  }
+
+  .expect h2 {
+    margin-top: 10px;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .expect ul {
+    margin: 18px 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 12px;
+  }
+
+  .expect li {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 16px 18px;
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--body);
+  }
+
+  .expect strong {
+    color: var(--ink);
   }
 
   .pricing {
-    max-width: 860px;
-    margin-top: 48px;
-    padding-bottom: 64px;
+    margin-top: 56px;
   }
 
-  .pricing-card {
-    border: 1px solid var(--border);
-    border-radius: var(--radius-panel);
-    padding: 28px 32px;
+  .pricing-head {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    gap: 24px;
+    align-items: flex-end;
+    gap: 40px;
     flex-wrap: wrap;
   }
 
-  .pricing-title {
+  .pricing-head h2 {
+    margin-top: 10px;
+    font-size: 26px;
     font-weight: 800;
-    font-size: 17px;
+    letter-spacing: -0.02em;
   }
 
-  .pricing-card p {
-    margin-top: 6px;
-    font-size: 13px;
+  .pricing-lede {
+    margin: 0;
+    max-width: 360px;
+    font-size: 13.5px;
+    line-height: 1.6;
     color: var(--muted);
-    line-height: 1.55;
-    max-width: 420px;
+    text-wrap: pretty;
   }
 
-  .pricing-card b {
+  .pricing-lede a {
+    color: var(--orange);
+    font-weight: 600;
+  }
+
+  .tiers {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    align-items: start;
+  }
+
+  .tier {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-panel);
+    padding: 26px 28px;
+  }
+
+  /* 2px border, 1px less padding: the featured card stays the same size as its neighbours. */
+  .tier-featured {
+    border: 2px solid var(--orange);
+    padding: 25px 27px;
+  }
+
+  .tier-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .tier-num {
+    width: 28px;
+    height: 28px;
+    flex: none;
+    border-radius: 99px;
+    background: var(--orange);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .tier-name {
+    font-size: 16px;
+    font-weight: 800;
+  }
+
+  .tier-band {
+    margin-left: auto;
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: var(--orange);
+    background: var(--orange-tint);
+    padding: 5px 10px;
+    border-radius: 99px;
+    white-space: nowrap;
+  }
+
+  .tier-price {
+    margin-top: 18px;
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .tier-unit {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--muted-3);
+  }
+
+  .tier-sub {
+    margin-top: 2px;
+    font-size: 12px;
+    color: var(--muted-3);
+  }
+
+  .tier-rows {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--hairline);
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--body);
+  }
+
+  .tier-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .tier-row b {
     color: var(--ink);
+    white-space: nowrap;
+  }
+
+  .pricing-foot {
+    margin-top: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    flex-wrap: wrap;
   }
 
   .pricing-meta {
     display: flex;
-    gap: 22px;
-    justify-content: center;
-    margin-top: 22px;
-    font-size: 12px;
-    color: var(--muted-2);
+    align-items: center;
+    gap: 28px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
     flex-wrap: wrap;
   }
 
-  @media (max-width: 720px) {
-    .steps {
+  .stars {
+    color: var(--orange);
+    letter-spacing: 2px;
+  }
+
+  /* Picture renders the <img> from a child component, so it never gets this
+     page's scope attribute — :global() is required for it to match. */
+  .pricing-meta :global(.partner-badge) {
+    display: block;
+    height: 30px;
+    width: auto;
+  }
+
+  .faq {
+    margin-top: 56px;
+  }
+
+  .faq h2 {
+    margin-top: 10px;
+    font-size: 26px;
+    font-weight: 800;
+  }
+
+  .faq-list {
+    margin-top: 20px;
+    display: grid;
+    gap: 12px;
+  }
+
+  .faq-item {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 18px 20px;
+  }
+
+  .q {
+    font-weight: 800;
+    font-size: 15px;
+  }
+
+  .faq-item p {
+    margin-top: 8px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+
+  .faq-item a {
+    color: var(--orange);
+    font-weight: 600;
+  }
+
+  .not-ready {
+    padding-bottom: 72px;
+  }
+
+  .nr-inner {
+    border-top: 1px solid var(--hairline);
+    padding-top: 40px;
+  }
+
+  .nr-inner h2 {
+    margin-top: 10px;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .nr-grid {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+
+  .nr-item {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 18px 20px;
+  }
+
+  .nr-title {
+    font-weight: 800;
+    font-size: 15px;
+  }
+
+  .nr-item p {
+    margin-top: 7px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+
+  .nr-item a {
+    color: var(--orange);
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+
+  .nr-note {
+    margin-top: 18px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--muted-2);
+  }
+
+  @media (max-width: 1000px) {
+    .tiers {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 860px) {
+    .fit-grid {
       grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .steps,
+    .nr-grid,
+    .tiers {
+      grid-template-columns: 1fr;
+    }
+
+    .pricing-foot .btn {
+      width: 100%;
+    }
+
+    .vsl-cta .btn {
+      width: 100%;
+      padding: 18px 20px;
     }
   }
 </style>

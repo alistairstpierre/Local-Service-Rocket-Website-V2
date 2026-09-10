@@ -1,0 +1,496 @@
+---
+/* Case studies hub matching Claude Design “Case Studies.dc.html” layout:
+   three “ways in” with full-width featured stories (Rewired, Honest Hank’s, Dry Duck).
+   Motha is not featured. Hooked Up + other logos sit in the “also flying” strip.
+   Stats/copy come from brain-dump case pages, not the design mock figures. */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Picture from '../../components/Picture.astro';
+import { absoluteUrl, breadcrumbList, graph, webPageNode } from '../../data/schema';
+
+const alsoFlying = [
+  { name: 'logo-hooked-up', alt: 'Hooked Up Electric', href: '/case-studies/hooked-up', h: 34 },
+  { name: 'logo-motha', alt: 'Motha Electric', href: '/blog/google-category-relevance', h: 32, radius: true },
+  { name: 'logo-coastal-current', alt: 'Coastal Current', h: 34 },
+  { name: 'logo-pacific', alt: 'Pacific Home Electric', h: 32 },
+  { name: 'logo-definite', alt: 'Definite Electric', h: 32 },
+  { name: 'logo-austral', alt: 'Austral Energy', h: 32, radius: true },
+  { name: 'logo-c-tinting', alt: 'C Tinting', h: 34 },
+];
+
+// Featured cards sit side by side above 900px, so half the shell width.
+const FEATURE_SIZES = '(max-width: 900px) 100vw, 640px';
+
+const title = 'Home Service Case Studies and Results | Local Service Rocket';
+const description =
+  "Real Google growth stories: scale what you have (Rewired), grow the crew (Honest Hank's), or start from nothing (Dry Duck). Pick the path that looks like yours.";
+const pageUrl = absoluteUrl('/case-studies/');
+const jsonLd = graph([
+  webPageNode({ pageUrl, name: title, description }),
+  breadcrumbList(pageUrl, [
+    { name: 'Home', path: '/' },
+    { name: 'Case Studies', path: '/case-studies' },
+  ]),
+]);
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <main class="cs-index">
+    <div class="container">
+      <div class="intro">
+        <div class="eyebrow">CASE STUDIES</div>
+        <h1>Three ways in.</h1>
+        <p>
+          Wherever you’re starting from, someone here started there too. Pick the story that looks
+          like yours.
+        </p>
+      </div>
+
+      <!-- 1 · Scale what you have -->
+      <div class="section-head">
+        <div class="section-num">1</div>
+        <h2>Scale what you have</h2>
+        <div class="section-line" aria-hidden="true"></div>
+      </div>
+
+      <a href="/case-studies/rewired" class="feature">
+        <Picture
+          name="team-rewired"
+          alt="The Rewired team and fleet"
+          class="feature-media"
+          sizes={FEATURE_SIZES}
+          loading="eager"
+          fetchpriority="high"
+        />
+        <div class="feature-body">
+          <div class="brand-row">
+            <div class="logo-box">
+              <Picture name="logo-rewired" alt="" height={28} />
+            </div>
+            <div>
+              <div class="brand-name">Rewired</div>
+              <div class="brand-meta">Electrical · Des Moines, IA</div>
+            </div>
+          </div>
+          <p>
+            John had burned through multiple agencies that never made ads work. We got Google
+            producing on a scuffed setup, stayed through the rebuild detours, then owned site, SEO,
+            ads, and hiring. Years later he’s still a client, with a much larger Des Moines crew and
+            high six-figure months.
+          </p>
+          <div class="stats">
+            <div>
+              <div class="stat accent">$60k → $220k+</div>
+              <div class="stat-label">avg monthly revenue</div>
+            </div>
+            <div>
+              <div class="stat">5 → 12</div>
+              <div class="stat-label">crew</div>
+            </div>
+            <div>
+              <div class="stat">1.5 → 6</div>
+              <div class="stat-label">avg booked calls / day</div>
+            </div>
+          </div>
+          <div class="more">Read the Rewired story →</div>
+        </div>
+      </a>
+
+      <!-- 2 · Grow the crew -->
+      <div class="section-head">
+        <div class="section-num">2</div>
+        <h2>Grow the crew</h2>
+        <div class="section-line" aria-hidden="true"></div>
+      </div>
+
+      <a href="/case-studies/honest-hanks" class="feature reverse">
+        <div class="feature-body">
+          <div class="brand-row">
+            <div class="logo-box">
+              <Picture name="logo-honest-hanks" alt="" height={28} />
+            </div>
+            <div>
+              <div class="brand-name">Honest Hank's</div>
+              <div class="brand-meta">Electrician · Tampa, FL</div>
+            </div>
+          </div>
+          <p>
+            Lewis wasn’t starting from zero skill. He needed a company that looked and ran like one.
+            Referred by Rewired, we stacked small Google wins first (profile, LSAs, conversion
+            basics), then brand, website, vans, and hiring only after lead flow paid for the next
+            step. No bet-the-shop setup package.
+          </p>
+          <div class="stats">
+            <div>
+              <div class="stat accent">$25k → $80k</div>
+              <div class="stat-label">avg monthly revenue</div>
+            </div>
+            <div>
+              <div class="stat">1 → 3</div>
+              <div class="stat-label">techs</div>
+            </div>
+            <div>
+              <div class="stat">3rd van</div>
+              <div class="stat-label">wrapped and rolling</div>
+            </div>
+          </div>
+          <div class="more">Read the Honest Hank's story →</div>
+        </div>
+        <Picture
+          name="team-honest-hanks"
+          alt="Honest Hank's team"
+          class="feature-media hanks"
+          sizes={FEATURE_SIZES}
+        />
+      </a>
+
+      <!-- 3 · Start from nothing -->
+      <div class="section-head">
+        <div class="section-num">3</div>
+        <h2>Start from nothing</h2>
+        <div class="section-line" aria-hidden="true"></div>
+      </div>
+
+      <a href="/case-studies/dry-duck" class="feature">
+        <Picture
+          name="team-dry-duck"
+          alt="Dry Duck team"
+          class="feature-media"
+          sizes={FEATURE_SIZES}
+        />
+        <div class="feature-body">
+          <div class="brand-row">
+            <div class="logo-box">
+              <Picture name="logo-dry-duck" alt="" height={28} />
+            </div>
+            <div>
+              <div class="brand-name">Dry Duck</div>
+              <div class="brand-meta">Basement waterproofing · Iowa</div>
+            </div>
+          </div>
+          <p>
+            The company didn’t exist. Brand idea, site, and Google profile launched on starter
+            economics, then survived the classic new-brand month-two cliff. Organic came back, ads
+            layered on, and the shop scaled toward $200k months with a real crew, SEO first, ads
+            later.
+          </p>
+          <div class="stats">
+            <div>
+              <div class="stat accent">$0 → $200k</div>
+              <div class="stat-label">monthly revenue</div>
+            </div>
+            <div>
+              <div class="stat">0 → 5</div>
+              <div class="stat-label">full-time staff</div>
+            </div>
+            <div>
+              <div class="stat">6 mo</div>
+              <div class="stat-label">to serious scale</div>
+            </div>
+          </div>
+          <div class="more">Read the Dry Duck story →</div>
+        </div>
+      </a>
+
+      <div class="also">
+        <div class="also-label">ALSO FLYING WITH US</div>
+        <div class="also-logos">
+          {
+            alsoFlying.map((logo) =>
+              logo.href ? (
+                <a href={logo.href} class="also-logo" title={logo.alt}>
+                  <Picture
+                    name={logo.name}
+                    alt={logo.alt}
+                    height={logo.h}
+                    style={`height:${logo.h}px;${logo.radius ? 'border-radius:6px;' : ''}`}
+                  />
+                </a>
+              ) : (
+                <span class="also-logo" title={logo.alt}>
+                  <Picture
+                    name={logo.name}
+                    alt={logo.alt}
+                    height={logo.h}
+                    style={`height:${logo.h}px;${logo.radius ? 'border-radius:6px;' : ''}`}
+                  />
+                </span>
+              )
+            )
+          }
+        </div>
+      </div>
+
+      <div class="cta-panel">
+        <div>
+          <div class="cta-title">Which way in is yours?</div>
+          <p>Start at about $500/month. No sales calls, watch how it works and decide.</p>
+        </div>
+        <a href="/get-started" class="btn btn-primary">Get started →</a>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .cs-index {
+    padding: 56px 0 72px;
+  }
+
+  .intro {
+    text-align: center;
+    max-width: 620px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    margin-top: 10px;
+    font-size: clamp(32px, 4.5vw, 44px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+  }
+
+  .intro p {
+    margin-top: 12px;
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--muted);
+    text-wrap: pretty;
+  }
+
+  .section-head {
+    margin-top: 48px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .section-num {
+    width: 34px;
+    height: 34px;
+    border-radius: 99px;
+    background: var(--orange);
+    color: #fff;
+    font-weight: 800;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+
+  .section-head h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: var(--hairline);
+  }
+
+  .feature {
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    color: var(--ink);
+  }
+
+  .feature.reverse {
+    grid-template-columns: 1fr 1.05fr;
+  }
+
+  .feature:hover {
+    border-color: var(--orange);
+    color: var(--ink);
+  }
+
+  /* :global() because <Picture> renders these images from a child component. */
+  :global(.feature-media) {
+    width: 100%;
+    height: 100%;
+    min-height: 300px;
+    object-fit: cover;
+    display: block;
+  }
+
+  :global(.feature-media.hanks) {
+    object-position: center 60%;
+  }
+
+  .feature-body {
+    padding: 32px 36px;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+  }
+
+  .brand-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-box {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: #f6f6f8;
+    border: 1px solid var(--hairline);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+
+  .logo-box :global(img) {
+    max-width: 28px;
+    max-height: 28px;
+    display: block;
+  }
+
+  .brand-name {
+    font-weight: 800;
+    font-size: 18px;
+  }
+
+  .brand-meta {
+    font-size: 11.5px;
+    color: var(--muted-3);
+  }
+
+  .feature-body > p {
+    margin: 16px 0 0;
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--body);
+    text-wrap: pretty;
+  }
+
+  .stats {
+    display: flex;
+    gap: 30px;
+    margin-top: auto;
+    padding-top: 20px;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    font-size: 19px;
+    font-weight: 800;
+  }
+
+  .stat.accent {
+    color: var(--orange);
+  }
+
+  .stat-label {
+    font-size: 10.5px;
+    color: var(--muted-3);
+    margin-top: 2px;
+  }
+
+  .more {
+    margin-top: 18px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--orange);
+  }
+
+  .also {
+    margin-top: 44px;
+    border-top: 1px solid var(--hairline);
+    padding-top: 24px;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    flex-wrap: wrap;
+  }
+
+  .also-label {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--muted-3);
+  }
+
+  .also-logos {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    flex-wrap: wrap;
+  }
+
+  .also-logo {
+    display: inline-flex;
+    align-items: center;
+    filter: grayscale(1);
+    opacity: 0.6;
+    transition: opacity 0.15s, filter 0.15s;
+  }
+
+  a.also-logo:hover {
+    filter: none;
+    opacity: 1;
+  }
+
+  .also-logo :global(img) {
+    width: auto;
+    display: block;
+  }
+
+  .cta-panel {
+    margin-top: 48px;
+    background: var(--dark);
+    border-radius: 20px;
+    padding: 36px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    color: var(--dark-text);
+    flex-wrap: wrap;
+  }
+
+  .cta-title {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+
+  .cta-panel p {
+    margin-top: 6px;
+    font-size: 13.5px;
+    color: var(--dark-muted);
+  }
+
+  @media (max-width: 900px) {
+    .feature,
+    .feature.reverse {
+      grid-template-columns: 1fr;
+    }
+
+    .feature.reverse :global(.feature-media) {
+      order: -1;
+    }
+
+    :global(.feature-media) {
+      min-height: 220px;
+      max-height: 280px;
+    }
+
+    .feature-body {
+      padding: 24px 22px;
+    }
+
+    .stats {
+      gap: 20px;
+    }
+  }
+</style>

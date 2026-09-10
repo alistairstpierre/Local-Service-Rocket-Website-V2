@@ -1,6 +1,7 @@
 ---
 /* Site header: sticky nav with brand, section links, phone, and booking CTA.
-   Used by BaseLayout on marketing pages. Homepage uses full links; inner pages can simplify. */
+   Used by BaseLayout on marketing pages. Homepage uses full links; inner pages can simplify.
+   Schedule onboarding always goes to /get-started (VSL funnel), not the calendar directly. */
 import Logo from './Logo.astro';
 
 interface Props {
@@ -8,7 +9,6 @@ interface Props {
 }
 
 const { variant = 'full' } = Astro.props;
-const BOOKING = 'https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg9d1R';
 ---
 
 <header class="nav">
@@ -20,18 +20,18 @@ const BOOKING = 'https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg
   {
     variant === 'full' && (
       <nav class="nav-links" aria-label="Primary">
-        <a href="/#case-studies">Results</a>
-        <a href="/#system">The System</a>
+        <a href="/flight-plan">The System</a>
+        <a href="/case-studies">Results</a>
         <a href="/services">Services</a>
-        <a href="/#who-we-help">Who We Help</a>
-        <a href="/#about">About</a>
+        <a href="/blog">Blog</a>
+        <a href="/about">About</a>
       </nav>
     )
   }
 
   <div class="nav-actions">
     <a href="tel:8883716365" class="nav-phone">(888) 371-6365</a>
-    <a href={BOOKING} class="btn btn-primary btn-sm">Schedule onboarding</a>
+    <a href="/get-started" class="btn btn-primary btn-sm">Schedule onboarding</a>
   </div>
 </header>
 
@@ -55,7 +55,7 @@ const BOOKING = 'https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg
     gap: 9px;
     color: var(--ink);
     font-weight: 700;
-    font-size: 15px;
+    font-size: 16px;
     letter-spacing: -0.01em;
     flex-shrink: 0;
   }
@@ -67,7 +67,7 @@ const BOOKING = 'https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg
   .nav-links {
     display: flex;
     gap: 26px;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 500;
   }
 
@@ -87,7 +87,7 @@ const BOOKING = 'https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg
   }
 
   .nav-phone {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
     color: var(--muted);
   }
@@ -108,7 +108,7 @@ const BOOKING = 'https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg
     }
 
     .nav-brand span {
-      font-size: 13px;
+      font-size: 14px;
     }
   }
 </style>

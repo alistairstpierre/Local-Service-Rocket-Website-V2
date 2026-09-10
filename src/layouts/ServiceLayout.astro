@@ -1,0 +1,682 @@
+---
+/* Shared layout for individual service pages (SEO, ads, websites, etc.).
+   Full --max width shell. Section order loosely follows SITE-STRUCTURE-AND-SEO-GUIDE.md
+   service pages: hero → proof → included → optional extras → related → FAQ → CTA.
+   Emits Service + WebPage + FAQ + Breadcrumb JSON-LD. */
+import BaseLayout from './BaseLayout.astro';
+import Picture from '../components/Picture.astro';
+import {
+  absoluteUrl,
+  breadcrumbList,
+  faqPageNode,
+  graph,
+  webPageNode,
+} from '../data/schema';
+
+interface Included {
+  title: string;
+  body: string;
+}
+
+interface GalleryItem {
+  /** Key from src/data/images.js. Leave unset to show a placeholder tile until
+      the real photo is shot, added to assets-src, and run through `npm run images`. */
+  image?: string;
+  title: string;
+  caption: string;
+}
+
+interface Faq {
+  q: string;
+  a: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  crumb: string;
+  icon: string;
+  headline: string;
+  intro: string;
+  serviceName?: string;
+  proofEyebrow?: string;
+  proofTitle: string;
+  proofBody: string;
+  proofHref?: string;
+  proofLinkLabel?: string;
+  includedEyebrow?: string;
+  includedHeadline: string;
+  included: Included[];
+  /** Optional work-examples strip. Omit entirely and the section is not rendered. */
+  galleryEyebrow?: string;
+  galleryHeadline?: string;
+  galleryLede?: string;
+  gallery?: GalleryItem[];
+  faqs?: Faq[];
+  bottomHeadline: string;
+  bottomBody: string;
+}
+
+const {
+  title,
+  description,
+  crumb,
+  icon,
+  headline,
+  intro,
+  serviceName = crumb,
+  proofEyebrow = 'PROOF',
+  proofTitle,
+  proofBody,
+  proofHref = '/case-studies/rewired',
+  proofLinkLabel = 'Read the Rewired story →',
+  includedEyebrow = "WHAT'S INCLUDED",
+  includedHeadline,
+  included,
+  galleryEyebrow = 'THE WORK',
+  galleryHeadline,
+  galleryLede,
+  gallery = [],
+  faqs = [
+    {
+      q: `What does ${crumb} include with Local Service Rocket?`,
+      a: 'A focused Google-led lane for home service companies: setup and ongoing work tied to booked jobs, not vanity dashboards. Exact scope is confirmed on your onboarding call.',
+    },
+    {
+      q: 'How do we get started?',
+      a: 'Watch how the partnership works on Get Started, then book onboarding. No sales calls. We audit the biggest Google bottleneck and pick the first lane.',
+    },
+    {
+      q: 'What does it cost to start?',
+      a: 'Starter engagements often begin around $500/month per lane. Fees step up as your company and ad spend grow so incentives stay aligned.',
+    },
+  ],
+  bottomHeadline,
+  bottomBody,
+} = Astro.props;
+
+const pageUrl = absoluteUrl(Astro.url.pathname);
+const related = [
+  { href: '/services/local-seo', title: 'Local SEO & Reviews', body: 'GBP, categories, reviews, map pack.' },
+  { href: '/services/paid-ads', title: 'Paid Ads & LSAs', body: 'LSA first, then Search when ready.' },
+  { href: '/services/websites', title: 'Websites That Convert', body: 'Structure that turns clicks into calls.' },
+  { href: '/services/hiring', title: 'Hiring & Recruiting', body: 'Meta hiring when the calendar outruns the crew.' },
+].filter((r) => !Astro.url.pathname.includes(r.href.split('/').pop()!));
+
+const jsonLd = graph([
+  {
+    '@type': 'Service',
+    '@id': `${pageUrl}#service`,
+    name: serviceName,
+    serviceType: serviceName,
+    url: pageUrl,
+    description,
+    provider: { '@id': 'https://localservicerocket.com/#business' },
+    areaServed: { '@type': 'Country', name: 'United States' },
+  },
+  webPageNode({
+    pageUrl,
+    name: title,
+    description,
+    type: ['WebPage', 'ServicePage'],
+    mainEntityId: `${pageUrl}#service`,
+  }),
+  faqPageNode(pageUrl, faqs),
+  breadcrumbList(pageUrl, [
+    { name: 'Home', path: '/' },
+    { name: 'Services', path: '/services' },
+    { name: crumb, path: Astro.url.pathname },
+  ]),
+]);
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <main>
+    <div class="hero container">
+      <div class="crumbs">
+        <a href="/">Home</a>
+        <span>/</span>
+        <a href="/services">Services</a>
+        <span>/</span>
+        <span class="current">{crumb}</span>
+      </div>
+
+      <div class="hero-grid">
+        <div>
+          <img src={icon} alt="" width="44" height="44" decoding="async" />
+          <h1>{headline}</h1>
+          <p>{intro}</p>
+          <div class="hero-ctas">
+            <a href="/get-started" class="btn btn-primary">Schedule onboarding</a>
+            <a href="/case-studies" class="btn btn-secondary">See client results</a>
+          </div>
+          <div class="badges">
+            <span>Starts ~$500/mo</span>
+            <span>No sales calls</span>
+            <span>Booked jobs focus</span>
+          </div>
+        </div>
+
+        <div class="proof">
+          <div class="eyebrow on-dark">{proofEyebrow}</div>
+          <div class="proof-title">{proofTitle}</div>
+          <p>{proofBody}</p>
+          {
+            proofHref && (
+              <a href={proofHref} class="proof-link">
+                {proofLinkLabel}
+              </a>
+            )
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="included container">
+      <div class="eyebrow">{includedEyebrow}</div>
+      <h2>{includedHeadline}</h2>
+      <div class="included-grid">
+        {
+          included.map((item) => (
+            <div class="included-card">
+              <div class="included-title">{item.title}</div>
+              <p>{item.body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    {
+      gallery.length > 0 && (
+        <div class="gallery container">
+          <div class="eyebrow">{galleryEyebrow}</div>
+          {galleryHeadline && <h2>{galleryHeadline}</h2>}
+          {galleryLede && <p class="gallery-lede">{galleryLede}</p>}
+          <div class="gallery-grid">
+            {gallery.map((item) => (
+              <figure class="gallery-card">
+                {item.image ? (
+                  <Picture
+                    name={item.image}
+                    alt={`${item.title} — ${item.caption}`}
+                    class="gallery-media"
+                    sizes="(max-width: 700px) 100vw, (max-width: 1000px) 50vw, 300px"
+                  />
+                ) : (
+                  <div class="gallery-placeholder">
+                    <span>Photo coming</span>
+                  </div>
+                )}
+                <figcaption>
+                  <span class="gallery-title">{item.title}</span>
+                  <span class="gallery-caption">{item.caption}</span>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    {
+      Astro.slots.has('default') && (
+        <div class="extra band">
+          <div class="container">
+            <div class="measure">
+              <div class="measure__spine" aria-hidden="true"></div>
+              <div class="measure__copy extra-copy">
+                <slot />
+              </div>
+              <div class="measure__rail" aria-hidden="true"></div>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    <div class="related container">
+      <div class="eyebrow">RELATED SERVICES</div>
+      <h2>Other Lanes in the Same System</h2>
+      <p class="related-lede">
+        Not sure which service fits?
+        <a href="/get-started">Book onboarding</a> and we’ll recommend the right first move after a
+        fast Google audit.
+      </p>
+      <div class="related-grid">
+        {
+          related.slice(0, 3).map((item) => (
+            <a href={item.href} class="related-card">
+              <div class="related-title">{item.title}</div>
+              <p>{item.body}</p>
+              <span>Learn more →</span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="faq container">
+      <div class="eyebrow">FAQ</div>
+      <h2>Common Questions About {crumb}</h2>
+      <div class="faq-list">
+        {
+          faqs.map((faq) => (
+            <div class="faq-item">
+              <h3>{faq.q}</h3>
+              <p>{faq.a}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="bottom container">
+      <div class="bottom-panel">
+        <h2>{bottomHeadline}</h2>
+        <p>{bottomBody}</p>
+        <div class="bottom-ctas">
+          <a href="/get-started" class="btn btn-primary">Schedule onboarding</a>
+          <a href="/case-studies" class="btn btn-ghost-dark">See client results</a>
+        </div>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-top: 56px;
+  }
+
+  .crumbs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--muted-3);
+  }
+
+  .crumbs a {
+    color: var(--muted-3);
+  }
+
+  .crumbs a:hover {
+    color: var(--ink);
+  }
+
+  .current {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .hero-grid {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 28px;
+    align-items: stretch;
+  }
+
+  .hero-grid img {
+    display: block;
+  }
+
+  h1 {
+    margin-top: 14px;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.12;
+    text-wrap: balance;
+  }
+
+  .hero-grid > div > p {
+    margin-top: 14px;
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--muted);
+    max-width: 52ch;
+  }
+
+  .hero-ctas {
+    display: flex;
+    gap: 12px;
+    margin-top: 22px;
+    flex-wrap: wrap;
+  }
+
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px;
+  }
+
+  .badges span {
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    padding: 7px 12px;
+    background: var(--section-bg);
+    color: var(--body);
+  }
+
+  .proof {
+    background: var(--dark);
+    color: var(--dark-text);
+    border-radius: var(--radius-panel);
+    padding: 28px 30px;
+  }
+
+  .eyebrow.on-dark {
+    color: var(--orange-on-dark);
+  }
+
+  .proof-title {
+    margin-top: 10px;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .proof p {
+    margin-top: 12px;
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: var(--dark-muted);
+  }
+
+  .proof-link {
+    display: inline-block;
+    margin-top: 16px;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--orange-on-dark);
+  }
+
+  .included {
+    margin-top: 64px;
+  }
+
+  .included h2 {
+    margin-top: 10px;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .included-grid {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .included-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 20px 22px;
+  }
+
+  .included-title {
+    font-weight: 800;
+    font-size: 16px;
+  }
+
+  .included-card p {
+    margin-top: 8px;
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+
+  .gallery {
+    margin-top: 64px;
+  }
+
+  .gallery h2 {
+    margin-top: 10px;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .gallery-lede {
+    margin-top: 12px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 60ch;
+  }
+
+  .gallery-grid {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+
+  .gallery-card {
+    margin: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    background: #fff;
+  }
+
+  /* Placeholder and real photo share a ratio so nothing shifts when photos land. */
+  .gallery-placeholder,
+  .gallery-card :global(.gallery-media) {
+    aspect-ratio: 4 / 3;
+    width: 100%;
+    display: block;
+  }
+
+  .gallery-card :global(.gallery-media) {
+    object-fit: cover;
+    height: auto;
+  }
+
+  .gallery-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+      repeating-linear-gradient(
+        -38deg,
+        rgba(232, 89, 12, 0.05) 0 2px,
+        transparent 2px 11px
+      ),
+      var(--section-bg);
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .gallery-placeholder span {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted-3);
+  }
+
+  .gallery-card figcaption {
+    padding: 12px 14px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .gallery-title {
+    font-weight: 800;
+    font-size: 14.5px;
+  }
+
+  .gallery-caption {
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  .extra {
+    margin-top: 56px;
+  }
+
+  .extra-copy :global(h2) {
+    margin-top: 28px;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .extra-copy :global(h2:first-child) {
+    margin-top: 0;
+  }
+
+  .extra-copy :global(p) {
+    margin-top: 12px;
+    font-size: 15.5px;
+    line-height: 1.7;
+    color: var(--body);
+  }
+
+  .related {
+    margin-top: 56px;
+  }
+
+  .related h2 {
+    margin-top: 10px;
+    font-size: 28px;
+    font-weight: 800;
+  }
+
+  .related-lede {
+    margin-top: 12px;
+    font-size: 15px;
+    color: var(--muted);
+    max-width: 52ch;
+    line-height: 1.6;
+  }
+
+  .related-grid {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+
+  .related-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 20px;
+    color: var(--ink);
+  }
+
+  .related-card:hover {
+    border-color: var(--orange);
+    color: var(--ink);
+  }
+
+  .related-title {
+    font-weight: 800;
+    font-size: 15.5px;
+  }
+
+  .related-card p {
+    margin-top: 8px;
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  .related-card span {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--orange);
+  }
+
+  .faq {
+    margin-top: 56px;
+  }
+
+  .faq h2 {
+    margin-top: 10px;
+    font-size: 28px;
+    font-weight: 800;
+  }
+
+  .faq-list {
+    margin-top: 22px;
+    display: grid;
+    gap: 14px;
+    max-width: var(--prose-wide);
+  }
+
+  .faq-item {
+    border-top: 1px solid var(--hairline);
+    padding-top: 14px;
+  }
+
+  .faq-item h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 800;
+  }
+
+  .faq-item p {
+    margin-top: 8px;
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: var(--body);
+  }
+
+  .bottom {
+    margin-top: 56px;
+    padding-bottom: 72px;
+  }
+
+  .bottom-panel {
+    background: var(--dark);
+    color: var(--dark-text);
+    border-radius: var(--radius-panel);
+    padding: 40px;
+    text-align: center;
+  }
+
+  .bottom-panel h2 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--dark-text);
+  }
+
+  .bottom-panel p {
+    margin: 10px auto 0;
+    color: var(--dark-muted);
+    max-width: 48ch;
+  }
+
+  .bottom-ctas {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 22px;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 1000px) {
+    .gallery-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .hero-grid,
+    .included-grid,
+    .related-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

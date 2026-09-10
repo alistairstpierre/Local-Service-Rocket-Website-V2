@@ -1,0 +1,137 @@
+---
+/* Shared layout for Privacy Policy and Terms of Service pages.
+   Full --max width; legal body uses branded .measure rail.
+   JSON-LD: WebPage + Breadcrumb per SITE-STRUCTURE-AND-SEO-GUIDE.md Part 5. */
+import BaseLayout from './BaseLayout.astro';
+import { absoluteUrl, breadcrumbList, graph, webPageNode } from '../data/schema';
+
+interface Props {
+  title: string;
+  description: string;
+  heading: string;
+  updated: string;
+}
+
+const { title, description, heading, updated } = Astro.props;
+const pageUrl = absoluteUrl(Astro.url.pathname);
+
+const jsonLd = graph([
+  webPageNode({ pageUrl, name: title, description }),
+  breadcrumbList(pageUrl, [
+    { name: 'Home', path: '/' },
+    { name: heading, path: Astro.url.pathname },
+  ]),
+]);
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <main class="legal">
+    <div class="container">
+      <div class="crumbs">
+        <a href="/">Home</a>
+        <span>/</span>
+        <span class="current">{heading}</span>
+      </div>
+      <h1>{heading}</h1>
+      <p class="updated">Last updated: {updated}</p>
+    </div>
+
+    <div class="band">
+      <div class="container">
+        <div class="measure">
+          <div class="measure__spine" aria-hidden="true"></div>
+          <div class="measure__copy legal-body">
+            <slot />
+          </div>
+          <div class="measure__rail" aria-hidden="true"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .legal {
+    padding: 56px 0 72px;
+  }
+
+  .crumbs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--muted-3);
+  }
+
+  .crumbs a {
+    color: var(--muted-3);
+  }
+
+  .crumbs a:hover {
+    color: var(--ink);
+  }
+
+  .current {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  h1 {
+    margin-top: 22px;
+    font-size: clamp(30px, 4vw, 43px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+
+  .updated {
+    margin-top: 10px;
+    font-size: 14px;
+    color: var(--muted-2);
+  }
+
+  .band {
+    margin-top: 36px;
+  }
+
+  .legal-body :global(h2) {
+    margin: 36px 0 12px;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .legal-body :global(h2:first-child) {
+    margin-top: 0;
+  }
+
+  .legal-body :global(p),
+  .legal-body :global(li) {
+    font-size: 15.5px;
+    line-height: 1.7;
+    color: var(--body);
+  }
+
+  .legal-body :global(p + p) {
+    margin-top: 12px;
+  }
+
+  .legal-body :global(ul) {
+    margin: 12px 0 0;
+    padding-left: 22px;
+  }
+
+  .legal-body :global(li + li) {
+    margin-top: 8px;
+  }
+
+  .legal-body :global(a) {
+    color: var(--orange);
+    font-weight: 600;
+  }
+
+  .legal-body :global(strong) {
+    color: var(--ink);
+    font-weight: 700;
+  }
+</style>

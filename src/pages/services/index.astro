@@ -1,13 +1,12 @@
 ---
-/* Services overview — six service cards linking to detail pages (Paid Ads live).
-   Design source: Services.dc.html */
+/* Services overview, six service cards linking to detail pages.
+   Design source: Services.dc.html. CollectionPage + ItemList schema per SEO guide. */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-
-const BOOKING = 'https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg9d1R';
+import { absoluteUrl, breadcrumbList, graph } from '../../data/schema';
 
 const cards = [
   {
-    href: '/services',
+    href: '/services/local-seo',
     icon: '/assets/icon-local-seo-reviews-v2.svg',
     title: 'Local SEO & Reviews',
     body: 'Rank in your service area, own the map pack, and build a review engine that keeps working.',
@@ -19,45 +18,72 @@ const cards = [
     body: 'Google Ads and Local Services Ads managed to booked jobs, not clicks. We prove ads profitable before scaling spend.',
   },
   {
-    href: '/services',
+    href: '/services/websites',
     icon: '/assets/icon-websites-that-convert-v2.svg',
     title: 'Websites That Convert',
     body: 'Fast, trust-building sites you own outright: design, code, and content.',
   },
   {
-    href: '/services',
+    href: '/services/hiring',
     icon: '/assets/icon-hiring-recruiting-v2.svg',
     title: 'Hiring & Recruiting',
     body: 'Fill your trucks with skilled, reliable techs: job marketing, screening, and a pipeline in about 10 days.',
   },
   {
-    href: '/services',
+    href: '/services/branding',
     icon: '/assets/icon-branding-v2.svg',
     title: 'Branding',
     body: "Logo, trucks, uniforms: a brand your whole city remembers. We built Dry Duck's from scratch.",
   },
   {
-    href: '/services',
+    href: '/services/tracking',
     icon: '/assets/icon-tracking-reporting-v2.svg',
     title: 'Tracking & Reporting',
     body: 'Every call and job tracked to its source. You see what we see, always.',
   },
 ];
+
+const title = 'Marketing Services for Home Service Shops | Local Service Rocket';
+const description =
+  'Six Google-led services for home service companies: Local SEO, paid ads, websites, hiring, branding, and tracking. Start around $500/month.';
+const pageUrl = absoluteUrl('/services/');
+const jsonLd = graph([
+  {
+    '@type': 'CollectionPage',
+    '@id': `${pageUrl}#webpage`,
+    url: pageUrl,
+    name: title,
+    description,
+    inLanguage: 'en-US',
+    isPartOf: { '@id': 'https://localservicerocket.com/#website' },
+    mainEntity: { '@id': `${pageUrl}#list` },
+  },
+  {
+    '@type': 'ItemList',
+    '@id': `${pageUrl}#list`,
+    name: 'Local Service Rocket services',
+    itemListElement: cards.map((card, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: card.title,
+      url: absoluteUrl(card.href),
+    })),
+  },
+  breadcrumbList(pageUrl, [
+    { name: 'Home', path: '/' },
+    { name: 'Services', path: '/services' },
+  ]),
+]);
 ---
 
-<BaseLayout
-  title="Services — Local Service Rocket"
-  description="Six services, one system for home service companies. Local SEO, paid ads, websites, hiring, branding, and tracking."
-  nav="simple"
-  showFooter={false}
->
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
   <main>
     <div class="intro container">
       <div class="eyebrow">WHAT WE DO</div>
       <h1>Everything you need to dominate on Google. One team.</h1>
       <p>
-        Six services, one system. Start with what you need today — most clients start at $500/month
-        — and add the rest as your revenue grows.
+        Six services, one system. Start with what you need today (most clients start at $500/month)
+        and add the rest as your revenue grows.
       </p>
     </div>
 
@@ -65,7 +91,7 @@ const cards = [
       {
         cards.map((c) => (
           <a href={c.href} class="card">
-            <img src={c.icon} alt="" width="38" height="38" />
+            <img src={c.icon} alt="" width="38" height="38" loading="lazy" decoding="async" />
             <div class="card-title">{c.title}</div>
             <p>{c.body}</p>
             <div class="learn">Learn more →</div>
@@ -79,11 +105,11 @@ const cards = [
         <h2>Not sure where to start?</h2>
         <p>
           That's what onboarding is for. We look at your market and tell you the one thing to fix
-          first — even if it's not the most expensive thing.
+          first, even if it's not the most expensive thing.
         </p>
         <div class="cta-btns">
-          <a href="/get-started" class="btn btn-primary">See how it works</a>
-          <a href={BOOKING} class="btn btn-ghost-dark">Schedule onboarding</a>
+          <a href="/get-started" class="btn btn-primary">Schedule onboarding</a>
+          <a href="/case-studies" class="btn btn-ghost-dark">See client results</a>
         </div>
       </div>
     </div>
@@ -92,14 +118,13 @@ const cards = [
 
 <style>
   .intro {
-    max-width: 760px;
     padding-top: 64px;
     text-align: center;
   }
 
   h1 {
     margin-top: 14px;
-    font-size: clamp(30px, 5vw, 44px);
+    font-size: clamp(32px, 5vw, 47px);
     line-height: 1.08;
     font-weight: 800;
     letter-spacing: -0.03em;
@@ -107,11 +132,12 @@ const cards = [
   }
 
   .intro p {
-    margin-top: 16px;
-    font-size: 15.5px;
+    margin: 16px auto 0;
+    font-size: 16.5px;
     line-height: 1.6;
     color: var(--muted);
     text-wrap: pretty;
+    max-width: 52ch;
   }
 
   .grid {
@@ -137,26 +163,25 @@ const cards = [
 
   .card-title {
     font-weight: 800;
-    font-size: 16.5px;
+    font-size: 17.5px;
     margin-top: 12px;
   }
 
   .card p {
     margin-top: 6px;
-    font-size: 13px;
+    font-size: 14px;
     color: var(--muted);
     line-height: 1.55;
   }
 
   .learn {
     margin-top: 14px;
-    font-size: 12.5px;
+    font-size: 13.5px;
     font-weight: 700;
     color: var(--orange);
   }
 
   .cta {
-    max-width: 760px;
     margin-top: 64px;
     padding-bottom: 72px;
     text-align: center;
@@ -170,7 +195,7 @@ const cards = [
   }
 
   .cta-panel h2 {
-    font-size: 26px;
+    font-size: 28px;
     font-weight: 800;
     letter-spacing: -0.02em;
     text-wrap: balance;
@@ -178,7 +203,7 @@ const cards = [
 
   .cta-panel p {
     margin-top: 10px;
-    font-size: 13.5px;
+    font-size: 14.5px;
     color: var(--dark-muted);
     line-height: 1.6;
   }

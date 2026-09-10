@@ -15,6 +15,13 @@ pnpm-debug.log*
 .env
 .env.production
 
+# Internal / private working material. This repo is PUBLIC, so raw strategy notes
+# and planning docs stay on disk only. Anything here is still referenced by the
+# README structure so we know it exists, it just isn't published.
+Found By Friday Brain Dumps/
+content/
+docs/
+
 # macOS / editors
 .DS_Store
 .vscode/*

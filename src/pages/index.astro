@@ -1,23 +1,24 @@
 ---
-/* Homepage — primary marketing funnel entry.
+/* Homepage, primary marketing funnel entry.
    Assembles Hero + trust strip, reviews, flight plan, services, case studies,
-   trades grid, why-us, and bottom CTA. Design source: Local Service Rocket - Homepage.dc.html */
+   trades grid (links to /for/* SEO landings), why-us, and bottom CTA.
+   Design source: Local Service Rocket - Homepage.dc.html */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
-
-const BOOKING = 'https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg9d1R';
+import Picture from '../components/Picture.astro';
+import { tradeLabelToSlug } from '../data/trades';
 
 const trustLogos = [
-  { href: '/case-studies/rewired', src: '/assets/logo-rewired.png', alt: 'Rewired', h: 48 },
-  { href: '#', src: '/assets/logo-motha.jpg', alt: 'Motha Electric', h: 44, radius: true },
-  { href: '#', src: '/assets/logo-honest-hanks.png', alt: "Honest Hank's", h: 50 },
-  { href: '#', src: '/assets/logo-dry-duck.png', alt: 'Dry Duck', h: 50 },
-  { href: '#', src: '/assets/logo-hooked-up.png', alt: 'Hooked Up Electric', h: 44 },
-  { href: '#', src: '/assets/logo-coastal-current.png', alt: 'Coastal Current', h: 46 },
-  { href: '#', src: '/assets/logo-pacific.jpg', alt: 'Pacific Home Electric', h: 42 },
-  { href: '#', src: '/assets/logo-definite.jpg', alt: 'Definite Electric', h: 42 },
-  { href: '#', src: '/assets/logo-austral.png', alt: 'Austral Energy Solutions', h: 42, radius: true },
-  { href: '#', src: '/assets/logo-c-tinting.png', alt: 'C Tinting', h: 44 },
+  { href: '/case-studies/rewired', name: 'logo-rewired', alt: 'Rewired', h: 48 },
+  { href: '/case-studies/honest-hanks', name: 'logo-honest-hanks', alt: "Honest Hank's", h: 50 },
+  { href: '/case-studies/dry-duck', name: 'logo-dry-duck', alt: 'Dry Duck', h: 50 },
+  { href: '/case-studies/hooked-up', name: 'logo-hooked-up', alt: 'Hooked Up Electric', h: 44 },
+  { href: '/case-studies', name: 'logo-motha', alt: 'Motha Electric', h: 44, radius: true },
+  { href: '/case-studies', name: 'logo-coastal-current', alt: 'Coastal Current', h: 46 },
+  { href: '/case-studies', name: 'logo-pacific', alt: 'Pacific Home Electric', h: 42 },
+  { href: '/case-studies', name: 'logo-definite', alt: 'Definite Electric', h: 42 },
+  { href: '/case-studies', name: 'logo-austral', alt: 'Austral Energy Solutions', h: 42, radius: true },
+  { href: '/case-studies', name: 'logo-c-tinting', alt: 'C Tinting', h: 44 },
 ];
 
 const services = [
@@ -25,6 +26,7 @@ const services = [
     icon: '/assets/icon-local-seo-reviews-v2.svg',
     title: 'Local SEO & Reviews',
     body: 'Rank in your service area, own the map pack, and build a review engine.',
+    href: '/services/local-seo',
   },
   {
     icon: '/assets/icon-paid-ads-lsas-v2.svg',
@@ -36,21 +38,25 @@ const services = [
     icon: '/assets/icon-websites-that-convert-v2.svg',
     title: 'Websites That Convert',
     body: 'Fast, trust-building sites you own outright: design, code, and content.',
+    href: '/services/websites',
   },
   {
     icon: '/assets/icon-hiring-recruiting-v2.svg',
     title: 'Hiring & Recruiting',
-    body: 'Fill trucks with techs: job marketing, screening systems, onboarding. [PLACEHOLDER: refine once hiring Q36-42 answered]',
+    body: 'Fill trucks with techs: job marketing, screening systems, onboarding.',
+    href: '/services/hiring',
   },
   {
     icon: '/assets/icon-branding-v2.svg',
     title: 'Branding',
-    body: 'Logo, trucks, uniforms: a brand homeowners remember and call again. [PLACEHOLDER: confirm card 5 pick, Q32]',
+    body: 'Logo, trucks, uniforms: a brand homeowners remember and call again.',
+    href: '/services/branding',
   },
   {
     icon: '/assets/icon-tracking-reporting-v2.svg',
     title: 'Tracking & Reporting',
     body: 'Every call and job tracked to its source. You see what we see.',
+    href: '/services/tracking',
   },
 ];
 
@@ -76,7 +82,7 @@ const trades = [
 ];
 ---
 
-<BaseLayout title="Local Service Rocket — Marketing for Home Service Companies">
+<BaseLayout title="Local Service Rocket, Marketing for Home Service Companies">
   <Hero />
 
   <!-- TRUST STRIP -->
@@ -85,9 +91,10 @@ const trades = [
       {
         trustLogos.map((logo) => (
           <a href={logo.href} class="trust-logo">
-            <img
-              src={logo.src}
+            <Picture
+              name={logo.name}
               alt={logo.alt}
+              height={logo.h}
               style={`height:${logo.h}px;${logo.radius ? 'border-radius:6px;' : ''}`}
             />
           </a>
@@ -123,7 +130,7 @@ const trades = [
           here, and I can say it's nice to be home where you're treated like family."
         </p>
         <div class="review-author">
-          <img src="/assets/john-headshot.png" alt="John Senn" width="28" height="28" />
+          <Picture name="john-headshot" alt="John Senn" width={28} height={28} />
           <div>
             <div class="author-name">John Senn, owner</div>
             <div class="author-meta">Rewired Iowa · electrical · Des Moines, IA</div>
@@ -143,7 +150,7 @@ const trades = [
           time, your availability, your honesty and the highest integrity."
         </p>
         <div class="review-author">
-          <img src="/assets/jason-hooked-up.png" alt="Jason" width="28" height="28" />
+          <Picture name="jason-hooked-up" alt="Jason" width={28} height={28} />
           <div>
             <div class="author-name">Jason, owner</div>
             <div class="author-meta">Hooked Up Electric · electrical · Merkel, TX</div>
@@ -168,7 +175,7 @@ const trades = [
           to keep up with the growth. These guys have been with me every step."
         </p>
         <div class="review-author">
-          <img src="/assets/lewis-carter.png" alt="Lewis Carter" width="28" height="28" />
+          <Picture name="lewis-carter" alt="Lewis Carter" width={28} height={28} />
           <div>
             <div class="author-name">Lewis Carter, owner</div>
             <div class="author-meta">Honest Hank's · electrician · Tampa, FL</div>
@@ -188,38 +195,36 @@ const trades = [
           Most tradespeople just want to do good work. If you want to build a company, this is the
           path. Three stages, and you always know where you are and what's next.
         </p>
-        <a href="/get-started" class="btn btn-primary">See the full flight plan</a>
+        <a href="/flight-plan" class="btn btn-primary">See the full flight plan</a>
       </div>
       <div class="flight-steps">
         <div class="flight-step">
           <div class="step-num">1</div>
           <div>
-            <div class="step-title">Pre-flight — build it right</div>
+            <div class="step-title">Pre-flight: build it right</div>
             <div class="step-body">
-              We build your foundations right: your Google profile, your website, your brand if you
-              need one. Then we open every tap that gets jobs coming in: LSA, Angi, Yelp, all of it.
+              Fix GBP + website, finish SEO foundations, turn on LSA and local lead providers. Aim
+              for about 1-3 booked jobs a day and $40-50k months.
             </div>
           </div>
         </div>
         <div class="flight-step indent-1">
           <div class="step-num">2</div>
           <div>
-            <div class="step-title">Liftoff — own your traffic</div>
+            <div class="step-title">Liftoff: own your traffic</div>
             <div class="step-body">
-              Then we move you off rented platforms like Yelp and Angi onto traffic you own: your
-              ads, your website, your Google profile. As demand climbs, we help you raise your prices
-              with it.
+              Deepen SEO, brand if you haven’t, then add low-budget Search ads so growth isn’t rented
+              from Angi and Yelp forever.
             </div>
           </div>
         </div>
         <div class="flight-step indent-2">
           <div class="step-num">3</div>
           <div>
-            <div class="step-title">Orbit — get your time back</div>
+            <div class="step-title">Orbit: get your time back</div>
             <div class="step-body">
-              Finally we help you hire guys who are skilled and reliable, and build the systems so
-              the business runs without you in every job. Three clients are here today: Rewired, Dry
-              Duck, and Honest Hanks.
+              Scale ad spend with safety rails, hire skilled techs, and build systems so you’re not
+              in every truck.
             </div>
           </div>
         </div>
@@ -236,8 +241,8 @@ const trades = [
     <div class="services-grid">
       {
         services.map((s) => (
-          <a href={s.href || '/services'} class="service-card">
-            <img src={s.icon} alt="" width="36" height="36" />
+          <a href={s.href} class="service-card">
+            <img src={s.icon} alt="" width="36" height="36" loading="lazy" decoding="async" />
             <div class="service-title">{s.title}</div>
             <p>{s.body}</p>
           </a>
@@ -254,15 +259,15 @@ const trades = [
         <h2>Three ways in.</h2>
         <p class="cs-sub">Scale what you have, grow your crew, or start from nothing.</p>
       </div>
-      <a href="/case-studies/rewired" class="btn btn-secondary">View all case studies</a>
+      <a href="/case-studies" class="btn btn-secondary">View all case studies</a>
     </div>
 
     <div class="cs-grid">
       <a href="/case-studies/rewired" class="cs-card">
         <div class="cs-media">
-          <img src="/assets/team-rewired.png" alt="Rewired team" />
+          <Picture name="team-rewired" alt="Rewired team" sizes="(max-width: 900px) 100vw, 400px" />
           <div class="cs-logo-badge">
-            <img src="/assets/logo-rewired.png" alt="" />
+            <Picture name="logo-rewired" alt="" height={28} />
           </div>
         </div>
         <div class="cs-body">
@@ -272,30 +277,31 @@ const trades = [
           <div class="cs-stats">
             <div>
               <div class="cs-stat orange">$60k → $220k+</div>
-              <div class="cs-stat-label">monthly revenue</div>
+              <div class="cs-stat-label">avg monthly revenue</div>
             </div>
             <div>
-              <div class="cs-stat">5 → 15</div>
+              <div class="cs-stat">5 → 12</div>
               <div class="cs-stat-label">crew</div>
             </div>
             <div>
-              <div class="cs-stat">4 → 12</div>
-              <div class="cs-stat-label">jobs booked daily</div>
+              <div class="cs-stat">1.5 → 6</div>
+              <div class="cs-stat-label">avg booked calls / day</div>
             </div>
           </div>
           <div class="cs-link">Read the Rewired story →</div>
         </div>
       </a>
 
-      <div class="cs-card">
+      <a href="/case-studies/honest-hanks" class="cs-card">
         <div class="cs-media">
-          <img
-            src="/assets/team-honest-hanks.png"
+          <Picture
+            name="team-honest-hanks"
             alt="Honest Hank's team"
+            sizes="(max-width: 900px) 100vw, 400px"
             style="object-position: center 60%"
           />
           <div class="cs-logo-badge">
-            <img src="/assets/logo-honest-hanks.png" alt="" />
+            <Picture name="logo-honest-hanks" alt="" height={28} />
           </div>
         </div>
         <div class="cs-body">
@@ -305,7 +311,7 @@ const trades = [
           <div class="cs-stats">
             <div>
               <div class="cs-stat orange">$25k → $80k</div>
-              <div class="cs-stat-label">monthly revenue</div>
+              <div class="cs-stat-label">avg monthly revenue</div>
             </div>
             <div>
               <div class="cs-stat">1 → 3</div>
@@ -318,13 +324,13 @@ const trades = [
           </div>
           <div class="cs-link">Read the Honest Hank's story →</div>
         </div>
-      </div>
+      </a>
 
-      <div class="cs-card">
+      <a href="/case-studies/dry-duck" class="cs-card">
         <div class="cs-media">
-          <img src="/assets/team-dry-duck.jpg" alt="Dry Duck team" />
+          <Picture name="team-dry-duck" alt="Dry Duck team" sizes="(max-width: 900px) 100vw, 400px" />
           <div class="cs-logo-badge">
-            <img src="/assets/logo-dry-duck.png" alt="" />
+            <Picture name="logo-dry-duck" alt="" height={28} />
           </div>
         </div>
         <div class="cs-body">
@@ -347,7 +353,7 @@ const trades = [
           </div>
           <div class="cs-link">Read the Dry Duck story →</div>
         </div>
-      </div>
+      </a>
     </div>
   </section>
 
@@ -357,18 +363,22 @@ const trades = [
       <div class="eyebrow">WHO WE HELP</div>
       <h2>If your customers find you on Google, that's our specialty.</h2>
       <p class="section-sub">
-        Any trade that lives on Google search, Maps, and reviews — if that's you and you want to
+        Any trade that lives on Google search, Maps, and reviews. If that's you and you want to
         grow, we should talk.
       </p>
     </div>
     <div class="trades-grid">
       {
-        trades.map(([file, label]) => (
-          <div class="trade-card">
-            <img src={`/assets/${file}`} alt="" width="30" height="30" />
-            <div>{label}</div>
-          </div>
-        ))
+        trades.map(([file, label]) => {
+          const slug = tradeLabelToSlug[label];
+          const href = slug ? `/for/${slug}` : '/get-started';
+          return (
+            <a href={href} class="trade-card">
+              <img src={`/assets/${file}`} alt="" width="30" height="30" loading="lazy" decoding="async" />
+              <div>{label}</div>
+            </a>
+          );
+        })
       }
       <div class="trade-more">
         <div class="trade-more-title">And more.</div>
@@ -382,13 +392,21 @@ const trades = [
   <!-- WHY US -->
   <section class="section container" id="about">
     <div class="why-grid">
-      <div class="why-video">
-        <iframe
-          src="https://www.youtube.com/embed/-A8YbbilhA0"
-          title="Founder story — Local Service Rocket"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen
-          loading="lazy"></iframe>
+      <div class="why-video" id="why-video">
+        <button
+          type="button"
+          class="why-video-facade"
+          aria-label="Play founder story video"
+          data-youtube-id="G1rIxsUm6RQ"
+        >
+          <Picture
+            name="video-founder-story"
+            alt="Founder story | Local Service Rocket"
+            sizes="(max-width: 900px) 100vw, 560px"
+          />
+          <span class="why-video-shade" aria-hidden="true"></span>
+          <span class="why-video-play" aria-hidden="true">▶</span>
+        </button>
       </div>
       <div>
         <div class="eyebrow">WHY LOCAL SERVICE ROCKET</div>
@@ -397,7 +415,7 @@ const trades = [
           <div class="why-point">
             <div class="check">✓</div>
             <div>
-              <b>Start at $500/month.</b> No huge commitments before we've proven anything — most
+              <b>Start at $500/month.</b> No huge commitments before we've proven anything, most
               agencies want $5,000+ up front.
             </div>
           </div>
@@ -405,18 +423,19 @@ const trades = [
             <div class="check">✓</div>
             <div>
               <b>Results before scale.</b> Our first client had burned through seven agencies before
-              us — none made him a dollar from ads. We prove results before scaling costs, especially
+              us. None made him a dollar from ads. We prove results before scaling costs, especially
               ad spend.
             </div>
           </div>
           <div class="why-point">
             <div class="check">✓</div>
             <div>
-              <b>A partner, not another agency.</b> You work directly with Alistair St Pierre —
+              <b>A partner, not another agency.</b> You work directly with Alistair St Pierre:
               upfront about what won't work, clear expectations, no account managers.
             </div>
           </div>
         </div>
+        <a href="/about" class="about-link">More about Alistair &amp; the agency →</a>
       </div>
     </div>
   </section>
@@ -427,11 +446,11 @@ const trades = [
       <h2>Ready to get off the truck?</h2>
       <p>
         Watch a short video on exactly how it works and what it costs, then book your onboarding
-        call. No sales calls — your first call with us is already about your business.
+        call. No sales calls. Your first call with us is already about your business.
       </p>
       <div class="cta-btns">
-        <a href="/get-started" class="btn btn-primary btn-lg">See how it works</a>
-        <a href={BOOKING} class="btn btn-ghost-dark btn-lg">Schedule onboarding</a>
+        <a href="/get-started" class="btn btn-primary btn-lg">Schedule onboarding</a>
+        <a href="#case-studies" class="btn btn-ghost-dark btn-lg">See client results</a>
       </div>
       <p class="cta-price">Starts at $500/month. We grow when you grow.</p>
       <div class="cta-meta">
@@ -441,6 +460,50 @@ const trades = [
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  // Click-to-play: swap facade for a full-bleed iframe (inline styles, Astro scope
+  // would otherwise miss the dynamically inserted iframe and leave it 300×150).
+  const player = document.getElementById('why-video');
+  const facade = player?.querySelector<HTMLButtonElement>('.why-video-facade');
+
+  facade?.addEventListener('click', () => {
+    const id = facade.dataset.youtubeId;
+    if (!id || !player) return;
+
+    facade.classList.add('is-loading');
+    facade.setAttribute('aria-busy', 'true');
+
+    const iframe = document.createElement('iframe');
+    iframe.className = 'why-video-embed';
+    iframe.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3`;
+    iframe.title = 'Founder story | Local Service Rocket';
+    iframe.allow =
+      'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+    iframe.allowFullscreen = true;
+    iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+    // Full-bleed, do not rely on scoped CSS for JS-injected nodes
+    Object.assign(iframe.style, {
+      position: 'absolute',
+      inset: '0',
+      width: '100%',
+      height: '100%',
+      border: '0',
+      display: 'block',
+      background: '#111',
+    });
+
+    iframe.addEventListener(
+      'load',
+      () => {
+        facade.remove();
+      },
+      { once: true }
+    );
+
+    player.appendChild(iframe);
+  });
+</script>
 
 <style>
   .section {
@@ -460,7 +523,7 @@ const trades = [
   .section-head h2,
   .why-grid h2 {
     margin-top: 10px;
-    font-size: clamp(26px, 3vw, 32px);
+    font-size: clamp(28px, 3vw, 34px);
     font-weight: 800;
     letter-spacing: -0.02em;
     line-height: 1.15;
@@ -470,7 +533,7 @@ const trades = [
   .section-sub,
   .cs-sub {
     margin-top: 10px;
-    font-size: 14px;
+    font-size: 15px;
     color: var(--muted);
   }
 
@@ -491,7 +554,8 @@ const trades = [
     flex-wrap: wrap;
   }
 
-  .trust-logo img {
+  /* :global() because <Picture> renders the <img> from a child component. */
+  .trust-logo :global(img) {
     width: auto;
     filter: grayscale(1);
     opacity: 0.62;
@@ -500,7 +564,7 @@ const trades = [
       opacity 0.2s;
   }
 
-  .trust-logo:hover img {
+  .trust-logo:hover :global(img) {
     filter: grayscale(0);
     opacity: 1;
   }
@@ -508,7 +572,7 @@ const trades = [
   .trust-link {
     text-align: center;
     padding: 0 var(--pad-x) 20px;
-    font-size: 12.5px;
+    font-size: 13.5px;
     font-weight: 700;
   }
 
@@ -534,7 +598,7 @@ const trades = [
 
   .stars {
     color: var(--orange);
-    font-size: 13px;
+    font-size: 14px;
     letter-spacing: 2px;
   }
 
@@ -542,7 +606,7 @@ const trades = [
     display: flex;
     align-items: center;
     gap: 5px;
-    font-size: 9px;
+    font-size: 10px;
     color: var(--orange);
     font-weight: 700;
   }
@@ -557,7 +621,7 @@ const trades = [
     border-radius: 99px;
     background: var(--orange);
     color: #fff;
-    font-size: 7px;
+    font-size: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -565,7 +629,7 @@ const trades = [
 
   .review-card p {
     margin-top: 12px;
-    font-size: 13.5px;
+    font-size: 14.5px;
     line-height: 1.6;
     color: var(--body);
   }
@@ -577,7 +641,7 @@ const trades = [
     margin-top: 14px;
   }
 
-  .review-author img {
+  .review-author :global(img) {
     width: 28px;
     height: 28px;
     border-radius: 99px;
@@ -585,12 +649,12 @@ const trades = [
   }
 
   .author-name {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
   }
 
   .author-meta {
-    font-size: 10.5px;
+    font-size: 11.5px;
     color: var(--muted-3);
   }
 
@@ -612,7 +676,7 @@ const trades = [
 
   .flight-copy h2 {
     margin-top: 12px;
-    font-size: clamp(26px, 3vw, 34px);
+    font-size: clamp(28px, 3vw, 36px);
     font-weight: 800;
     letter-spacing: -0.02em;
     line-height: 1.12;
@@ -621,7 +685,7 @@ const trades = [
 
   .flight-copy p {
     margin: 14px 0 22px;
-    font-size: 14.5px;
+    font-size: 15.5px;
     line-height: 1.6;
     color: var(--dark-muted);
     text-wrap: pretty;
@@ -657,7 +721,7 @@ const trades = [
     background: var(--orange);
     color: #fff;
     font-weight: 800;
-    font-size: 14px;
+    font-size: 15px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -666,11 +730,11 @@ const trades = [
 
   .step-title {
     font-weight: 700;
-    font-size: 14.5px;
+    font-size: 15.5px;
   }
 
   .step-body {
-    font-size: 12px;
+    font-size: 13px;
     color: var(--dark-muted);
     margin-top: 2px;
     line-height: 1.5;
@@ -700,13 +764,13 @@ const trades = [
 
   .service-title {
     font-weight: 800;
-    font-size: 16px;
+    font-size: 17px;
     margin-top: 12px;
   }
 
   .service-card p {
     margin-top: 6px;
-    font-size: 13px;
+    font-size: 14px;
     color: var(--muted);
     line-height: 1.55;
   }
@@ -722,7 +786,7 @@ const trades = [
 
   .cs-header h2 {
     margin-top: 10px;
-    font-size: 32px;
+    font-size: 34px;
     font-weight: 800;
     letter-spacing: -0.02em;
   }
@@ -752,7 +816,7 @@ const trades = [
     position: relative;
   }
 
-  .cs-media img {
+  .cs-media :global(img) {
     height: 150px;
     width: 100%;
     object-fit: cover;
@@ -775,7 +839,7 @@ const trades = [
     justify-content: center;
   }
 
-  .cs-logo-badge img {
+  .cs-logo-badge :global(img) {
     max-width: 32px;
     max-height: 32px;
     height: auto;
@@ -790,7 +854,7 @@ const trades = [
   }
 
   .cs-tag {
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 800;
     letter-spacing: 0.08em;
     color: var(--orange);
@@ -798,12 +862,12 @@ const trades = [
 
   .cs-name {
     font-weight: 800;
-    font-size: 17px;
+    font-size: 18px;
     margin-top: 5px;
   }
 
   .cs-meta {
-    font-size: 11.5px;
+    font-size: 12.5px;
     color: var(--muted-3);
     margin-top: 2px;
   }
@@ -816,7 +880,7 @@ const trades = [
   }
 
   .cs-stat {
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 800;
   }
 
@@ -825,7 +889,7 @@ const trades = [
   }
 
   .cs-stat-label {
-    font-size: 10px;
+    font-size: 11px;
     color: var(--muted-3);
     margin-top: 2px;
   }
@@ -833,7 +897,7 @@ const trades = [
   .cs-link {
     margin-top: auto;
     padding-top: 16px;
-    font-size: 12.5px;
+    font-size: 13.5px;
     font-weight: 700;
     color: var(--orange);
   }
@@ -859,7 +923,15 @@ const trades = [
     padding: 16px 10px;
     text-align: center;
     font-weight: 700;
-    font-size: 12.5px;
+    font-size: 13.5px;
+    color: var(--ink);
+    text-decoration: none;
+    transition: border-color 0.15s, color 0.15s;
+  }
+
+  .trade-card:hover {
+    border-color: var(--orange);
+    color: var(--ink);
   }
 
   .trade-card img {
@@ -877,13 +949,13 @@ const trades = [
     border-radius: var(--radius-card);
     padding: 16px;
     text-align: center;
-    font-size: 12.5px;
+    font-size: 13.5px;
     color: var(--muted);
   }
 
   .trade-more-title {
     font-weight: 800;
-    font-size: 13.5px;
+    font-size: 14.5px;
     color: var(--ink);
     margin-bottom: 4px;
   }
@@ -898,18 +970,85 @@ const trades = [
 
   .why-video {
     position: relative;
-    height: 280px;
+    width: 100%;
+    aspect-ratio: 16 / 9;
     border-radius: var(--radius-panel);
     overflow: hidden;
     border: 1px solid var(--border);
+    background: #111;
+    isolation: isolate;
   }
 
-  .why-video iframe {
+  .why-video-facade {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     border: 0;
+    display: block;
+    padding: 0;
+    cursor: pointer;
+    background: #111;
+    z-index: 2;
+  }
+
+  .why-video-facade :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.45s ease, opacity 0.25s ease;
+  }
+
+  .why-video-shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.35));
+    pointer-events: none;
+  }
+
+  .why-video-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 68px;
+    height: 68px;
+    border-radius: 99px;
+    background: var(--orange);
+    color: #fff;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+    transition:
+      transform 0.15s,
+      background 0.15s,
+      opacity 0.2s;
+    pointer-events: none;
+  }
+
+  .why-video-facade:hover :global(img) {
+    transform: scale(1.03);
+  }
+
+  .why-video-facade:hover .why-video-play {
+    background: var(--orange-hover);
+    transform: translate(-50%, -50%) scale(1.06);
+  }
+
+  .why-video-facade.is-loading {
+    pointer-events: none;
+  }
+
+  .why-video-facade.is-loading .why-video-play {
+    opacity: 0.55;
+    transform: translate(-50%, -50%) scale(0.92);
+  }
+
+  .why-video-facade.is-loading :global(img) {
+    opacity: 0.7;
   }
 
   .why-grid h2 {
@@ -923,10 +1062,17 @@ const trades = [
     margin-top: 20px;
   }
 
+  .about-link {
+    display: inline-block;
+    margin-top: 20px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
   .why-point {
     display: flex;
     gap: 12px;
-    font-size: 13.5px;
+    font-size: 14.5px;
     line-height: 1.55;
     color: var(--body);
   }
@@ -937,7 +1083,7 @@ const trades = [
     border-radius: 99px;
     background: var(--orange-tint);
     color: var(--orange);
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 800;
     display: flex;
     align-items: center;
@@ -960,7 +1106,7 @@ const trades = [
   }
 
   .cta-panel h2 {
-    font-size: clamp(28px, 4vw, 36px);
+    font-size: clamp(30px, 4vw, 39px);
     font-weight: 800;
     letter-spacing: -0.02em;
     line-height: 1.1;
@@ -969,7 +1115,7 @@ const trades = [
 
   .cta-panel > p {
     margin: 14px auto 0;
-    font-size: 14.5px;
+    font-size: 15.5px;
     line-height: 1.6;
     color: var(--dark-muted);
     text-wrap: pretty;
@@ -986,7 +1132,7 @@ const trades = [
 
   .cta-price {
     margin-top: 20px !important;
-    font-size: 13px !important;
+    font-size: 14px !important;
     color: var(--orange-on-dark) !important;
     font-weight: 600;
   }
@@ -996,7 +1142,7 @@ const trades = [
     gap: 18px;
     justify-content: center;
     margin-top: 14px;
-    font-size: 12px;
+    font-size: 13px;
     color: var(--dark-muted);
   }
 

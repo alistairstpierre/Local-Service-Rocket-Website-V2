@@ -1,6 +1,7 @@
 ---
-/* Base HTML shell for all marketing pages: fonts, global CSS, optional Nav/Footer.
-   Pages pass title/description via props and content via the default slot. */
+/* Base HTML shell for all marketing pages: fonts, global CSS, Nav/Footer,
+   and technical SEO tags (canonical, Open Graph, Twitter) aligned with
+   docs/SITE-STRUCTURE-AND-SEO-GUIDE.md mechanics, adapted for the agency site. */
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
@@ -8,32 +9,63 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description?: string;
+  ogImage?: string;
   nav?: 'full' | 'simple' | 'none';
   showFooter?: boolean;
+  /** Optional JSON-LD object or @graph; stringified into application/ld+json */
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 const {
   title,
   description = 'Marketing, recruiting, and AI systems for home service companies ready to scale. Starts at $500/month. No sales calls.',
+  ogImage = '/assets/og-default.jpg',
   nav = 'full',
   showFooter = true,
+  jsonLd,
 } = Astro.props;
+
+const site = Astro.site ?? new URL('https://localservicerocket.com');
+const canonical = new URL(Astro.url.pathname, site).href;
+const imageUrl = new URL(ogImage, site).href;
+const siteName = 'Local Service Rocket';
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en-US">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content={description} />
-    <link rel="icon" type="image/svg+xml" href="/assets/lsr-logo.svg" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
     <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:site_name" content={siteName} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
+
+    <link rel="icon" type="image/svg+xml" href="/assets/lsr-logo.svg" />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/manrope-variable-latin.woff2"
+      crossorigin
+    />
+    {
+      jsonLd && (
+        <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+      )
+    }
   </head>
   <body>
     {nav !== 'none' && <Nav variant={nav} />}

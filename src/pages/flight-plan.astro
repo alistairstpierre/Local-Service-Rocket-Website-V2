@@ -1,0 +1,544 @@
+---
+/* Flight Plan deep page, Pre-flight / Liftoff / Orbit from 2026.09.10 dump.
+   Linked from homepage system section, nav, and footer.
+   Layout follows Claude Design "The Flight Plan.dc.html": hero with a stack of
+   tilted photo cards, then each stage as an orange-railed copy column beside a
+   single photo card, ending on the dark CTA panel. Copy is ours, not the mock's.
+   Photos go through <Picture> (see src/data/images.js) like the rest of the site. */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Picture from '../components/Picture.astro';
+import { absoluteUrl, breadcrumbList, graph, webPageNode } from '../data/schema';
+
+const title = 'Flight Plan to Scale Home Service Shops | Local Service Rocket';
+const description =
+  'How we take home service companies from about $20-25k months toward $200k/month: Pre-flight foundations, Liftoff owned traffic, Orbit hiring and ads.';
+const pageUrl = absoluteUrl('/flight-plan/');
+const jsonLd = graph([
+  webPageNode({ pageUrl, name: title, description }),
+  breadcrumbList(pageUrl, [
+    { name: 'Home', path: '/' },
+    { name: 'Flight Plan', path: '/flight-plan' },
+  ]),
+]);
+
+// Hero cards render at 195px, stage cards at 260px.
+const HERO_CARD_SIZES = '(max-width: 900px) 40vw, 195px';
+const STAGE_CARD_SIZES = '(max-width: 900px) 90vw, 260px';
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <main class="container">
+    <div class="crumbs">
+      <a href="/">Home</a>
+      <span>/</span>
+      <span class="current">The Flight Plan</span>
+    </div>
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow">THE FLIGHT PLAN</div>
+        <h1>From a busy one-man shop to a real company. No guessing the next move.</h1>
+        <p>
+          Most owners we help start around <strong>$20-25k/month</strong> and want consistent leads,
+          a small crew, or a path toward roughly <strong>$2-3M/year</strong>. The stages are the same
+          either way. You always know where you are and what’s next.
+        </p>
+        <div class="hero-ctas">
+          <a href="/get-started" class="btn btn-primary">Schedule onboarding</a>
+          <a href="/case-studies" class="btn btn-secondary">See client results</a>
+        </div>
+      </div>
+
+      <div class="photo-stack">
+        <figure class="photo-card card-a">
+          <Picture
+            name="team-honest-hanks"
+            alt="The Honest Hank's crew"
+            sizes={HERO_CARD_SIZES}
+            loading="eager"
+            fetchpriority="high"
+            style="object-position: center 60%"
+          />
+          <figcaption>Honest Hank’s · Tampa, FL</figcaption>
+        </figure>
+        <figure class="photo-card card-b">
+          <Picture name="team-dry-duck" alt="The Dry Duck crew" sizes={HERO_CARD_SIZES} />
+          <figcaption>Dry Duck · Iowa</figcaption>
+        </figure>
+        <figure class="photo-card card-c">
+          <Picture name="team-rewired" alt="The Rewired crew" sizes={HERO_CARD_SIZES} />
+          <figcaption>Rewired · Des Moines, IA</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <!-- STAGE 1 -->
+    <section class="stage" id="pre-flight">
+      <div class="stage-copy">
+        <div class="stage-label">STAGE 1</div>
+        <h2>Pre-flight: build it right</h2>
+        <p class="stage-lede">
+          Fix where jobs should come from (GBP + website), finish the boring SEO foundations, turn on
+          LSA and local lead providers, then aim for ~1-3 booked jobs a day and ~$40-50k months.
+        </p>
+        <div class="example">
+          <div class="example-tag">EXAMPLE · HONEST HANK’S</div>
+          <p>
+            Lewis was a serious one-man / rag-tag shop at roughly <strong>$20-25k/month</strong> who
+            wanted consistent leads and a real company (even if that meant stopping at a few employees).
+            First moves: audit where leads actually came from, tighten the Google Business Profile and
+            website, citations / chamber / BBB-style foundations, Local Services Ads, and platforms like
+            Angi and Yelp for reviews and links, even when they’re inefficient lead sources, until his
+            own Google system could carry the load.
+          </p>
+          <p>
+            Ready for Liftoff looked like: booked jobs climbing toward that daily rhythm and revenue
+            pushing toward <strong>$40-50k/month</strong>, enough to think about vans and hiring.
+          </p>
+          <a href="/case-studies/honest-hanks">Read the Honest Hank’s story →</a>
+        </div>
+        <ul class="bullets">
+          <li>Lead-source audit + GBP / site that can actually convert</li>
+          <li>Citations, socials, chamber / BBB-style trust links most shops skip</li>
+          <li>LSA early, not full Search spend yet</li>
+          <li>Local lead providers as a bridge (reviews + backlinks), then graduate off them</li>
+        </ul>
+      </div>
+      <div class="stage-photo">
+        <figure class="photo-card tilt-right">
+          <Picture
+            name="team-honest-hanks"
+            alt="The Honest Hank's crew"
+            sizes={STAGE_CARD_SIZES}
+            style="object-position: center 60%"
+          />
+          <figcaption>Honest Hank’s — one man to three techs</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- STAGE 2 -->
+    <section class="stage" id="liftoff">
+      <div class="stage-copy">
+        <div class="stage-label">STAGE 2</div>
+        <h2>Liftoff: own your traffic</h2>
+        <p class="stage-lede">
+          Once ~$50k months are working: deepen SEO, brand if you haven’t, then add low-budget Google
+          Search (~$50/day tests) so growth isn’t rented from Angi and Yelp forever.
+        </p>
+        <div class="example">
+          <div class="example-tag">WHAT SCALES HERE</div>
+          <p>
+            Stronger SEO frameworks (area posts, GBP reach, selective backlinks). Branding by Liftoff
+            at latest, Honest Hank’s did it early in Pre-flight, which is fine if cash allows (~$3k
+            brand package). Then Search/PPC on a small daily budget once SEO foundations exist, so paid
+            isn’t fighting a broken site.
+          </p>
+          <p>
+            Our fee around this stage: <strong>~$1.5k/mo</strong> covering SEO and ad management
+            together, plus LSA on a pay-per-booked-call model. Still in the ~10-15% of revenue
+            ballpark once ad spend is included.
+          </p>
+        </div>
+        <ul class="bullets">
+          <li>Expand map reach and content without spam</li>
+          <li>Brand system homeowners trust (logo, trucks, uniforms)</li>
+          <li>Introduce Search ads carefully; keep LSA</li>
+          <li>CRM + review habits so the machine doesn’t leak</li>
+        </ul>
+      </div>
+      <div class="stage-photo">
+        <figure class="photo-card tilt-left">
+          <Picture name="team-dry-duck" alt="The Dry Duck crew" sizes={STAGE_CARD_SIZES} />
+          <figcaption>Dry Duck — brand, site and wraps built from scratch</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- STAGE 3 -->
+    <section class="stage" id="orbit">
+      <div class="stage-copy">
+        <div class="stage-label">STAGE 3</div>
+        <h2>Orbit: scale spend, hire, get your time back</h2>
+        <p class="stage-lede">
+          Raise ad spend with safety rails, run hiring sprints, and build owner skills (training techs
+          to make money) so the company isn’t you in every truck.
+        </p>
+        <div class="example">
+          <div class="example-tag">EXAMPLE · HONEST HANK’S HIRING</div>
+          <p>
+            After burning ~$1k+ on Indeed with nothing to show, we ran Facebook hiring. Within ~10 days
+            they had candidates interviewing. Full transparency: they ultimately hired via
+            friends/referrals, but the sprint still produced a real pipeline fast. Owner job: define
+            the role and take interviews. Our job: ads + filters. Their ongoing job: train new hires to
+            produce, we support, we don’t pretend to run their shop.
+          </p>
+          <p>
+            Rewired and Dry Duck live in this world too: scaled crews, higher ad risk, and fees that
+            reflect insurance against a working system failing when you’re at $200k months with trucks
+            and payroll to feed.
+          </p>
+          <a href="/services/hiring">See hiring &amp; recruiting →</a>
+        </div>
+        <ul class="bullets">
+          <li>Hiring campaigns (~$500 setup / ~$500 month while live; ~$30-50/day ad spend for ~10 days)</li>
+          <li>Scale Search carefully: ~$1.5k/mo + 20% of ad spend covers risk management as budgets rise</li>
+          <li>Owner becomes the trainer/operator; we keep Google printing</li>
+        </ul>
+      </div>
+      <div class="stage-photo">
+        <figure class="photo-card tilt-right">
+          <Picture name="team-rewired" alt="The Rewired crew" sizes={STAGE_CARD_SIZES} />
+          <figcaption>Rewired — five techs to twelve</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="sweet">
+      <h2>Where we fit</h2>
+      <p>
+        We’re built for roughly <strong>$20-25k/month → ~$200k/month</strong> on Google, the climb
+        to about <strong>$2-3M/year</strong>. Past that, some shops outgrow a focused Google partner
+        and want a larger in-house or multi-channel team. That’s fine. Our job is to get you to the
+        point where those options exist.
+      </p>
+    </section>
+
+    <div class="cta-panel">
+      <div>
+        <div class="cta-title">Know which stage you’re in?</div>
+        <p>Watch how it works, then book onboarding. No sales calls.</p>
+      </div>
+      <div class="cta-actions">
+        <a href="/get-started" class="btn btn-primary">Schedule onboarding</a>
+        <a href="/case-studies" class="btn btn-ghost-dark">See client results</a>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  main {
+    padding-top: 40px;
+    padding-bottom: 72px;
+  }
+
+  .crumbs {
+    display: flex;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--muted-3);
+    flex-wrap: wrap;
+  }
+
+  .crumbs a {
+    color: var(--muted-3);
+  }
+
+  .current {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* HERO */
+  .hero {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: 1fr 440px;
+    gap: 48px;
+    align-items: center;
+  }
+
+  h1 {
+    margin-top: 12px;
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    text-wrap: balance;
+    max-width: 18ch;
+  }
+
+  .hero-copy > p {
+    margin-top: 16px;
+    font-size: 16.5px;
+    line-height: 1.65;
+    color: var(--muted);
+    max-width: 52ch;
+  }
+
+  .hero-ctas {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+
+  /* Tilted photo cards, shared by the hero stack and the stage sidebars. */
+  .photo-card {
+    margin: 0;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 8px 10px;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
+  }
+
+  /* :global() because <Picture> renders the <img> from a child component. */
+  .photo-card :global(img) {
+    width: 100%;
+    height: 115px;
+    object-fit: cover;
+    border-radius: 3px;
+    display: block;
+  }
+
+  .photo-card figcaption {
+    margin-top: 7px;
+    font-size: 10.5px;
+    font-weight: 700;
+    text-align: center;
+    color: var(--body);
+  }
+
+  .photo-stack {
+    position: relative;
+    height: 320px;
+  }
+
+  .photo-stack .photo-card {
+    position: absolute;
+    width: 195px;
+  }
+
+  .card-a {
+    top: 0;
+    left: 0;
+    transform: rotate(-5deg);
+  }
+
+  .card-b {
+    top: 58px;
+    right: 0;
+    transform: rotate(4deg);
+  }
+
+  .card-c {
+    bottom: 0;
+    left: 40px;
+    transform: rotate(-2deg);
+  }
+
+  /* STAGES */
+  .stage {
+    margin-top: 64px;
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .stage-copy {
+    border-left: 3px solid var(--orange);
+    padding-left: 28px;
+  }
+
+  .stage-label {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--orange);
+  }
+
+  .stage h2 {
+    margin-top: 8px;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .stage-lede {
+    margin-top: 12px;
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--body);
+    font-weight: 600;
+    max-width: 68ch;
+  }
+
+  .stage-photo :global(img) {
+    height: 150px;
+  }
+
+  .tilt-right {
+    transform: rotate(3deg);
+  }
+
+  .tilt-left {
+    transform: rotate(-3deg);
+  }
+
+  .example {
+    margin-top: 22px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-panel);
+    padding: 22px 26px;
+    background: var(--section-bg);
+  }
+
+  .example-tag {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    color: var(--orange);
+  }
+
+  .example p {
+    margin-top: 10px;
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: var(--body);
+    max-width: 78ch;
+  }
+
+  .example a {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--orange);
+  }
+
+  .bullets {
+    margin: 18px 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--body);
+  }
+
+  .bullets li {
+    padding-left: 20px;
+    position: relative;
+  }
+
+  .bullets li::before {
+    content: '·';
+    position: absolute;
+    left: 0;
+    color: var(--orange);
+    font-weight: 800;
+  }
+
+  /* WHERE WE FIT */
+  .sweet {
+    margin-top: 64px;
+    border: 1px solid var(--border);
+    background: var(--section-bg);
+    border-radius: var(--radius-panel);
+    padding: 32px 36px;
+  }
+
+  .sweet h2 {
+    font-size: 24px;
+    font-weight: 800;
+  }
+
+  .sweet p {
+    margin-top: 10px;
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--body);
+    max-width: 72ch;
+  }
+
+  /* CTA */
+  .cta-panel {
+    margin-top: 56px;
+    background: var(--dark);
+    color: var(--dark-text);
+    border-radius: 20px;
+    padding: 36px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    flex-wrap: wrap;
+  }
+
+  .cta-title {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+
+  .cta-panel p {
+    margin: 6px 0 0;
+    font-size: 13.5px;
+    color: var(--dark-muted);
+  }
+
+  .cta-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 1000px) {
+    .hero {
+      grid-template-columns: 1fr;
+      gap: 36px;
+    }
+
+    /* Overlapping cards need room they do not have on narrow screens. */
+    .photo-stack {
+      height: auto;
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .photo-stack .photo-card {
+      position: static;
+      width: min(195px, 30vw);
+    }
+
+    .photo-stack :global(img) {
+      height: 90px;
+    }
+
+    .stage {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+
+    .stage-photo {
+      order: -1;
+      max-width: 340px;
+    }
+
+    .stage-photo :global(img) {
+      height: 170px;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .stage-copy {
+      padding-left: 18px;
+    }
+
+    .example {
+      padding: 20px 18px;
+    }
+
+    .cta-panel {
+      padding: 28px 22px;
+    }
+  }
+</style>

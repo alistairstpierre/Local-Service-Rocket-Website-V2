@@ -1,441 +1,80 @@
 ---
-/* Rewired case study page — template for future case studies (Honest Hank's, Dry Duck, etc.).
-   Design source: Case Study - Rewired.dc.html */
-import BaseLayout from '../../layouts/BaseLayout.astro';
-
-const BOOKING = 'https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg9d1R';
+/* Rewired case study, first LSR client story from 2026.09.09 brain dump (Q11-14). */
+import CaseStudyLayout from '../../layouts/CaseStudyLayout.astro';
 ---
 
-<BaseLayout
-  title="Rewired Case Study — Local Service Rocket"
-  description="Seven agencies couldn't make Rewired's ads work. Then we grew the company 600% in a year. Electrical · Des Moines, IA."
-  nav="simple"
-  showFooter={false}
+<CaseStudyLayout
+  title="Rewired Electrical Case Study and Results | Local Service Rocket"
+  description="How Rewired grew from failed agencies and rough weeks to high six-figure months with Local Service Rocket still in the seat years later. Read the story."
+  crumb="Rewired"
+  logo="logo-rewired"
+  brandName="Rewired"
+  brandMeta="Electrical · Des Moines, IA · Client for 3+ years"
+  headline="Seven agencies couldn’t make his ads work. We’re still here, and the company is still growing."
+  intro="John Senn was Local Service Rocket’s first client. He’d already burned through multiple marketing companies with nothing to show from advertising. Today Rewired runs a much larger crew across Des Moines, and John still works with the same partner who got ads profitable when nobody else could."
+  teamImg="team-rewired"
+  teamAlt="The Rewired team and fleet"
+  stats={[
+    { value: '$60k → $220k+', label: 'avg monthly revenue', accent: true },
+    { value: '5 → 12', label: 'crew members' },
+    { value: '1.5 → 6', label: 'avg booked calls / day' },
+    { value: '~3.7×', label: 'revenue multiple (60→220)' },
+  ]}
+  startedHeadline="A rough week, a long rant, and one more shot at ads."
+  didHeadline="Ads first. Then the full stack, with the patience to stay."
+  steps={[
+    {
+      title: 'Make ads work on a scuffed setup',
+      body: 'Blocked from changing the existing site, we still shipped a conversion-focused landing experience and got Google Ads producing on a small daily budget, after multiple agencies had failed.',
+    },
+    {
+      title: 'Survive the “hire the big agency” detours',
+      body: 'Twice, larger agencies took over with flashy rebuilds. Organic and paid both tanked. Each time John came back, and we rebuilt lead flow without the showmanship.',
+    },
+    {
+      title: 'Own the website, SEO, ads, and hiring',
+      body: 'Eventually Rewired stopped shopping agencies. We improved the site for conversion (not just looks), kept ads performing, and ran Facebook hiring campaigns for helpers, apprentices, and salespeople.',
+    },
+  ]}
+  quote="My company went through upwards of a dozen other marketing companies prior to landing here, and I can say it's nice to be home where you're treated like family."
+  quoteName="John Senn, owner"
+  quoteMeta="Rewired · Des Moines, IA"
+  quoteImg="john-headshot"
+  quoteVideo="https://www.youtube.com/watch?v=1DnfD-5fWL8"
+  quoteVideoLabel="Watch John's video"
+  ctaHeadline="Want results like Rewired’s?"
 >
-  <main>
-    <div class="top container">
-      <div class="top-grid">
-        <div>
-          <div class="crumbs">
-            <a href="/">Home</a>
-            <span>/</span>
-            <span>Case studies</span>
-            <span>/</span>
-            <span class="current">Rewired</span>
-          </div>
-          <div class="brand-row">
-            <img src="/assets/logo-rewired.png" alt="Rewired" class="brand-logo" />
-            <div>
-              <div class="brand-name">Rewired</div>
-              <div class="brand-meta">Electrical · Des Moines, IA · Client for 3+ years</div>
-            </div>
-          </div>
-          <h1>
-            Seven agencies couldn't make his ads work. Then we grew the company 600% in a year.
-          </h1>
-          <p>
-            John Senn had paid seven marketing companies before us. None of them earned him a dollar
-            from advertising. Today Rewired runs a 15-person crew across Des Moines — and our first
-            client is still with us.
-          </p>
-        </div>
-        <img
-          src="/assets/team-rewired.png"
-          alt="The Rewired team and fleet"
-          class="team-photo"
-        />
-      </div>
+  <div slot="started">
+    <p>
+      John was LSR’s first client, reached through early Facebook prospecting when Alistair was still
+      learning Google Ads from scratch. On that first call, John wasn’t shopping features. He was in
+      the middle of a brutal stretch: an office betrayal and firing, running jobs himself, and years of
+      paying marketers who never made advertising profitable. He talked for the better part of an hour
+      before the real ask landed: <em>want to give it a go?</em>
+    </p>
+    <p>
+      The honest pitch was simple: low budget, maximum effort, no fake certainty. John had already
+      tried something like five or six companies. One more experiment wasn’t optimism, it was
+      necessity.
+    </p>
+  </div>
 
-      <div class="stats">
-        <div class="stat">
-          <div class="stat-num orange">$60k → $220k+</div>
-          <div class="stat-label">monthly revenue</div>
-        </div>
-        <div class="stat">
-          <div class="stat-num">5 → 15</div>
-          <div class="stat-label">crew members</div>
-        </div>
-        <div class="stat">
-          <div class="stat-num">4 → 12</div>
-          <div class="stat-label">jobs booked daily</div>
-        </div>
-        <div class="stat">
-          <div class="stat-num">600%</div>
-          <div class="stat-label">growth in 2024</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="story container">
-      <div class="eyebrow">WHERE THEY STARTED</div>
-      <h2>A good electrician stuck on rented platforms.</h2>
-      <p class="story-p">
-        [PLACEHOLDER: 2-3 sentences on Rewired's situation when you met John — crew size, where
-        leads came from, what wasn't working. You know this story best.]
-      </p>
-
-      <div class="eyebrow spaced">WHAT WE DID</div>
-      <h2>The full flight plan, start to finish.</h2>
-      <div class="steps">
-        <div class="step">
-          <div class="num">1</div>
-          <div>
-            <div class="step-title">Pre-flight — ads that finally worked</div>
-            <div class="step-body">
-              Rebuilt the Google Ads account from scratch and made advertising profitable in the
-              first month — after seven agencies had failed.
-            </div>
-          </div>
-        </div>
-        <div class="step">
-          <div class="num">2</div>
-          <div>
-            <div class="step-title">Liftoff — traffic they own</div>
-            <div class="step-body">
-              New website, local SEO, and a review engine — moving Rewired off rented platforms onto
-              their own Google presence, raising prices as demand climbed.
-            </div>
-          </div>
-        </div>
-        <div class="step">
-          <div class="num">3</div>
-          <div>
-            <div class="step-title">Orbit — a crew of 15</div>
-            <div class="step-body">
-              Recruiting and hiring systems that tripled the crew, so John runs the company instead
-              of every job.
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="quote-wrap container">
-      <div class="quote">
-        <div class="stars">★★★★★</div>
-        <p>
-          “In 2024 we grew the company by 600%. I'm very happy with our relationship: your response
-          time, your availability, your honesty and the highest integrity. My company went through
-          upwards of a dozen other marketing companies prior to landing here, and I can say it's nice
-          to be home where you're treated like family.”
-        </p>
-        <div class="quote-footer">
-          <div class="author">
-            <img src="/assets/john-headshot.png" alt="John Senn" width="36" height="36" />
-            <div>
-              <div class="author-name">John Senn, owner</div>
-              <div class="author-meta">Rewired · Des Moines, IA</div>
-            </div>
-          </div>
-          <a
-            href="https://www.youtube.com/watch?v=1DnfD-5fWL8"
-            target="_blank"
-            rel="noopener"
-            class="watch"
-          >
-            <span class="play">▶</span>Watch John's video
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <div class="bottom container">
-      <h2>Want results like Rewired's?</h2>
-      <p>
-        See exactly how it works and what it costs — then book your onboarding call. No sales calls.
-      </p>
-      <div class="bottom-ctas">
-        <a href="/get-started" class="btn btn-primary">See how it works</a>
-        <a href={BOOKING} class="btn btn-secondary">Schedule onboarding</a>
-      </div>
-    </div>
-  </main>
-</BaseLayout>
-
-<style>
-  .top {
-    padding-top: 56px;
-  }
-
-  .top-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 48px;
-    align-items: center;
-  }
-
-  .crumbs {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 12px;
-    color: var(--muted-3);
-  }
-
-  .crumbs a {
-    color: var(--muted-3);
-  }
-
-  .current {
-    color: var(--ink);
-    font-weight: 600;
-  }
-
-  .brand-row {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-top: 22px;
-  }
-
-  .brand-logo {
-    height: 52px;
-    width: auto;
-  }
-
-  .brand-name {
-    font-weight: 800;
-    font-size: 17px;
-  }
-
-  .brand-meta {
-    font-size: 12px;
-    color: var(--muted-3);
-  }
-
-  h1 {
-    margin-top: 20px;
-    font-size: clamp(28px, 4vw, 42px);
-    line-height: 1.08;
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    text-wrap: balance;
-  }
-
-  .top-grid p {
-    margin-top: 16px;
-    font-size: 15.5px;
-    line-height: 1.6;
-    color: var(--muted);
-    text-wrap: pretty;
-  }
-
-  .team-photo {
-    width: 100%;
-    border-radius: var(--radius-panel);
-    border: 1px solid var(--border);
-    display: block;
-  }
-
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 14px;
-    margin-top: 36px;
-  }
-
-  .stat {
-    border: 1px solid var(--border);
-    border-radius: var(--radius-card);
-    padding: 18px 20px;
-  }
-
-  .stat-num {
-    font-size: 24px;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-  }
-
-  .stat-num.orange {
-    color: var(--orange);
-  }
-
-  .stat-label {
-    font-size: 11.5px;
-    color: var(--muted-2);
-    margin-top: 3px;
-  }
-
-  .story {
-    max-width: 760px;
-    margin-top: 64px;
-  }
-
-  .story h2 {
-    margin-top: 10px;
-    font-size: 26px;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-  }
-
-  .story-p {
-    margin-top: 12px;
-    font-size: 14.5px;
-    line-height: 1.7;
-    color: var(--body);
-    text-wrap: pretty;
-  }
-
-  .eyebrow.spaced {
-    margin-top: 40px;
-  }
-
-  .steps {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 18px;
-  }
-
-  .step {
-    border: 1px solid var(--border);
-    border-radius: var(--radius-card);
-    padding: 16px 20px;
-    display: flex;
-    gap: 14px;
-  }
-
-  .num {
-    width: 28px;
-    height: 28px;
-    border-radius: 99px;
-    background: var(--orange);
-    color: #fff;
-    font-weight: 800;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex: none;
-  }
-
-  .step-title {
-    font-weight: 800;
-    font-size: 14px;
-  }
-
-  .step-body {
-    font-size: 13px;
-    color: var(--muted);
-    margin-top: 3px;
-    line-height: 1.6;
-  }
-
-  .quote-wrap {
-    max-width: 760px;
-    margin-top: 56px;
-  }
-
-  .quote {
-    background: var(--dark);
-    border-radius: var(--radius-panel);
-    padding: 32px;
-    color: var(--dark-text);
-  }
-
-  .stars {
-    color: var(--orange-on-dark);
-    font-size: 14px;
-    letter-spacing: 2px;
-  }
-
-  .quote p {
-    margin-top: 14px;
-    font-size: 17px;
-    line-height: 1.6;
-    font-weight: 600;
-    text-wrap: pretty;
-  }
-
-  .quote-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 18px;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
-  .author {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .author img {
-    width: 36px;
-    height: 36px;
-    border-radius: 99px;
-    object-fit: cover;
-  }
-
-  .author-name {
-    font-size: 13px;
-    font-weight: 700;
-  }
-
-  .author-meta {
-    font-size: 11px;
-    color: var(--dark-muted);
-  }
-
-  .watch {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    font-size: 12px;
-    color: var(--orange-on-dark);
-    font-weight: 700;
-  }
-
-  .watch:hover {
-    color: #ffb07a;
-  }
-
-  .play {
-    width: 20px;
-    height: 20px;
-    border-radius: 99px;
-    background: var(--orange);
-    color: #fff;
-    font-size: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .bottom {
-    max-width: 760px;
-    margin-top: 56px;
-    padding-bottom: 72px;
-    text-align: center;
-  }
-
-  .bottom h2 {
-    font-size: 28px;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    text-wrap: balance;
-  }
-
-  .bottom > p {
-    margin-top: 10px;
-    font-size: 14px;
-    color: var(--muted);
-  }
-
-  .bottom-ctas {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    margin-top: 22px;
-    flex-wrap: wrap;
-  }
-
-  @media (max-width: 900px) {
-    .top-grid,
-    .stats {
-      grid-template-columns: 1fr;
-    }
-  }
-</style>
+  <h2>What almost ended the relationship (and what saved it)</h2>
+  <p>
+    The hard parts weren’t only campaigns. They were the moments bigger agencies promised a cleaner
+    website and “best in class” systems, then killed the organic channel that was paying the bills
+    and couldn’t restart paid. One rebuild soaked tens of thousands of dollars and months of weaker
+    lead flow before John pulled ads back.
+  </p>
+  <p>
+    What kept the partnership alive was a simple rule: if someone else can do it better, they should.
+    Alistair offered to step aside, stay on as a light consultant for context, and return only if the
+    new team couldn’t deliver. They couldn’t. That humility, plus actually making ads print money,
+    is why Rewired stopped cycling agencies and kept one partner for the long haul.
+  </p>
+  <p>
+    Along the way the work also meant owner support when stress and paranoia ran high in year one.
+    Clear expectations are easier now. Back then it was problem-solving under pressure until both
+    sides got stronger.
+  </p>
+</CaseStudyLayout>

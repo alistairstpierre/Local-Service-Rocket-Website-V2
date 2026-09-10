@@ -1,0 +1,751 @@
+---
+/* Trade SEO/ad landing layout for /for/[slug].
+   Section order follows docs/SITE-STRUCTURE-AND-SEO-GUIDE.md individual service pages,
+   adapted for the LSR agency (hero → proof → problem → solution → steps → where we work
+   → stakes → related services → FAQ → CTA). Pass trade fields from src/data/trades.ts. */
+import BaseLayout from './BaseLayout.astro';
+import Picture from '../components/Picture.astro';
+import type { TradeLanding } from '../data/trades';
+import {
+  absoluteUrl,
+  breadcrumbList,
+  businessId,
+  faqPageNode,
+  graph,
+  webPageNode,
+} from '../data/schema';
+
+interface Props {
+  trade: TradeLanding;
+}
+
+const { trade } = Astro.props;
+
+const pageUrl = absoluteUrl(`/for/${trade.slug}/`);
+
+const spotlights = {
+  rewired: {
+    href: '/case-studies/rewired',
+    name: 'Rewired',
+    meta: 'Electrical · Des Moines, IA',
+    quote:
+      'In 2024 we grew the company by 600%. My company went through upwards of a dozen other marketing companies prior to landing here.',
+    author: 'John Senn, owner',
+    img: 'john-headshot',
+  },
+  'honest-hanks': {
+    href: '/case-studies/honest-hanks',
+    name: "Honest Hank's",
+    meta: 'Electrician · Tampa, FL',
+    quote:
+      'We just purchased our third van and got it wrapped, and now I’m hiring another electrician to keep up with the growth.',
+    author: 'Lewis Carter, owner',
+    img: 'lewis-carter',
+  },
+  'dry-duck': {
+    href: '/case-studies/dry-duck',
+    name: 'Dry Duck',
+    meta: 'Basement waterproofing · Iowa',
+    quote:
+      'Where we were doing really well and then it dropped off was very stressful, but it’s all part of the process. Building a business is hard.',
+    author: 'John, owner',
+    img: 'john-headshot',
+  },
+  'hooked-up': {
+    href: '/case-studies/hooked-up',
+    name: 'Hooked Up Electric',
+    meta: 'Electrical · Merkel, TX',
+    quote:
+      'Hands-off marketing that stays consistent: multi-county Google coverage and years of steady LSA volume while the shop runs the work.',
+    author: 'Jason, owner',
+    img: 'jason-hooked-up',
+  },
+} as const;
+
+const proof = spotlights[trade.spotlight];
+
+const related = [
+  {
+    href: '/services/local-seo',
+    title: 'Local SEO & Reviews',
+    body: 'GBP, categories, reviews, and map-pack foundations.',
+  },
+  {
+    href: '/services/paid-ads',
+    title: 'Paid Ads & LSAs',
+    body: 'Local Services Ads first, then Search when foundations hold.',
+  },
+  {
+    href: '/services/websites',
+    title: 'Websites That Convert',
+    body: 'Structure before AI polish: pages that book jobs.',
+  },
+  {
+    href: '/services/hiring',
+    title: 'Hiring & Recruiting',
+    body: 'Meta hiring sprints when the calendar outruns the crew.',
+  },
+];
+
+const steps = [
+  {
+    title: 'Audit the Google bottleneck',
+    body: `We find what’s blocking ${trade.companyPlural} on profile, site, reviews, or ads, then pick the highest-leverage first lane.`,
+  },
+  {
+    title: 'Ship foundations that convert',
+    body: 'GBP, conversion paths, LSAs or organic as fit, and tracking aimed at booked jobs, not vanity metrics.',
+  },
+  {
+    title: 'Scale spend and crew carefully',
+    body: 'When capacity and cash flow allow, we expand Search, SEO depth, branding, and hiring so growth doesn’t break the shop.',
+  },
+];
+
+const stakes = [
+  `Competitors who finish Google basics keep winning ${trade.keyword} demand in your ZIP codes.`,
+  'Lead portals and lazy ads raise cost without building an asset you own.',
+  'Feast-or-famine calendars make hiring and trucks guesswork.',
+  'Big-agency retainers burn cash before anything is proven.',
+];
+
+const trustBadges = ['Starts ~$500/mo', 'No sales calls', 'Booked jobs focus', 'Fees scale with you'];
+
+const jsonLd = graph([
+  {
+    '@type': 'Service',
+    '@id': `${pageUrl}#service`,
+    name: trade.keyword,
+    serviceType: trade.keyword,
+    url: pageUrl,
+    description: trade.description,
+    provider: { '@id': businessId },
+    areaServed: { '@type': 'Country', name: 'United States' },
+  },
+  webPageNode({
+    pageUrl,
+    name: trade.title,
+    description: trade.description,
+    type: ['WebPage', 'ServicePage'],
+    mainEntityId: `${pageUrl}#service`,
+  }),
+  faqPageNode(pageUrl, trade.faqs),
+  breadcrumbList(pageUrl, [
+    { name: 'Home', path: '/' },
+    { name: 'Who We Help', path: '/#who-we-help' },
+    { name: trade.label, path: `/for/${trade.slug}/` },
+  ]),
+]);
+---
+
+<BaseLayout title={trade.title} description={trade.description} jsonLd={jsonLd}>
+  <main class="trade">
+    <!-- 1. Hero -->
+    <section class="hero container">
+      <div class="crumbs">
+        <a href="/">Home</a>
+        <span>/</span>
+        <a href="/#who-we-help">Who We Help</a>
+        <span>/</span>
+        <span class="current">{trade.label}</span>
+      </div>
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow">FOR {trade.label.toUpperCase()} COMPANIES</div>
+          <h1>{trade.h1}</h1>
+          <p class="hero-sub">{trade.heroSub}</p>
+          <div class="hero-ctas">
+            <a href="/get-started" class="btn btn-primary">Schedule onboarding</a>
+            <a href="tel:8883716365" class="btn btn-secondary">(888) 371-6365</a>
+          </div>
+          <div class="badges">
+            {trustBadges.map((b) => <span class="badge">{b}</span>)}
+          </div>
+        </div>
+        <div class="hero-card">
+          <img src={trade.icon} alt="" width="48" height="48" decoding="async" />
+          <div class="hero-card-title">{trade.keyword}</div>
+          <p>
+            Built for {trade.companyPlural} that want Google to produce booked jobs, then scale with
+            the crew. Same Flight Plan as our electrical and waterproofing clients.
+          </p>
+          <a href="/flight-plan">See the Flight Plan →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Proof / testimonials (display only; no review schema) -->
+    <section class="section container">
+      <div class="eyebrow">CLIENT PROOF</div>
+      <h2>Results From Companies Like Yours</h2>
+      <p class="lede">{trade.proofAngle}</p>
+      <a href={proof.href} class="proof-card">
+        <div class="stars">★★★★★</div>
+        <p>“{proof.quote}”</p>
+        <div class="proof-author">
+          <Picture name={proof.img} alt={proof.author} width={40} height={40} />
+          <div>
+            <div class="proof-name">{proof.author}</div>
+            <div class="proof-meta">{proof.name} · {proof.meta}</div>
+          </div>
+        </div>
+        <div class="proof-link">Read the full story →</div>
+      </a>
+      <p class="more-proof">
+        More stories: <a href="/case-studies">all case studies</a> ·
+        <a href="/case-studies/rewired">Rewired</a> ·
+        <a href="/case-studies/honest-hanks">Honest Hank's</a> ·
+        <a href="/case-studies/dry-duck">Dry Duck</a>
+      </p>
+    </section>
+
+    <!-- 3. Problem -->
+    <section class="section band">
+      <div class="container">
+        <div class="measure">
+          <div class="measure__spine" aria-hidden="true"></div>
+          <div class="measure__copy">
+            <div class="eyebrow">WHY THIS MATTERS</div>
+            <h2>{trade.problemH2}</h2>
+            {trade.problemBody.map((p) => <p>{p}</p>)}
+          </div>
+          <div class="measure__rail" aria-hidden="true"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Solution -->
+    <section class="section container">
+      <div class="measure">
+        <div class="measure__spine" aria-hidden="true"></div>
+        <div class="measure__copy">
+          <div class="eyebrow">WHAT WE DO</div>
+          <h2>{trade.solutionH2}</h2>
+          {
+            trade.solutionBody.map((p, i) =>
+              i === 0 ? (
+                <p>
+                  {p} Start with{' '}
+                  <a href="/services/local-seo">Local SEO</a>,{' '}
+                  <a href="/services/paid-ads">paid ads</a>, and a{' '}
+                  <a href="/services/websites">converting website</a> when the bottleneck is the site.
+                </p>
+              ) : (
+                <p>{p}</p>
+              )
+            )
+          }
+        </div>
+        <div class="measure__rail" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <!-- 5. Steps -->
+    <section class="section container">
+      <div class="eyebrow">HOW IT WORKS</div>
+      <h2>Three Steps From Audit to Orbit</h2>
+      <p class="lede">Clear sequence for {trade.companyPlural}. No mystery retainers.</p>
+      <div class="steps">
+        {
+          steps.map((step, i) => (
+            <div class="step">
+              <div class="step-num">{i + 1}</div>
+              <div>
+                <div class="step-title">{step.title}</div>
+                <p>{step.body}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- 6. Where we work (service-area analogue; H2 names geographic scope) -->
+    <section class="section container areas">
+      <div class="eyebrow">WHERE WE WORK</div>
+      <h2>Trade Companies Across the United States</h2>
+      <p class="lede">
+        Local Service Rocket is run from Wellington, New Zealand, and partners with residential home
+        service companies across the US (and ANZ). We specialize in trades that win on Google search,
+        Maps, and reviews, including {trade.label.toLowerCase()}.
+      </p>
+      <div class="area-points">
+        <div>
+          <div class="area-title">One partner, remote delivery</div>
+          <p>You get a primary operator accountable for Google outcomes, not a revolving account team.</p>
+        </div>
+        <div>
+          <div class="area-title">Built for Google-led trades</div>
+          <p>
+            If customers find {trade.companyPlural} on Maps and search, this is our specialty. See
+            <a href="/#who-we-help">who we help</a>.
+          </p>
+        </div>
+        <div>
+          <div class="area-title">Stage-based growth</div>
+          <p>
+            Pre-flight foundations, Liftoff owned traffic, Orbit scale and hiring. Read the
+            <a href="/flight-plan">Flight Plan</a>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Stakes -->
+    <section class="section stakes-wrap">
+      <div class="container stakes">
+        <div>
+          <div class="eyebrow on-dark">RISKS OF WAITING</div>
+          <h2>Delaying {trade.label} Marketing Has a Cost</h2>
+          <ul>
+            {stakes.map((item) => <li>{item}</li>)}
+          </ul>
+          <a href="/get-started" class="btn btn-primary">Schedule onboarding</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. Related services -->
+    <section class="section container">
+      <div class="eyebrow">RELATED SERVICES</div>
+      <h2>The Lanes Behind {trade.label} Growth</h2>
+      <p class="lede">
+        Not sure which lane to start with?
+        <a href="/get-started">Book onboarding</a> and we’ll recommend the right first move after a
+        fast Google audit.
+      </p>
+      <div class="related">
+        {
+          related.map((item) => (
+            <a href={item.href} class="related-card">
+              <div class="related-title">{item.title}</div>
+              <p>{item.body}</p>
+              <span>Learn more →</span>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- 9. FAQ -->
+    <section class="section container faq">
+      <div class="eyebrow">FAQ</div>
+      <h2>Questions About {trade.label} Marketing</h2>
+      <div class="faq-list">
+        {
+          trade.faqs.map((faq) => (
+            <div class="faq-item">
+              <h3>{faq.q}</h3>
+              <p>{faq.a}</p>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- 10. CTA -->
+    <section class="section container">
+      <div class="bottom-panel">
+        <h2>{trade.ctaH2}</h2>
+        <p>{trade.ctaLine}</p>
+        <div class="hero-ctas">
+          <a href="/get-started" class="btn btn-primary">Get started →</a>
+          <a href="/case-studies" class="btn btn-ghost-dark">See client results</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .trade {
+    padding-bottom: 72px;
+  }
+
+  .hero {
+    padding-top: 56px;
+  }
+
+  .crumbs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--muted-3);
+    flex-wrap: wrap;
+  }
+
+  .crumbs a {
+    color: var(--muted-3);
+  }
+
+  .crumbs a:hover {
+    color: var(--ink);
+  }
+
+  .current {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .hero-grid {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: 36px;
+    align-items: start;
+  }
+
+  h1 {
+    margin-top: 12px;
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.12;
+    text-wrap: balance;
+  }
+
+  .hero-sub {
+    margin-top: 14px;
+    font-size: 16.5px;
+    line-height: 1.65;
+    color: var(--muted);
+    max-width: 52ch;
+  }
+
+  .hero-ctas {
+    display: flex;
+    gap: 12px;
+    margin-top: 22px;
+    flex-wrap: wrap;
+  }
+
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 20px;
+  }
+
+  .badge {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--body);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    padding: 7px 12px;
+    background: var(--section-bg);
+  }
+
+  .hero-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-panel);
+    padding: 28px;
+    background: linear-gradient(180deg, var(--section-bg), #fff);
+  }
+
+  .hero-card-title {
+    margin-top: 14px;
+    font-size: 18px;
+    font-weight: 800;
+    text-transform: capitalize;
+  }
+
+  .hero-card p {
+    margin-top: 10px;
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: var(--body);
+  }
+
+  .hero-card a {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 13.5px;
+    font-weight: 700;
+  }
+
+  .section {
+    margin-top: 64px;
+  }
+
+  .section h2 {
+    margin-top: 10px;
+    font-size: clamp(22px, 3vw, 28px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .lede {
+    margin-top: 12px;
+    font-size: 15.5px;
+    line-height: 1.65;
+    color: var(--muted);
+    max-width: 58ch;
+  }
+
+  .measure__copy p {
+    margin-top: 14px;
+    font-size: 15.5px;
+    line-height: 1.7;
+    color: var(--body);
+  }
+
+  .proof-card {
+    display: block;
+    margin-top: 24px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-panel);
+    padding: 28px 32px;
+    color: var(--ink);
+    background: #fff;
+  }
+
+  .proof-card:hover {
+    border-color: var(--orange);
+    color: var(--ink);
+  }
+
+  .stars {
+    color: var(--orange);
+    letter-spacing: 2px;
+    font-size: 14px;
+  }
+
+  .proof-card > p {
+    margin-top: 12px;
+    font-size: 18px;
+    line-height: 1.55;
+    font-weight: 600;
+    max-width: 52ch;
+  }
+
+  .proof-author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 18px;
+  }
+
+  /* :global() because <Picture> renders the <img> from a child component. */
+  .proof-author :global(img) {
+    border-radius: 99px;
+    object-fit: cover;
+  }
+
+  .proof-name {
+    font-weight: 800;
+    font-size: 14px;
+  }
+
+  .proof-meta {
+    font-size: 12.5px;
+    color: var(--muted-3);
+  }
+
+  .proof-link {
+    margin-top: 16px;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--orange);
+  }
+
+  .more-proof {
+    margin-top: 14px;
+    font-size: 13.5px;
+    color: var(--muted-2);
+  }
+
+  .steps {
+    margin-top: 28px;
+    display: grid;
+    gap: 14px;
+  }
+
+  .step {
+    display: flex;
+    gap: 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 20px 22px;
+  }
+
+  .step-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 99px;
+    background: var(--orange);
+    color: #fff;
+    font-weight: 800;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+
+  .step-title {
+    font-weight: 800;
+    font-size: 16px;
+  }
+
+  .step p {
+    margin-top: 6px;
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+
+  .area-points {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .area-points > div {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 20px;
+    background: var(--section-bg);
+  }
+
+  .area-title {
+    font-weight: 800;
+    font-size: 15px;
+  }
+
+  .area-points p {
+    margin-top: 8px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+
+  .stakes-wrap {
+    background: var(--dark);
+    color: var(--dark-text);
+    padding: 56px 0;
+    margin-top: 64px;
+  }
+
+  .stakes-wrap .section {
+    margin-top: 0;
+  }
+
+  .eyebrow.on-dark {
+    color: var(--orange-on-dark);
+  }
+
+  .stakes h2 {
+    color: var(--dark-text);
+  }
+
+  .stakes ul {
+    margin: 20px 0 28px;
+    padding-left: 18px;
+    display: grid;
+    gap: 10px;
+    color: var(--dark-muted);
+    font-size: 15px;
+    line-height: 1.55;
+    max-width: 62ch;
+  }
+
+  .related {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  .related-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 22px;
+    color: var(--ink);
+  }
+
+  .related-card:hover {
+    border-color: var(--orange);
+    color: var(--ink);
+  }
+
+  .related-title {
+    font-weight: 800;
+    font-size: 16px;
+  }
+
+  .related-card p {
+    margin-top: 8px;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--muted);
+  }
+
+  .related-card span {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--orange);
+  }
+
+  .faq-list {
+    margin-top: 24px;
+    display: grid;
+    gap: 14px;
+    max-width: var(--prose-wide);
+  }
+
+  .faq-item {
+    border-top: 1px solid var(--hairline);
+    padding-top: 16px;
+  }
+
+  .faq-item h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 800;
+  }
+
+  .faq-item p {
+    margin-top: 8px;
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: var(--body);
+  }
+
+  .bottom-panel {
+    background: var(--dark);
+    color: var(--dark-text);
+    border-radius: var(--radius-panel);
+    padding: 40px;
+    text-align: center;
+  }
+
+  .bottom-panel h2 {
+    margin: 0;
+    color: var(--dark-text);
+    font-size: clamp(22px, 3vw, 28px);
+    font-weight: 800;
+  }
+
+  .bottom-panel > p {
+    margin: 10px auto 0;
+    color: var(--dark-muted);
+    max-width: 42ch;
+  }
+
+  .bottom-panel .hero-ctas {
+    justify-content: center;
+  }
+
+  @media (max-width: 900px) {
+    .hero-grid,
+    .area-points,
+    .related {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

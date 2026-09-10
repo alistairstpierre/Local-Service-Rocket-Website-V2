@@ -1,0 +1,63 @@
+---
+/* Renders one raster image as <picture> with AVIF -> WebP -> fallback sources.
+   Every raster on the site goes through here so that intrinsic dimensions
+   (no layout shift), lazy loading and modern formats are applied consistently.
+   Sizes and file names come from src/data/images.js, which is also what
+   scripts/optimize-images.mjs uses to generate the files. */
+import { images, imagePath, srcSet } from '../data/images.js';
+import sizeMap from '../data/image-sizes.json';
+
+interface Props {
+  /** Key in src/data/images.js, e.g. "team-rewired". */
+  name: string;
+  alt: string;
+  /** Required for multi-width images so the browser picks the right file. */
+  sizes?: string;
+  class?: string;
+  /** Use "eager" plus priority for above-the-fold images only. */
+  loading?: 'lazy' | 'eager';
+  fetchpriority?: 'high' | 'low' | 'auto';
+  /** Override the intrinsic size when CSS renders at a known fixed box. */
+  width?: number;
+  height?: number;
+  style?: string;
+}
+
+const {
+  name,
+  alt,
+  sizes,
+  class: className,
+  loading = 'lazy',
+  fetchpriority,
+  width,
+  height,
+  style,
+} = Astro.props;
+
+if (!images[name]) throw new Error(`<Picture name="${name}" /> is not in src/data/images.js`);
+
+const intrinsic = (sizeMap as Record<string, { w: number; h: number }>)[name];
+if (!intrinsic) throw new Error(`No generated size for "${name}" - run \`npm run images\``);
+
+// Keep the aspect ratio when a call site overrides only one dimension.
+const ratio = intrinsic.w / intrinsic.h;
+const finalWidth = width ?? (height ? Math.round(height * ratio) : intrinsic.w);
+const finalHeight = height ?? (width ? Math.round(width / ratio) : intrinsic.h);
+---
+
+<picture>
+  <source type="image/avif" srcset={srcSet(name, 'avif')} sizes={sizes} />
+  <source type="image/webp" srcset={srcSet(name, 'webp')} sizes={sizes} />
+  <img
+    src={imagePath(name)}
+    alt={alt}
+    width={finalWidth}
+    height={finalHeight}
+    loading={loading}
+    decoding="async"
+    fetchpriority={fetchpriority}
+    class={className}
+    style={style}
+  />
+</picture>

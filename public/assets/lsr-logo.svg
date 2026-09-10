@@ -1,11 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
-  <title id="title">Local Service Rocket icon</title>
-  <defs>
-    <mask id="rocket-cutout">
-      <rect width="512" height="512" fill="#fff"></rect>
-      <path fill="#000" stroke="#000" stroke-width="20" stroke-linejoin="round" d="M242 372V292c0-20 5-35 14-46 9 11 14 26 14 46v80l-14-4.5z"></path>
-    </mask>
-  </defs>
-  <rect x="28" y="28" width="456" height="456" rx="86" fill="none" stroke="#1A1A1A" stroke-width="28"></rect>
-  <path fill="#E8590C" stroke="#E8590C" stroke-width="44" stroke-linejoin="round" mask="url(#rocket-cutout)" d="M256 124 396 382 256 347 116 382z"></path>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" aria-labelledby="title" viewBox="0 0 512 512"><title>Local Service Rocket icon</title><defs><mask id="a"><path fill="#fff" d="M0 0h512v512H0z"/><path stroke="#000" stroke-linejoin="round" stroke-width="20" d="M242 372v-80c0-20 5-35 14-46 9 11 14 26 14 46v80l-14-4.5z"/></mask></defs><rect width="456" height="456" x="28" y="28" fill="none" stroke="#1a1a1a" stroke-width="28" rx="86"/><path fill="#e8590c" stroke="#e8590c" stroke-linejoin="round" stroke-width="44" d="m256 124 140 258-140-35-140 35z" mask="url(#a)"/></svg>

@@ -1,40 +1,144 @@
 ---
 /* Hero carousel: lazy-susan client images with frosted stats card.
-   Auto-advances every 6.5s. Client script below mounts the interactive behavior.
-   Used at the top of the homepage (replaces Hero Section.dc.html). */
+   Auto-advances every 6.5s. Slides are rendered server-side (so the first
+   image is discoverable as the LCP element) and the client script below only
+   drives the transitions. Used at the top of the homepage. */
+import Picture from './Picture.astro';
+
+type Client = {
+  name: string;
+  since: string;
+  img: string;
+  stats: [string, string][];
+};
+
+const clients: Client[] = [
+  {
+    name: 'Rewired Iowa',
+    since: 'Client for 2 years',
+    img: 'client-rewired',
+    stats: [
+      ['STARTED', '5 techs'],
+      ['TODAY', '12 techs'],
+      ['MONTHLY REV', '$60k → $220k+'],
+    ],
+  },
+  {
+    name: 'Motha Electric',
+    since: '46+ years in business',
+    img: 'client-motha-electric',
+    stats: [
+      ['LEADS / DAY', '0 → 3'],
+      ['MONTHLY REV', '$60k, steady'],
+      ['THE GOAL', 'Consistency'],
+    ],
+  },
+  {
+    name: 'Honest Hanks',
+    since: 'Client for 8 months',
+    img: 'client-honest-hanks',
+    stats: [
+      ['STARTED', '1 tech'],
+      ['TODAY', '3 techs'],
+      ['MONTHLY REV', '$25k → $80k'],
+    ],
+  },
+  {
+    name: 'Hooked Up Electric',
+    since: 'Client for 1.5 years',
+    img: 'client-hooked-up',
+    stats: [
+      ['YEAR ONE', '600% growth'],
+      ['COUNTIES', '1 → 37'],
+      ['LOCATIONS', '1 → 4'],
+    ],
+  },
+  {
+    name: 'Dry Duck',
+    since: 'Founded together 6 months ago',
+    img: 'client-dry-duck',
+    stats: [
+      ['MONTHLY REV', '$200k'],
+      ['TEAM', '5 employees'],
+      ['SCOPE', 'Brand + marketing'],
+    ],
+  },
+];
+
+// Matches ENTER_X in the transition script below.
+const ENTER_X = '620px';
 ---
 
 <section class="hero">
   <div class="hero-grid container">
     <div class="hero-copy">
       <div class="hero-badges">
-        <img
-          src="/assets/badge-google-partner.png"
+        <Picture
+          name="badge-google-partner"
           alt="Google Partner"
           class="partner-badge"
-          width="120"
-          height="34"
+          width={75}
+          height={34}
+          loading="eager"
         />
         <div class="rating-badge">
           <span class="stars">★★★★★</span>
           <span class="rating-text">5.0 on Google</span>
         </div>
       </div>
-      <h1>Real growth, real fast — for home service companies ready to scale.</h1>
+      <h1>Real growth, real fast for home service companies ready to scale.</h1>
       <p class="hero-sub">
-        Marketing, recruiting, &amp; AI systems — so you can build a bigger team and a name your
+        Marketing, recruiting, and AI systems so you can build a bigger team and a name your
         whole city recognizes.
       </p>
       <div class="hero-ctas">
-        <a href="#case-studies" class="btn btn-primary">See client results</a>
-        <a href="/get-started" class="btn btn-secondary">How it works</a>
+        <a href="/get-started" class="btn btn-primary">Schedule onboarding</a>
+        <a href="#case-studies" class="btn btn-secondary">See client results</a>
       </div>
     </div>
 
     <div class="hero-visual">
       <div class="carousel-stage" id="hero-carousel" aria-live="polite">
-        <!-- Slides injected by script for transition control -->
-        <div class="carousel-slides" id="carousel-slides"></div>
+        <div class="carousel-slides" id="carousel-slides">
+          {
+            clients.map((client, i) => (
+              <div
+                class="carousel-slide"
+                data-slide={i}
+                style={`transform:translateX(${i === 0 ? '0' : ENTER_X});visibility:${i === 0 ? 'visible' : 'hidden'}`}
+              >
+                <div class="slide-img-wrap">
+                  <Picture
+                    name={client.img}
+                    alt={client.name}
+                    class="slide-img"
+                    width={430}
+                    height={430}
+                    sizes="(max-width: 1000px) 320px, 430px"
+                    loading={i === 0 ? 'eager' : 'lazy'}
+                    fetchpriority={i === 0 ? 'high' : 'low'}
+                  />
+                </div>
+                <div class="slide-card">
+                  <div class="slide-card-meta">
+                    <div class="slide-name">{client.name}</div>
+                    <div class="slide-since">{client.since}</div>
+                  </div>
+                  {client.stats.map(([label, value], k) => (
+                    <div>
+                      <div class={k === 1 ? 'slide-stat-label accent' : 'slide-stat-label'}>
+                        {label}
+                      </div>
+                      <div class={k === 1 ? 'slide-stat-value accent' : 'slide-stat-value'}>
+                        {value}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))
+          }
+        </div>
         <div class="carousel-fade" aria-hidden="true"></div>
       </div>
     </div>
@@ -44,7 +148,7 @@
     <div class="stats-grid container">
       <div>
         <div class="stat-num">6</div>
-        <div class="stat-label">home service companies scaled — every one named on this page</div>
+        <div class="stat-label">home service companies scaled (every one named on this page)</div>
       </div>
       <div>
         <div class="stat-num orange">$10M+</div>
@@ -63,114 +167,73 @@
 </section>
 
 <script>
-  // Hero carousel logic ported from Hero Section.dc.html Component class.
-  type Client = {
-    name: string;
-    since: string;
-    img: string;
-    stats: [string, string][];
-  };
-
-  const clients: Client[] = [
-    {
-      name: 'Rewired Iowa',
-      since: 'Client for 2 years',
-      img: '/assets/client-rewired.png',
-      stats: [
-        ['STARTED', '5 techs'],
-        ['TODAY', '15 techs'],
-        ['MONTHLY REV', '$60k → $220k+'],
-      ],
-    },
-    {
-      name: 'Motha Electric',
-      since: '46+ years in business',
-      img: '/assets/client-motha-electric.png',
-      stats: [
-        ['LEADS / DAY', '0 → 3'],
-        ['MONTHLY REV', '$60k, steady'],
-        ['THE GOAL', 'Consistency'],
-      ],
-    },
-    {
-      name: 'Honest Hanks',
-      since: 'Client for 8 months',
-      img: '/assets/client-honest-hanks.png',
-      stats: [
-        ['STARTED', '1 tech'],
-        ['TODAY', '3 techs'],
-        ['MONTHLY REV', '$25k → $80k'],
-      ],
-    },
-    {
-      name: 'Hooked Up Electric',
-      since: 'Client for 1.5 years',
-      img: '/assets/client-hooked-up.png',
-      stats: [
-        ['YEAR ONE', '600% growth'],
-        ['COUNTIES', '1 → 37'],
-        ['LOCATIONS', '1 → 4'],
-      ],
-    },
-    {
-      name: 'Dry Duck',
-      since: 'Founded together 6 months ago',
-      img: '/assets/client-dry-duck.png',
-      stats: [
-        ['MONTHLY REV', '$200k'],
-        ['TEAM', '5 employees'],
-        ['SCOPE', 'Brand + marketing'],
-      ],
-    },
-  ];
+  // Slides are server-rendered; this only animates transforms between them.
+  const DURATION_MS = 1100;
+  const INTERVAL_MS = 6500;
+  const ENTER_X = '620px';
+  const EXIT_X = '-950px';
 
   const root = document.getElementById('carousel-slides');
-  if (root) {
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (root && !reduceMotion) {
+    const slides = Array.from(root.querySelectorAll<HTMLElement>('.carousel-slide'));
     let idx = 0;
-    let prev = -1;
+    let animating = false;
 
-    function render() {
-      if (!root) return;
-      root.innerHTML = clients
-        .map((c, i) => {
-          const active = i === idx;
-          const leaving = i === prev;
-          const x = active ? '0' : leaving ? '-950px' : '620px';
-          const transition = active || leaving ? 'transform 1.1s ease-in-out' : 'none';
-          const visibility = active || leaving ? 'visible' : 'hidden';
-          const statsHtml = c.stats
-            .map(
-              (s, k) => `
-            <div>
-              <div class="slide-stat-label${k === 1 ? ' accent' : ''}">${s[0]}</div>
-              <div class="slide-stat-value${k === 1 ? ' accent' : ''}">${s[1]}</div>
-            </div>`
-            )
-            .join('');
+    function goNext() {
+      if (animating) return;
+      animating = true;
 
-          return `
-          <div class="carousel-slide" style="transform:translateX(${x});transition:${transition};visibility:${visibility}">
-            <div class="slide-img-wrap">
-              <img src="${c.img}" alt="${c.name}" class="slide-img" height="430" />
-            </div>
-            <div class="slide-card">
-              <div class="slide-card-meta">
-                <div class="slide-name">${c.name}</div>
-                <div class="slide-since">${c.since}</div>
-              </div>
-              ${statsHtml}
-            </div>
-          </div>`;
-        })
-        .join('');
+      const prev = idx;
+      idx = (idx + 1) % slides.length;
+      const outgoing = slides[prev];
+      const incoming = slides[idx];
+
+      // Park incoming off-screen right with no transition, then animate in.
+      incoming.style.transition = 'none';
+      incoming.style.transform = `translateX(${ENTER_X})`;
+      incoming.style.visibility = 'visible';
+      void incoming.offsetWidth;
+
+      incoming.style.transition = `transform ${DURATION_MS}ms ease-in-out`;
+      incoming.style.transform = 'translateX(0)';
+
+      outgoing.style.visibility = 'visible';
+      outgoing.style.transition = `transform ${DURATION_MS}ms ease-in-out`;
+      outgoing.style.transform = `translateX(${EXIT_X})`;
+
+      window.setTimeout(() => {
+        outgoing.style.transition = 'none';
+        outgoing.style.transform = `translateX(${ENTER_X})`;
+        outgoing.style.visibility = 'hidden';
+        animating = false;
+      }, DURATION_MS);
     }
 
-    render();
-    setInterval(() => {
-      prev = idx;
-      idx = (idx + 1) % clients.length;
-      render();
-    }, 6500);
+    // Slides 2+ are deferred so they never compete with the LCP image, but they
+    // must be decoded before their turn comes around: warm them once idle.
+    const warmSlides = () => {
+      root.querySelectorAll<HTMLImageElement>('img[loading="lazy"]').forEach((img) => {
+        img.loading = 'eager';
+      });
+    };
+    if (typeof window.requestIdleCallback === 'function') {
+      window.requestIdleCallback(warmSlides);
+    } else {
+      window.setTimeout(warmSlides, 1500);
+    }
+
+    let timer = window.setInterval(goNext, INTERVAL_MS);
+
+    // No point animating in a background tab.
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        window.clearInterval(timer);
+      } else {
+        timer = window.setInterval(goNext, INTERVAL_MS);
+      }
+    });
   }
 </script>
 
@@ -201,7 +264,8 @@
     flex-wrap: wrap;
   }
 
-  .partner-badge {
+  /* :global() because <Picture> renders the <img> from a child component. */
+  :global(.partner-badge) {
     height: 34px;
     width: auto;
     border-radius: 6px;
@@ -221,19 +285,19 @@
 
   .stars {
     color: var(--orange);
-    font-size: 12px;
+    font-size: 13px;
     letter-spacing: 1px;
   }
 
   .rating-text {
-    font-size: 11.5px;
+    font-size: 12.5px;
     font-weight: 800;
     color: var(--ink);
   }
 
   .hero-copy h1 {
     margin-top: 18px;
-    font-size: clamp(32px, 4.5vw, 52px);
+    font-size: clamp(34px, 4.5vw, 56px);
     line-height: 1.05;
     font-weight: 800;
     letter-spacing: -0.03em;
@@ -243,7 +307,7 @@
   .hero-sub {
     margin-top: 16px;
     max-width: 380px;
-    font-size: 16px;
+    font-size: 17px;
     line-height: 1.55;
     color: var(--muted);
     text-wrap: pretty;
@@ -295,6 +359,7 @@
     display: flex;
     align-items: center;
     pointer-events: none;
+    will-change: transform;
   }
 
   :global(.slide-img-wrap) {
@@ -309,8 +374,10 @@
   :global(.slide-img) {
     display: block;
     height: 430px;
-    width: auto;
+    width: 430px;
     max-width: none;
+    object-fit: contain;
+    object-position: center bottom;
     -webkit-mask-image:
       linear-gradient(90deg, transparent 0, #000 4%, #000 96%, transparent 100%),
       linear-gradient(0deg, transparent 0, #000 5%, #000 95%, transparent 100%);
@@ -344,20 +411,20 @@
   }
 
   :global(.slide-name) {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 800;
     white-space: nowrap;
   }
 
   :global(.slide-since) {
-    font-size: 10px;
+    font-size: 11px;
     color: var(--muted);
     margin-top: 2px;
     white-space: nowrap;
   }
 
   :global(.slide-stat-label) {
-    font-size: 8.5px;
+    font-size: 9.5px;
     color: var(--muted);
     letter-spacing: 0.06em;
   }
@@ -368,7 +435,7 @@
   }
 
   :global(.slide-stat-value) {
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 800;
     margin-top: 1px;
     white-space: nowrap;
@@ -390,7 +457,7 @@
   }
 
   .stat-num {
-    font-size: 30px;
+    font-size: 32px;
     font-weight: 800;
     letter-spacing: -0.02em;
   }
@@ -400,7 +467,7 @@
   }
 
   .stat-label {
-    font-size: 12.5px;
+    font-size: 13.5px;
     color: var(--muted-2);
     margin-top: 2px;
   }
@@ -425,6 +492,7 @@
 
     :global(.slide-img) {
       height: 320px;
+      width: 320px;
     }
 
     :global(.slide-card) {

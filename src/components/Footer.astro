@@ -1,9 +1,8 @@
 ---
 /* Site footer with brand blurb, service/company links, and booking CTA.
-   Shared across all marketing pages via BaseLayout. */
+   Shared across all marketing pages via BaseLayout.
+   Schedule onboarding links to /get-started so visitors watch the VSL first. */
 import Logo from './Logo.astro';
-
-const BOOKING = 'https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg9d1R';
 ---
 
 <footer class="footer">
@@ -22,20 +21,21 @@ const BOOKING = 'https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg
     <div>
       <div class="footer-col-title">SERVICES</div>
       <div class="footer-links">
-        <a href="/services">Local SEO &amp; Reviews</a>
+        <a href="/services/local-seo">Local SEO &amp; Reviews</a>
         <a href="/services/paid-ads">Paid Ads &amp; LSAs</a>
-        <a href="/services">Websites</a>
-        <a href="/services">Hiring &amp; Recruiting</a>
-        <a href="/services">Tracking &amp; Reporting</a>
+        <a href="/services/websites">Websites</a>
+        <a href="/services/hiring">Hiring &amp; Recruiting</a>
+        <a href="/services/tracking">Tracking &amp; Reporting</a>
       </div>
     </div>
 
     <div>
       <div class="footer-col-title">COMPANY</div>
       <div class="footer-links">
-        <a href="/#system">The Flight Plan</a>
-        <a href="/#case-studies">Case Studies</a>
-        <a href="/#about">About</a>
+        <a href="/flight-plan">The Flight Plan</a>
+        <a href="/case-studies">Case Studies</a>
+        <a href="/about">About</a>
+        <a href="/blog">Blog</a>
         <a href="/get-started">Contact</a>
       </div>
     </div>
@@ -45,14 +45,16 @@ const BOOKING = 'https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg
       <div class="footer-links">
         <a href="tel:8883716365">(888) 371-6365</a>
         <a href="mailto:hello@localservicerocket.com">hello@localservicerocket.com</a>
-        <a href={BOOKING} class="btn btn-primary btn-sm footer-cta">Schedule onboarding</a>
+        <a href="/get-started" class="btn btn-primary btn-sm footer-cta">Schedule onboarding</a>
       </div>
     </div>
   </div>
 
   <div class="footer-legal">
-    © 2026 Local Service Rocket · [PLACEHOLDER: privacy policy + terms, required before running
-    Google Ads, Q71]
+    © 2026 Local Service Rocket ·
+    <a href="/privacy">Privacy Policy</a>
+    ·
+    <a href="/terms">Terms of Service</a>
   </div>
 </footer>
 
@@ -75,19 +77,19 @@ const BOOKING = 'https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg
     align-items: center;
     gap: 8px;
     font-weight: 700;
-    font-size: 13.5px;
+    font-size: 14.5px;
   }
 
   .footer-blurb {
     margin-top: 12px;
-    font-size: 12px;
+    font-size: 13px;
     color: var(--muted-2);
     line-height: 1.6;
     max-width: 260px;
   }
 
   .footer-col-title {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 800;
     letter-spacing: 0.08em;
     color: var(--muted-3);
@@ -98,7 +100,7 @@ const BOOKING = 'https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg
     flex-direction: column;
     gap: 8px;
     margin-top: 12px;
-    font-size: 12.5px;
+    font-size: 13.5px;
   }
 
   .footer-links a {
@@ -122,9 +124,17 @@ const BOOKING = 'https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg
   .footer-legal {
     border-top: 1px solid var(--hairline);
     padding: 14px var(--pad-x);
-    font-size: 11px;
+    font-size: 12px;
     color: #aaa;
     text-align: center;
+  }
+
+  .footer-legal a {
+    color: #aaa;
+  }
+
+  .footer-legal a:hover {
+    color: var(--ink);
   }
 
   @media (max-width: 900px) {

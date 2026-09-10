@@ -1,0 +1,21 @@
+---
+/* Dynamic trade landing pages at /for/[slug] (e.g. /for/electrician-marketing).
+   Content from src/data/trades.ts; layout is TradeLayout (SEO guide service-page order). */
+import TradeLayout from '../../layouts/TradeLayout.astro';
+import { trades, getTradeBySlug } from '../../data/trades';
+
+export function getStaticPaths() {
+  return trades.map((trade) => ({
+    params: { slug: trade.slug },
+    props: { trade },
+  }));
+}
+
+const { trade } = Astro.props;
+const resolved = trade ?? getTradeBySlug(Astro.params.slug!);
+if (!resolved) {
+  throw new Error(`Unknown trade slug: ${Astro.params.slug}`);
+}
+---
+
+<TradeLayout trade={resolved} />

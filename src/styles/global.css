@@ -1,5 +1,20 @@
 /* Global design tokens and base styles for Local Service Rocket.
-   Used by BaseLayout and all pages; mirrors Claude Design Files tokens. */
+   Used by BaseLayout and all pages; mirrors Claude Design Files tokens.
+   Page shells use --max (same as homepage). --prose is only for reading
+   measure inside .measure rails, never for shrinking the whole page.
+   Fonts are self-hosted (public/fonts) so there is no third-party connection. */
+
+/* One variable woff2 covers every weight we use (400-800). Preloaded in BaseLayout. */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400 800;
+  src: url('/fonts/manrope-variable-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+    U+FEFF, U+FFFD;
+}
 
 :root {
   --ink: #1a1a1a;
@@ -18,8 +33,10 @@
   --dark: #1b1d23;
   --dark-text: #f5f5f7;
   --dark-muted: #a1a1a6;
-  --max: 1160px;
-  --pad-x: 48px;
+  --max: 1280px;
+  --prose: 720px;
+  --prose-wide: 880px;
+  --pad-x: 52px;
   --radius-card: 14px;
   --radius-panel: 18px;
   --radius-large: 22px;
@@ -34,19 +51,40 @@
 
 html {
   scroll-behavior: smooth;
+  font-size: 17px;
 }
 
 body {
   margin: 0;
   background: var(--page-bg);
   color: var(--ink);
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 1rem;
   -webkit-font-smoothing: antialiased;
 }
 
 img {
   max-width: 100%;
   height: auto;
+}
+
+/* Keeps <picture> from adding inline-gap and inheriting odd sizing */
+picture {
+  display: contents;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 a {
@@ -58,10 +96,14 @@ a:hover {
   color: var(--orange-hover);
 }
 
-h1, h2, h3, p {
+h1,
+h2,
+h3,
+p {
   margin: 0;
 }
 
+/* Site-wide content shell: matches homepage width on every page */
 .container {
   max-width: var(--max);
   margin: 0 auto;
@@ -70,20 +112,90 @@ h1, h2, h3, p {
 }
 
 .eyebrow {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.1em;
   color: var(--orange);
+}
+
+/*
+  Reading measure inside a full-width container.
+  Orange spine + hatch rail give a visual reason the copy stays narrower
+  while the page still spans --max like the homepage.
+*/
+.measure {
+  display: grid;
+  grid-template-columns: 3px minmax(0, var(--prose-wide)) minmax(96px, 1fr);
+  gap: 0 28px;
+  align-items: stretch;
+  width: 100%;
+}
+
+.measure-wide {
+  grid-template-columns: 3px minmax(0, 1fr) minmax(80px, 0.28fr);
+}
+
+.measure__spine {
+  background: var(--orange);
+  border-radius: 2px;
+  min-height: 48px;
+}
+
+.measure__copy {
+  min-width: 0;
+  max-width: var(--prose-wide);
+}
+
+.measure-wide .measure__copy {
+  max-width: none;
+}
+
+.measure__rail {
+  position: relative;
+  border-left: 1px solid var(--hairline);
+  background-image: repeating-linear-gradient(
+    -32deg,
+    transparent 0,
+    transparent 9px,
+    rgba(232, 89, 12, 0.055) 9px,
+    rgba(232, 89, 12, 0.055) 10px
+  );
+  border-radius: 0 12px 12px 0;
+  min-height: 100%;
+}
+
+.measure__rail::after {
+  content: '';
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--orange);
+  border-radius: 2px;
+  opacity: 0.55;
+}
+
+/* Soft band for long-form blocks sitting in a full-width container */
+.band {
+  border-top: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+  background: linear-gradient(180deg, var(--section-bg) 0%, #fff 48px, #fff 100%);
+  padding: 40px 0;
+}
+
+.band-tight {
+  padding: 28px 0;
 }
 
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 12px 26px;
+  padding: 13px 28px;
   border-radius: var(--radius-pill);
   font-weight: 700;
-  font-size: 14.5px;
+  font-size: 15.5px;
   border: none;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s, color 0.15s;
@@ -126,19 +238,28 @@ h1, h2, h3, p {
 }
 
 .btn-sm {
-  padding: 9px 20px;
-  font-size: 13px;
+  padding: 10px 22px;
+  font-size: 14px;
   font-weight: 700;
 }
 
 .btn-lg {
-  padding: 14px 30px;
-  font-size: 15px;
+  padding: 15px 32px;
+  font-size: 16px;
 }
 
 @media (max-width: 900px) {
   :root {
     --pad-x: 24px;
+  }
+
+  .measure {
+    grid-template-columns: 3px minmax(0, 1fr);
+    gap: 0 18px;
+  }
+
+  .measure__rail {
+    display: none;
   }
 }
 
