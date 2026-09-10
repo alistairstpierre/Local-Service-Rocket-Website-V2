@@ -1,6 +1,6 @@
 # Publish next queued blog post every week.
-# Triggered by Vercel Cron (api/cron/publish-blog.js) via workflow_dispatch,
-# and as a backup on the same schedule so a missed Vercel ping still ships.
+# No PAT / Deploy Hook needed: GitHub's schedule + GITHUB_TOKEN commits the
+# post; Vercel's normal Git integration redeploys main automatically.
 # Idempotent: if nothing is due, the script no-ops and exits 0.
 name: Publish next blog post
 

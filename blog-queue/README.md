@@ -2,8 +2,7 @@
   How the weekly blog queue works. Interacts with:
   - blog-queue/posts/*.astro (drafts waiting to go live)
   - scripts/publish-next-blog.mjs (moves one post onto the site)
-  - api/cron/publish-blog.js + vercel.json crons (Vercel trigger)
-  - .github/workflows/publish-blog.yml (commit + push → redeploy)
+  - .github/workflows/publish-blog.yml (schedule + commit; Vercel redeploys from git)
   Editorial standard: docs/BLOG-FRAMEWORK.md
 -->
 
@@ -11,10 +10,10 @@
 
 ## Schedule
 
-| Trigger | When | What |
-| --- | --- | --- |
-| **Vercel Cron** | Sunday 20:00 UTC (Monday 08:00 NZ) | `GET /api/cron/publish-blog` |
-| **GitHub Action** (backup) | Same cron | Runs the publish script if Vercel misses |
+GitHub Action **Publish next blog post** runs Sunday 20:00 UTC (Monday 08:00 NZ).
+It moves the next ready draft into `src/pages/blog/`, commits, and pushes.
+Vercel then rebuilds from `main` via the normal Git integration — no Deploy Hook,
+no PAT, no Vercel Cron.
 
 Only **one** ready post ships per run: the earliest `publishAfter <= today`.
 
@@ -25,13 +24,13 @@ Only **one** ready post ships per run: the earliest `publishAfter <= today`.
 3. Pass the Ship Test in `docs/BLOG-FRAMEWORK.md` before marking ready.
 4. Put the trade in the title when the receipt is trade-specific.
 
-## Env vars (Vercel project)
+## Setup checklist
 
-| Name | Purpose |
-| --- | --- |
-| `CRON_SECRET` | Shared secret; Vercel sends `Authorization: Bearer …` |
-| `BLOG_PUBLISH_GITHUB_TOKEN` | Fine-grained or classic PAT with `actions:write` on this repo |
-| `BLOG_PUBLISH_GITHUB_REPO` | Optional override, default `alistairstpierre/Local-Service-Rocket-Website-V2` |
+1. Repo → **Settings → Actions → General** → allow Actions / allow GitHub Actions to create PRs / push (default is usually fine).
+2. Confirm the workflow file exists: `.github/workflows/publish-blog.yml`.
+3. Optional smoke test: **Actions → Publish next blog post → Run workflow**.
+
+No Vercel env vars required for publishing.
 
 ## Local commands
 
@@ -42,4 +41,5 @@ npm run blog:publish-next   # actually move it onto the site (then commit yourse
 
 ## After it publishes
 
-Vercel rebuilds from the new commit on `main`. The queue file is deleted; `queue.json` keeps `status: "published"` and `publishedOn` for the trail.
+Vercel rebuilds from the new commit on `main`. The queue file is deleted; `queue.json`
+keeps `status: "published"` and `publishedOn` for the trail.

@@ -2,8 +2,8 @@
  * Publish the next ready post from blog-queue/ onto the live site.
  *
  * Used by:
- *   - `npm run blog:publish-next` (local / GitHub Action)
- *   - api/cron/publish-blog.js (Vercel Cron → triggers this via GH Action, or dry-check)
+ *   - `npm run blog:publish-next` (local)
+ *   - `.github/workflows/publish-blog.yml` (weekly schedule + manual dispatch)
  *
  * Flow: pick earliest ready item with publishAfter <= today → copy .astro into
  * src/pages/blog/ → prepend card to src/data/blog-posts.js → mark queue item published.

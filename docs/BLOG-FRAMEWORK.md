@@ -106,9 +106,10 @@ studies — do not invent new numbers):
 | Queued 2026-10-05 | Review velocity vs count | `blog-queue/posts/review-velocity-beats-count.astro` | Dry Duck review pace |
 | Later | Trade spins | e.g. "LSA for plumbers" only when we have a plumber receipt | New evidence required |
 
-**Weekly shipping:** ready drafts live in `blog-queue/`. Vercel Cron (`0 20 * * 0` UTC) hits
-`/api/cron/publish-blog`, which dispatches `.github/workflows/publish-blog.yml`. That runs
-`npm run blog:publish-next`, commits, and pushes — one post per week. See `blog-queue/README.md`.
+**Weekly shipping:** ready drafts live in `blog-queue/`. GitHub Action
+`.github/workflows/publish-blog.yml` runs `0 20 * * 0` UTC (Monday 08:00 NZ), commits
+the next due post, and Vercel redeploys from `main`. No PAT or Deploy Hook required.
+See `blog-queue/README.md`.
 
 ### 2. Find the receipt before you write a word
 

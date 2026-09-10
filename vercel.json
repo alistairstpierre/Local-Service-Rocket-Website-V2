@@ -1,11 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "crons": [
-    {
-      "path": "/api/cron/publish-blog",
-      "schedule": "0 20 * * 0"
-    }
-  ],
   "headers": [
     {
       "source": "/fonts/(.*)",

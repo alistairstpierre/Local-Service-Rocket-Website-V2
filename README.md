@@ -40,22 +40,21 @@ Manrope is self-hosted from `public/fonts/`, so no Google Fonts request is made.
 
 ### Weekly blog cron
 
-One queued post ships each week (Sunday 20:00 UTC / Monday 08:00 NZ):
+One queued post ships each week (Sunday 20:00 UTC / Monday 08:00 NZ) via the GitHub
+Action `.github/workflows/publish-blog.yml`. It commits the next ready draft from
+`blog-queue/`; Vercel redeploys from `main` automatically.
 
-1. In the Vercel project → Settings → Environment Variables, set:
-   - `CRON_SECRET` — long random string (Vercel sends it as `Authorization: Bearer …`)
-   - `BLOG_PUBLISH_GITHUB_TOKEN` — GitHub PAT with `actions:write` on this repo
-2. Confirm **Cron Jobs** shows `/api/cron/publish-blog` after the next production deploy
-   (`vercel.json`).
-3. Keep drafts in `blog-queue/posts/` with entries in `blog-queue/queue.json` (`status: ready`,
-   future `publishAfter`). Details: `blog-queue/README.md`.
+**No PAT, Deploy Hook, or Vercel Cron needed** — a Deploy Hook only rebuilds existing
+code; it cannot move a queued post into the repo. The Action uses GitHub’s built-in
+`GITHUB_TOKEN` to push.
 
-Manual test:
+Smoke test: GitHub → **Actions** → **Publish next blog post** → **Run workflow**.
 
 ```powershell
 npm run blog:publish-dry
-# After secrets are set, trigger the GitHub Action "Publish next blog post" from the Actions tab
 ```
+
+Details: `blog-queue/README.md`.
 
 ## Pages
 
@@ -101,14 +100,11 @@ npm run blog:publish-dry
 │   ├── CONTENT-GAPS-AND-INTERVIEW.md  # Gaps checklist + dump prompts
 │   └── VSL-SCRIPT.md             # As-recorded transcript + timecoded graphics brief for the /get-started video
 ├── blog-queue/                   # Weekly publish queue (ready drafts + queue.json)
-│   ├── README.md                 # How cron publishes one post/week
+│   ├── README.md                 # How the GitHub Action publishes one post/week
 │   ├── queue.json                 # Ordered schedule (publishAfter + status)
 │   └── posts/                    # .astro drafts waiting to go live
-├── api/
-│   └── cron/
-│       └── publish-blog.js       # Vercel Cron → GitHub Action dispatch
 ├── .github/workflows/
-│   └── publish-blog.yml          # Runs scripts/publish-next-blog.mjs, commits, pushes
+│   └── publish-blog.yml          # Weekly schedule: publish-next-blog.mjs → commit → Vercel rebuilds
 ├── docs/
 │   ├── BLOG-FRAMEWORK.md         # Editorial standard, Evidence Bank, trade-keyword SEO + topic queue
 │   └── SITE-STRUCTURE-AND-SEO-GUIDE.md  # Client home-service site SEO/IA playbook
