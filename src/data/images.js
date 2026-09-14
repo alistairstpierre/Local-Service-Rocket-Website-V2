@@ -33,6 +33,13 @@ export const images = {
   // Also used full-width as the Hooked Up case study team photo, hence the extra size.
   'client-hooked-up': { source: 'client-hooked-up.png', widths: [430, 860, 1254], fallback: 'jpg' },
 
+  // Branding showcase: 2-col ~620px CSS, full-bleed mobile. Sources are
+  // trimmed studio mockups (~1050px); largest step matches source width.
+  'wrap-rewired': { source: 'wrap-rewired.jpg', widths: [640, 1048], fallback: 'jpg' },
+  'wrap-honest-hanks': { source: 'wrap-honest-hanks.jpg', widths: [640, 1040], fallback: 'jpg' },
+  'wrap-dry-duck': { source: 'wrap-dry-duck.jpg', widths: [640, 1056], fallback: 'jpg' },
+  'wrap-coastal-current': { source: 'wrap-coastal-current.jpg', widths: [640, 1027], fallback: 'jpg' },
+
   // Team photos: case study heroes, half-width feature cards, and the small
   // polaroid cards on /flight-plan (hence the 320 step).
   'team-rewired': { source: 'team-rewired.png', widths: [320, 640, 1173], fallback: 'jpg', flatten: true },

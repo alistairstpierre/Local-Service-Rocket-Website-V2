@@ -1,7 +1,7 @@
 ---
 /* Shared layout for individual service pages (SEO, ads, websites, etc.).
    Full --max width shell. Section order loosely follows SITE-STRUCTURE-AND-SEO-GUIDE.md
-   service pages: hero → proof → included → optional extras → related → FAQ → CTA.
+   service pages: hero → optional gallery → included → extras → related → FAQ → CTA.
    Emits Service + WebPage + FAQ + Breadcrumb JSON-LD. */
 import BaseLayout from './BaseLayout.astro';
 import Picture from '../components/Picture.astro';
@@ -172,21 +172,6 @@ const jsonLd = graph([
       </div>
     </div>
 
-    <div class="included container">
-      <div class="eyebrow">{includedEyebrow}</div>
-      <h2>{includedHeadline}</h2>
-      <div class="included-grid">
-        {
-          included.map((item) => (
-            <div class="included-card">
-              <div class="included-title">{item.title}</div>
-              <p>{item.body}</p>
-            </div>
-          ))
-        }
-      </div>
-    </div>
-
     {
       gallery.length > 0 && (
         <div class="gallery container">
@@ -197,12 +182,14 @@ const jsonLd = graph([
             {gallery.map((item) => (
               <figure class="gallery-card">
                 {item.image ? (
-                  <Picture
-                    name={item.image}
-                    alt={`${item.title} — ${item.caption}`}
-                    class="gallery-media"
-                    sizes="(max-width: 700px) 100vw, (max-width: 1000px) 50vw, 300px"
-                  />
+                  <div class="gallery-media-frame">
+                    <Picture
+                      name={item.image}
+                      alt={`${item.title} — ${item.caption}`}
+                      class="gallery-media"
+                      sizes="(max-width: 700px) 100vw, (max-width: 1000px) 50vw, 620px"
+                    />
+                  </div>
                 ) : (
                   <div class="gallery-placeholder">
                     <span>Photo coming</span>
@@ -218,6 +205,21 @@ const jsonLd = graph([
         </div>
       )
     }
+
+    <div class="included container">
+      <div class="eyebrow">{includedEyebrow}</div>
+      <h2>{includedHeadline}</h2>
+      <div class="included-grid">
+        {
+          included.map((item) => (
+            <div class="included-card">
+              <div class="included-title">{item.title}</div>
+              <p>{item.body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
 
     {
       Astro.slots.has('default') && (
@@ -452,10 +454,10 @@ const jsonLd = graph([
   }
 
   .gallery-grid {
-    margin-top: 28px;
+    margin-top: 32px;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 14px;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
   }
 
   .gallery-card {
@@ -466,17 +468,27 @@ const jsonLd = graph([
     background: #fff;
   }
 
-  /* Placeholder and real photo share a ratio so nothing shifts when photos land. */
+  /* Wide frame + contain keeps full van/truck wraps readable (side art matters). */
   .gallery-placeholder,
-  .gallery-card :global(.gallery-media) {
-    aspect-ratio: 4 / 3;
+  .gallery-media-frame {
+    aspect-ratio: 16 / 9;
     width: 100%;
-    display: block;
+    background: #f7f7f5;
+  }
+
+  .gallery-media-frame {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 22px 28px;
+    box-sizing: border-box;
   }
 
   .gallery-card :global(.gallery-media) {
-    object-fit: cover;
-    height: auto;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
 
   .gallery-placeholder {
@@ -502,19 +514,20 @@ const jsonLd = graph([
   }
 
   .gallery-card figcaption {
-    padding: 12px 14px 14px;
+    padding: 16px 18px 18px;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 3px;
+    border-top: 1px solid var(--hairline);
   }
 
   .gallery-title {
     font-weight: 800;
-    font-size: 14.5px;
+    font-size: 16px;
   }
 
   .gallery-caption {
-    font-size: 12.5px;
+    font-size: 13.5px;
     color: var(--muted);
   }
 
@@ -666,9 +679,14 @@ const jsonLd = graph([
     flex-wrap: wrap;
   }
 
-  @media (max-width: 1000px) {
+  @media (max-width: 700px) {
     .gallery-grid {
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .gallery-media-frame {
+      padding: 14px 16px;
     }
   }
 
