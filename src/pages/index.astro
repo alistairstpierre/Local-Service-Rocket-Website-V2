@@ -7,6 +7,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import Picture from '../components/Picture.astro';
+import PricingOffer from '../components/PricingOffer.astro';
 import { absoluteUrl, faqPageNode, graph, webPageNode } from '../data/schema';
 
 /* Motha Electric is our weakest story. Always last in any client list. */
@@ -66,19 +67,19 @@ const homeDescription =
 
 const faqs = [
   {
-    q: 'What does marketing for electricians include?',
-    a: 'Google profile, converting site, Local Services Ads, then Search when ready. We track booked jobs. About $500/mo to start.',
+    q: 'What do you actually run for a shop?',
+    a: 'Google profile, a site that converts, Local Services Ads, then Search when you are ready. We track booked jobs. About $500/mo to start.',
   },
   {
-    q: 'How is electrician advertising different here?',
-    a: 'No Search dump on day one. Fix the profile, run Local Services Ads, add Search later. How Rewired, Honest Hank\'s, and Hooked Up grew.',
+    q: 'Do you dump budget into Search ads day one?',
+    a: 'No. Fix the profile first, get Local Services Ads booking, add Search later. That is how Rewired, Honest Hank\'s, and Hooked Up grew.',
   },
   {
     q: 'Do you only work with electrical companies?',
     a: 'Deepest with electrical: Rewired, Honest Hank\'s, Hooked Up, and Motha. Other home service trades too.',
   },
   {
-    q: 'What does an electrician marketing agency cost?',
+    q: 'What does it cost to start?',
     a: '$500/mo to start. Fee steps up only as you grow. Most shops only ever get quoted the other way around.',
   },
 ];
@@ -206,14 +207,23 @@ const jsonLd = graph([
     </div>
   </section>
 
+  <PricingOffer
+    eyebrow="THE OFFER"
+    h2="Skip the Pitch. Prices Start at $500/mo"
+    lede={`Most agencies want $5,000+ before they prove a thing. Start at $500/mo, prove booked jobs, then step up only when the shop can take it. See the <a href="/flight-plan">Flight Plan</a>.`}
+    ctaHref="/get-started"
+    ctaLabel="See how it works, then book"
+    footNote="Month to month. No locked contract. Fee climbs when you do."
+  />
+
   <!-- THE SYSTEM -->
   <section class="section container" id="system">
     <div class="flight-plan">
       <div class="flight-copy">
         <div class="eyebrow on-dark">THE FLIGHT PLAN</div>
-        <h2>Marketing for Electricians Without Burning Ad Spend</h2>
+        <h2>We Prove It Before You Spend Big</h2>
         <p>
-          Not a retainer dump. A flight plan: prove the shop can take the work, then turn up the ads.
+          We get Google booking jobs on a small budget first. Bigger ad spend waits until that works.
         </p>
         <a href="/flight-plan" class="btn btn-primary">See the full flight plan</a>
       </div>
@@ -436,7 +446,7 @@ const jsonLd = graph([
     <div class="container">
       <div class="section-head">
         <div class="eyebrow">BEFORE YOU BOOK</div>
-        <h2>What to Know Before Marketing for Electricians</h2>
+        <h2>What Owners Ask Before They Start</h2>
       </div>
       <div class="home-faq-grid">
         {
@@ -462,13 +472,13 @@ const jsonLd = graph([
   <!-- CTA -->
   <section class="cta-wrap container">
     <div class="cta-panel">
-      <h2>Skip the Pitch. Book Onboarding at $500</h2>
-      <p>Watch the model, see the price, book yourself. First call is about the shop.</p>
+      <h2>Skip the Pitch. Prices Start at $500/mo</h2>
+      <p>See the model and the fee first. Then book yourself. No sales call.</p>
       <div class="cta-btns">
         <a href="/get-started" class="btn btn-primary btn-lg">Schedule onboarding</a>
         <a href="/for/electrician-marketing" class="btn btn-ghost-dark btn-lg">Electrician marketing →</a>
       </div>
-      <p class="cta-price">Starts at $500/month. The fee climbs when you do.</p>
+      <p class="cta-price">$500/mo to start. The fee climbs only when you do.</p>
       <div class="cta-meta">
         <span>★★★★★ 5.0 on Google</span>
         <span>(888) 371-6365</span>

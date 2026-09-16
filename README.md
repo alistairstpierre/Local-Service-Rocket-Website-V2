@@ -125,11 +125,13 @@ Details: `blog-queue/README.md`.
 │   │   ├── Hero.astro
 │   │   ├── Logo.astro
 │   │   ├── Nav.astro
-│   │   └── Picture.astro         # <picture> AVIF/WebP wrapper used for every raster
+│   │   ├── Picture.astro         # <picture> AVIF/WebP wrapper used for every raster
+│   │   └── PricingOffer.astro    # Flight Plan pricing tiers (/ and /get-started)
 │   ├── data/
 │   │   ├── blog-posts.js         # Blog hub cards (cron prepends here on publish)
 │   │   ├── images.js             # Image manifest (widths, formats) shared by script + Picture
 │   │   ├── image-sizes.json      # GENERATED intrinsic sizes, prevents layout shift
+│   │   ├── pricing-tiers.ts      # Shared Pre-flight / Liftoff / Orbit fee cards
 │   │   ├── schema.ts             # Shared JSON-LD helpers (Part 5 of SEO guide)
 │   │   └── trades.ts             # Who We Help trade landing copy + slugs
 │   ├── layouts/

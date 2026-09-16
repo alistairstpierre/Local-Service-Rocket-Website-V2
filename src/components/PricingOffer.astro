@@ -1,0 +1,292 @@
+---
+/* Flight Plan pricing offer cards.
+   Used on `/` (below testimonials) and `/get-started`. Data: src/data/pricing-tiers.ts. */
+import { pricingTiers } from '../data/pricing-tiers';
+
+interface Props {
+  eyebrow?: string;
+  h2?: string;
+  /** Plain text or HTML string for the right-hand lede */
+  lede?: string;
+  ctaHref?: string;
+  ctaLabel?: string;
+  footNote?: string;
+}
+
+const {
+  eyebrow = 'THE OFFER',
+  h2 = 'Skip the Pitch. Prices Start at $500/mo',
+  lede = 'Most agencies want $5,000+ before they prove a thing. We start at $500/mo, month to month, and only step up when your shop does.',
+  ctaHref = '/get-started',
+  ctaLabel = 'Schedule onboarding',
+  footNote = 'Month to month. No locked contract. Fee climbs when you do.',
+} = Astro.props;
+---
+
+<section class="pricing-offer" id="pricing">
+  <div class="container">
+    <div class="pricing-head">
+      <div>
+        <div class="eyebrow">{eyebrow}</div>
+        <h2>{h2}</h2>
+      </div>
+      <p class="pricing-lede" set:html={lede} />
+    </div>
+
+    <div class="tiers">
+      {
+        pricingTiers.map((tier) => (
+          <div class:list={['tier', { 'tier-featured': tier.featured }]}>
+            {tier.featured && <div class="tier-badge">Most shops start here</div>}
+            <div class="tier-top">
+              <span class="tier-num">{tier.step}</span>
+              <span class="tier-name">{tier.name}</span>
+              <span class="tier-band">{tier.band}</span>
+            </div>
+            <div class="tier-price">
+              {tier.price}
+              <span class:list={['tier-unit', { 'tier-unit-strong': tier.unitStrong }]}>
+                {tier.unit}
+              </span>
+            </div>
+            <div class="tier-sub">{tier.sub}</div>
+            <div class="tier-rows">
+              {tier.rows.map((row) => (
+                <div class="tier-row">
+                  {row.href ? (
+                    <a href={row.href} class="tier-link">
+                      {row.label}
+                    </a>
+                  ) : (
+                    <span>{row.label}</span>
+                  )}
+                  <b>{row.value}</b>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="pricing-foot">
+      <div class="pricing-meta">
+        <span><span class="stars">★★★★★</span> 5.0 on Google</span>
+        <span>{footNote}</span>
+      </div>
+      <a href={ctaHref} class="btn btn-primary">{ctaLabel}</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .pricing-offer {
+    margin-top: 72px;
+    padding: 56px 0;
+    background: var(--section-bg);
+    border-top: 1px solid var(--hairline);
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .pricing-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .pricing-head h2 {
+    margin-top: 10px;
+    font-size: clamp(26px, 3vw, 34px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    text-wrap: balance;
+    max-width: 18ch;
+  }
+
+  .pricing-lede {
+    margin: 0;
+    max-width: 380px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--muted);
+    text-wrap: pretty;
+  }
+
+  .pricing-lede :global(a) {
+    color: var(--orange);
+    font-weight: 700;
+  }
+
+  .tiers {
+    margin-top: 32px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  .tier {
+    position: relative;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-panel);
+    padding: 26px 28px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tier-featured {
+    border: 2px solid var(--orange);
+    padding: 25px 27px;
+    box-shadow: 0 12px 32px rgba(232, 89, 12, 0.12);
+  }
+
+  .tier-badge {
+    position: absolute;
+    top: -11px;
+    left: 22px;
+    background: var(--orange);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border-radius: 99px;
+  }
+
+  .tier-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .tier-num {
+    width: 28px;
+    height: 28px;
+    flex: none;
+    border-radius: 99px;
+    background: var(--orange);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .tier-name {
+    font-size: 16px;
+    font-weight: 800;
+  }
+
+  .tier-band {
+    margin-left: auto;
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: var(--orange);
+    background: var(--orange-tint);
+    padding: 5px 10px;
+    border-radius: 99px;
+    white-space: nowrap;
+  }
+
+  .tier-price {
+    margin-top: 18px;
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .tier-unit {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--muted-3);
+  }
+
+  .tier-unit-strong {
+    color: var(--ink);
+  }
+
+  .tier-sub {
+    margin-top: 2px;
+    font-size: 12px;
+    color: var(--muted-3);
+  }
+
+  .tier-rows {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid var(--hairline);
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--body);
+  }
+
+  .tier-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .tier-row b {
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  .tier-link {
+    color: var(--orange);
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .tier-link:hover {
+    color: var(--orange-hover);
+  }
+
+  .pricing-foot {
+    margin-top: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    flex-wrap: wrap;
+  }
+
+  .pricing-meta {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    flex-wrap: wrap;
+  }
+
+  .stars {
+    color: var(--orange);
+    letter-spacing: 2px;
+  }
+
+  @media (max-width: 900px) {
+    .tiers {
+      grid-template-columns: 1fr;
+    }
+
+    .pricing-head h2 {
+      max-width: none;
+    }
+
+    .pricing-foot .btn {
+      width: 100%;
+    }
+  }
+</style>

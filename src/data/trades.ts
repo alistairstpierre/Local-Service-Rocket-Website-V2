@@ -87,8 +87,8 @@ export const trades: TradeLanding[] = [
       },
     ],
     faqH2: 'Before You Hire Marketing for Electricians',
-    ctaH2: 'Skip the Pitch. Book Onboarding at $500',
-    ctaLine: 'Watch the model, see the price, book yourself. No sales call.',
+    ctaH2: 'Skip the Pitch. Prices Start at $500/mo',
+    ctaLine: 'See the model and the fee first. Then book yourself. No sales call.',
   },
   {
     slug: 'plumber-marketing',

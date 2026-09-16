@@ -7,6 +7,7 @@
    Design origin: Get Started.dc.html */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Picture from '../components/Picture.astro';
+import PricingOffer from '../components/PricingOffer.astro';
 import {
   absoluteUrl,
   breadcrumbList,
@@ -16,56 +17,6 @@ import {
 } from '../data/schema';
 
 const BOOKING = 'https://api.leadconnectorhq.com/widget/booking/Tp6doLoKjJfMEvnKPOn1';
-
-/* Pricing tiers mirror the three Flight Plan stages, so /flight-plan and this page
-   have to move together. `band` is the monthly revenue a company is doing when that
-   tier fits, not what the tier promises. */
-const tiers = [
-  {
-    step: '1',
-    name: 'Pre-flight',
-    band: '$20-25K MONTHS',
-    price: 'from $500',
-    unit: '/mo',
-    sub: 'Organic + LSA working cheap',
-    featured: false,
-    rows: [
-      { label: 'Website build (if needed)', value: '~$2k' },
-      { label: 'LSA setup', value: '$500' },
-      { label: 'Per booked call we QA', value: '~$25' },
-    ],
-  },
-  {
-    step: '2',
-    name: 'Liftoff',
-    band: '$40-50K MONTHS',
-    price: '~$1.5k',
-    unit: '/mo',
-    sub: 'SEO and ad management, together',
-    featured: true,
-    rows: [
-      { label: 'Deeper SEO and Google Search', value: 'included' },
-      { label: 'Branding — logo, colors, truck, cards, shirts', value: '~$3k' },
-      { label: 'Search ad spend to start', value: '~$50/day' },
-      { label: 'Traffic you own, not rented', value: 'the goal' },
-    ],
-  },
-  {
-    step: '3',
-    name: 'Orbit',
-    band: '$100-200K MONTHS',
-    price: '~$1.5k',
-    unit: '/mo + 20% of ad spend',
-    sub: 'scaled Search, hiring, managed risk',
-    featured: false,
-    rows: [
-      { label: 'Hiring sprint setup', value: '~$500' },
-      { label: 'Hiring sprint while live', value: '~$500/mo' },
-      { label: 'Hiring ads, roughly 10 days', value: '~$30-50/day' },
-      { label: 'Risk cover as budgets scale', value: 'built in' },
-    ],
-  },
-];
 
 const title = 'Schedule Onboarding With No Sales Calls | Local Service Rocket';
 const description =
@@ -236,53 +187,14 @@ const jsonLd = graph([
       </ul>
     </div>
 
-    <div class="pricing container">
-      <div class="pricing-head">
-        <div>
-          <div class="eyebrow">THE NUMBERS</div>
-          <h2>Know the numbers before you book.</h2>
-        </div>
-        <p class="pricing-lede">
-          Fees follow the <a href="/flight-plan">Flight Plan</a> and only step up as your results do.
-          Everything is month to month — we’ve never locked a client into a contract.
-        </p>
-      </div>
-
-      <div class="tiers">
-        {
-          tiers.map((tier) => (
-            <div class:list={['tier', { 'tier-featured': tier.featured }]}>
-              <div class="tier-top">
-                <span class="tier-num">{tier.step}</span>
-                <span class="tier-name">{tier.name}</span>
-                <span class="tier-band">{tier.band}</span>
-              </div>
-              <div class="tier-price">
-                {tier.price}
-                <span class="tier-unit">{tier.unit}</span>
-              </div>
-              <div class="tier-sub">{tier.sub}</div>
-              <div class="tier-rows">
-                {tier.rows.map((row) => (
-                  <div class="tier-row">
-                    <span>{row.label}</span>
-                    <b>{row.value}</b>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))
-        }
-      </div>
-
-      <div class="pricing-foot">
-        <div class="pricing-meta">
-          <span><span class="stars">★★★★★</span> 5.0 on Google</span>
-          <span>Everything explained in the video above</span>
-        </div>
-        <a href={BOOKING} class="btn btn-primary">Schedule my onboarding call</a>
-      </div>
-    </div>
+    <PricingOffer
+      eyebrow="THE NUMBERS"
+      h2="Skip the Pitch. Prices Start at $500/mo"
+      lede={`Fees follow the <a href="/flight-plan">Flight Plan</a> and only step up as your results do. Month to month. We have never locked a client into a contract.`}
+      ctaHref={BOOKING}
+      ctaLabel="Schedule my onboarding call"
+      footNote="Everything explained in the video above"
+    />
 
     <div class="faq container">
       <div class="measure">
