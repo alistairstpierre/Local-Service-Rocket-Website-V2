@@ -53,6 +53,10 @@ interface Props {
   galleryLede?: string;
   gallery?: GalleryItem[];
   faqs?: Faq[];
+  /** Part 7 FAQ H2 (hesitation + keyword). Defaults to a crumb-based line. */
+  faqHeadline?: string;
+  /** Part 7 related-services H2 (guide breadth). */
+  relatedHeadline?: string;
   bottomHeadline: string;
   bottomBody: string;
 }
@@ -91,6 +95,8 @@ const {
       a: 'Starter engagements often begin around $500/month per lane. Fees step up as your company and ad spend grow so incentives stay aligned.',
     },
   ],
+  faqHeadline = `What to Know Before Starting ${crumb}`,
+  relatedHeadline = 'Your Shop May Need More Than One Lane',
   bottomHeadline,
   bottomBody,
 } = Astro.props;
@@ -239,7 +245,7 @@ const jsonLd = graph([
 
     <div class="related container">
       <div class="eyebrow">RELATED SERVICES</div>
-      <h2>Other Lanes in the Same System</h2>
+      <h2>{relatedHeadline}</h2>
       <p class="related-lede">
         Not sure which service fits?
         <a href="/get-started">Book onboarding</a> and we’ll recommend the right first move after a
@@ -260,7 +266,7 @@ const jsonLd = graph([
 
     <div class="faq container">
       <div class="eyebrow">FAQ</div>
-      <h2>Common Questions About {crumb}</h2>
+      <h2>{faqHeadline}</h2>
       <div class="faq-list">
         {
           faqs.map((faq) => (

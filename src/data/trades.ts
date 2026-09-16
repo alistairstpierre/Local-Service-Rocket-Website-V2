@@ -1,7 +1,6 @@
 /* Trade landing-page content for /for/[slug] SEO/ad pages.
-   Linked from homepage Who We Help. Titles/H1s follow docs/SITE-STRUCTURE-AND-SEO-GUIDE.md Part 7
-   (keyword-led, 60–90 char titles with brand, 20–60 char H1s). Copy is agency marketing for
-   owners searching phrases like “electrician marketing” / “marketing company for plumbers”. */
+   Who We Help grid lives on /marketing-for-service-companies.
+   Homepage (`/`) is electrician-led. Titles/H1s follow docs/SITE-STRUCTURE-AND-SEO-GUIDE.md Part 7. */
 
 export type TradeFaq = { q: string; a: string };
 
@@ -31,6 +30,8 @@ export type TradeLanding = {
   /** Which case study to spotlight first */
   spotlight: 'rewired' | 'honest-hanks' | 'dry-duck' | 'hooked-up';
   faqs: TradeFaq[];
+  /** Part 7 FAQ section H2. Defaults in TradeLayout if omitted. */
+  faqH2?: string;
   ctaH2: string;
   ctaLine: string;
 };
@@ -48,45 +49,46 @@ export const trades: TradeLanding[] = [
     icon: '/assets/trade-electrical.svg',
     ownerNoun: 'electrician',
     companyPlural: 'electrical companies',
-    keyword: 'electrician marketing',
-    title: t('Electrician Marketing That Books Jobs'),
+    keyword: 'marketing for electricians',
+    title: t('Marketing for Electricians That Books Jobs'),
     description:
-      'Electrician marketing built on Google: GBP, Local SEO, LSAs, and converting sites so electrical shops book real jobs, not vanity leads. Start around $500/month.',
-    h1: 'Electrician Marketing That Books Jobs',
+      'Marketing for electricians on Google: profile, Local SEO, LSAs, converting sites. Start around $500/month. Book onboarding online.',
+    h1: 'Marketing for Electricians That Books Jobs',
     heroSub:
-      'Google Business Profile, Local SEO, LSAs, Search ads, and a site that turns map-pack clicks into booked calls for electrical companies that want a real crew.',
+      'No $5k setup. No pitch call. $500 a month, and the fee only climbs when your shop does.',
     problemH2: 'Why Most Electrician Ads Waste Money',
     problemBody: [
-      'Electrical demand is high-intent and competitive. Wrong GBP category, a brochure site, or an agency that never opens Local Services Ads burns budget while the map pack goes to shops that finished the basics.',
-      'Owners feel it as feast-or-famine weeks, techs sitting, then panic hiring. Marketing that can’t fill a calendar is just another bill.',
+      'Wrong Google category, a brochure site, or Search before the basics burns money.',
+      'That looks like feast-or-famine weeks, idle techs, then panic hiring.',
     ],
     solutionH2: 'Google Systems Built for Electrical Shops',
     solutionBody: [
-      'We treat electrician marketing as one system: profile relevance, reviews, a conversion-first website, Local Services Ads early, then Search when foundations hold. Fees start small and scale when your revenue does.',
-      'Same playbook that grew Rewired and Honest Hank’s: prove booked work before we ask you to spend like a national franchise.',
+      'A flight plan, not a retainer dump: profile, website, Local Services Ads first, Search later. About $500/mo to start.',
+      'Same path Rewired and Honest Hank\'s used: prove booked work before big ad spend.',
     ],
     proofAngle: 'Electrical shops we still work with years later.',
     spotlight: 'rewired',
     faqs: [
       {
-        q: 'What does electrician marketing include with LSR?',
-        a: 'Google Business Profile and Local SEO foundations, converting website work, Local Services Ads, Search ads when ready, review systems, and optional hiring campaigns. Tracking focuses on booked jobs, not vanity dashboards.',
+        q: 'What does marketing for electricians include with LSR?',
+        a: 'Google profile, converting site, Local Services Ads, Search when ready, reviews, optional hiring. We track booked jobs.',
+      },
+      {
+        q: 'How is this different from the homepage?',
+        a: 'Same offer: $500/mo start, fee climbs with the shop. This page is the ads landing to book.',
       },
       {
         q: 'Do you only work with residential electricians?',
-        a: 'We specialize in residential home service companies that win on Google search, Maps, and reviews. If that’s how customers find you, we’re a fit.',
+        a: 'We specialize in residential shops that win on Google search, Maps, and reviews. If that is how customers find you, we are a fit.',
       },
       {
-        q: 'How fast can electrical companies see results?',
-        a: 'Profile and LSA fixes can move calls in days or weeks. Meaningful compounding often sits on a ~two-month clock. We price starter lanes so you’re not funding a long quiet period at big-agency rates.',
-      },
-      {
-        q: 'What does electrician marketing cost?',
-        a: 'Starter engagements often begin around $500/month per service lane. Fees step up as ad spend and company size grow, so we’re incentivized to get you to Orbit, not extract a giant day-one retainer.',
+        q: 'What does an electrician marketing agency cost?',
+        a: 'About $500/mo to start. Fee steps up only as you grow. Most shops only ever get quoted the other way around.',
       },
     ],
-    ctaH2: 'Ready for Electrician Marketing That Scales?',
-    ctaLine: 'Watch how it works, then book onboarding. No sales calls.',
+    faqH2: 'Before You Hire Marketing for Electricians',
+    ctaH2: 'Skip the Pitch. Book Onboarding at $500',
+    ctaLine: 'Watch the model, see the price, book yourself. No sales call.',
   },
   {
     slug: 'plumber-marketing',

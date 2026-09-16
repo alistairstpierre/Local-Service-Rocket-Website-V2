@@ -90,23 +90,23 @@ const related = [
 const steps = [
   {
     title: 'Audit the Google bottleneck',
-    body: `We find what’s blocking ${trade.companyPlural} on profile, site, reviews, or ads, then pick the highest-leverage first lane.`,
+    body: `Find what is blocking ${trade.companyPlural} on profile, site, reviews, or ads. Start with the highest-leverage fix.`,
   },
   {
     title: 'Ship foundations that convert',
-    body: 'GBP, conversion paths, LSAs or organic as fit, and tracking aimed at booked jobs, not vanity metrics.',
+    body: 'Google profile, converting site, organic map pack, and Local Services Ads booking cheap calls before Search.',
   },
   {
     title: 'Scale spend and crew carefully',
-    body: 'When capacity and cash flow allow, we expand Search, SEO depth, branding, and hiring so growth doesn’t break the shop.',
+    body: 'When capacity allows, expand Search, SEO, branding, and hiring so growth does not break the shop.',
   },
 ];
 
 const stakes = [
-  `Competitors who finish Google basics keep winning ${trade.keyword} demand in your ZIP codes.`,
+  `Shops that finish Google basics keep winning ${trade.keyword} demand in your ZIPs.`,
   'Lead portals and lazy ads raise cost without building an asset you own.',
   'Feast-or-famine calendars make hiring and trucks guesswork.',
-  'Big-agency retainers burn cash before anything is proven.',
+  'Big retainers burn cash before anything is proven.',
 ];
 
 const trustBadges = ['Starts ~$500/mo', 'No sales calls', 'Booked jobs focus', 'Fees scale with you'];
@@ -132,7 +132,7 @@ const jsonLd = graph([
   faqPageNode(pageUrl, trade.faqs),
   breadcrumbList(pageUrl, [
     { name: 'Home', path: '/' },
-    { name: 'Who We Help', path: '/#who-we-help' },
+    { name: 'Who We Help', path: '/marketing-for-service-companies#who-we-help' },
     { name: trade.label, path: `/for/${trade.slug}/` },
   ]),
 ]);
@@ -145,7 +145,7 @@ const jsonLd = graph([
       <div class="crumbs">
         <a href="/">Home</a>
         <span>/</span>
-        <a href="/#who-we-help">Who We Help</a>
+        <a href="/marketing-for-service-companies#who-we-help">Who We Help</a>
         <span>/</span>
         <span class="current">{trade.label}</span>
       </div>
@@ -166,8 +166,8 @@ const jsonLd = graph([
           <img src={trade.icon} alt="" width="48" height="48" decoding="async" />
           <div class="hero-card-title">{trade.keyword}</div>
           <p>
-            Built for {trade.companyPlural} that want Google to produce booked jobs, then scale with
-            the crew. Same Flight Plan as our electrical and waterproofing clients.
+            For {trade.companyPlural} that want Google to book jobs. Same flight plan we run with
+            electrical shops. Fee from $500/mo.
           </p>
           <a href="/flight-plan">See the Flight Plan →</a>
         </div>
@@ -330,7 +330,7 @@ const jsonLd = graph([
     <!-- 9. FAQ -->
     <section class="section container faq">
       <div class="eyebrow">FAQ</div>
-      <h2>Questions About {trade.label} Marketing</h2>
+      <h2>{trade.faqH2 ?? `What to Know Before Buying ${trade.keyword}`}</h2>
       <div class="faq-list">
         {
           trade.faqs.map((faq) => (

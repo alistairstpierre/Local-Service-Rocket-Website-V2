@@ -2,7 +2,8 @@
 /* Hero carousel: lazy-susan client images with frosted stats card.
    Auto-advances every 6.5s. Slides are rendered server-side (so the first
    image is discoverable as the LCP element) and the client script below only
-   drives the transitions. Used at the top of the homepage. */
+   drives the transitions. Used on `/` (electrician-led) and
+   `/marketing-for-service-companies` (all trades). */
 import Picture from './Picture.astro';
 
 type Client = {
@@ -10,13 +11,33 @@ type Client = {
   since: string;
   img: string;
   stats: [string, string][];
+  electrical?: boolean;
 };
 
-const clients: Client[] = [
+type Stat = { num: string; label: string; orange?: boolean };
+
+interface Props {
+  h1?: string;
+  sub?: string;
+  /** Electrical-only carousel (homepage). Default: all clients including Dry Duck. */
+  focus?: 'electrical' | 'all';
+  stats?: Stat[];
+}
+
+const {
+  h1 = 'Real growth, real fast for home service companies ready to scale.',
+  sub = 'Marketing, recruiting, and AI systems so you can build a bigger team and a name your whole city recognizes.',
+  focus = 'all',
+  stats: statsProp,
+} = Astro.props;
+
+/* Motha Electric is our weakest story. Always last in any client list. */
+const allClients: Client[] = [
   {
     name: 'Rewired Iowa',
     since: 'Client for 2 years',
     img: 'client-rewired',
+    electrical: true,
     stats: [
       ['STARTED', '5 techs'],
       ['TODAY', '12 techs'],
@@ -24,19 +45,10 @@ const clients: Client[] = [
     ],
   },
   {
-    name: 'Motha Electric',
-    since: '46+ years in business',
-    img: 'client-motha-electric',
-    stats: [
-      ['LEADS / DAY', '0 → 3'],
-      ['MONTHLY REV', '$60k, steady'],
-      ['THE GOAL', 'Consistency'],
-    ],
-  },
-  {
     name: 'Honest Hanks',
     since: 'Client for 8 months',
     img: 'client-honest-hanks',
+    electrical: true,
     stats: [
       ['STARTED', '1 tech'],
       ['TODAY', '3 techs'],
@@ -47,6 +59,7 @@ const clients: Client[] = [
     name: 'Hooked Up Electric',
     since: 'Client for 1.5 years',
     img: 'client-hooked-up',
+    electrical: true,
     stats: [
       ['YEAR ONE', '600% growth'],
       ['COUNTIES', '1 → 37'],
@@ -57,13 +70,44 @@ const clients: Client[] = [
     name: 'Dry Duck',
     since: 'Founded together 6 months ago',
     img: 'client-dry-duck',
+    electrical: false,
     stats: [
       ['MONTHLY REV', '$200k'],
       ['TEAM', '5 employees'],
       ['SCOPE', 'Brand + marketing'],
     ],
   },
+  {
+    name: 'Motha Electric',
+    since: '46+ years in business',
+    img: 'client-motha-electric',
+    electrical: true,
+    stats: [
+      ['LEADS / DAY', '0 → 3'],
+      ['MONTHLY REV', '$60k, steady'],
+      ['THE GOAL', 'Consistency'],
+    ],
+  },
 ];
+
+const clients =
+  focus === 'electrical' ? allClients.filter((c) => c.electrical) : allClients;
+
+const bandStats: Stat[] =
+  statsProp ??
+  (focus === 'electrical'
+    ? [
+        { num: '4+', label: 'electrical companies grown with named results on this page' },
+        { num: '$10M+', label: 'in new revenue generated for our clients', orange: true },
+        { num: '10 days', label: 'on average to bring qualified electrician hiring candidates' },
+        { num: '$60k → $220k+', label: 'Rewired monthly revenue while we kept running Google' },
+      ]
+    : [
+        { num: '6', label: 'home service companies scaled (every one named on this page)' },
+        { num: '$10M+', label: 'in new revenue generated for our clients', orange: true },
+        { num: '10 days', label: 'on average to bring a client qualified hiring candidates' },
+        { num: '$0 → $200k/mo', label: "one client's first 6 months, from launch to today" },
+      ]);
 
 // Matches ENTER_X in the transition script below.
 const ENTER_X = '620px';
@@ -78,11 +122,8 @@ const ENTER_X = '620px';
           <span class="rating-text">5.0 on Google</span>
         </div>
       </div>
-      <h1>Real growth, real fast for home service companies ready to scale.</h1>
-      <p class="hero-sub">
-        Marketing, recruiting, and AI systems so you can build a bigger team and a name your
-        whole city recognizes.
-      </p>
+      <h1>{h1}</h1>
+      <p class="hero-sub">{sub}</p>
       <div class="hero-ctas">
         <a href="/get-started" class="btn btn-primary">Schedule onboarding</a>
         <a href="#case-studies" class="btn btn-secondary">See client results</a>
@@ -138,22 +179,14 @@ const ENTER_X = '620px';
 
   <div class="stats-band">
     <div class="stats-grid container">
-      <div>
-        <div class="stat-num">6</div>
-        <div class="stat-label">home service companies scaled (every one named on this page)</div>
-      </div>
-      <div>
-        <div class="stat-num orange">$10M+</div>
-        <div class="stat-label">in new revenue generated for our clients</div>
-      </div>
-      <div>
-        <div class="stat-num">10 days</div>
-        <div class="stat-label">on average to bring a client qualified hiring candidates</div>
-      </div>
-      <div>
-        <div class="stat-num">$0 → $200k/mo</div>
-        <div class="stat-label">one client's first 6 months, from launch to today</div>
-      </div>
+      {
+        bandStats.map((s) => (
+          <div>
+            <div class={s.orange ? 'stat-num orange' : 'stat-num'}>{s.num}</div>
+            <div class="stat-label">{s.label}</div>
+          </div>
+        ))
+      }
     </div>
   </div>
 </section>

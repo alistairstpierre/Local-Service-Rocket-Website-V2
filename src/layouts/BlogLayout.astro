@@ -30,6 +30,10 @@ interface Props {
   updated?: string;
   /** 3-5 real follow-up questions. Renders the FAQ block and emits FAQPage schema. */
   faqs?: { q: string; a: string }[];
+  /** Part 7 FAQ H2 (unique per post; hesitation + topic). */
+  faqH2?: string;
+  /** Part 7 CTA H2 (unique per post). */
+  ctaH2?: string;
 }
 
 const {
@@ -42,6 +46,8 @@ const {
   dateModified,
   updated,
   faqs = [],
+  faqH2 = 'What to Ask Before You Hire Help',
+  ctaH2 = 'Ready for Google That Books Real Jobs?',
 } = Astro.props;
 const docTitle = `${seoTitle ?? title} | Local Service Rocket`;
 const pageUrl = absoluteUrl(Astro.url.pathname);
@@ -124,7 +130,7 @@ const jsonLd = graph([
           <div class="byline-name">Alistair St Pierre</div>
           <p class="byline-bio">
             Founder of Local Service Rocket. I run Google marketing and hiring for home service
-            companies from Wellington, New Zealand — the numbers in this post come from accounts I
+            companies from Wellington, New Zealand. The numbers in this post come from accounts I
             work on myself. <a href="/about">More about how I work →</a>
           </p>
         </div>
@@ -133,7 +139,7 @@ const jsonLd = graph([
       {
         faqs.length > 0 && (
           <div class="faq-block">
-            <h2>Questions owners ask us about this</h2>
+            <h2>{faqH2}</h2>
             <div class="faq-list">
               {faqs.map((item) => (
                 <div class="faq-item">
@@ -147,7 +153,7 @@ const jsonLd = graph([
       }
 
       <div class="post-cta">
-        <h2>Want this done for your trade business?</h2>
+        <h2>{ctaH2}</h2>
         <p>See how Local Service Rocket works, then book onboarding. No sales calls.</p>
         <div class="cta-row">
           <a href="/get-started" class="btn btn-primary">Schedule onboarding</a>

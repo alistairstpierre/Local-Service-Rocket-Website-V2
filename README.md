@@ -60,7 +60,8 @@ Details: `blog-queue/README.md`.
 
 | Route | Notes |
 | --- | --- |
-| `/` | Homepage + Hero Section |
+| `/` | Homepage — electrician-led (`marketing for electricians`) |
+| `/marketing-for-service-companies` | Broader all-trades offer (former homepage) |
 | `/about` | Alistair + agency story (from brain dumps) |
 | `/flight-plan` | The System: Pre-flight / Liftoff / Orbit stages |
 | `/get-started` | Get Started funnel |
@@ -107,6 +108,7 @@ Details: `blog-queue/README.md`.
 │   └── publish-blog.yml          # Weekly schedule: publish-next-blog.mjs → commit → Vercel rebuilds
 ├── docs/
 │   ├── BLOG-FRAMEWORK.md         # Editorial standard, Evidence Bank, trade-keyword SEO + topic queue
+│   ├── KEYWORD-RESEARCH-ELECTRICIANS.md  # Planner volumes + primary organic/paid targets for electrician domination
 │   └── SITE-STRUCTURE-AND-SEO-GUIDE.md  # Client home-service site SEO/IA playbook
 ├── scripts/
 │   ├── optimize-images.mjs       # assets-src -> AVIF/WebP/fallback + image-sizes.json
@@ -138,7 +140,8 @@ Details: `blog-queue/README.md`.
 │   │   ├── ServiceLayout.astro   # Shared service detail template
 │   │   └── TradeLayout.astro     # /for/[slug] SEO/ad landings (guide service order)
 │   ├── pages/
-│   │   ├── index.astro
+│   │   ├── index.astro           # Electrician-led homepage
+│   │   ├── marketing-for-service-companies.astro  # All-trades offer (former homepage)
 │   │   ├── about.astro
 │   │   ├── flight-plan.astro     # Stage layout w/ tilted photo cards (design: The Flight Plan.dc.html)
 │   │   ├── get-started.astro

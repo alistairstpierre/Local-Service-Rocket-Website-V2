@@ -5,19 +5,19 @@
 export const blogPosts = [
   {
     href: '/blog/rewired-big-agency-rebuild',
-    title: 'Rewired hired the big agencies. They made his electrician ads worse.',
-    dek: 'A dozen agencies, two flashy rebuilds, tens of thousands burned - then $60k to $220k+ months once John stopped shopping.',
+    title: 'Rewired: Big Agencies Made Electrician Ads Worse',
+    dek: 'A dozen agencies, two flashy rebuilds, tens of thousands burned, then $60k to $220k+ months once John stopped shopping.',
     date: 'September 8, 2026',
   },
   {
     href: '/blog/electrician-local-services-ads',
-    title: 'Local Services Ads for electricians: Hooked Up 100-200 leads a month',
+    title: 'Local Services Ads for Electricians That Scale',
     dek: '1 to 4 counties, 2+ years of LSA volume, Jason 600% year. Why Search can wait.',
     date: 'September 1, 2026',
   },
   {
     href: '/blog/hiring-electricians-facebook-vs-indeed',
-    title: 'Hiring electricians: Indeed burned $1,000+. Facebook filled the interviews.',
+    title: 'Hiring Electricians With Facebook Ads, Not Indeed',
     dek: '~$500 setup, ~10-day Meta sprint, Rewired 5 to 12 crew. What to do when trucks are the bottleneck.',
     date: 'August 25, 2026',
   },
@@ -30,7 +30,7 @@ export const blogPosts = [
   {
     href: '/blog/realistic-marketing-expectations',
     title: 'Realistic expectations for home-service marketing',
-    dek: 'Two months, eight months, three years - the real timelines from four accounts, plus the month-two cliff nobody warns you about.',
+    dek: 'Two months, eight months, three years: the real timelines from four accounts, plus the month-two cliff nobody warns you about.',
     date: 'August 11, 2026',
   },
   {
@@ -47,14 +47,14 @@ export const blogPosts = [
   },
   {
     href: '/blog/google-category-relevance',
-    title: 'The Google Business Profile mistake that silently kills electrician leads',
+    title: 'Electrician GBP Mistake That Silently Kills Leads',
     dek: 'Motha Electric category said electrical installation service. Changing one dropdown produced 1-3 calls a day within a week.',
     date: 'July 21, 2026',
   },
   {
     href: '/blog/dry-duck-launch',
-    title: 'How Dry Duck went from a $500 brief to a $200k/month waterproofing company',
-    dek: 'Zero to roughly $200k months and five staff in six months, on SEO before ads - including the month-two collapse in the middle.',
+    title: 'Dry Duck: $500 Brief to $200k/Month Waterproofing',
+    dek: 'Zero to roughly $200k months and five staff in six months, on SEO before ads, including the month-two collapse in the middle.',
     date: 'July 14, 2026',
   },
 ];

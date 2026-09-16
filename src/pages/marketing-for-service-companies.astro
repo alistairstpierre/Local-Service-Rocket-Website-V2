@@ -1,23 +1,23 @@
 ---
-/* Homepage: electrician-led.
-   Primary keyword: marketing for electricians
-   Secondary: electrician advertising
-   H1/title: Wired to Scale (Part 7 + docs/KEYWORD-RESEARCH-ELECTRICIANS.md).
-   Broader all-trades offer: /marketing-for-service-companies */
+/* Former homepage: marketing for home service companies across trades.
+   Preserves the all-trades Who We Help grid + Dry Duck proof. The live
+   homepage (`/`) is electrician-led; this URL keeps the broader offer. */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import Picture from '../components/Picture.astro';
-import { absoluteUrl, faqPageNode, graph, webPageNode } from '../data/schema';
+import { tradeLabelToSlug } from '../data/trades';
 
 /* Motha Electric is our weakest story. Always last in any client list. */
 const trustLogos = [
   { href: '/case-studies/rewired', name: 'logo-rewired', alt: 'Rewired', h: 48 },
   { href: '/case-studies/honest-hanks', name: 'logo-honest-hanks', alt: "Honest Hank's", h: 50 },
+  { href: '/case-studies/dry-duck', name: 'logo-dry-duck', alt: 'Dry Duck', h: 50 },
   { href: '/case-studies/hooked-up', name: 'logo-hooked-up', alt: 'Hooked Up Electric', h: 44 },
   { href: '/case-studies', name: 'logo-coastal-current', alt: 'Coastal Current', h: 46 },
   { href: '/case-studies', name: 'logo-pacific', alt: 'Pacific Home Electric', h: 42 },
   { href: '/case-studies', name: 'logo-definite', alt: 'Definite Electric', h: 42 },
   { href: '/case-studies', name: 'logo-austral', alt: 'Austral Energy Solutions', h: 42, radius: true },
+  { href: '/case-studies', name: 'logo-c-tinting', alt: 'C Tinting', h: 44 },
   { href: '/case-studies', name: 'logo-motha', alt: 'Motha Electric', h: 44, radius: true },
 ];
 
@@ -25,31 +25,31 @@ const services = [
   {
     icon: '/assets/icon-local-seo-reviews-v2.svg',
     title: 'Local SEO & Reviews',
-    body: 'Show up in the map pack for electrician searches near you.',
+    body: 'Rank in your service area, own the map pack, and build a review engine.',
     href: '/services/local-seo',
   },
   {
     icon: '/assets/icon-paid-ads-lsas-v2.svg',
-    title: 'Electrician Advertising',
-    body: 'Local Services Ads first, then Search. Booked jobs, not vanity clicks.',
+    title: 'Paid Ads & LSAs',
+    body: 'Google Ads and Local Services Ads managed to booked jobs, not clicks.',
     href: '/services/paid-ads',
   },
   {
     icon: '/assets/icon-websites-that-convert-v2.svg',
     title: 'Websites That Convert',
-    body: 'Fast sites that turn map and ad traffic into booked calls.',
+    body: 'Fast, trust-building sites you own outright: design, code, and content.',
     href: '/services/websites',
   },
   {
     icon: '/assets/icon-hiring-recruiting-v2.svg',
-    title: 'Hiring Electricians',
-    body: 'Facebook hiring so trucks stay staffed when jobs pick up.',
+    title: 'Hiring & Recruiting',
+    body: 'Fill trucks with techs: job marketing, screening systems, onboarding.',
     href: '/services/hiring',
   },
   {
     icon: '/assets/icon-branding-v2.svg',
     title: 'Branding',
-    body: 'Van wraps and marks people read at 40mph and call again.',
+    body: 'Logo, trucks, uniforms: a brand homeowners remember and call again.',
     href: '/services/branding',
   },
   {
@@ -60,45 +60,36 @@ const services = [
   },
 ];
 
-const homeTitle = 'Marketing for Electricians Wired to Scale | Local Service Rocket';
-const homeDescription =
-  'Marketing for electricians from $500/mo. Fee climbs with your shop. No $5k setup. Book onboarding online.';
-
-const faqs = [
-  {
-    q: 'What does marketing for electricians include?',
-    a: 'Google profile, converting site, Local Services Ads, then Search when ready. We track booked jobs. About $500/mo to start.',
-  },
-  {
-    q: 'How is electrician advertising different here?',
-    a: 'No Search dump on day one. Fix the profile, run Local Services Ads, add Search later. How Rewired, Honest Hank\'s, and Hooked Up grew.',
-  },
-  {
-    q: 'Do you only work with electrical companies?',
-    a: 'Deepest with electrical: Rewired, Honest Hank\'s, Hooked Up, and Motha. Other home service trades too.',
-  },
-  {
-    q: 'What does an electrician marketing agency cost?',
-    a: '$500/mo to start. Fee steps up only as you grow. Most shops only ever get quoted the other way around.',
-  },
+const trades = [
+  ['trade-electrical.svg', 'Electrical'],
+  ['trade-plumbing.svg', 'Plumbing'],
+  ['trade-hvac.svg', 'HVAC'],
+  ['trade-roofing.svg', 'Roofing'],
+  ['trade-waterproofing.svg', 'Waterproofing'],
+  ['trade-garage-doors.svg', 'Garage Doors'],
+  ['trade-pest-control.svg', 'Pest Control'],
+  ['trade-locksmiths.svg', 'Locksmiths'],
+  ['trade-appliance-repair.svg', 'Appliance Repair'],
+  ['trade-water-damage-restoration.svg', 'Water Damage & Restoration'],
+  ['trade-tree-service.svg', 'Tree Service'],
+  ['trade-landscaping.svg', 'Landscaping'],
+  ['trade-towing.svg', 'Towing'],
+  ['trade-junk-removal.svg', 'Junk Removal'],
+  ['trade-pressure-washing.svg', 'Pressure Washing'],
+  ['trade-septic-sewer.svg', 'Septic & Sewer'],
+  ['trade-fencing.svg', 'Fencing'],
+  ['trade-painting.svg', 'Painting'],
 ];
-
-const pageUrl = absoluteUrl('/');
-const jsonLd = graph([
-  webPageNode({
-    pageUrl,
-    name: homeTitle,
-    description: homeDescription,
-  }),
-  faqPageNode(pageUrl, faqs),
-]);
 ---
 
-<BaseLayout title={homeTitle} description={homeDescription} jsonLd={jsonLd}>
+<BaseLayout
+  title="Marketing for Home Service Companies Ready to Scale | Local Service Rocket"
+  description="Google marketing for home service companies: Local SEO, LSAs, Search ads, websites, and hiring. Starts around $500/month. No sales calls."
+>
   <Hero
-    focus="electrical"
-    h1="Marketing for Electricians Wired to Scale"
+    h1="Marketing for Home Service Companies Ready to Scale"
     sub="No $5k setup. No pitch call. $500 a month, and the fee only climbs when your shop does."
+    focus="all"
   />
 
   <!-- TRUST STRIP -->
@@ -118,15 +109,15 @@ const jsonLd = graph([
       }
     </div>
     <div class="trust-link">
-      <a href="#case-studies">See electrical case studies →</a>
+      <a href="#case-studies">See case studies →</a>
     </div>
   </section>
 
   <!-- REVIEWS -->
   <section class="section container" id="reviews">
     <div class="section-head">
-      <div class="eyebrow">SUCCESS STORIES</div>
-      <h2>Electrician Owners Who Stopped Shopping Agencies</h2>
+      <div class="eyebrow">WHAT OUR CLIENTS ARE SAYING</div>
+      <h2>Owners Who Stopped Shopping Agencies</h2>
     </div>
     <div class="reviews-grid">
       <article class="review-card">
@@ -211,9 +202,9 @@ const jsonLd = graph([
     <div class="flight-plan">
       <div class="flight-copy">
         <div class="eyebrow on-dark">THE FLIGHT PLAN</div>
-        <h2>Marketing for Electricians Without Burning Ad Spend</h2>
+        <h2>A flight plan, not a retainer dump</h2>
         <p>
-          Not a retainer dump. A flight plan: prove the shop can take the work, then turn up the ads.
+          Prove the shop can take the work. Then turn up the ads.
         </p>
         <a href="/flight-plan" class="btn btn-primary">See the full flight plan</a>
       </div>
@@ -253,8 +244,8 @@ const jsonLd = graph([
   <!-- SERVICES -->
   <section class="section container" id="services">
     <div class="section-head">
-      <div class="eyebrow">WHAT WE DO FOR ELECTRICAL SHOPS</div>
-      <h2>Electrician Advertising That Books Real Jobs</h2>
+      <div class="eyebrow">WHAT WE DO</div>
+      <h2>Everything you need, one team.</h2>
     </div>
     <div class="services-grid">
       {
@@ -273,9 +264,9 @@ const jsonLd = graph([
   <section class="section container" id="case-studies">
     <div class="cs-header">
       <div>
-        <div class="eyebrow">ELECTRICAL CASE STUDIES</div>
-        <h2>Three Electrical Shops. Receipts Attached</h2>
-        <p class="cs-sub">Real shops. Real booked jobs.</p>
+        <div class="eyebrow">CASE STUDIES</div>
+        <h2>Three Paths. Receipts Attached</h2>
+        <p class="cs-sub">Scale what you have, grow your crew, or start from nothing.</p>
       </div>
       <a href="/case-studies" class="btn btn-secondary">View all case studies</a>
     </div>
@@ -344,38 +335,66 @@ const jsonLd = graph([
         </div>
       </a>
 
-      <a href="/case-studies/hooked-up" class="cs-card">
+      <a href="/case-studies/dry-duck" class="cs-card">
         <div class="cs-media">
-          <Picture
-            name="client-hooked-up"
-            alt="Hooked Up Electric"
-            sizes="(max-width: 900px) 100vw, 400px"
-          />
+          <Picture name="team-dry-duck" alt="Dry Duck team" sizes="(max-width: 900px) 100vw, 400px" />
           <div class="cs-logo-badge">
-            <Picture name="logo-hooked-up" alt="" height={28} />
+            <Picture name="logo-dry-duck" alt="" height={28} />
           </div>
         </div>
         <div class="cs-body">
-          <div class="cs-tag">WIN ON LSA</div>
-          <div class="cs-name">Hooked Up Electric</div>
-          <div class="cs-meta">Electrical · Merkel, TX</div>
+          <div class="cs-tag">START FROM NOTHING</div>
+          <div class="cs-name">Dry Duck</div>
+          <div class="cs-meta">Basement waterproofing</div>
           <div class="cs-stats">
             <div>
-              <div class="cs-stat orange">600%</div>
-              <div class="cs-stat-label">growth in 2024</div>
+              <div class="cs-stat orange">$0 → $200k</div>
+              <div class="cs-stat-label">monthly revenue in 6 months</div>
             </div>
             <div>
-              <div class="cs-stat">1 → 37</div>
-              <div class="cs-stat-label">counties</div>
+              <div class="cs-stat">5</div>
+              <div class="cs-stat-label">full-time staff</div>
             </div>
             <div>
-              <div class="cs-stat">1 → 4</div>
-              <div class="cs-stat-label">locations</div>
+              <div class="cs-stat">6 mo</div>
+              <div class="cs-stat-label">from launch</div>
             </div>
           </div>
-          <div class="cs-link">Read the Hooked Up story →</div>
+          <div class="cs-link">Read the Dry Duck story →</div>
         </div>
       </a>
+    </div>
+  </section>
+
+  <!-- WHO WE HELP -->
+  <section class="section container" id="who-we-help">
+    <div class="section-head narrow">
+      <div class="eyebrow">WHO WE HELP</div>
+      <h2>If your customers find you on Google, that's our specialty.</h2>
+      <p class="section-sub">
+        Any trade that lives on Google search, Maps, and reviews. If that's you and you want to
+        grow, we should talk.
+      </p>
+    </div>
+    <div class="trades-grid">
+      {
+        trades.map(([file, label]) => {
+          const slug = tradeLabelToSlug[label];
+          const href = slug ? `/for/${slug}` : '/get-started';
+          return (
+            <a href={href} class="trade-card">
+              <img src={`/assets/${file}`} alt="" width="30" height="30" loading="lazy" decoding="async" />
+              <div>{label}</div>
+            </a>
+          );
+        })
+      }
+      <div class="trade-more">
+        <div class="trade-more-title">And more.</div>
+        <div>
+          Not on the list? If you want to dominate on Google in your area, we should still talk.
+        </div>
+      </div>
     </div>
   </section>
 
@@ -400,7 +419,7 @@ const jsonLd = graph([
       </div>
       <div>
         <div class="eyebrow">WHY LOCAL SERVICE ROCKET</div>
-        <h2>We Grow When Your Electrical Company Grows</h2>
+        <h2>We grow when you grow.</h2>
         <div class="why-points">
           <div class="why-point">
             <div class="check">✓</div>
@@ -423,38 +442,6 @@ const jsonLd = graph([
           </div>
         </div>
         <a href="/about" class="about-link">More about Alistair &amp; the agency →</a>
-        <p class="other-trades">
-          Not an electrician?
-          <a href="/marketing-for-service-companies">See marketing for home service companies →</a>
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- FAQ: card band matches reviews/services; class names unique to bust stale CSS -->
-  <section class="home-faq" id="faq">
-    <div class="container">
-      <div class="section-head">
-        <div class="eyebrow">BEFORE YOU BOOK</div>
-        <h2>What to Know Before Marketing for Electricians</h2>
-      </div>
-      <div class="home-faq-grid">
-        {
-          faqs.map((faq) => (
-            <article class="home-faq-card">
-              <h3>{faq.q}</h3>
-              {faq.q.startsWith('Do you only work') ? (
-                <p>
-                  Deepest with electrical: Rewired, Honest Hank&apos;s, Hooked Up, and Motha. Other
-                  home service trades too. See{' '}
-                  <a href="/marketing-for-service-companies">marketing for home service companies</a>.
-                </p>
-              ) : (
-                <p>{faq.a}</p>
-              )}
-            </article>
-          ))
-        }
       </div>
     </div>
   </section>
@@ -462,13 +449,16 @@ const jsonLd = graph([
   <!-- CTA -->
   <section class="cta-wrap container">
     <div class="cta-panel">
-      <h2>Skip the Pitch. Book Onboarding at $500</h2>
-      <p>Watch the model, see the price, book yourself. First call is about the shop.</p>
+      <h2>Ready to get off the truck?</h2>
+      <p>
+        Watch a short video on exactly how it works and what it costs, then book your onboarding
+        call. No sales calls. Your first call with us is already about your business.
+      </p>
       <div class="cta-btns">
         <a href="/get-started" class="btn btn-primary btn-lg">Schedule onboarding</a>
-        <a href="/for/electrician-marketing" class="btn btn-ghost-dark btn-lg">Electrician marketing →</a>
+        <a href="#case-studies" class="btn btn-ghost-dark btn-lg">See client results</a>
       </div>
-      <p class="cta-price">Starts at $500/month. The fee climbs when you do.</p>
+      <p class="cta-price">Starts at $500/month. We grow when you grow.</p>
       <div class="cta-meta">
         <span>★★★★★ 5.0 on Google</span>
         <span>(888) 371-6365</span>
@@ -1081,16 +1071,6 @@ const jsonLd = graph([
     font-weight: 700;
   }
 
-  .other-trades {
-    margin-top: 14px;
-    font-size: 13.5px;
-    color: var(--muted);
-  }
-
-  .other-trades a {
-    font-weight: 700;
-  }
-
   .why-point {
     display: flex;
     gap: 12px;
@@ -1113,61 +1093,9 @@ const jsonLd = graph([
     flex: none;
   }
 
-  /* FAQ: 2-col cards on section band (same language as review/service cards) */
-  .home-faq {
-    margin-top: 72px;
-    padding: 64px 0;
-    background: var(--section-bg);
-    border-top: 1px solid var(--hairline);
-    border-bottom: 1px solid var(--hairline);
-  }
-
-  .home-faq .section-head h2 {
-    margin-top: 10px;
-    font-size: clamp(28px, 3vw, 34px);
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    line-height: 1.15;
-    text-wrap: balance;
-  }
-
-  .home-faq-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px;
-    margin-top: 32px;
-  }
-
-  .home-faq-card {
-    border: 1px solid var(--border);
-    border-radius: var(--radius-card);
-    padding: 22px;
-    background: #fff;
-  }
-
-  .home-faq-card h3 {
-    margin: 0;
-    font-size: 16px;
-    font-weight: 800;
-    letter-spacing: -0.01em;
-    line-height: 1.35;
-  }
-
-  .home-faq-card p {
-    margin-top: 10px;
-    font-size: 14.5px;
-    line-height: 1.6;
-    color: var(--body);
-  }
-
-  .home-faq-card a {
-    color: var(--orange);
-    font-weight: 700;
-  }
-
   /* CTA */
   .cta-wrap {
-    margin-top: 48px;
+    margin-top: 64px;
     padding-bottom: 72px;
   }
 
@@ -1225,8 +1153,7 @@ const jsonLd = graph([
     .services-grid,
     .cs-grid,
     .why-grid,
-    .flight-plan,
-    .home-faq-grid {
+    .flight-plan {
       grid-template-columns: 1fr;
     }
 

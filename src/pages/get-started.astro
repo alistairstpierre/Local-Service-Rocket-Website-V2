@@ -27,7 +27,7 @@ const tiers = [
     band: '$20-25K MONTHS',
     price: 'from $500',
     unit: '/mo',
-    sub: 'SEO / GBP / consulting',
+    sub: 'Organic + LSA working cheap',
     featured: false,
     rows: [
       { label: 'Website build (if needed)', value: '~$2k' },
@@ -117,7 +117,11 @@ const jsonLd = graph([
   <main>
     <div class="intro container">
       <div class="badge">OWN GOOGLE IN YOUR SERVICE AREA</div>
-      <h1>See exactly how it works, then book your onboarding call.</h1>
+      <h1>See Exactly How It Works, Then Book Onboarding</h1>
+      <p class="intro-lede">
+        Built for home service owners, including electricians who want Google to book jobs without a
+        $5k pitch. Watch the model, see the price, book yourself.
+      </p>
     </div>
 
     <div class="video-wrap container">
@@ -139,8 +143,8 @@ const jsonLd = graph([
       <a href={BOOKING} class="btn btn-primary">Schedule my onboarding call</a>
       <p class="vsl-cta-note">
         <strong>This is not a sales call.</strong> If you book it, come ready to start and we’ll come
-        ready to diagnose. Watched it and you’re not there yet? That’s fine —
-        <a href="#not-ready">here’s what to do instead</a>.
+        ready to diagnose. Watched it and you’re not there yet? That’s fine.
+        <a href="#not-ready">Here’s what to do instead</a>.
       </p>
     </div>
 
@@ -285,7 +289,7 @@ const jsonLd = graph([
         <div class="measure__spine" aria-hidden="true"></div>
         <div class="measure__copy">
           <div class="eyebrow">COMMON OBJECTIONS</div>
-          <h2>Straight answers.</h2>
+          <h2>Straight Answers Before You Book</h2>
           <div class="faq-list">
             <div class="faq-item">
               <div class="q">I’ve hired agencies before and got burned. Why trust you?</div>
@@ -444,6 +448,14 @@ const jsonLd = graph([
     font-weight: 800;
     letter-spacing: -0.03em;
     text-wrap: balance;
+  }
+
+  .intro-lede {
+    margin: 14px auto 0;
+    max-width: 42rem;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--muted);
   }
 
   .video-wrap {
