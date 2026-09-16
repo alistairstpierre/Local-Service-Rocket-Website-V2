@@ -59,7 +59,8 @@ export const images = {
   // no third-party request until someone actually clicks play.
   'video-founder-story': { source: 'video-founder-story.jpg', widths: [640, 1280], fallback: 'jpg' },
 
-  // Google Partner badge renders at 120x34; the original is only 235px wide.
+  // Google Partner badge — temporarily unused until cert is active + linked.
+  // Restore on Hero + get-started, then wrap in the Partner directory URL.
   'badge-google-partner': { source: 'badge-google-partner.png', widths: [235], fallback: 'png' },
 
   // Client logo strips. Only Coastal Current and Dry Duck have real transparency.
