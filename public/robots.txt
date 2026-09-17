@@ -1,0 +1,6 @@
+# robots.txt for Local Service Rocket.
+# Sitemap is regenerated on every `astro build` / Vercel deploy via @astrojs/sitemap.
+User-agent: *
+Allow: /
+
+Sitemap: https://localservicerocket.com/sitemap-index.xml
