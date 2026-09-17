@@ -7,30 +7,9 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   output: 'static',
   site: 'https://localservicerocket.com',
-  integrations: [
-    sitemap({
-      // Stamp every URL with this build's time so GSC sees the file as updated on deploy.
-      lastmod: new Date(),
-      serialize(item) {
-        // Homepage and main conversion paths get a slight priority nudge; GSC mostly uses presence.
-        const loc = item.url;
-        if (loc === 'https://localservicerocket.com/') {
-          return { ...item, priority: 1.0, changefreq: 'weekly' };
-        }
-        if (
-          loc.includes('/get-started') ||
-          loc.includes('/for/electrician-marketing') ||
-          loc.includes('/marketing-for-service-companies')
-        ) {
-          return { ...item, priority: 0.9, changefreq: 'weekly' };
-        }
-        if (loc.includes('/blog/') && !loc.endsWith('/blog/')) {
-          return { ...item, priority: 0.7, changefreq: 'monthly' };
-        }
-        return { ...item, priority: 0.8, changefreq: 'weekly' };
-      },
-    }),
-  ],
+  // Plain URL list only: Google ignores changefreq/priority, and inaccurate lastmod
+  // (e.g. build timestamps) can cause Google to distrust dates sitewide.
+  integrations: [sitemap()],
 
   // Fetch a page as soon as the pointer touches its link. Hover (rather than
   // viewport) keeps the homepage from pulling all 40+ linked pages on mobile.
