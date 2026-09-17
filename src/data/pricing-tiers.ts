@@ -24,7 +24,7 @@ export const pricingTiers: PricingTier[] = [
     band: '$20-25K MONTHS',
     price: 'from $500',
     unit: '/mo',
-    sub: 'Organic + LSA booking jobs',
+    sub: 'Organic, LSA, and business consulting',
     featured: true,
     rows: [
       { label: 'Website build (if needed)', value: '$2k' },
@@ -38,7 +38,7 @@ export const pricingTiers: PricingTier[] = [
     band: '$25-100K MONTHS',
     price: '$1.5k',
     unit: '/mo',
-    sub: 'SEO and Search ads together',
+    sub: 'SEO, Search ads, and business consulting',
     rows: [
       { label: 'Deeper SEO and Google Search', value: 'included' },
       { label: 'Branding: logo, truck, cards, shirts', value: '$5k', href: '/services/branding' },
@@ -53,11 +53,10 @@ export const pricingTiers: PricingTier[] = [
     price: '20% of ad spend',
     unit: '+ $1.5k/mo',
     unitStrong: true,
-    sub: 'Scaled Search, hiring, risk cover',
+    sub: 'Scaled Search, hiring, and business consulting',
     rows: [
       { label: 'Hiring sprint setup (optional)', value: '$500' },
       { label: 'Hiring sprint while live (optional)', value: '$500/mo' },
-      { label: 'Hiring ads, about 10 days (optional)', value: '$30-50/day' },
       { label: 'Risk cover as budgets scale', value: 'built in' },
     ],
   },

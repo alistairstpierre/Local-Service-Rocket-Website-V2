@@ -59,13 +59,8 @@ export const images = {
   // no third-party request until someone actually clicks play.
   'video-founder-story': { source: 'video-founder-story.jpg', widths: [640, 1280], fallback: 'jpg' },
 
-  // Google Partner badge — OFF the live site until Partner status is active.
-  // Restore checklist (Sep 18+ / when Badge status shows Partner):
-  // 1. Ads → Admin → Partners program → Badge status → Download HTML snippet
-  //    (must link to the public company profile; bare image alone is non-compliant)
-  // 2. Put that snippet on Hero + get-started (or wrap Picture in the profile URL
-  //    only if the snippet is unavailable and Google still shows Partner status)
-  // 3. Confirm localservicerocket.com is listed under badged websites in Company details
+  // Local Partner PNG is only used to build og-default.jpg. The live badge is
+  // GooglePartnerBadge.astro (official 2026 hosted SVG + profile URL).
   'badge-google-partner': { source: 'badge-google-partner.png', widths: [235], fallback: 'png' },
 
   // Client logo strips. Only Coastal Current and Dry Duck have real transparency.

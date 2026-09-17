@@ -1,0 +1,59 @@
+---
+/* Official Google Partner badge (2026 clickable SVG).
+   Renders Google's required snippet: hosted badge image linking to the public
+   Partner profile. Framed to match the hero 5.0 rating pill (same height,
+   radius, #e5e5e5 border). The SVG's own gray stroke is cropped so the two
+   badges read as a pair. Used in Hero and PricingOffer. */
+interface Props {
+  class?: string;
+  loading?: 'lazy' | 'eager';
+}
+
+const PROFILE = 'https://www.google.com/partners/agency?id=5413249463';
+const SRC = 'https://www.gstatic.com/partners/badge/images/2026/PartnerBadgeClickable.svg';
+
+const { class: className = '', loading = 'lazy' } = Astro.props;
+---
+
+<a
+  href={PROFILE}
+  target="_blank"
+  rel="noopener"
+  class:list={['partner-badge-link', className]}
+  aria-label="Google Partner"
+>
+  <img
+    src={SRC}
+    alt=""
+    width={48}
+    height={48}
+    loading={loading}
+    decoding="async"
+    class="partner-badge"
+  />
+</a>
+
+<style>
+  /* Same shell as .rating-badge in Hero: 48px tall, 8px radius, #e5e5e5. */
+  .partner-badge-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    width: 48px;
+    flex: none;
+    border-radius: 8px;
+    border: 1px solid #e5e5e5;
+    background: #fff;
+    overflow: hidden;
+  }
+
+  /* Scale just past the SVG's gray stroke so our #e5e5e5 frame is the only
+     border, while keeping the G + "Google Partner" mark readable. */
+  .partner-badge {
+    display: block;
+    height: 128%;
+    width: auto;
+    max-width: none;
+  }
+</style>

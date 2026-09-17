@@ -2,6 +2,7 @@
 /* Flight Plan pricing offer cards.
    Used on `/` (below testimonials) and `/get-started`. Data: src/data/pricing-tiers.ts. */
 import { pricingTiers } from '../data/pricing-tiers';
+import GooglePartnerBadge from './GooglePartnerBadge.astro';
 
 interface Props {
   eyebrow?: string;
@@ -71,6 +72,7 @@ const {
 
     <div class="pricing-foot">
       <div class="pricing-meta">
+        <GooglePartnerBadge />
         <span><span class="stars">★★★★★</span> 5.0 on Google</span>
         <span>{footNote}</span>
       </div>

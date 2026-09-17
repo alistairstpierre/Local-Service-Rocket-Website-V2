@@ -122,6 +122,7 @@ Details: `blog-queue/README.md`.
 ├── src/
 │   ├── components/
 │   │   ├── Footer.astro
+│   │   ├── GooglePartnerBadge.astro  # Official 2026 Partner snippet (Hero + PricingOffer)
 │   │   ├── Hero.astro
 │   │   ├── Logo.astro
 │   │   ├── Nav.astro

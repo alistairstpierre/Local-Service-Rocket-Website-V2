@@ -6,7 +6,6 @@
    who aren't ready. Keep this page and the video saying the same thing.
    Design origin: Get Started.dc.html */
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Picture from '../components/Picture.astro';
 import PricingOffer from '../components/PricingOffer.astro';
 import {
   absoluteUrl,
@@ -795,14 +794,6 @@ const jsonLd = graph([
   .stars {
     color: var(--orange);
     letter-spacing: 2px;
-  }
-
-  /* Picture renders the <img> from a child component, so it never gets this
-     page's scope attribute — :global() is required for it to match. */
-  .pricing-meta :global(.partner-badge) {
-    display: block;
-    height: 30px;
-    width: auto;
   }
 
   .faq {

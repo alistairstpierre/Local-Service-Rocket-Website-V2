@@ -5,6 +5,7 @@
    drives the transitions. Used on `/` (electrician-led) and
    `/marketing-for-service-companies` (all trades). */
 import Picture from './Picture.astro';
+import GooglePartnerBadge from './GooglePartnerBadge.astro';
 
 type Client = {
   name: string;
@@ -117,6 +118,7 @@ const ENTER_X = '620px';
   <div class="hero-grid container">
     <div class="hero-copy">
       <div class="hero-badges">
+        <GooglePartnerBadge loading="eager" />
         <div class="rating-badge">
           <span class="stars">★★★★★</span>
           <span class="rating-text">5.0 on Google</span>
@@ -289,33 +291,26 @@ const ENTER_X = '620px';
     flex-wrap: wrap;
   }
 
-  /* :global() because <Picture> renders the <img> from a child component. */
-  :global(.partner-badge) {
-    height: 34px;
-    width: auto;
-    border-radius: 6px;
-    border: 1px solid #e5e5e5;
-  }
-
+  /* Shared shell with GooglePartnerBadge: same height, radius, hairline. */
   .rating-badge {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    height: 34px;
-    padding: 0 14px;
-    border-radius: 6px;
+    gap: 10px;
+    height: 48px;
+    padding: 0 18px;
+    border-radius: 8px;
     border: 1px solid #e5e5e5;
     background: #fff;
   }
 
   .stars {
     color: var(--orange);
-    font-size: 13px;
+    font-size: 16px;
     letter-spacing: 1px;
   }
 
   .rating-text {
-    font-size: 12.5px;
+    font-size: 14.5px;
     font-weight: 800;
     color: var(--ink);
   }

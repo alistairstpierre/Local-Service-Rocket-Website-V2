@@ -23,8 +23,8 @@ export const blogPosts = [
   },
   {
     href: '/blog/bad-vs-good-agency',
-    title: 'What a bad home-service agency looks like (vs a good one)',
-    dek: 'Rewired went through a dozen agencies before us. Motha paid one for months while a single wrong setting kept them invisible. How to tell the difference before you sign.',
+    title: 'Electrician Marketing Agencies: Bad vs Good',
+    dek: 'Rewired burned through a dozen agencies. Motha paid for SEO while one wrong GBP category kept them invisible. How to tell the difference before you sign.',
     date: 'August 18, 2026',
   },
   {
