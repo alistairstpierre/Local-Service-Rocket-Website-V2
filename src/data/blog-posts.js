@@ -4,6 +4,12 @@
    sync with the live Astro file under src/pages/blog/. */
 export const blogPosts = [
   {
+    href: '/blog/honest-hanks-stack-small-wins',
+    title: "Honest Hank's: stack $500 electrician wins before the $10k package",
+    dek: "Rewired referral, ~$500 LSA setup first, $25k to $80k months and a third van, without a bet-the-shop invoice.",
+    date: "September 15, 2026",
+  },
+  {
     href: '/blog/rewired-big-agency-rebuild',
     title: 'Rewired: Big Agencies Made Electrician Ads Worse',
     dek: 'A dozen agencies, two flashy rebuilds, tens of thousands burned, then $60k to $220k+ months once John stopped shopping.',
