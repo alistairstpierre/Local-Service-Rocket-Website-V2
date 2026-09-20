@@ -28,6 +28,7 @@ export const pricingTiers: PricingTier[] = [
     featured: true,
     rows: [
       { label: 'Website build (if needed)', value: '$2k' },
+      { label: 'GBP optimization (if needed)', value: '$500' },
       { label: 'LSA setup', value: '$500' },
       { label: 'Per booked call we QA', value: '$25' },
     ],

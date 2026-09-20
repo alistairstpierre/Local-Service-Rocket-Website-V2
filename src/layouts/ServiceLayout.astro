@@ -84,29 +84,29 @@ const {
   faqs = [
     {
       q: `What does ${crumb} include with Local Service Rocket?`,
-      a: 'A focused Google-led lane for home service companies: setup and ongoing work tied to booked jobs, not vanity dashboards. Exact scope is confirmed on your onboarding call.',
+      a: 'Setup plus the ongoing work, measured on booked jobs rather than a dashboard full of numbers that do not pay you. We confirm exactly what your shop needs on the onboarding call.',
     },
     {
       q: 'How do we get started?',
-      a: 'Watch how the partnership works on Get Started, then book onboarding. No sales calls. We audit the biggest Google bottleneck and pick the first lane.',
+      a: 'Watch the short video on Get Started so you know how it works and what it costs, then book yourself in. No sales call. We look at your Google setup and tell you the one thing to fix first.',
     },
     {
       q: 'What does it cost to start?',
-      a: 'Starter engagements often begin around $500/month per lane. Fees step up as your company and ad spend grow so incentives stay aligned.',
+      a: 'Usually around $500 a month to begin with. The fee only goes up as your company and your ad spend grow, so we are both after the same thing.',
     },
   ],
   faqHeadline = `What to Know Before Starting ${crumb}`,
-  relatedHeadline = 'Your Shop May Need More Than One Lane',
+  relatedHeadline = 'Most Shops Need More Than One of These',
   bottomHeadline,
   bottomBody,
 } = Astro.props;
 
 const pageUrl = absoluteUrl(Astro.url.pathname);
 const related = [
-  { href: '/services/local-seo', title: 'Local SEO & Reviews', body: 'GBP, categories, reviews, map pack.' },
-  { href: '/services/paid-ads', title: 'Paid Ads & LSAs', body: 'LSA first, then Search when ready.' },
-  { href: '/services/websites', title: 'Websites That Convert', body: 'Structure that turns clicks into calls.' },
-  { href: '/services/hiring', title: 'Hiring & Recruiting', body: 'Meta hiring when the calendar outruns the crew.' },
+  { href: '/services/local-seo', title: 'Local SEO & Reviews', body: 'Get your Google profile showing on the map.' },
+  { href: '/services/paid-ads', title: 'Paid Ads & LSAs', body: 'Pay-per-lead ads first, Search ads after.' },
+  { href: '/services/websites', title: 'Websites That Get Calls', body: 'A site that turns visitors into phone calls.' },
+  { href: '/services/hiring', title: 'Hiring & Recruiting', body: 'Find techs when the work outruns the crew.' },
 ].filter((r) => !Astro.url.pathname.includes(r.href.split('/').pop()!));
 
 const jsonLd = graph([
