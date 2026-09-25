@@ -108,10 +108,10 @@ studies — do not invent new numbers):
 
 Regenerate trade queue drafts (idempotent skip if slug exists): `npm run blog:generate-trade-queue`.
 
-**Weekly shipping:** ready drafts live in `blog-queue/`. GitHub Action
-`.github/workflows/publish-blog.yml` runs `0 20 * * 0` UTC (Monday 08:00 NZ), commits
-the next due post, and Vercel redeploys from `main`. No PAT or Deploy Hook required.
-See `blog-queue/README.md`.
+**Daily shipping:** ready drafts live in `blog-queue/`. GitHub Action
+`.github/workflows/publish-blog.yml` runs `0 20 * * *` UTC (08:00 NZ daily), commits
+the next due post (`publishAfter <= today`), and Vercel redeploys from `main`. No PAT
+or Deploy Hook required. See `blog-queue/README.md`.
 
 ### 2. Find the receipt before you write a word
 

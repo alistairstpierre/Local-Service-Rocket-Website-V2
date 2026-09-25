@@ -1,5 +1,5 @@
 {
-  "timezoneNote": "Cron is Sunday 20:00 UTC = Monday 08:00 Pacific/Auckland (NZST, UTC+12). Live posts are backdated weekly Mondays through 2026-09-08.",
+  "timezoneNote": "Cron is daily 20:00 UTC = 08:00 Pacific/Auckland (NZST, UTC+12). Ships one ready post with publishAfter <= today. Live posts were backdated weekly through 2026-09-08.",
   "items": [
     {
       "slug": "honest-hanks-stack-small-wins",
@@ -19,8 +19,9 @@
       "dek": "Orbit is ~$1.5k/mo + 20% of ad spend so the calendar and the trucks don't collapse when budgets scale. Rewired's plateau made the point.",
       "date": "September 22, 2026",
       "publishAfter": "2026-09-22",
-      "status": "ready",
-      "seo": "Google ads management cost home service"
+      "status": "published",
+      "seo": "Google ads management cost home service",
+      "publishedOn": "2026-09-25"
     },
     {
       "slug": "max-conversions-junk-jobs",

@@ -6,16 +6,17 @@
   Editorial standard: docs/BLOG-FRAMEWORK.md
 -->
 
-# Blog queue — one post per week
+# Blog queue — scheduled posts, checked daily
 
 ## Schedule
 
-GitHub Action **Publish next blog post** runs Sunday 20:00 UTC (Monday 08:00 NZ).
-It moves the next ready draft into `src/pages/blog/`, commits, and pushes.
+GitHub Action **Publish next blog post** runs every day at 20:00 UTC (08:00 NZ).
+It moves the next due draft into `src/pages/blog/`, commits, and pushes.
 Vercel then rebuilds from `main` via the normal Git integration — no Deploy Hook,
 no PAT, no Vercel Cron.
 
-Only **one** ready post ships per run: the earliest `publishAfter <= today`.
+Only **one** ready post ships per run: the earliest with `publishAfter <= today`.
+If nothing is due, the run no-ops.
 
 ## Add a post to the queue
 

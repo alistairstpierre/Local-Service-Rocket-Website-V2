@@ -4,6 +4,12 @@
    sync with the live Astro file under src/pages/blog/. */
 export const blogPosts = [
   {
+    href: '/blog/orbit-fees-risk-not-hours',
+    title: "Why marketing fees go up at $200k months (it's risk, not busywork)",
+    dek: "Orbit is ~$1.5k/mo + 20% of ad spend so the calendar and the trucks don't collapse when budgets scale. Rewired's plateau made the point.",
+    date: "September 22, 2026",
+  },
+  {
     href: '/blog/honest-hanks-stack-small-wins',
     title: "Honest Hank's: stack $500 electrician wins before the $10k package",
     dek: "Rewired referral, ~$500 LSA setup first, $25k to $80k months and a third van, without a bet-the-shop invoice.",

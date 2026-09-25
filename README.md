@@ -38,11 +38,11 @@ Manrope is self-hosted from `public/fonts/`, so no Google Fonts request is made.
 3. Build command: `npm run build` · Output: `dist`
 4. Deploy. No adapter needed — `output: 'static'` in `astro.config.mjs`.
 
-### Weekly blog cron
+### Daily blog cron
 
-One queued post ships each week (Sunday 20:00 UTC / Monday 08:00 NZ) via the GitHub
-Action `.github/workflows/publish-blog.yml`. It commits the next ready draft from
-`blog-queue/`; Vercel redeploys from `main` automatically.
+The GitHub Action `.github/workflows/publish-blog.yml` checks daily (20:00 UTC /
+08:00 NZ) and ships at most one ready draft whose `publishAfter` date has arrived.
+It commits from `blog-queue/`; Vercel redeploys from `main` automatically.
 
 **No PAT, Deploy Hook, or Vercel Cron needed** — a Deploy Hook only rebuilds existing
 code; it cannot move a queued post into the repo. The Action uses GitHub’s built-in
@@ -105,7 +105,7 @@ Details: `blog-queue/README.md`.
 │   ├── queue.json                 # Ordered schedule (publishAfter + status)
 │   └── posts/                    # .astro drafts waiting to go live
 ├── .github/workflows/
-│   └── publish-blog.yml          # Weekly schedule: publish-next-blog.mjs → commit → Vercel rebuilds
+│   └── publish-blog.yml          # Daily schedule: publish-next-blog.mjs → commit → Vercel rebuilds
 ├── docs/
 │   ├── BLOG-FRAMEWORK.md         # Editorial standard, Evidence Bank, trade-keyword SEO + topic queue
 │   ├── KEYWORD-RESEARCH-ELECTRICIANS.md  # Planner volumes + primary organic/paid targets for electrician domination
