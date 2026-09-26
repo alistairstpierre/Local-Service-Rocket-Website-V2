@@ -56,6 +56,22 @@ npm run blog:publish-dry
 
 Details: `blog-queue/README.md`.
 
+### Contact form (EmailJS)
+
+`/contact` sends the free-audit form through EmailJS. Keys live in `.env`
+(see `.env.example`). On Vercel, add the same `PUBLIC_EMAILJS_*` vars.
+
+| Variable | Purpose |
+| --- | --- |
+| `PUBLIC_EMAILJS_SERVICE_ID` | EmailJS service |
+| `PUBLIC_EMAILJS_TEMPLATE_ID` | Email template |
+| `PUBLIC_EMAILJS_PUBLIC_KEY` | EmailJS public key |
+
+In the EmailJS template, map fields `from_name`, `reply_to`, `phone`, `company`,
+`website`, `message`. For screenshots (Personal plan): Attachments → Form File
+Attachment named `screenshot_1` … `screenshot_4`. Restrict allowed domains in
+the EmailJS dashboard so the public key only works on your site.
+
 ## Pages
 
 | Route | Notes |
@@ -65,6 +81,7 @@ Details: `blog-queue/README.md`.
 | `/about` | Alistair + agency story (from brain dumps) |
 | `/flight-plan` | The System: Pre-flight / Liftoff / Orbit stages |
 | `/get-started` | Get Started funnel |
+| `/contact` | Free audit contact form (EmailJS + optional screenshots) |
 | `/services` | Services overview |
 | `/services/local-seo` | Local SEO & Reviews |
 | `/services/paid-ads` | Paid Ads & LSAs |
@@ -151,6 +168,7 @@ Details: `blog-queue/README.md`.
 │   │   ├── about.astro
 │   │   ├── flight-plan.astro     # Stage layout w/ tilted photo cards (design: The Flight Plan.dc.html)
 │   │   ├── get-started.astro
+│   │   ├── contact.astro         # Free audit form → EmailJS (PUBLIC_EMAILJS_*)
 │   │   ├── privacy.astro
 │   │   ├── terms.astro
 │   │   ├── for/

@@ -1,0 +1,593 @@
+---
+/* Contact page: free marketing audit form powered by EmailJS.
+   Fields + optional brand/website screenshot attachments go to hello@ via
+   EmailJS (browser SDK loaded only on submit so other pages stay third-party-free).
+   Configure PUBLIC_EMAILJS_* in .env (see README). Nav/Footer link here. */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { absoluteUrl, breadcrumbList, graph, webPageNode } from '../data/schema';
+
+const title = 'Free Marketing Audit for Electricians | Local Service Rocket';
+const description =
+  'Send your website or brand screenshots and get a free marketing audit from Local Service Rocket. No sales call required.';
+const pageUrl = absoluteUrl('/contact/');
+const jsonLd = graph([
+  webPageNode({ pageUrl, name: title, description }),
+  {
+    '@type': 'ContactPage',
+    '@id': `${pageUrl}#contact`,
+    url: pageUrl,
+    name: title,
+    description,
+    mainEntity: { '@id': 'https://localservicerocket.com/#business' },
+  },
+  breadcrumbList(pageUrl, [
+    { name: 'Home', path: '/' },
+    { name: 'Contact', path: '/contact' },
+  ]),
+]);
+
+const emailjs = {
+  // EmailJS browser public credentials (safe to expose; restrict domain in dashboard).
+  // Env vars override these when set (local .env / Vercel).
+  publicKey: import.meta.env.PUBLIC_EMAILJS_PUBLIC_KEY || 'goZgtci4tbrXpsrDj',
+  serviceId: import.meta.env.PUBLIC_EMAILJS_SERVICE_ID || 'service_ta1cze3',
+  templateId: import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID || 'template_qy8i9xk',
+};
+const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.templateId);
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <main class="contact">
+    <section class="hero container">
+      <div class="crumbs">
+        <a href="/">Home</a>
+        <span>/</span>
+        <span class="current">Contact</span>
+      </div>
+      <div class="eyebrow">FREE AUDIT</div>
+      <h1>Send us your site. We’ll tell you what’s holding the calls back.</h1>
+      <p class="lede">
+        Drop your website link, and attach screenshots of your Google profile, ads, or brand if you
+        have them. We’ll look through them and reply with a plain-English audit — what’s working,
+        what’s broken, and the first fix that would actually move the needle. No sales call. No
+        pitch deck.
+      </p>
+    </section>
+
+    <section class="container panel">
+      <div class="copy">
+        <div class="eyebrow">WHAT YOU GET</div>
+        <h2>A free look at your Google marketing.</h2>
+        <ul class="bullets">
+          <li>Your Google Business Profile: category, photos, reviews, and whether Google knows you’re an electrician</li>
+          <li>Your website: does it turn a visitor into a booked job, or lose them on the first screen?</li>
+          <li>Ads and Local Services Ads: are you paying for clicks, or for calls that book?</li>
+          <li>The one change we’d make first, if we were running your account next week</li>
+        </ul>
+        <div class="aside">
+          <div class="aside-label">PREFER TO TALK?</div>
+          <p>
+            Call <a href="tel:8883716365">(888) 371-6365</a> or email
+            <a href="mailto:hello@localservicerocket.com">hello@localservicerocket.com</a>.
+            Ready to book? <a href="/get-started">Schedule onboarding</a>.
+          </p>
+        </div>
+      </div>
+
+      <div class="form-wrap">
+        {
+          !emailjsReady && (
+            <p class="config-warn" role="status">
+              The form is not wired up yet. Email
+              <a href="mailto:hello@localservicerocket.com">hello@localservicerocket.com</a> and
+              attach your screenshots, or set the EmailJS keys (see README).
+            </p>
+          )
+        }
+        <form
+          id="contact-form"
+          class="form"
+          novalidate
+          data-emailjs-ready={emailjsReady ? '1' : '0'}
+          data-public-key={emailjs.publicKey}
+          data-service-id={emailjs.serviceId}
+          data-template-id={emailjs.templateId}
+        >
+          <div class="row two">
+            <label>
+              <span>Your name</span>
+              <input type="text" name="from_name" autocomplete="name" required maxlength="120" />
+            </label>
+            <label>
+              <span>Email</span>
+              <input type="email" name="reply_to" autocomplete="email" required maxlength="160" />
+            </label>
+          </div>
+
+          <div class="row two">
+            <label>
+              <span>Phone <em>(optional)</em></span>
+              <input type="tel" name="phone" autocomplete="tel" maxlength="40" />
+            </label>
+            <label>
+              <span>Company <em>(optional)</em></span>
+              <input type="text" name="company" autocomplete="organization" maxlength="120" />
+            </label>
+          </div>
+
+          <label class="row">
+            <span>Website URL <em>(optional)</em></span>
+            <input
+              type="url"
+              name="website"
+              inputmode="url"
+              placeholder="https://"
+              maxlength="200"
+            />
+          </label>
+
+          <label class="row">
+            <span>What do you want us to look at?</span>
+            <textarea
+              name="message"
+              rows="5"
+              required
+              maxlength="4000"
+              placeholder="e.g. We’re an electrician in Tampa. Ads feel expensive and the phone isn’t ringing. Here’s our Google profile and site…"
+            ></textarea>
+          </label>
+
+          <div class="row file-block">
+            <span class="file-label">Brand or website screenshots <em>(optional)</em></span>
+            <p class="file-hint">
+              Logo, van wrap, homepage, Google profile, or ads screenshots. Up to 4 files · images or
+              PDFs · <strong>2&nbsp;MB max each</strong>.
+            </p>
+            <!--
+              EmailJS template: add Form File Attachments named screenshot_1 … screenshot_4
+              (Personal plan required for attachments). See README.
+            -->
+            <input
+              id="screenshot_1"
+              class="file-input"
+              type="file"
+              name="screenshot_1"
+              accept="image/*,.pdf,application/pdf"
+            />
+            <input
+              id="screenshot_2"
+              class="file-input"
+              type="file"
+              name="screenshot_2"
+              accept="image/*,.pdf,application/pdf"
+            />
+            <input
+              id="screenshot_3"
+              class="file-input"
+              type="file"
+              name="screenshot_3"
+              accept="image/*,.pdf,application/pdf"
+            />
+            <input
+              id="screenshot_4"
+              class="file-input"
+              type="file"
+              name="screenshot_4"
+              accept="image/*,.pdf,application/pdf"
+            />
+            <button type="button" class="file-btn" id="file-picker" data-next="1">
+              Choose files
+            </button>
+            <ul class="file-list" id="file-list" hidden></ul>
+          </div>
+
+          <p class="privacy">
+            By sending this you agree we can email you about your audit. We don’t sell your info.
+            See the <a href="/privacy">privacy policy</a>.
+          </p>
+
+          <button type="submit" class="btn btn-primary btn-lg submit" id="submit-btn">
+            Send for a free audit
+          </button>
+          <p class="status" id="form-status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<script>
+  const form = document.getElementById('contact-form');
+  if (form instanceof HTMLFormElement) {
+    const statusEl = document.getElementById('form-status');
+    const submitBtn = document.getElementById('submit-btn');
+    const fileList = document.getElementById('file-list');
+    const picker = document.getElementById('file-picker');
+    const MAX_BYTES = 2 * 1024 * 1024;
+    const slots = [1, 2, 3, 4].map((n) => document.getElementById(`screenshot_${n}`));
+
+    function setStatus(text, kind) {
+      if (!statusEl) return;
+      statusEl.textContent = text;
+      statusEl.dataset.kind = kind || '';
+    }
+
+    function refreshFileList() {
+      if (!(fileList instanceof HTMLUListElement)) return;
+      const names = slots
+        .map((input) => (input instanceof HTMLInputElement && input.files?.[0] ? input.files[0].name : null))
+        .filter(Boolean);
+      fileList.replaceChildren();
+      if (!names.length) {
+        fileList.hidden = true;
+        return;
+      }
+      fileList.hidden = false;
+      for (const name of names) {
+        const li = document.createElement('li');
+        li.textContent = name;
+        fileList.append(li);
+      }
+    }
+
+    function nextEmptySlot() {
+      return slots.findIndex(
+        (input) => input instanceof HTMLInputElement && !(input.files && input.files.length),
+      );
+    }
+
+    picker?.addEventListener('click', () => {
+      const idx = nextEmptySlot();
+      if (idx === -1) {
+        setStatus('You can attach up to 4 files. Remove one to add another.', 'error');
+        return;
+      }
+      const input = slots[idx];
+      if (input instanceof HTMLInputElement) input.click();
+    });
+
+    for (const input of slots) {
+      input?.addEventListener('change', () => {
+        if (!(input instanceof HTMLInputElement) || !input.files?.[0]) {
+          refreshFileList();
+          return;
+        }
+        const file = input.files[0];
+        if (file.size > MAX_BYTES) {
+          input.value = '';
+          setStatus(`“${file.name}” is over 2 MB (our limit per file). Compress it or pick a smaller one.`, 'error');
+          refreshFileList();
+          return;
+        }
+        setStatus('');
+        refreshFileList();
+      });
+    }
+
+    async function loadEmailJs() {
+      if (window.emailjs) return window.emailjs;
+      await new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
+        script.async = true;
+        script.onload = () => resolve();
+        script.onerror = () => reject(new Error('Could not load EmailJS'));
+        document.head.appendChild(script);
+      });
+      return window.emailjs;
+    }
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (form.dataset.emailjsReady !== '1') {
+        setStatus('Form is not configured yet. Email hello@localservicerocket.com instead.', 'error');
+        return;
+      }
+      if (!form.reportValidity()) return;
+
+      const publicKey = form.dataset.publicKey || '';
+      const serviceId = form.dataset.serviceId || '';
+      const templateId = form.dataset.templateId || '';
+
+      if (submitBtn instanceof HTMLButtonElement) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending…';
+      }
+      setStatus('Sending your audit request…');
+
+      try {
+        const emailjs = await loadEmailJs();
+        emailjs.init({ publicKey });
+        await emailjs.sendForm(serviceId, templateId, form);
+        form.reset();
+        refreshFileList();
+        setStatus('Got it. We’ll review what you sent and reply by email.', 'ok');
+      } catch (err) {
+        console.error(err);
+        setStatus(
+          'Something went wrong. Email hello@localservicerocket.com with your screenshots instead.',
+          'error',
+        );
+      } finally {
+        if (submitBtn instanceof HTMLButtonElement) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Send for a free audit';
+        }
+      }
+    });
+  }
+</script>
+
+<style>
+  .contact {
+    padding-bottom: 72px;
+  }
+
+  .hero {
+    padding-top: 48px;
+    padding-bottom: 28px;
+  }
+
+  .crumbs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--muted-3);
+    flex-wrap: wrap;
+  }
+
+  .crumbs a {
+    color: var(--muted-3);
+  }
+
+  .current {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .eyebrow {
+    margin-top: 22px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--orange);
+  }
+
+  h1 {
+    margin-top: 12px;
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.12;
+    text-wrap: balance;
+    max-width: 18ch;
+  }
+
+  .lede {
+    margin-top: 16px;
+    font-size: 17.5px;
+    line-height: 1.65;
+    color: var(--body);
+    max-width: 58ch;
+  }
+
+  .panel {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    gap: 40px 48px;
+    align-items: start;
+    margin-top: 12px;
+  }
+
+  .copy h2 {
+    margin-top: 10px;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    max-width: 18ch;
+  }
+
+  .bullets {
+    margin: 18px 0 0;
+    padding-left: 1.15em;
+    color: var(--body);
+    font-size: 15.5px;
+    line-height: 1.65;
+  }
+
+  .bullets li + li {
+    margin-top: 10px;
+  }
+
+  .aside {
+    margin-top: 28px;
+    padding: 18px 20px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    background: var(--section-bg);
+  }
+
+  .aside-label {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    color: var(--muted-3);
+  }
+
+  .aside p {
+    margin-top: 8px;
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--body);
+  }
+
+  .form-wrap {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-panel);
+    background: #fff;
+    padding: 28px 28px 24px;
+    box-shadow: 0 12px 40px rgba(26, 26, 26, 0.04);
+  }
+
+  .config-warn {
+    margin-bottom: 16px;
+    padding: 12px 14px;
+    border-radius: var(--radius-card);
+    background: var(--orange-tint);
+    border: 1px solid rgba(232, 89, 12, 0.25);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .row.two {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  label,
+  .file-block {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  label span,
+  .file-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  label em,
+  .file-label em {
+    font-style: normal;
+    font-weight: 500;
+    color: var(--muted-3);
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font: inherit;
+    font-size: 15px;
+    color: var(--ink);
+    background: #fff;
+    transition: border-color 0.15s ease;
+  }
+
+  input:focus,
+  textarea:focus {
+    outline: none;
+    border-color: var(--orange);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  .file-hint {
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--muted);
+  }
+
+  .file-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
+
+  .file-btn {
+    align-self: flex-start;
+    margin-top: 4px;
+    border: 1px dashed var(--border);
+    background: var(--section-bg);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .file-btn:hover {
+    border-color: var(--orange);
+    color: var(--orange);
+  }
+
+  .file-list {
+    margin: 8px 0 0;
+    padding-left: 1.1em;
+    font-size: 13.5px;
+    color: var(--muted);
+  }
+
+  .privacy {
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--muted-2);
+  }
+
+  .submit {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .status {
+    min-height: 1.4em;
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--muted);
+  }
+
+  .status[data-kind='ok'] {
+    color: #1b7a3d;
+    font-weight: 600;
+  }
+
+  .status[data-kind='error'] {
+    color: #b42318;
+    font-weight: 600;
+  }
+
+  @media (max-width: 900px) {
+    .panel {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+
+    .form-wrap {
+      padding: 22px 18px 20px;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .row.two {
+      grid-template-columns: 1fr;
+    }
+
+    h1 {
+      max-width: none;
+    }
+  }
+</style>
