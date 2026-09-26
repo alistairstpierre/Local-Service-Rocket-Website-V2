@@ -203,13 +203,13 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
           <div class="row file-block">
             <span class="file-label">Brand or website screenshots <em>(optional)</em></span>
             <p class="file-hint">
-              Logo, van wrap, homepage, Google profile, or ads screenshots. Up to 4 files, images or
-              PDFs. Combined size must stay under <strong>2&nbsp;MB</strong> (EmailJS Professional
-              limit). Phone photos are often too big; export or compress first.
+              Logo, van wrap, homepage, Google profile, or ads screenshots. Up to 4 images or PDFs,
+              <strong>2&nbsp;MB total</strong>. Screen captures work best; photos from a phone are
+              usually too large.
             </p>
             <!--
-              EmailJS template: add Form File Attachments named screenshot_1 to screenshot_4
-              (Professional plan). See README.
+              EmailJS template: add Form File Attachments named screenshot_1 to screenshot_4.
+              The 2 MB cap matches the plan's attachment limit (server returns 413 above it). See README.
             -->
             <input
               id="screenshot_1"
@@ -239,11 +239,15 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
               name="screenshot_4"
               accept="image/*,.pdf,application/pdf"
             />
-            <button type="button" class="file-btn" id="file-picker" data-next="1">
-              Choose files
-            </button>
+            <button type="button" class="file-btn" id="file-picker">Add a screenshot</button>
             <ul class="file-list" id="file-list" hidden></ul>
             <span class="field-error" id="err-files" role="alert" hidden></span>
+          </div>
+
+          <!-- Honeypot: hidden from people, bots tend to fill it. Submissions with a value are dropped. -->
+          <div class="hp" aria-hidden="true">
+            <label for="contact-fax">Fax</label>
+            <input type="text" id="contact-fax" name="fax_number" tabindex="-1" autocomplete="off" />
           </div>
 
           <p class="privacy">
@@ -251,11 +255,35 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
             the <a href="/privacy">privacy policy</a>.
           </p>
 
-          <button type="submit" class="btn btn-primary btn-lg submit" id="submit-btn" disabled>
+          <button
+            type="submit"
+            class="btn btn-primary btn-lg submit"
+            id="submit-btn"
+            disabled
+            aria-describedby="submit-hint"
+          >
             Send it through
           </button>
+          <p class="submit-hint" id="submit-hint">
+            Fill in your name, email, what you need, and a short message to send.
+          </p>
           <p class="status" id="form-status" role="status" aria-live="polite"></p>
         </form>
+
+        <div class="sent" id="form-sent" hidden tabindex="-1">
+          <div class="sent-mark" aria-hidden="true">✓</div>
+          <h2>Message sent.</h2>
+          <p>
+            Alistair reads every message himself and usually replies within one business day. Check
+            your inbox (and spam folder, just in case) for a reply from
+            <strong>hello@localservicerocket.com</strong>.
+          </p>
+          <p class="sent-next">
+            While you wait: see <a href="/case-studies">what other owners got</a> or read the
+            <a href="/blog/electrician-lsa-playbook">Local Services Ads playbook</a>.
+          </p>
+          <button type="button" class="sent-again" id="send-another">Send another message</button>
+        </div>
       </div>
     </section>
   </main>
@@ -269,8 +297,14 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
     const fileList = document.getElementById('file-list');
     const picker = document.getElementById('file-picker');
     const filesError = document.getElementById('err-files');
-    // EmailJS Professional: attachments up to 2 MB (plan limit; 413 if the request is larger).
+    const submitHint = document.getElementById('submit-hint');
+    const sentPanel = document.getElementById('form-sent');
+    const sendAnother = document.getElementById('send-another');
+    const honeypot = form.elements.namedItem('fax_number');
+    const FALLBACK_EMAIL = 'hello@localservicerocket.com';
+    // Attachment cap. Mirrors the email provider's plan limit; requests above it are rejected (413).
     const MAX_TOTAL_BYTES = 2 * 1024 * 1024;
+    const MAX_FILES = 4;
     const ALLOWED_FILE =
       /^(image\/|application\/pdf$)/i;
     const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -279,16 +313,35 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
     const touched = new Set();
     let sending = false;
 
-    function setStatus(text, kind) {
+    /**
+     * Show a status line. Pass `withEmail: true` to append a clickable fallback email link.
+     */
+    function setStatus(text, kind, { withEmail = false } = {}) {
       if (!statusEl) return;
-      statusEl.textContent = text;
+      statusEl.replaceChildren();
       statusEl.dataset.kind = kind || '';
+      if (!text) return;
+      statusEl.append(document.createTextNode(text));
+      if (withEmail) {
+        statusEl.append(document.createTextNode(' Email us instead at '));
+        const link = document.createElement('a');
+        link.href = `mailto:${FALLBACK_EMAIL}`;
+        link.textContent = FALLBACK_EMAIL;
+        statusEl.append(link, document.createTextNode('.'));
+      }
+    }
+
+    function attachedEntries() {
+      return slots
+        .filter((input) => input instanceof HTMLInputElement && input.files?.[0])
+        .map((input) => ({
+          input: /** @type {HTMLInputElement} */ (input),
+          file: /** @type {HTMLInputElement} */ (input).files[0],
+        }));
     }
 
     function attachedFiles() {
-      return slots
-        .filter((input) => input instanceof HTMLInputElement && input.files?.[0])
-        .map((input) => /** @type {HTMLInputElement} */ (input).files[0]);
+      return attachedEntries().map((entry) => entry.file);
     }
 
     function totalBytes() {
@@ -340,7 +393,9 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
     function isValidWebsite(value) {
       try {
         const url = new URL(normalizeWebsite(value));
-        return url.protocol === 'http:' || url.protocol === 'https:';
+        const isHttp = url.protocol === 'http:' || url.protocol === 'https:';
+        const hasDomain = /^[a-z0-9-]+(\.[a-z0-9-]+)+$/i.test(url.hostname);
+        return isHttp && hasDomain;
       } catch {
         return false;
       }
@@ -401,7 +456,7 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
         }
       }
       if (totalBytes() > MAX_TOTAL_BYTES) {
-        return `Attachments are ${formatMb(totalBytes())} MB combined. Keep them under 2 MB total.`;
+        return `Attachments add up to ${formatMb(totalBytes())} MB. Keep them under 2 MB total.`;
       }
       return '';
     }
@@ -432,30 +487,64 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
       if (!(submitBtn instanceof HTMLButtonElement)) return;
       if (sending) {
         submitBtn.disabled = true;
+        if (submitHint) submitHint.hidden = true;
         return;
       }
       const ready = form.dataset.emailjsReady === '1';
-      submitBtn.disabled = !(ready && formIsValid());
+      const valid = formIsValid();
+      submitBtn.disabled = !(ready && valid);
+      if (submitHint) submitHint.hidden = valid || !ready;
+    }
+
+    function updatePickerState() {
+      if (!(picker instanceof HTMLButtonElement)) return;
+      const count = attachedFiles().length;
+      picker.disabled = count >= MAX_FILES;
+      picker.textContent =
+        count >= MAX_FILES
+          ? `${MAX_FILES} of ${MAX_FILES} attached`
+          : count === 0
+            ? 'Add a screenshot'
+            : 'Add another';
     }
 
     function refreshFileList() {
       if (!(fileList instanceof HTMLUListElement)) return;
-      const files = attachedFiles();
+      const entries = attachedEntries();
       fileList.replaceChildren();
-      if (!files.length) {
+      updatePickerState();
+      if (!entries.length) {
         fileList.hidden = true;
         return;
       }
       fileList.hidden = false;
-      for (const file of files) {
+      for (const { input, file } of entries) {
         const li = document.createElement('li');
-        li.textContent = `${file.name} (${formatMb(file.size)} MB)`;
+        const name = document.createElement('span');
+        name.className = 'file-name';
+        name.textContent = file.name;
+        const size = document.createElement('span');
+        size.className = 'file-size';
+        size.textContent = `${formatMb(file.size)} MB`;
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.className = 'file-remove';
+        remove.setAttribute('aria-label', `Remove ${file.name}`);
+        remove.textContent = 'Remove';
+        remove.addEventListener('click', () => {
+          input.value = '';
+          touched.add('files');
+          setFilesError(filesErrorMessage());
+          refreshFileList();
+          updateSubmitState();
+        });
+        li.append(name, size, remove);
         fileList.append(li);
       }
       const total = totalBytes();
       const totalLi = document.createElement('li');
       totalLi.className = 'file-total';
-      totalLi.textContent = `Total ${formatMb(total)} MB / 2.00 MB`;
+      totalLi.textContent = `${formatMb(total)} MB of 2 MB used`;
       if (total > MAX_TOTAL_BYTES) totalLi.dataset.over = '1';
       fileList.append(totalLi);
     }
@@ -470,7 +559,7 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
       const idx = nextEmptySlot();
       if (idx === -1) {
         touched.add('files');
-        setFilesError('You can attach up to 4 files. Remove one to add another.');
+        setFilesError(`You can attach up to ${MAX_FILES} files. Remove one to add another.`);
         updateSubmitState();
         return;
       }
@@ -498,9 +587,10 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
           return;
         }
         if (totalBytes() > MAX_TOTAL_BYTES) {
+          const remaining = Math.max(0, MAX_TOTAL_BYTES - (totalBytes() - file.size));
           input.value = '';
           setFilesError(
-            `"${file.name}" would push attachments over 2 MB total. Compress or pick a smaller image.`,
+            `"${file.name}" is ${formatMb(file.size)} MB but only ${formatMb(remaining)} MB of space is left. Try a screenshot or a smaller version.`,
           );
           refreshFileList();
           updateSubmitState();
@@ -568,10 +658,38 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
       return window.emailjs;
     }
 
+    function showSent() {
+      form.hidden = true;
+      if (sentPanel instanceof HTMLElement) {
+        sentPanel.hidden = false;
+        sentPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        sentPanel.focus({ preventScroll: true });
+      }
+    }
+
+    function resetForm(fields) {
+      form.reset();
+      touched.clear();
+      for (const field of fields) {
+        setFieldError(/** @type {HTMLElement} */ (field), '');
+      }
+      setFilesError('');
+      setStatus('');
+      refreshFileList();
+      updateSubmitState();
+    }
+
+    sendAnother?.addEventListener('click', () => {
+      if (sentPanel instanceof HTMLElement) sentPanel.hidden = true;
+      form.hidden = false;
+      const first = form.querySelector('input[name="from_name"]');
+      if (first instanceof HTMLElement) first.focus();
+    });
+
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       if (form.dataset.emailjsReady !== '1') {
-        setStatus('Form is not configured yet. Email hello@localservicerocket.com instead.', 'error');
+        setStatus('The form is offline right now.', 'error', { withEmail: true });
         return;
       }
 
@@ -602,6 +720,13 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
         website.value = normalizeWebsite(website.value);
       }
 
+      // Bots fill the hidden field; people never see it. Pretend it worked and drop it.
+      if (honeypot instanceof HTMLInputElement && honeypot.value.trim()) {
+        resetForm(fields);
+        showSent();
+        return;
+      }
+
       const publicKey = form.dataset.publicKey || '';
       const serviceId = form.dataset.serviceId || '';
       const templateId = form.dataset.templateId || '';
@@ -617,27 +742,22 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
         const emailjs = await loadEmailJs();
         emailjs.init({ publicKey });
         await emailjs.sendForm(serviceId, templateId, form);
-        form.reset();
-        touched.clear();
-        for (const field of fields) {
-          setFieldError(/** @type {HTMLElement} */ (field), '');
-        }
-        setFilesError('');
-        refreshFileList();
-        setStatus('Got it. Alistair will reply by email, usually within one business day.', 'ok');
+        resetForm(fields);
+        showSent();
       } catch (err) {
         console.error(err);
         const status = err && typeof err === 'object' && 'status' in err ? Number(err.status) : 0;
         if (status === 413) {
+          touched.add('files');
+          setFilesError('These files are too large to send together. Remove one or use a smaller version.');
           setStatus(
-            'Those files are too large for EmailJS (2 MB total). Compress or remove an attachment and try again.',
+            'Your attachments are too large. Remove one and try again, or send without them and we will ask for screenshots by reply.',
             'error',
           );
+        } else if (status === 429) {
+          setStatus('That was quick. Give it a few seconds and try again.', 'error');
         } else {
-          setStatus(
-            'Something went wrong. Email hello@localservicerocket.com instead.',
-            'error',
-          );
+          setStatus('Something went wrong sending that.', 'error', { withEmail: true });
         }
       } finally {
         sending = false;
@@ -648,6 +768,7 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
       }
     });
 
+    refreshFileList();
     updateSubmitState();
   }
 </script>
@@ -789,6 +910,14 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
     gap: 16px;
   }
 
+  .form[hidden],
+  .sent[hidden],
+  .submit-hint[hidden],
+  .field-error[hidden],
+  .file-list[hidden] {
+    display: none;
+  }
+
   .row.two {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -802,7 +931,7 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
     gap: 6px;
   }
 
-  label span,
+  label > span:not(.field-error),
   .file-label {
     font-size: 13px;
     font-weight: 700;
@@ -890,28 +1019,145 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
     cursor: pointer;
   }
 
-  .file-btn:hover {
+  .file-btn:hover:not(:disabled) {
     border-color: var(--orange);
     color: var(--orange);
   }
 
+  .file-btn:disabled {
+    cursor: default;
+    color: var(--muted-3);
+    border-style: solid;
+  }
+
   .file-list {
     margin: 8px 0 0;
-    padding-left: 1.1em;
+    padding: 0;
+    list-style: none;
     font-size: 13.5px;
     color: var(--muted);
   }
 
+  .file-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .file-list .file-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--ink);
+  }
+
+  .file-list .file-size {
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .file-remove {
+    flex-shrink: 0;
+    border: 0;
+    background: none;
+    padding: 2px 4px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .file-remove:hover {
+    color: #b42318;
+  }
+
   .file-list .file-total {
-    margin-top: 4px;
-    list-style: none;
-    margin-left: -1.1em;
+    border-bottom: 0;
+    padding-bottom: 0;
     font-weight: 600;
     color: var(--body);
   }
 
   .file-list .file-total[data-over='1'] {
     color: #b42318;
+  }
+
+  .hp {
+    position: absolute;
+    left: -10000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .submit-hint {
+    margin-top: -6px;
+    text-align: center;
+    font-size: 12.5px;
+    line-height: 1.45;
+    color: var(--muted-2);
+  }
+
+  .sent {
+    text-align: center;
+    padding: 24px 8px 8px;
+    outline: none;
+  }
+
+  .sent-mark {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 16px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #e7f5ec;
+    color: #1b7a3d;
+    font-size: 24px;
+    font-weight: 800;
+  }
+
+  .sent h2 {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .sent p {
+    margin-top: 12px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--body);
+  }
+
+  .sent-next {
+    color: var(--muted);
+  }
+
+  .sent-again {
+    margin-top: 18px;
+    border: 0;
+    background: none;
+    padding: 4px;
+    font: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .sent-again:hover {
+    color: var(--ink);
   }
 
   .privacy {
@@ -930,6 +1176,12 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
     font-size: 14px;
     line-height: 1.45;
     color: var(--muted);
+  }
+
+  .status a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
   }
 
   .status[data-kind='ok'] {
