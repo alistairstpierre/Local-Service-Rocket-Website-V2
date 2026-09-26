@@ -44,40 +44,48 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
         <span class="current">Contact</span>
       </div>
       <div class="eyebrow">CONTACT</div>
-      <h1>Got a question? Or want a free audit or coaching?</h1>
+      <h1>Ask us anything. It costs nothing to find out.</h1>
       <p class="lede">
-        Ask us anything about Google marketing for your shop — or request a free audit or a coaching
-        session. Attach screenshots of your site or brand if you have them. We’ll reply by email. No
-        sales call.
+        You know something is off. The phone should ring more than it does, the ads feel expensive,
+        or the last agency left you guessing. Tell us what is going on and we will tell you what we
+        would do about it. Straight answer, in writing, from the person who would actually do the
+        work. No sales call. No pressure.
       </p>
     </section>
 
     <section class="container panel">
       <div class="copy">
-        <div class="eyebrow">HOW WE CAN HELP</div>
-        <h2>Three easy ways to reach us.</h2>
+        <div class="eyebrow">PICK WHAT FITS</div>
+        <h2>Three ways we can help this week.</h2>
         <ul class="bullets">
           <li>
-            <strong>Just a question</strong> — LSA, ads, hiring, websites, pricing — send it through
-            and we’ll answer straight.
+            <strong>Ask a question.</strong> Local Services Ads, Google profile, hiring, websites,
+            what things cost. If you have wondered about it, someone else has asked us. You will get a
+            real answer, not a brochure.
           </li>
           <li>
-            <strong>Free marketing audit</strong> — we look at your Google profile, website, and ads,
-            then tell you what’s working, what’s broken, and the first fix that would move the needle.
+            <strong>Get a free audit.</strong> Send your website link and a few screenshots. We look
+            at your Google profile, your site, and your ads, then reply with what is working, what is
+            costing you calls, and the one fix we would make first. Free, and yours to keep whether
+            you hire us or not.
           </li>
           <li>
-            <strong>Coaching session</strong> — a focused reply (or call if it fits) on the one
-            bottleneck you’re stuck on: LSA, hiring, spend, or where to put the next dollar.
+            <strong>Book a coaching session.</strong> Stuck on one decision? LSA or Search, hire or
+            hold, where the next dollar goes. We will work it through with you so you can move.
           </li>
         </ul>
         <div class="aside">
-          <div class="aside-label">PREFER TO TALK?</div>
+          <div class="aside-label">WHY OWNERS WRITE TO US</div>
           <p>
-            Call <a href="tel:8883716365">(888) 371-6365</a> or email
-            <a href="mailto:hello@localservicerocket.com">hello@localservicerocket.com</a>.
-            Ready to book onboarding? <a href="/get-started">Schedule here</a>.
+            Six home service companies scaled. Over $10M in new revenue. Five stars on Google. Every
+            reply comes from Alistair, who runs the accounts himself. Read the
+            <a href="/case-studies">client results</a>, then send us yours.
           </p>
         </div>
+        <p class="alt-contact">
+          Prefer email? <a href="mailto:hello@localservicerocket.com">hello@localservicerocket.com</a>.
+          Already decided? <a href="/get-started">Schedule onboarding</a>.
+        </p>
       </div>
 
       <div class="form-wrap">
@@ -150,18 +158,18 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
               rows="5"
               required
               maxlength="4000"
-              placeholder="e.g. Quick question about LSA budgets… Or: can you audit our Google profile? Or: I want coaching on whether to push Search next…"
+              placeholder="Tell us about your shop and what you want to know. The more detail, the better the answer."
             ></textarea>
           </label>
 
           <div class="row file-block">
             <span class="file-label">Brand or website screenshots <em>(optional)</em></span>
             <p class="file-hint">
-              Logo, van wrap, homepage, Google profile, or ads screenshots. Up to 4 files · images or
-              PDFs · <strong>2&nbsp;MB max each</strong>.
+              Logo, van wrap, homepage, Google profile, or ads screenshots. Up to 4 files, images or
+              PDFs, <strong>2&nbsp;MB max each</strong>. Screenshots make the audit sharper.
             </p>
             <!--
-              EmailJS template: add Form File Attachments named screenshot_1 … screenshot_4
+              EmailJS template: add Form File Attachments named screenshot_1 to screenshot_4
               (Professional plan). See README.
             -->
             <input
@@ -199,12 +207,12 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
           </div>
 
           <p class="privacy">
-            By sending this you agree we can email you back about your request. We don’t sell your
-            info. See the <a href="/privacy">privacy policy</a>.
+            We reply to every message, usually within one business day. We never sell your info. See
+            the <a href="/privacy">privacy policy</a>.
           </p>
 
           <button type="submit" class="btn btn-primary btn-lg submit" id="submit-btn">
-            Send message
+            Send it through
           </button>
           <p class="status" id="form-status" role="status" aria-live="polite"></p>
         </form>
@@ -308,9 +316,9 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
 
       if (submitBtn instanceof HTMLButtonElement) {
         submitBtn.disabled = true;
-        submitBtn.textContent = 'Sending…';
+        submitBtn.textContent = 'Sending...';
       }
-      setStatus('Sending your message…');
+      setStatus('Sending your message...');
 
       try {
         const emailjs = await loadEmailJs();
@@ -318,7 +326,7 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
         await emailjs.sendForm(serviceId, templateId, form);
         form.reset();
         refreshFileList();
-        setStatus('Got it. We’ll reply by email.', 'ok');
+        setStatus('Got it. Alistair will reply by email, usually within one business day.', 'ok');
       } catch (err) {
         console.error(err);
         setStatus(
@@ -328,7 +336,7 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
       } finally {
         if (submitBtn instanceof HTMLButtonElement) {
           submitBtn.disabled = false;
-          submitBtn.textContent = 'Send message';
+          submitBtn.textContent = 'Send it through';
         }
       }
     });
@@ -438,6 +446,13 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
     font-size: 14.5px;
     line-height: 1.55;
     color: var(--body);
+  }
+
+  .alt-contact {
+    margin-top: 16px;
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--muted);
   }
 
   .form-wrap {

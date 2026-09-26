@@ -1,6 +1,7 @@
 ---
-/* Site header: sticky nav with brand, section links, phone, and booking CTA.
+/* Site header: sticky nav with brand, section links, Contact link, and booking CTA.
    Used by BaseLayout on marketing pages. Homepage uses full links; inner pages can simplify.
+   Phone number lives only in the Footer (NAP); everything else routes to /contact.
    Schedule onboarding always goes to /get-started (VSL funnel), not the calendar directly. */
 import Logo from './Logo.astro';
 
@@ -25,13 +26,12 @@ const { variant = 'full' } = Astro.props;
         <a href="/services">Services</a>
         <a href="/blog">Blog</a>
         <a href="/about">About</a>
-        <a href="/contact">Contact</a>
       </nav>
     )
   }
 
   <div class="nav-actions">
-    <a href="tel:8883716365" class="nav-phone">(888) 371-6365</a>
+    <a href="/contact" class="nav-contact">Contact</a>
     <a href="/get-started" class="btn btn-primary btn-sm">Schedule onboarding</a>
   </div>
 </header>
@@ -87,13 +87,13 @@ const { variant = 'full' } = Astro.props;
     flex-shrink: 0;
   }
 
-  .nav-phone {
+  .nav-contact {
     font-size: 14px;
     font-weight: 600;
     color: var(--muted);
   }
 
-  .nav-phone:hover {
+  .nav-contact:hover {
     color: var(--ink);
   }
 
@@ -104,7 +104,7 @@ const { variant = 'full' } = Astro.props;
   }
 
   @media (max-width: 640px) {
-    .nav-phone {
+    .nav-contact {
       display: none;
     }
 
