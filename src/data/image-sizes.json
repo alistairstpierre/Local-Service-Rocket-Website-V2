@@ -110,5 +110,61 @@
   "logo-c-tinting": {
     "w": 120,
     "h": 144
+  },
+  "lsa-serp-placement": {
+    "w": 802,
+    "h": 665
+  },
+  "lsa-channel-comparison": {
+    "w": 700,
+    "h": 711
+  },
+  "lsa-signup-get-started": {
+    "w": 1200,
+    "h": 594
+  },
+  "lsa-verification-complete": {
+    "w": 1200,
+    "h": 534
+  },
+  "lsa-profile-hours-bio": {
+    "w": 1078,
+    "h": 505
+  },
+  "lsa-budget-job-types": {
+    "w": 1061,
+    "h": 524
+  },
+  "lsa-photos-settings": {
+    "w": 1060,
+    "h": 523
+  },
+  "lsa-service-areas-hours": {
+    "w": 1047,
+    "h": 542
+  },
+  "lsa-leads-menu": {
+    "w": 1200,
+    "h": 319
+  },
+  "lsa-lead-detail-notes": {
+    "w": 1200,
+    "h": 898
+  },
+  "lsa-mark-as-booked": {
+    "w": 984,
+    "h": 387
+  },
+  "lsa-rate-lead": {
+    "w": 972,
+    "h": 305
+  },
+  "lsa-edit-booking-details": {
+    "w": 911,
+    "h": 1038
+  },
+  "lsa-reports-dashboard": {
+    "w": 1200,
+    "h": 1003
   }
 }

@@ -4,6 +4,12 @@
    sync with the live Astro file under src/pages/blog/. */
 export const blogPosts = [
   {
+    href: '/blog/electrician-lsa-playbook',
+    title: 'Electrician Local Services Ads: The Complete Playbook',
+    dek: 'How to get to the top of Google, only pay when the phone rings, and keep the calls coming for years. Plain English, real screenshots, and the 2026 Google Ads change.',
+    date: 'September 26, 2026',
+  },
+  {
     href: '/blog/orbit-fees-risk-not-hours',
     title: "Why marketing fees go up at $200k months (it's risk, not busywork)",
     dek: "Orbit is ~$1.5k/mo + 20% of ad spend so the calendar and the trucks don't collapse when budgets scale. Rewired's plateau made the point.",

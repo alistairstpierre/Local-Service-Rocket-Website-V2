@@ -74,6 +74,23 @@ export const images = {
   'logo-definite': { source: 'logo-definite.jpg', widths: [LOGO], fallback: 'jpg' },
   'logo-austral': { source: 'logo-austral.png', widths: [LOGO], fallback: 'jpg', flatten: true },
   'logo-c-tinting': { source: 'logo-c-tinting.png', widths: [LOGO], fallback: 'jpg' },
+
+  // Blog: electrician LSA playbook screenshots (from Lead-Magnet-LSA PDF).
+  // ~680 CSS px in .measure; 1200 for 2x (sharp won't upscale past source).
+  'lsa-serp-placement': { source: 'lsa-serp-placement.png', widths: [680, 1200], fallback: 'png' },
+  'lsa-channel-comparison': { source: 'lsa-channel-comparison.png', widths: [680, 1200], fallback: 'png' },
+  'lsa-signup-get-started': { source: 'lsa-signup-get-started.png', widths: [680, 1200], fallback: 'png' },
+  'lsa-verification-complete': { source: 'lsa-verification-complete.png', widths: [680, 1200], fallback: 'png' },
+  'lsa-profile-hours-bio': { source: 'lsa-profile-hours-bio.png', widths: [680, 1200], fallback: 'png' },
+  'lsa-budget-job-types': { source: 'lsa-budget-job-types.png', widths: [680, 1200], fallback: 'png' },
+  'lsa-photos-settings': { source: 'lsa-photos-settings.png', widths: [680, 1200], fallback: 'png' },
+  'lsa-service-areas-hours': { source: 'lsa-service-areas-hours.png', widths: [680, 1200], fallback: 'png' },
+  'lsa-leads-menu': { source: 'lsa-leads-menu.png', widths: [680, 1200], fallback: 'png' },
+  'lsa-lead-detail-notes': { source: 'lsa-lead-detail-notes.png', widths: [680, 1200], fallback: 'png' },
+  'lsa-mark-as-booked': { source: 'lsa-mark-as-booked.png', widths: [680, 1200], fallback: 'png' },
+  'lsa-rate-lead': { source: 'lsa-rate-lead.png', widths: [680, 1200], fallback: 'png' },
+  'lsa-edit-booking-details': { source: 'lsa-edit-booking-details.png', widths: [680, 1200], fallback: 'png' },
+  'lsa-reports-dashboard': { source: 'lsa-reports-dashboard.png', widths: [680, 1200], fallback: 'png' },
 };
 
 /** Path to the always-supported fallback file, e.g. "/assets/logo-motha.jpg". */

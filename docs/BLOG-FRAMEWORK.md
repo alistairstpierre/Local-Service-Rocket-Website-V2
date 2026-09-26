@@ -99,6 +99,7 @@ studies — do not invent new numbers):
 | --- | --- | --- | --- |
 | Done | Rewired: big-agency rebuild hurt ads | `/blog/rewired-big-agency-rebuild` | Rewired $60k→$220k+, dozen agencies |
 | Done | Hooked Up: LSA for electricians | `/blog/electrician-local-services-ads` | 1→4 counties, 100–200 leads/mo |
+| Done | Electrician LSA complete playbook | `/blog/electrician-lsa-playbook` | Lead-magnet process + Hooked Up / Hank’s receipts + Ads Leads migration |
 | Done | Hiring: Facebook vs Indeed | `/blog/hiring-electricians-facebook-vs-indeed` | Indeed burn, ~10-day Meta sprint |
 | Queued 2026-09-15 | Honest Hank's: stack $500 wins | `blog-queue/posts/honest-hanks-stack-small-wins.astro` | ~$500 LSA first, $25k→$80k |
 | Queued 2026-09-22 | Orbit fees = risk cover | `blog-queue/posts/orbit-fees-risk-not-hours.astro` | ~$1.5k + 20% ad spend |

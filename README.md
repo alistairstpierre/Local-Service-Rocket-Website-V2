@@ -80,6 +80,7 @@ Details: `blog-queue/README.md`.
 | `/case-studies/hooked-up` | Hooked Up Electric case study |
 | `/blog` | Blog index |
 | `/blog/rewired-big-agency-rebuild` | Rewired big-agency rebuild story |
+| `/blog/electrician-lsa-playbook` | Ultimate electrician LSA playbook (setup, score, 2026 Ads migration) |
 | `/blog/electrician-local-services-ads` | Hooked Up / LSA for electricians |
 | `/blog/hiring-electricians-facebook-vs-indeed` | Facebook hiring vs Indeed |
 | `/blog/bad-vs-good-agency` | Bad vs good agencies |
@@ -97,6 +98,7 @@ Details: `blog-queue/README.md`.
 ├── Claude Design Files/          # Design handoff (reference only)
 ├── Found By Friday Brain Dumps/  # Source transcripts for content
 ├── assets-src/                   # Raster ORIGINALS (not deployed) - input to npm run images
+│                                 # Includes lsa-*.png screenshots for /blog/electrician-lsa-playbook
 ├── content/
 │   ├── CONTENT-GAPS-AND-INTERVIEW.md  # Gaps checklist + dump prompts
 │   └── VSL-SCRIPT.md             # As-recorded transcript + timecoded graphics brief for the /get-started video

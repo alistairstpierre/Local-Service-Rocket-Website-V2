@@ -1,0 +1,656 @@
+---
+/* Ultimate electrician Local Services Ads playbook.
+   Distils Lead-Magnet-LSA PDF (annotated screenshots in assets-src/lsa-*) + daily
+   lead SOP into a skimmable pillar: hook intro, TOC, short sections, figures.
+   Written for owners, not marketers: plain words, one idea per paragraph, every
+   line sells the next (copywriting), jargon explained the first time it appears.
+   Format modelled on BrightLocal / Moz long guides. Outcome card beside the H1 via
+   BlogLayout `outcome` prop. Primary SEO: electrician Local Services Ads / LSA for
+   electricians. Written to docs/BLOG-FRAMEWORK.md. */
+import BlogLayout from '../../layouts/BlogLayout.astro';
+import Picture from '../../components/Picture.astro';
+
+const faqs = [
+  {
+    q: 'Are Local Services Ads worth it for electricians?',
+    a: 'Yes, for almost every residential electrical shop, as long as someone can answer the phone fast. You only pay when a customer calls or messages you, and you sit at the very top of Google. The catch is simple: miss too many calls and Google quietly stops sending them.',
+  },
+  {
+    q: 'How much do Local Services Ads cost an electrician?',
+    a: 'You pay per call or message, not per click. On the accounts we run, a booked job usually costs somewhere between about $30 and $60 in ad spend. You set a budget cap so Google can never spend more than you allow.',
+  },
+  {
+    q: 'How fast do I need to answer the phone?',
+    a: 'Within 30 seconds, most of the time. Google tracks how quickly you pick up. Miss calls or leave people on hold and your ad drops down the list. Messages need a reply the same day.',
+  },
+  {
+    q: 'Should I run Local Services Ads or normal Google Ads first?',
+    a: 'Local Services Ads first. They are cheaper, you only pay for real calls, and they sit above normal ads. Once they are booking work, add normal Google Ads to fill the gaps.',
+  },
+  {
+    q: 'Where do my leads go now that Google is moving LSA into Google Ads?',
+    a: 'Inside Google Ads, click Goals, then Conversions, then Leads. That page replaces the old Local Services inbox. Everything else about how the ads work stays the same.',
+  },
+  {
+    q: 'What does it cost to have Local Service Rocket set this up?',
+    a: 'About $500 to set up, then about $25 for each booked call we check and confirm. Not per lead, per booked call. Full pricing is on the get-started page.',
+  },
+];
+
+const toc = [
+  { href: '#what-are-lsas', label: 'What a Local Services Ad actually is' },
+  { href: '#vs-other-channels', label: 'Why we turn this on before anything else' },
+  { href: '#results', label: 'What the numbers look like' },
+  { href: '#before-you-start', label: 'What to have ready before you sign up' },
+  { href: '#sign-up', label: 'Signing up and getting the green tick' },
+  { href: '#profile-setup', label: 'Setting up your profile the right way' },
+  { href: '#hidden-score', label: 'The hidden score that decides who gets the calls' },
+  { href: '#manage-leads', label: 'The 5-minute daily habit that keeps calls coming' },
+  { href: '#track-results', label: 'How to tell if you are winning' },
+  { href: '#what-goes-wrong', label: 'When things break, and how to fix them' },
+  { href: '#google-ads-migration', label: 'The 2026 change: LSA is moving into Google Ads' },
+];
+---
+
+<BlogLayout
+  title="Electrician Local Services Ads: The Complete Playbook"
+  seoTitle="Electrician Local Services Ads (LSA) Playbook 2026"
+  description="The plain-English guide to Google Local Services Ads for electricians. How to get to the top of Google, only pay when the phone rings, and keep the calls coming for years."
+  date="September 26, 2026"
+  datePublished="2026-09-26"
+  dateModified="2026-09-26"
+  updated="September 26, 2026"
+  readTime="16 min"
+  faqs={faqs}
+  faqH2="Electrician LSA Questions, Answered Plainly"
+  ctaH2="Want This Set Up Without the Guesswork?"
+  outcome={{
+    label: 'One electrician, one channel',
+    whoName: 'Hooked Up Electric',
+    whoDetail: 'family electrical shop in Merkel, Texas',
+    stats: [
+      { value: '100–200', detail: 'calls a month, every month, for 2+ years' },
+      { value: '1 → 4', detail: 'counties they now book work in' },
+      { value: '600%', detail: 'growth in 2024, in the owner’s own words' },
+    ],
+  }}
+>
+  <p>
+    Right now, somebody in your town is typing “electrician near me” into their phone.
+  </p>
+  <p>
+    The first thing they see is not a website. It is three electricians with a green Google tick, a
+    star rating, and a big blue <strong>Call</strong> button. One tap and a phone rings.
+  </p>
+  <p>
+    If your shop is one of those three, that call is yours. If it is not, a competitor just picked
+    up a job you never knew existed.
+  </p>
+  <p>
+    That top spot is called a <strong>Local Services Ad</strong>. And here is the part most
+    electricians never get told: <strong>you do not pay for the ad to show. You only pay when the
+    phone actually rings.</strong>
+  </p>
+  <p>
+    Hooked Up Electric in Merkel, Texas has been sitting in that spot for over two years. A hundred
+    to two hundred calls a month. Four counties instead of one. The owner runs the trucks; the ads
+    run themselves.
+  </p>
+  <p>
+    That was not luck, and it was not a big budget. It was a handful of settings and one daily
+    habit that almost nobody does. Google never explains any of it. This guide does.
+  </p>
+  <p>
+    Read it once and you will know how to get into that top spot, how to stay there, and the two
+    mistakes that make the calls stop for good.
+  </p>
+
+  <nav class="toc" aria-label="On this page">
+    <div class="toc-label">WHAT WE’LL COVER</div>
+    <ol>
+      {toc.map((item) => (
+        <li>
+          <a href={item.href}>{item.label}</a>
+        </li>
+      ))}
+    </ol>
+  </nav>
+
+  <h2 id="what-are-lsas">What a Local Services Ad actually is</h2>
+  <p>
+    A Local Services Ad is Google’s “call a tradesman” box. It sits at the very top of the page,
+    above the normal ads, above the map, above every website.
+  </p>
+  <figure>
+    <Picture
+      name="lsa-serp-placement"
+      alt="Mobile Google search showing Local Services Ads above normal Google Ads"
+      sizes="(max-width: 720px) 100vw, 680px"
+    />
+    <figcaption>
+      Top box: Local Services Ads. Below it: normal Google Ads. Everything else is further down.
+    </figcaption>
+  </figure>
+  <p>Three things make it different from every other ad you have been sold:</p>
+  <ul>
+    <li>
+      <strong>You only pay when someone calls or messages you.</strong> Not when they look. Not when
+      they click.
+    </li>
+    <li>
+      <strong>Google vets you first.</strong> Licence, insurance, background check. Pass, and your ad
+      carries a green “Google Guaranteed” tick that customers trust.
+    </li>
+    <li>
+      <strong>There are no keywords to manage.</strong> You tell Google what jobs you do and where
+      you work. It handles the rest.
+    </li>
+  </ul>
+  <p>
+    The box does not appear on every search. In most US towns we see it on roughly half of
+    electrician searches. When it does show, it owns the screen.
+  </p>
+
+  <h2 id="vs-other-channels">Why we turn this on before anything else</h2>
+  <p>
+    Every electrician we work with has been burned by advertising before. Yelp. Angi. Facebook. A
+    “Google Ads guy” who spent $3,000 and sent four tyre-kickers.
+  </p>
+  <p>Here is how those stack up against Local Services Ads for an electrical shop:</p>
+  <figure>
+    <Picture
+      name="lsa-channel-comparison"
+      alt="Table comparing Local Services Ads with Google Ads, social media, Yelp, and Angi"
+      sizes="(max-width: 720px) 100vw, 680px"
+    />
+    <figcaption>Local Services Ads: cheapest, direct calls, nobody else gets the same lead.</figcaption>
+  </figure>
+  <p>
+    Normal Google Ads still have a place, but they are the expensive lane. You pay every time
+    someone clicks, whether they call or not. We turn those on later, once Local Services Ads are
+    already booking work.
+  </p>
+  <p>
+    Shared lead sites like Angi sell the same homeowner to four electricians at once. You are racing
+    three other shops to the phone. We do not recommend them.
+  </p>
+
+  <h2 id="results">What the numbers look like</h2>
+  <p>
+    Local Services Ads start slow. The first few weeks are quiet. Then, if you handle the calls
+    properly, it builds month after month.
+  </p>
+  <p>Here is one electrical shop we started from nothing:</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Month</th>
+        <th>Ad spend</th>
+        <th>Calls</th>
+        <th>Jobs booked</th>
+        <th>Cost per booked job</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>First month</td>
+        <td>$288</td>
+        <td>24</td>
+        <td>9</td>
+        <td>~$32</td>
+      </tr>
+      <tr>
+        <td>Month 2</td>
+        <td>$1,231</td>
+        <td>102</td>
+        <td>36</td>
+        <td>~$34</td>
+      </tr>
+      <tr>
+        <td>Month 3</td>
+        <td>$1,719</td>
+        <td>115</td>
+        <td>50</td>
+        <td>~$34</td>
+      </tr>
+      <tr>
+        <td>Month 4 (December)</td>
+        <td>$1,320</td>
+        <td>89</td>
+        <td>22</td>
+        <td>~$60</td>
+      </tr>
+      <tr>
+        <td>Month 5</td>
+        <td>$2,122</td>
+        <td>115</td>
+        <td>52</td>
+        <td>~$41</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    Read that last row again. <strong>52 booked electrical jobs for $2,122 in ads.</strong> About
+    forty dollars a job. What is one panel upgrade worth to you?
+  </p>
+  <p>Here is a peak month from a bigger, multi-location electrical company:</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Ad spend</th>
+        <th>Calls</th>
+        <th>Revenue from those calls</th>
+        <th>Return</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>~$4,650</td>
+        <td>117</td>
+        <td>~$95,000</td>
+        <td>~20× back</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    And the long game: Hooked Up Electric has held 100 to 200 calls a month for over two years and
+    grown from one county to four. Their full story is on the
+    <a href="/case-studies/hooked-up">Hooked Up case study</a>.
+  </p>
+  <blockquote>
+    Local Services Ads can pay for a new van every quarter. They can also go dead in a fortnight.
+    The difference is everything below.
+  </blockquote>
+
+  <h2 id="before-you-start">What to have ready before you sign up</h2>
+  <p>
+    Most electricians get stuck at signup for weeks, sometimes months. Nearly every time, it is
+    because paperwork did not match. Get these together first and it goes smoothly.
+  </p>
+  <ul>
+    <li>
+      <strong>Your insurance certificate</strong> as a PDF or clear photo
+    </li>
+    <li>
+      <strong>Your electrical licence</strong>, photographed, for every state or area you claim
+    </li>
+    <li>
+      <strong>Your business name and address, exactly as they appear on those documents.</strong>
+      One letter off and Google rejects you without saying why.
+    </li>
+    <li>
+      <strong>A Google Business Profile</strong> (your listing on Google Maps) with at least five
+      reviews and “Electrician” set as the main category
+    </li>
+    <li>
+      <strong>The owner’s name and email</strong> for a background check
+    </li>
+    <li>
+      <strong>A credit card</strong> with enough limit to cover the budget you will set
+    </li>
+  </ul>
+
+  <h2 id="sign-up">Signing up and getting the green tick</h2>
+  <p>
+    Sit down at a computer, not your phone. Go to
+    <a href="https://business.google.com/us/ad-solutions/local-service-ads/">Google’s Local Services
+    Ads page</a>, sign in with the Google account that owns your Business Profile, and click
+    <strong>Get started</strong>.
+  </p>
+  <figure>
+    <Picture
+      name="lsa-signup-get-started"
+      alt="Google Local Services Ads page with Sign in and Get started buttons highlighted"
+      sizes="(max-width: 720px) 100vw, 680px"
+    />
+    <figcaption>Sign in top right, then Get started. Use the same Google account as your Maps listing.</figcaption>
+  </figure>
+  <p>
+    Fill in the forms slowly and copy your details straight from your documents. Then check your
+    email and the dashboard every day until you are approved.
+  </p>
+  <p>
+    If anything gets stuck, <strong>phone Google’s Local Services support.</strong> Do not email.
+    Emails sit for weeks; a phone call usually sorts it the same day.
+  </p>
+  <p>When every line turns green, your ad is live and you have the badge:</p>
+  <figure>
+    <Picture
+      name="lsa-verification-complete"
+      alt="Local Services Ads checklist fully complete with the Google Guaranteed badge"
+      sizes="(max-width: 720px) 100vw, 680px"
+    />
+    <figcaption>
+      Billing, insurance, background check, Business Profile, reviews, budget, licence. All ticked
+      means you are Google Guaranteed.
+    </figcaption>
+  </figure>
+
+  <h2 id="profile-setup">Setting up your profile the right way</h2>
+  <p>
+    This is where most electricians leave money on the table. Google gives you a dozen settings and
+    explains none of them. Here is what each one should be, and why.
+  </p>
+
+  <h3>1. Hours and your business highlights</h3>
+  <p>
+    Set your hours to <strong>the times someone will actually pick up the phone.</strong> Not the
+    hours you would like to be open. If nobody answers at 7pm, do not list 7pm. A missed call hurts
+    you more than a closed sign.
+  </p>
+  <p>
+    Then pick six highlights for your ad. Choose the ones a homeowner cares about: licensed and
+    insured, emergency service, free estimates, warranty on work. Only pick what is true.
+  </p>
+  <figure>
+    <Picture
+      name="lsa-profile-hours-bio"
+      alt="Local Services Ads profile page showing the hours schedule and business highlights"
+      sizes="(max-width: 720px) 100vw, 680px"
+    />
+    <figcaption>1: your ad only runs during the hours you set. 2: the highlights that appear on your ad.</figcaption>
+  </figure>
+
+  <h3>2. Budget and job types</h3>
+  <p>
+    Leave bidding on <strong>Automated</strong>. Then set your weekly budget higher than you expect
+    to spend. That sounds backwards, so here is why.
+  </p>
+  <p>
+    Google almost never spends your full budget on Local Services Ads. On our accounts it rarely
+    reaches half. A high number tells Google “send me plenty,” and you can always lower it later.
+    Just keep it under your card limit, because Google checks.
+  </p>
+  <p>
+    For job types, <strong>tick everything you are willing to do.</strong> Panels, EV chargers,
+    ceiling fans, outlets, the lot. If it is not ticked, Google will not send you that job.
+  </p>
+  <figure>
+    <Picture
+      name="lsa-budget-job-types"
+      alt="Local Services Ads budget set to automated bidding beside the list of electrical job types"
+      sizes="(max-width: 720px) 100vw, 680px"
+    />
+    <figcaption>Automated bidding, a generous weekly budget, and every job type you can do turned on.</figcaption>
+  </figure>
+
+  <h3>3. Photos and message settings</h3>
+  <p>
+    Upload your logo and real photos of your crew doing real work. Homeowners want to see the
+    person who is coming to their house. One van photo is plenty. Faces beat fleets.
+  </p>
+  <p>
+    Turn <strong>Messages</strong> on. Yes, text leads are usually lower quality than phone calls.
+    But Google rewards profiles that accept every kind of contact, and you will get more phone calls
+    too.
+  </p>
+  <figure>
+    <Picture
+      name="lsa-photos-settings"
+      alt="Local Services Ads photo grid and settings with messages and bookings turned on"
+      sizes="(max-width: 720px) 100vw, 680px"
+    />
+    <figcaption>Crew photos on the left. Messages, bookings, and brand search all switched on.</figcaption>
+  </figure>
+
+  <h3>4. Service area</h3>
+  <p>
+    Add every town or county you want work in, but keep it within about two hours’ drive of your
+    base. Google knows where you are. Claiming half the state makes you look less local, and you
+    drop down the list.
+  </p>
+  <figure>
+    <Picture
+      name="lsa-service-areas-hours"
+      alt="Local Services Ads service area map beside the business hours list"
+      sizes="(max-width: 720px) 100vw, 680px"
+    />
+    <figcaption>Cover where you actually send trucks. Match the hours to when you answer.</figcaption>
+  </figure>
+
+  <h2 id="hidden-score">The hidden score that decides who gets the calls</h2>
+  <p>
+    Here is what Google does not tell you. Every Local Services account has a score. You cannot see
+    it. But it decides your position in that top box, and the electrician in position one gets the
+    lion’s share of the calls.
+  </p>
+  <p>
+    Worse: <strong>once that score drops badly, it almost never comes back.</strong> We have watched
+    shops go from three calls a day to none and never recover on the same account.
+  </p>
+
+  <h3>The two things that break it for good</h3>
+  <ul>
+    <li>
+      <strong>Missed calls, or leaving people on hold.</strong> Google times how fast you pick up.
+      Aim for under 30 seconds, nine calls out of ten. If your phone goes to voicemail during
+      business hours, fix that before you spend a dollar.
+    </li>
+    <li>
+      <strong>Ignored messages.</strong> Reply the same day, every time. Google compares your speed
+      with the other electricians in your area.
+    </li>
+  </ul>
+
+  <h3>The smaller things that chip away at it</h3>
+  <ul>
+    <li>A budget set too low</li>
+    <li>Service areas more than two hours away</li>
+    <li>No photos, or half the settings left blank</li>
+    <li>Messages switched off</li>
+    <li>Leads with no name or notes (more on this next)</li>
+    <li>Changing your budget every few days</li>
+    <li>A weak Google Maps listing or a website that never shows up</li>
+  </ul>
+  <p>
+    That last one matters more than people think. Local Services Ads boost a shop that already looks
+    good on Google. They rarely rescue one that does not.
+  </p>
+
+  <h2 id="manage-leads">The 5-minute daily habit that keeps calls coming</h2>
+  <p>
+    This is the part almost every electrician, and almost every agency, skips. It is also the main
+    reason Hooked Up is still getting calls two years on.
+  </p>
+  <p>
+    Every working day, open your leads and deal with each one. Here is exactly what that means.
+  </p>
+  <figure>
+    <Picture
+      name="lsa-leads-menu"
+      alt="Local Services Ads menu with Leads selected and a table of recent leads"
+      sizes="(max-width: 720px) 100vw, 680px"
+    />
+    <figcaption>
+      Click Leads in the side menu. “Charged” means you paid for it. “Credited” means Google
+      refunded it.
+    </figcaption>
+  </figure>
+
+  <h3>Step 1: Give every lead a name and a note</h3>
+  <p>
+    Click on the lead. Type the customer’s name and a quick note about the job: “panel upgrade,
+    quoted Tuesday.” If you never got a name, write “Missed call” or “Price shopper.”
+  </p>
+  <p>
+    Why bother? Because a lead with no name and no notes looks abandoned to Google. Enough of those
+    and Google assumes you do not want the work.
+  </p>
+  <figure>
+    <Picture
+      name="lsa-lead-detail-notes"
+      alt="A Local Services Ads lead showing the message conversation and the notes field"
+      sizes="(max-width: 720px) 100vw, 680px"
+    />
+    <figcaption>A real reply, a name, and a note. This is what a healthy lead looks like.</figcaption>
+  </figure>
+
+  <h3>Step 2: Mark it booked</h3>
+  <p>
+    Booked a date? Click <strong>Mark as booked → Upcoming</strong> and enter the day. Already been
+    out, or they said no, or they just wanted a price? Click
+    <strong>Mark as booked → Already complete</strong>.
+  </p>
+  <p>Either way, you are telling Google “this was a real electrical job.” That is what you want.</p>
+  <figure>
+    <Picture
+      name="lsa-mark-as-booked"
+      alt="Local Services Ads lead page with the Mark as booked button highlighted"
+      sizes="(max-width: 720px) 100vw, 680px"
+    />
+    <figcaption>Mark as booked, top right. Use it on every real electrical enquiry.</figcaption>
+  </figure>
+
+  <h3>Step 3: Rate it, and be careful with Archive</h3>
+  <p>
+    When Google asks you to rate the lead, pick one of the “satisfied” options. You are not
+    reviewing the customer. You are telling Google “send me more like this.”
+  </p>
+  <p>
+    <strong>Only press Archive when the call was not electrical work at all.</strong> Wrong trade,
+    spam, a salesman. If you archive real enquiries, even ones you lost, Google hears “send fewer,”
+    and does.
+  </p>
+  <figure>
+    <Picture
+      name="lsa-rate-lead"
+      alt="Local Services Ads lead page with the Rate this lead link highlighted"
+      sizes="(max-width: 720px) 100vw, 680px"
+    />
+    <figcaption>Rate this lead. Always positive for real electrical work.</figcaption>
+  </figure>
+
+  <h3>Step 4: When you win the job, add the price</h3>
+  <p>
+    Once a job is done, go back to the lead, hit <strong>Edit</strong>, and type in what you charged.
+    Nobody else sees it. But Google now knows that a “panel upgrade” in that suburb turned into
+    $2,800, and it goes looking for more of them.
+  </p>
+  <figure>
+    <Picture
+      name="lsa-edit-booking-details"
+      alt="Edit booking details window with a price estimate field on a completed lead"
+      sizes="(max-width: 720px) 100vw, 680px"
+    />
+    <figcaption>Edit → add the price. This is how Google learns which jobs make you money.</figcaption>
+  </figure>
+  <p>
+    All of that takes about five minutes a day. Let it slide for more than three days and Google
+    starts treating your account as asleep.
+  </p>
+
+  <h2 id="track-results">How to tell if you are winning</h2>
+  <p>Open <strong>Reports</strong>. Three numbers matter.</p>
+  <figure>
+    <Picture
+      name="lsa-reports-dashboard"
+      alt="Local Services Ads Reports page showing spend, calls, and top position rate"
+      sizes="(max-width: 720px) 100vw, 680px"
+    />
+    <figcaption>
+      One real month: $2,387 spent, 131 phone calls, and the #1 spot 70% of the time.
+    </figcaption>
+  </figure>
+  <ul>
+    <li>
+      <strong>Total spend and charged leads.</strong> Divide one by the other and you have your cost
+      per call. In the month above, about $18.
+    </li>
+    <li>
+      <strong>“Absolute top impression rate.”</strong> Plain English: how often you were the #1
+      electrician in the box. Above 50% and you are winning your area.
+    </li>
+    <li>
+      <strong>Cost per booked job.</strong> Google will not show you this. Keep a simple spreadsheet
+      or tag LSA jobs in your job software. This is the number that pays the bills.
+    </li>
+  </ul>
+  <p>
+    If your spend is creeping up towards a quarter of your budget and you still want more calls,
+    raise the budget. Otherwise leave it alone.
+  </p>
+
+  <h2 id="what-goes-wrong">When things break, and how to fix them</h2>
+
+  <h3>“My application has been pending for weeks”</h3>
+  <p>
+    Almost always a paperwork mismatch. Check your business name and address against your insurance
+    and licence, fix any difference, then phone support and ask them to re-check.
+  </p>
+
+  <h3>“There is a red warning about billing”</h3>
+  <p>
+    When you sign up for Local Services Ads, Google quietly creates a normal Google Ads account
+    behind it. Sometimes that account gets flagged. Log in at ads.google.com with the same email,
+    clear the warning, and tell support you only use it for Local Services. This one can drag on for
+    months if you leave it.
+  </p>
+
+  <h3>“I was getting calls every day and now I get none”</h3>
+  <p>
+    Open your leads and look at the dates. If the drop lines up with a stretch of missed calls or
+    unanswered messages, your score took the hit. If you were new, start again properly. If you had
+    been winning for months, be honest with yourself: the same account may never recover, and a
+    fresh Business Profile plus a fresh Local Services account is sometimes the only way back.
+  </p>
+
+  <h3>“Calls are slowly drying up”</h3>
+  <p>
+    Check the small things: has your service area drifted too wide, did photos disappear, has the
+    inbox sat untouched for a week? Then check your Google Maps listing. If a competitor has
+    overtaken you on reviews and category, that pulls your ads down too.
+  </p>
+
+  <h2 id="google-ads-migration">The 2026 change: LSA is moving into Google Ads</h2>
+  <p>
+    Starting August 2026, Google began moving US electricians out of the separate Local Services
+    dashboard and into the main Google Ads website. If you have not been moved yet, you will be.
+    Google emails you about two weeks before.
+  </p>
+
+  <h3>What does not change</h3>
+  <ul>
+    <li>You still only pay when someone calls or messages</li>
+    <li>Your ad still shows in the same top box on Google and Google Maps</li>
+    <li>Your green tick carries over</li>
+    <li>Everything in this guide about answering fast and managing leads still applies</li>
+  </ul>
+
+  <h3>What does change</h3>
+  <ul>
+    <li>
+      Your leads now live in Google Ads under <strong>Goals → Conversions → Leads</strong>
+    </li>
+    <li>Your weekly budget becomes a daily budget (Google divides it by seven)</li>
+    <li>The option to set your own maximum price per lead goes away</li>
+    <li>
+      <strong>Your old reports disappear.</strong> Download or screenshot them before your move date.
+      Your past leads and customer details do carry over.
+    </li>
+    <li>Expect a couple of quiet weeks while it settles</li>
+  </ul>
+  <p>
+    Google’s own write-up is
+    <a href="https://support.google.com/google-ads/answer/17213585">here</a>, and they have a
+    dedicated help line for the move: +1-844-205-0011, Monday to Friday, 9am to 8pm Eastern.
+  </p>
+  <p>
+    I will publish a click-by-click walkthrough of the new screens once we have moved a shop through
+    it live. Nothing about the phone, the daily habit, or the score changes in the meantime.
+  </p>
+
+  <h2>The short version</h2>
+  <p>
+    Get the paperwork right. Set the profile up properly once. Answer the phone in under 30 seconds.
+    Spend five minutes a day on your leads.
+  </p>
+  <p>
+    Most of the electricians in your area will not do that last part. That is your opening, and it
+    costs nothing.
+  </p>
+  <p>
+    If you would rather have it done for you, we set it up for about
+    <a href="/get-started">$500, then about $25 for each booked call we check</a>. Same setup we use
+    for every electrician on our <a href="/services/paid-ads">paid ads and LSA</a> work.
+  </p>
+</BlogLayout>
