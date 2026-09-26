@@ -1,14 +1,13 @@
 ---
-/* Contact page: free marketing audit form powered by EmailJS.
-   Fields + optional brand/website screenshot attachments go to hello@ via
-   EmailJS (browser SDK loaded only on submit so other pages stay third-party-free).
-   Configure PUBLIC_EMAILJS_* in .env (see README). Nav/Footer link here. */
+/* Contact page: message Local Service Rocket via EmailJS.
+   Owners can ask a question, request a free audit, or book a coaching session,
+   with optional brand/website screenshots. SDK loads only on submit. */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { absoluteUrl, breadcrumbList, graph, webPageNode } from '../data/schema';
 
-const title = 'Free Marketing Audit for Electricians | Local Service Rocket';
+const title = 'Contact Local Service Rocket | Questions, Audit, or Coaching';
 const description =
-  'Send your website or brand screenshots and get a free marketing audit from Local Service Rocket. No sales call required.';
+  'Message Local Service Rocket with a question, or ask for a free marketing audit or coaching session. Attach website or brand screenshots if you have them.';
 const pageUrl = absoluteUrl('/contact/');
 const jsonLd = graph([
   webPageNode({ pageUrl, name: title, description }),
@@ -44,32 +43,39 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
         <span>/</span>
         <span class="current">Contact</span>
       </div>
-      <div class="eyebrow">FREE AUDIT</div>
-      <h1>Send us your site. We’ll tell you what’s holding the calls back.</h1>
+      <div class="eyebrow">CONTACT</div>
+      <h1>Got a question? Or want a free audit or coaching?</h1>
       <p class="lede">
-        Drop your website link, and attach screenshots of your Google profile, ads, or brand if you
-        have them. We’ll look through them and reply with a plain-English audit — what’s working,
-        what’s broken, and the first fix that would actually move the needle. No sales call. No
-        pitch deck.
+        Ask us anything about Google marketing for your shop — or request a free audit or a coaching
+        session. Attach screenshots of your site or brand if you have them. We’ll reply by email. No
+        sales call.
       </p>
     </section>
 
     <section class="container panel">
       <div class="copy">
-        <div class="eyebrow">WHAT YOU GET</div>
-        <h2>A free look at your Google marketing.</h2>
+        <div class="eyebrow">HOW WE CAN HELP</div>
+        <h2>Three easy ways to reach us.</h2>
         <ul class="bullets">
-          <li>Your Google Business Profile: category, photos, reviews, and whether Google knows you’re an electrician</li>
-          <li>Your website: does it turn a visitor into a booked job, or lose them on the first screen?</li>
-          <li>Ads and Local Services Ads: are you paying for clicks, or for calls that book?</li>
-          <li>The one change we’d make first, if we were running your account next week</li>
+          <li>
+            <strong>Just a question</strong> — LSA, ads, hiring, websites, pricing — send it through
+            and we’ll answer straight.
+          </li>
+          <li>
+            <strong>Free marketing audit</strong> — we look at your Google profile, website, and ads,
+            then tell you what’s working, what’s broken, and the first fix that would move the needle.
+          </li>
+          <li>
+            <strong>Coaching session</strong> — a focused reply (or call if it fits) on the one
+            bottleneck you’re stuck on: LSA, hiring, spend, or where to put the next dollar.
+          </li>
         </ul>
         <div class="aside">
           <div class="aside-label">PREFER TO TALK?</div>
           <p>
             Call <a href="tel:8883716365">(888) 371-6365</a> or email
             <a href="mailto:hello@localservicerocket.com">hello@localservicerocket.com</a>.
-            Ready to book? <a href="/get-started">Schedule onboarding</a>.
+            Ready to book onboarding? <a href="/get-started">Schedule here</a>.
           </p>
         </div>
       </div>
@@ -127,13 +133,24 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
           </label>
 
           <label class="row">
-            <span>What do you want us to look at?</span>
+            <span>What do you need?</span>
+            <select name="reason" required>
+              <option value="" disabled selected>Choose one</option>
+              <option value="Just a question">Just a question</option>
+              <option value="Free marketing audit">Free marketing audit</option>
+              <option value="Coaching session">Coaching session</option>
+              <option value="Something else">Something else</option>
+            </select>
+          </label>
+
+          <label class="row">
+            <span>Your message</span>
             <textarea
               name="message"
               rows="5"
               required
               maxlength="4000"
-              placeholder="e.g. We’re an electrician in Tampa. Ads feel expensive and the phone isn’t ringing. Here’s our Google profile and site…"
+              placeholder="e.g. Quick question about LSA budgets… Or: can you audit our Google profile? Or: I want coaching on whether to push Search next…"
             ></textarea>
           </label>
 
@@ -145,7 +162,7 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
             </p>
             <!--
               EmailJS template: add Form File Attachments named screenshot_1 … screenshot_4
-              (Personal plan required for attachments). See README.
+              (Professional plan). See README.
             -->
             <input
               id="screenshot_1"
@@ -182,12 +199,12 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
           </div>
 
           <p class="privacy">
-            By sending this you agree we can email you about your audit. We don’t sell your info.
-            See the <a href="/privacy">privacy policy</a>.
+            By sending this you agree we can email you back about your request. We don’t sell your
+            info. See the <a href="/privacy">privacy policy</a>.
           </p>
 
           <button type="submit" class="btn btn-primary btn-lg submit" id="submit-btn">
-            Send for a free audit
+            Send message
           </button>
           <p class="status" id="form-status" role="status" aria-live="polite"></p>
         </form>
@@ -293,7 +310,7 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
         submitBtn.disabled = true;
         submitBtn.textContent = 'Sending…';
       }
-      setStatus('Sending your audit request…');
+      setStatus('Sending your message…');
 
       try {
         const emailjs = await loadEmailJs();
@@ -301,17 +318,17 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
         await emailjs.sendForm(serviceId, templateId, form);
         form.reset();
         refreshFileList();
-        setStatus('Got it. We’ll review what you sent and reply by email.', 'ok');
+        setStatus('Got it. We’ll reply by email.', 'ok');
       } catch (err) {
         console.error(err);
         setStatus(
-          'Something went wrong. Email hello@localservicerocket.com with your screenshots instead.',
+          'Something went wrong. Email hello@localservicerocket.com instead.',
           'error',
         );
       } finally {
         if (submitBtn instanceof HTMLButtonElement) {
           submitBtn.disabled = false;
-          submitBtn.textContent = 'Send for a free audit';
+          submitBtn.textContent = 'Send message';
         }
       }
     });
@@ -476,7 +493,8 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
   }
 
   input,
-  textarea {
+  textarea,
+  select {
     width: 100%;
     border: 1px solid var(--border);
     border-radius: 10px;
@@ -489,7 +507,8 @@ const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.t
   }
 
   input:focus,
-  textarea:focus {
+  textarea:focus,
+  select:focus {
     outline: none;
     border-color: var(--orange);
   }

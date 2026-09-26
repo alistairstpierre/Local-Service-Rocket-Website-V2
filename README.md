@@ -81,7 +81,7 @@ the EmailJS dashboard so the public key only works on your site.
 | `/about` | Alistair + agency story (from brain dumps) |
 | `/flight-plan` | The System: Pre-flight / Liftoff / Orbit stages |
 | `/get-started` | Get Started funnel |
-| `/contact` | Free audit contact form (EmailJS + optional screenshots) |
+| `/contact` | Contact form: question, free audit, or coaching (EmailJS + screenshots) |
 | `/services` | Services overview |
 | `/services/local-seo` | Local SEO & Reviews |
 | `/services/paid-ads` | Paid Ads & LSAs |
