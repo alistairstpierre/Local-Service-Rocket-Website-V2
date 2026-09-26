@@ -68,9 +68,13 @@ Details: `blog-queue/README.md`.
 | `PUBLIC_EMAILJS_PUBLIC_KEY` | EmailJS public key |
 
 In the EmailJS template, map fields `from_name`, `reply_to`, `phone`, `company`,
-`website`, `message`. For screenshots (Personal plan): Attachments → Form File
-Attachment named `screenshot_1` … `screenshot_4`. Restrict allowed domains in
-the EmailJS dashboard so the public key only works on your site.
+`website`, `reason`, `message`. For screenshots: Attachments → one Form File
+Attachment with parameter name `photos` (the form sends up to 4 files under that
+one name, 2 MB combined, which is the Professional plan cap). Without that
+attachment configured, EmailJS treats the file as a text variable and rejects
+anything over 50 KB with a 413. Set Reply-To to `{{reply_to}}` and restrict
+allowed domains in the EmailJS dashboard so the public key only works on your
+site.
 
 ## Pages
 
