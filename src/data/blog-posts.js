@@ -4,6 +4,12 @@
    sync with the live Astro file under src/pages/blog/. */
 export const blogPosts = [
   {
+    href: '/blog/max-conversions-junk-jobs',
+    title: "Max Conversions is why your electrician ads book fan installs",
+    dek: "Google's recommended bid strategy optimises for easy conversions, not profitable jobs. How multi-service trades get a calendar full of the wrong work.",
+    date: "September 29, 2026",
+  },
+  {
     href: '/blog/electrician-lsa-playbook',
     title: 'Electrician Local Services Ads: The Complete Playbook',
     dek: 'How to get to the top of Google, only pay when the phone rings, and keep the calls coming for years. Plain English, real screenshots, and the 2026 Google Ads change.',
