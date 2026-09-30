@@ -126,7 +126,7 @@ Details: `blog-queue/README.md`.
 │   │   ├── GooglePartnerBadge.astro  # Official 2026 Partner snippet (Hero + PricingOffer)
 │   │   ├── Hero.astro
 │   │   ├── Logo.astro
-│   │   ├── Nav.astro
+│   │   ├── Nav.astro             # Sticky header; mobile menu + fixed full-width onboarding CTA bar
 │   │   ├── Picture.astro         # <picture> AVIF/WebP wrapper used for every raster
 │   │   └── PricingOffer.astro    # Flight Plan pricing tiers (/ and /get-started)
 │   ├── data/

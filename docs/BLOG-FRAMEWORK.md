@@ -233,9 +233,9 @@ page whenever you use one.** If you add a client outcome anywhere on the site, a
 | **Across the book** | 6 companies scaled · $10M+ in new revenue · 5.0 on Google · Google Partner | `/` |
 
 **Pricing we publish** (keep these in step with `/get-started` and `/flight-plan`): Pre-flight from
-$500/mo, website ~$2k, LSA setup ~$500 then ~$25 per booked call we QA. Liftoff ~$1.5k/mo for SEO
-and ad management together, branding ~$3k. Orbit ~$1.5k/mo + 20% of ad spend, hiring sprints ~$500
-setup and ~$500/mo while live. Month to month, no lock-in.
+$500/mo. GBP + website (if needed), coaching / consulting, and LSA setup are included, then ~$25
+per booked estimate. Liftoff ~$1.5k/mo for SEO and ad management together, branding ~$5k. Orbit ~$1.5k/mo +
+20% of ad spend, hiring sprints ~$500 setup and ~$500/mo while live. Month to month, no lock-in.
 
 **Points of view we own** (each is a post or a section in one):
 

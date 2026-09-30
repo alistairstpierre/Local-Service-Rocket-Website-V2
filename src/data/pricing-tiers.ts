@@ -11,7 +11,10 @@ export type PricingTier = {
   unit: string;
   /** Keep unit the same weight/color as the price (e.g. Orbit % of ad spend) */
   unitStrong?: boolean;
-  sub: string;
+  /** Next stage this package is aiming at */
+  aim: string;
+  /** Key outcomes for that next stage */
+  outcome: string;
   /** Which card to highlight as the default path */
   featured?: boolean;
   rows: PricingRow[];
@@ -24,12 +27,14 @@ export const pricingTiers: PricingTier[] = [
     band: '$20-25K MONTHS',
     price: 'from $500',
     unit: '/mo',
-    sub: 'Organic, LSA, and business consulting',
+    aim: 'Get to Liftoff',
+    outcome: '1-3 booked estimates a day. Over $25k months. Google actually booking work.',
     featured: true,
     rows: [
-      { label: 'Website build (if needed)', value: '$2k' },
-      { label: 'LSA setup', value: '$500' },
-      { label: 'Per booked call we QA', value: '$25' },
+      { label: 'GBP + website (if needed)', value: 'included' },
+      { label: 'Coaching / consulting', value: 'included' },
+      { label: 'LSA setup', value: 'included' },
+      { label: 'Per booked estimate', value: '$25' },
     ],
   },
   {
@@ -38,7 +43,8 @@ export const pricingTiers: PricingTier[] = [
     band: '$25-100K MONTHS',
     price: '$1.5k',
     unit: '/mo',
-    sub: 'SEO, Search ads, and business consulting',
+    aim: 'Get to Orbit',
+    outcome: 'Own your traffic. Grow toward $100k months without rented leads.',
     rows: [
       { label: 'Deeper SEO and Google Search', value: 'included' },
       { label: 'Branding: logo, truck, cards, shirts', value: '$5k', href: '/services/branding' },
@@ -53,7 +59,8 @@ export const pricingTiers: PricingTier[] = [
     price: '20% of ad spend',
     unit: '+ $1.5k/mo',
     unitStrong: true,
-    sub: 'Scaled Search, hiring, and business consulting',
+    aim: 'Stay in Orbit',
+    outcome: 'Scale spend, hire, and get your time back. A shop you can sell.',
     rows: [
       { label: 'Hiring sprint setup (optional)', value: '$500' },
       { label: 'Hiring sprint while live (optional)', value: '$500/mo' },

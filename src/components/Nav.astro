@@ -1,7 +1,9 @@
 ---
 /* Site header: sticky nav with brand, section links, phone, and booking CTA.
    Used by BaseLayout on marketing pages. Homepage uses full links; inner pages can simplify.
-   Schedule onboarding always goes to /get-started (VSL funnel), not the calendar directly. */
+   Schedule onboarding always goes to /get-started (VSL funnel), not the calendar directly.
+   Mobile: links collapse into a no-JS <details> menu, and the CTA moves to a fixed
+   full-width bar at the bottom of the screen (hidden on /get-started itself). */
 import Logo from './Logo.astro';
 
 interface Props {
@@ -9,6 +11,15 @@ interface Props {
 }
 
 const { variant = 'full' } = Astro.props;
+const onGetStarted = Astro.url.pathname.replace(/\/$/, '') === '/get-started';
+
+const links = [
+  { href: '/flight-plan', label: 'The System' },
+  { href: '/case-studies', label: 'Results' },
+  { href: '/services', label: 'Services' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/about', label: 'About' },
+];
 ---
 
 <header class="nav">
@@ -20,20 +31,46 @@ const { variant = 'full' } = Astro.props;
   {
     variant === 'full' && (
       <nav class="nav-links" aria-label="Primary">
-        <a href="/flight-plan">The System</a>
-        <a href="/case-studies">Results</a>
-        <a href="/services">Services</a>
-        <a href="/blog">Blog</a>
-        <a href="/about">About</a>
+        {links.map((l) => (
+          <a href={l.href}>{l.label}</a>
+        ))}
       </nav>
     )
   }
 
   <div class="nav-actions">
     <a href="tel:8883716365" class="nav-phone">(888) 371-6365</a>
-    <a href="/get-started" class="btn btn-primary btn-sm">Schedule onboarding</a>
+    <a href="/get-started" class="btn btn-primary btn-sm nav-cta">Schedule onboarding</a>
+
+    {
+      variant === 'full' && (
+        <details class="nav-menu">
+          <summary aria-label="Menu">
+            <span class="nav-menu-icon" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </span>
+          </summary>
+          <nav class="nav-menu-panel" aria-label="Mobile">
+            {links.map((l) => (
+              <a href={l.href}>{l.label}</a>
+            ))}
+            <a href="tel:8883716365" class="nav-menu-phone">Call (888) 371-6365</a>
+          </nav>
+        </details>
+      )
+    }
   </div>
 </header>
+
+{
+  !onGetStarted && (
+    <div class="nav-mobile-cta">
+      <a href="/get-started" class="btn btn-primary">Schedule onboarding</a>
+    </div>
+  )
+}
 
 <style>
   .nav {
@@ -96,19 +133,132 @@ const { variant = 'full' } = Astro.props;
     color: var(--ink);
   }
 
+  .nav-menu,
+  .nav-mobile-cta {
+    display: none;
+  }
+
+  .nav-menu summary {
+    list-style: none;
+    cursor: pointer;
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .nav-menu summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .nav-menu summary:focus-visible {
+    outline: 2px solid var(--orange);
+    outline-offset: 2px;
+  }
+
+  .nav-menu-icon {
+    display: grid;
+    gap: 4px;
+    width: 18px;
+  }
+
+  .nav-menu-icon span {
+    display: block;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--ink);
+    transition: transform 0.18s, opacity 0.18s;
+  }
+
+  .nav-menu[open] .nav-menu-icon span:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+  }
+
+  .nav-menu[open] .nav-menu-icon span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .nav-menu[open] .nav-menu-icon span:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+
+  .nav-menu-panel {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-bottom: 1px solid var(--hairline);
+    box-shadow: 0 18px 30px -18px rgba(0, 0, 0, 0.18);
+    padding: 8px var(--pad-x) 16px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .nav-menu-panel a {
+    padding: 14px 0;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--ink);
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .nav-menu-panel a:last-child {
+    border-bottom: none;
+  }
+
+  .nav-menu-panel .nav-menu-phone {
+    color: var(--orange);
+  }
+
   @media (max-width: 960px) {
     .nav-links {
       display: none;
     }
+
+    .nav-menu {
+      display: block;
+    }
   }
 
   @media (max-width: 640px) {
-    .nav-phone {
+    .nav {
+      padding: 10px var(--pad-x);
+    }
+
+    .nav-phone,
+    .nav-cta {
       display: none;
     }
 
     .nav-brand span {
-      font-size: 14px;
+      font-size: 15px;
+    }
+
+    .nav-mobile-cta {
+      display: block;
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 49;
+      padding: 10px var(--pad-x) calc(10px + env(safe-area-inset-bottom));
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(8px);
+      border-top: 1px solid var(--hairline);
+    }
+
+    .nav-mobile-cta .btn {
+      width: 100%;
+      padding: 15px 20px;
+      font-size: 16px;
+    }
+
+    :global(body:has(.nav-mobile-cta)) {
+      padding-bottom: calc(74px + env(safe-area-inset-bottom));
     }
   }
 </style>
