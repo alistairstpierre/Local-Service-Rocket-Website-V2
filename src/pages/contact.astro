@@ -1,0 +1,1238 @@
+---
+/* Contact page: message Local Service Rocket via EmailJS.
+   Owners can ask a question, request a free audit, or book a coaching session,
+   with optional brand/website screenshots. SDK loads only on submit. */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { absoluteUrl, breadcrumbList, graph, webPageNode } from '../data/schema';
+
+const title = 'Contact Local Service Rocket | Questions, Audit, or Coaching';
+const description =
+  'Message Local Service Rocket with a question, or ask for a free marketing audit or coaching session. Attach website or brand screenshots if you have them.';
+const pageUrl = absoluteUrl('/contact/');
+const jsonLd = graph([
+  webPageNode({ pageUrl, name: title, description }),
+  {
+    '@type': 'ContactPage',
+    '@id': `${pageUrl}#contact`,
+    url: pageUrl,
+    name: title,
+    description,
+    mainEntity: { '@id': 'https://localservicerocket.com/#business' },
+  },
+  breadcrumbList(pageUrl, [
+    { name: 'Home', path: '/' },
+    { name: 'Contact', path: '/contact' },
+  ]),
+]);
+
+const emailjs = {
+  // EmailJS browser public credentials (safe to expose; restrict domain in dashboard).
+  // Env vars override these when set (local .env / Vercel).
+  publicKey: import.meta.env.PUBLIC_EMAILJS_PUBLIC_KEY || 'goZgtci4tbrXpsrDj',
+  serviceId: import.meta.env.PUBLIC_EMAILJS_SERVICE_ID || 'service_ta1cze3',
+  templateId: import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID || 'template_qy8i9xk',
+};
+const emailjsReady = Boolean(emailjs.publicKey && emailjs.serviceId && emailjs.templateId);
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <main class="contact">
+    <section class="hero container">
+      <div class="crumbs">
+        <a href="/">Home</a>
+        <span>/</span>
+        <span class="current">Contact</span>
+      </div>
+      <div class="eyebrow">CONTACT</div>
+      <h1>Ask us anything. It costs nothing to find out.</h1>
+      <p class="lede">
+        You know something is off. The phone should ring more than it does, the ads feel expensive,
+        or the last agency left you guessing. Tell us what is going on and we will tell you what we
+        would do about it. Straight answer, in writing, from the person who would actually do the
+        work. No sales call. No pressure.
+      </p>
+    </section>
+
+    <section class="container panel">
+      <div class="copy">
+        <div class="eyebrow">PICK WHAT FITS</div>
+        <h2>Three ways we can help this week.</h2>
+        <ul class="bullets">
+          <li>
+            <strong>Ask a question.</strong> Local Services Ads, Google profile, hiring, websites,
+            what things cost. If you have wondered about it, someone else has asked us. You will get a
+            real answer, not a brochure.
+          </li>
+          <li>
+            <strong>Get a free audit.</strong> Send your website link and a few screenshots. We look
+            at your Google profile, your site, and your ads, then reply with what is working, what is
+            costing you calls, and the one fix we would make first. Free, and yours to keep whether
+            you hire us or not.
+          </li>
+          <li>
+            <strong>Book a coaching session.</strong> Stuck on one decision? LSA or Search, hire or
+            hold, where the next dollar goes. We will work it through with you so you can move.
+          </li>
+        </ul>
+        <div class="aside">
+          <div class="aside-label">WHY OWNERS WRITE TO US</div>
+          <p>
+            Six home service companies scaled. Over $10M in new revenue. Five stars on Google. Every
+            reply comes from Alistair, who runs the accounts himself. Read the
+            <a href="/case-studies">client results</a>, then send us yours.
+          </p>
+        </div>
+        <p class="alt-contact">
+          Prefer email? <a href="mailto:hello@localservicerocket.com">hello@localservicerocket.com</a>.
+          Already decided? <a href="/get-started">Schedule onboarding</a>.
+        </p>
+      </div>
+
+      <div class="form-wrap">
+        {
+          !emailjsReady && (
+            <p class="config-warn" role="status">
+              The form is not wired up yet. Email
+              <a href="mailto:hello@localservicerocket.com">hello@localservicerocket.com</a> and
+              attach your screenshots, or set the EmailJS keys (see README).
+            </p>
+          )
+        }
+        <form
+          id="contact-form"
+          class="form"
+          novalidate
+          data-emailjs-ready={emailjsReady ? '1' : '0'}
+          data-public-key={emailjs.publicKey}
+          data-service-id={emailjs.serviceId}
+          data-template-id={emailjs.templateId}
+        >
+          <div class="row two">
+            <label>
+              <span>Your name</span>
+              <input
+                type="text"
+                name="from_name"
+                autocomplete="name"
+                required
+                minlength="2"
+                maxlength="120"
+                aria-describedby="err-from_name"
+              />
+              <span class="field-error" id="err-from_name" role="alert" hidden></span>
+            </label>
+            <label>
+              <span>Email</span>
+              <input
+                type="email"
+                name="reply_to"
+                autocomplete="email"
+                required
+                maxlength="160"
+                aria-describedby="err-reply_to"
+              />
+              <span class="field-error" id="err-reply_to" role="alert" hidden></span>
+            </label>
+          </div>
+
+          <div class="row two">
+            <label>
+              <span>Phone <em>(optional)</em></span>
+              <input
+                type="tel"
+                name="phone"
+                autocomplete="tel"
+                maxlength="40"
+                inputmode="tel"
+                aria-describedby="err-phone"
+              />
+              <span class="field-error" id="err-phone" role="alert" hidden></span>
+            </label>
+            <label>
+              <span>Company <em>(optional)</em></span>
+              <input
+                type="text"
+                name="company"
+                autocomplete="organization"
+                maxlength="120"
+                aria-describedby="err-company"
+              />
+              <span class="field-error" id="err-company" role="alert" hidden></span>
+            </label>
+          </div>
+
+          <label class="row">
+            <span>Website URL <em>(optional)</em></span>
+            <input
+              type="url"
+              name="website"
+              inputmode="url"
+              placeholder="https://yoursite.com"
+              maxlength="200"
+              aria-describedby="err-website"
+            />
+            <span class="field-error" id="err-website" role="alert" hidden></span>
+          </label>
+
+          <label class="row">
+            <span>What do you need?</span>
+            <select name="reason" required aria-describedby="err-reason">
+              <option value="" disabled selected>Choose one</option>
+              <option value="Just a question">Just a question</option>
+              <option value="Free marketing audit">Free marketing audit</option>
+              <option value="Coaching session">Coaching session</option>
+              <option value="Something else">Something else</option>
+            </select>
+            <span class="field-error" id="err-reason" role="alert" hidden></span>
+          </label>
+
+          <label class="row">
+            <span>Your message</span>
+            <textarea
+              name="message"
+              rows="5"
+              required
+              minlength="20"
+              maxlength="4000"
+              placeholder="Tell us about your shop and what you want to know. The more detail, the better the answer."
+              aria-describedby="err-message"
+            ></textarea>
+            <span class="field-error" id="err-message" role="alert" hidden></span>
+          </label>
+
+          <div class="row file-block">
+            <span class="file-label">Brand or website screenshots <em>(optional)</em></span>
+            <p class="file-hint">
+              Logo, van wrap, homepage, Google profile, or ads screenshots. Up to 4 images or PDFs,
+              <strong>2&nbsp;MB total</strong>. Screen captures work best; photos from a phone are
+              usually too large.
+            </p>
+            <!--
+              EmailJS template: one Form File Attachment with parameter name "photos".
+              #photo-picker (no name) opens the chooser; the script merges picks into #photos,
+              which is the field EmailJS reads. The 2 MB cap matches the plan's attachment limit
+              (server returns 413 above it). See README.
+            -->
+            <input
+              id="photo-picker"
+              class="file-input"
+              type="file"
+              accept="image/*,.pdf,application/pdf"
+              multiple
+              tabindex="-1"
+              aria-hidden="true"
+            />
+            <input
+              id="photos"
+              class="file-input"
+              type="file"
+              name="photos"
+              multiple
+              tabindex="-1"
+              aria-hidden="true"
+            />
+            <button type="button" class="file-btn" id="file-picker">Add a screenshot</button>
+            <ul class="file-list" id="file-list" hidden></ul>
+            <span class="field-error" id="err-files" role="alert" hidden></span>
+          </div>
+
+          <!-- Honeypot: hidden from people, bots tend to fill it. Submissions with a value are dropped. -->
+          <div class="hp" aria-hidden="true">
+            <label for="contact-fax">Fax</label>
+            <input type="text" id="contact-fax" name="fax_number" tabindex="-1" autocomplete="off" />
+          </div>
+
+          <p class="privacy">
+            We reply to every message, usually within one business day. We never sell your info. See
+            the <a href="/privacy">privacy policy</a>.
+          </p>
+
+          <button
+            type="submit"
+            class="btn btn-primary btn-lg submit"
+            id="submit-btn"
+            disabled
+            aria-describedby="submit-hint"
+          >
+            Send it through
+          </button>
+          <p class="submit-hint" id="submit-hint">
+            Fill in your name, email, what you need, and a short message to send.
+          </p>
+          <p class="status" id="form-status" role="status" aria-live="polite"></p>
+        </form>
+
+        <div class="sent" id="form-sent" hidden tabindex="-1">
+          <div class="sent-mark" aria-hidden="true">✓</div>
+          <h2>Message sent.</h2>
+          <p>
+            Alistair reads every message himself and usually replies within one business day. Check
+            your inbox (and spam folder, just in case) for a reply from
+            <strong>hello@localservicerocket.com</strong>.
+          </p>
+          <p class="sent-next">
+            While you wait: see <a href="/case-studies">what other owners got</a> or read the
+            <a href="/blog/electrician-lsa-playbook">Local Services Ads playbook</a>.
+          </p>
+          <button type="button" class="sent-again" id="send-another">Send another message</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<script>
+  const form = document.getElementById('contact-form');
+  if (form instanceof HTMLFormElement) {
+    const statusEl = document.getElementById('form-status');
+    const submitBtn = document.getElementById('submit-btn');
+    const fileList = document.getElementById('file-list');
+    const picker = document.getElementById('file-picker');
+    const filesError = document.getElementById('err-files');
+    const submitHint = document.getElementById('submit-hint');
+    const sentPanel = document.getElementById('form-sent');
+    const sendAnother = document.getElementById('send-another');
+    const honeypot = form.elements.namedItem('fax_number');
+    const FALLBACK_EMAIL = 'hello@localservicerocket.com';
+    // Attachment cap. Mirrors the email provider's plan limit; requests above it are rejected (413).
+    const MAX_TOTAL_BYTES = 2 * 1024 * 1024;
+    const MAX_FILES = 4;
+    const ALLOWED_FILE =
+      /^(image\/|application\/pdf$)/i;
+    const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    const photoPicker = document.getElementById('photo-picker');
+    const photosInput = document.getElementById('photos');
+    /** Files the visitor has attached, in order. Mirrored into #photos before send. */
+    /** @type {File[]} */
+    let selectedFiles = [];
+    /** @type {Set<string>} */
+    const touched = new Set();
+    let sending = false;
+
+    /**
+     * Show a status line. Pass `withEmail: true` to append a clickable fallback email link.
+     */
+    function setStatus(text, kind, { withEmail = false } = {}) {
+      if (!statusEl) return;
+      statusEl.replaceChildren();
+      statusEl.dataset.kind = kind || '';
+      if (!text) return;
+      statusEl.append(document.createTextNode(text));
+      if (withEmail) {
+        statusEl.append(document.createTextNode(' Email us instead at '));
+        const link = document.createElement('a');
+        link.href = `mailto:${FALLBACK_EMAIL}`;
+        link.textContent = FALLBACK_EMAIL;
+        statusEl.append(link, document.createTextNode('.'));
+      }
+    }
+
+    function attachedFiles() {
+      return selectedFiles;
+    }
+
+    /** Push selectedFiles into the named #photos input so sendForm picks them all up. */
+    function syncPhotosInput() {
+      if (!(photosInput instanceof HTMLInputElement)) return;
+      try {
+        const dt = new DataTransfer();
+        for (const file of selectedFiles) dt.items.add(file);
+        photosInput.files = dt.files;
+      } catch {
+        // Very old browsers: fall back to whatever the picker last chose.
+        if (photoPicker instanceof HTMLInputElement && photoPicker.files) {
+          photosInput.files = photoPicker.files;
+        }
+      }
+    }
+
+    function isAllowedFile(file) {
+      return ALLOWED_FILE.test(file.type) || /\.(pdf|png|jpe?g|gif|webp|heic|svg)$/i.test(file.name);
+    }
+
+    function totalBytes() {
+      return attachedFiles().reduce((sum, file) => sum + file.size, 0);
+    }
+
+    function formatMb(bytes) {
+      return (bytes / (1024 * 1024)).toFixed(2);
+    }
+
+    function setFieldError(field, message) {
+      const name = field.getAttribute('name');
+      const err = name ? document.getElementById(`err-${name}`) : null;
+      if (message) {
+        field.setAttribute('aria-invalid', 'true');
+        field.classList.add('is-invalid');
+        if (err) {
+          err.textContent = message;
+          err.hidden = false;
+        }
+      } else {
+        field.removeAttribute('aria-invalid');
+        field.classList.remove('is-invalid');
+        if (err) {
+          err.textContent = '';
+          err.hidden = true;
+        }
+      }
+    }
+
+    function setFilesError(message) {
+      if (!(filesError instanceof HTMLElement)) return;
+      if (message) {
+        filesError.textContent = message;
+        filesError.hidden = false;
+      } else {
+        filesError.textContent = '';
+        filesError.hidden = true;
+      }
+    }
+
+    function normalizeWebsite(value) {
+      const v = value.trim();
+      if (!v) return '';
+      if (/^https?:\/\//i.test(v)) return v;
+      return `https://${v}`;
+    }
+
+    function isValidWebsite(value) {
+      try {
+        const url = new URL(normalizeWebsite(value));
+        const isHttp = url.protocol === 'http:' || url.protocol === 'https:';
+        const hasDomain = /^[a-z0-9-]+(\.[a-z0-9-]+)+$/i.test(url.hostname);
+        return isHttp && hasDomain;
+      } catch {
+        return false;
+      }
+    }
+
+    function fieldErrorMessage(field) {
+      if (!(field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement || field instanceof HTMLSelectElement)) {
+        return '';
+      }
+      const name = field.name;
+      const value = field.value.trim();
+
+      if (name === 'from_name') {
+        if (!value) return 'Enter your name.';
+        if (value.length < 2) return 'Name needs at least 2 characters.';
+        return '';
+      }
+      if (name === 'reply_to') {
+        if (!value) return 'Enter your email.';
+        if (!EMAIL_RE.test(value)) return 'Enter a valid email address.';
+        return '';
+      }
+      if (name === 'phone') {
+        if (!value) return '';
+        const digits = value.replace(/\D/g, '');
+        if (digits.length < 7 || digits.length > 15) {
+          return 'Enter a valid phone number, or leave this blank.';
+        }
+        return '';
+      }
+      if (name === 'company') {
+        return '';
+      }
+      if (name === 'website') {
+        if (!value) return '';
+        if (!isValidWebsite(value)) return 'Enter a full website URL, like https://yoursite.com.';
+        return '';
+      }
+      if (name === 'reason') {
+        if (!value) return 'Choose what you need.';
+        return '';
+      }
+      if (name === 'message') {
+        if (!value) return 'Write a short message.';
+        if (value.length < 20) return 'Give a bit more detail (at least 20 characters).';
+        return '';
+      }
+      return '';
+    }
+
+    function filesErrorMessage() {
+      const files = attachedFiles();
+      for (const file of files) {
+        if (!isAllowedFile(file)) {
+          return `"${file.name}" must be an image or PDF.`;
+        }
+      }
+      if (totalBytes() > MAX_TOTAL_BYTES) {
+        return `Attachments add up to ${formatMb(totalBytes())} MB. Keep them under 2 MB total.`;
+      }
+      return '';
+    }
+
+    function validateField(field, { show } = { show: false }) {
+      const message = fieldErrorMessage(field);
+      if (show || touched.has(field.name)) setFieldError(field, message);
+      return !message;
+    }
+
+    // Only writes to the DOM when asked; the picker/remove handlers set their own messages
+    // (e.g. "file skipped") that a passive re-check must not wipe.
+    function validateFiles({ show } = { show: false }) {
+      const message = filesErrorMessage();
+      if (show) setFilesError(message);
+      return !message;
+    }
+
+    function formIsValid() {
+      const fields = form.querySelectorAll('input:not([type="file"]), textarea, select');
+      let ok = true;
+      for (const field of fields) {
+        if (!validateField(/** @type {HTMLElement} */ (field), { show: false })) ok = false;
+      }
+      if (!validateFiles({ show: false })) ok = false;
+      return ok;
+    }
+
+    function updateSubmitState() {
+      if (!(submitBtn instanceof HTMLButtonElement)) return;
+      if (sending) {
+        submitBtn.disabled = true;
+        if (submitHint) submitHint.hidden = true;
+        return;
+      }
+      const ready = form.dataset.emailjsReady === '1';
+      const valid = formIsValid();
+      submitBtn.disabled = !(ready && valid);
+      if (submitHint) submitHint.hidden = valid || !ready;
+    }
+
+    function updatePickerState() {
+      if (!(picker instanceof HTMLButtonElement)) return;
+      const count = attachedFiles().length;
+      picker.disabled = count >= MAX_FILES;
+      picker.textContent =
+        count >= MAX_FILES
+          ? `${MAX_FILES} of ${MAX_FILES} attached`
+          : count === 0
+            ? 'Add a screenshot'
+            : 'Add another';
+    }
+
+    function refreshFileList() {
+      if (!(fileList instanceof HTMLUListElement)) return;
+      const files = attachedFiles();
+      fileList.replaceChildren();
+      updatePickerState();
+      syncPhotosInput();
+      if (!files.length) {
+        fileList.hidden = true;
+        return;
+      }
+      fileList.hidden = false;
+      files.forEach((file, index) => {
+        const li = document.createElement('li');
+        const name = document.createElement('span');
+        name.className = 'file-name';
+        name.textContent = file.name;
+        const size = document.createElement('span');
+        size.className = 'file-size';
+        size.textContent = `${formatMb(file.size)} MB`;
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.className = 'file-remove';
+        remove.setAttribute('aria-label', `Remove ${file.name}`);
+        remove.textContent = 'Remove';
+        remove.addEventListener('click', () => {
+          selectedFiles = selectedFiles.filter((_, i) => i !== index);
+          touched.add('files');
+          setFilesError(filesErrorMessage());
+          refreshFileList();
+          updateSubmitState();
+        });
+        li.append(name, size, remove);
+        fileList.append(li);
+      });
+      const total = totalBytes();
+      const totalLi = document.createElement('li');
+      totalLi.className = 'file-total';
+      totalLi.textContent = `${formatMb(total)} MB of 2 MB used`;
+      if (total > MAX_TOTAL_BYTES) totalLi.dataset.over = '1';
+      fileList.append(totalLi);
+    }
+
+    picker?.addEventListener('click', () => {
+      if (attachedFiles().length >= MAX_FILES) {
+        touched.add('files');
+        setFilesError(`You can attach up to ${MAX_FILES} files. Remove one to add another.`);
+        updateSubmitState();
+        return;
+      }
+      if (photoPicker instanceof HTMLInputElement) {
+        photoPicker.value = '';
+        photoPicker.click();
+      }
+    });
+
+    photoPicker?.addEventListener('change', () => {
+      touched.add('files');
+      if (!(photoPicker instanceof HTMLInputElement) || !photoPicker.files?.length) {
+        refreshFileList();
+        validateFiles({ show: true });
+        updateSubmitState();
+        return;
+      }
+
+      const incoming = Array.from(photoPicker.files);
+      const problems = [];
+      const overCap = [];
+      let running = totalBytes();
+
+      for (const file of incoming) {
+        if (selectedFiles.length >= MAX_FILES) {
+          overCap.push(`"${file.name}"`);
+          continue;
+        }
+        if (!isAllowedFile(file)) {
+          problems.push(`"${file.name}" must be an image or PDF.`);
+          continue;
+        }
+        const duplicate = selectedFiles.some(
+          (existing) => existing.name === file.name && existing.size === file.size,
+        );
+        if (duplicate) {
+          problems.push(`"${file.name}" is already attached.`);
+          continue;
+        }
+        if (running + file.size > MAX_TOTAL_BYTES) {
+          const remaining = Math.max(0, MAX_TOTAL_BYTES - running);
+          problems.push(
+            `"${file.name}" is ${formatMb(file.size)} MB but only ${formatMb(remaining)} MB of space is left. Try a screenshot or a smaller version.`,
+          );
+          continue;
+        }
+        selectedFiles.push(file);
+        running += file.size;
+      }
+
+      if (overCap.length) {
+        problems.push(
+          `Only ${MAX_FILES} files can be attached, so ${overCap.join(', ')} ${overCap.length === 1 ? 'was' : 'were'} skipped.`,
+        );
+      }
+
+      setFilesError(problems.join(' '));
+      if (!problems.length) setStatus('');
+      refreshFileList();
+      updateSubmitState();
+    });
+
+    form.addEventListener('input', (event) => {
+      const target = event.target;
+      if (
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        target instanceof HTMLSelectElement
+      ) {
+        if (target.type === 'file') return;
+        validateField(target, { show: touched.has(target.name) });
+        updateSubmitState();
+      }
+    });
+
+    form.addEventListener('change', (event) => {
+      const target = event.target;
+      if (target instanceof HTMLSelectElement) {
+        touched.add(target.name);
+        validateField(target, { show: true });
+        updateSubmitState();
+      }
+    });
+
+    form.addEventListener('blur', (event) => {
+      const target = event.target;
+      if (
+        !(
+          target instanceof HTMLInputElement ||
+          target instanceof HTMLTextAreaElement ||
+          target instanceof HTMLSelectElement
+        )
+      ) {
+        return;
+      }
+      if (target.type === 'file') return;
+      touched.add(target.name);
+      if (target.name === 'website' && target.value.trim()) {
+        target.value = normalizeWebsite(target.value);
+      }
+      validateField(target, { show: true });
+      updateSubmitState();
+    }, true);
+
+    async function loadEmailJs() {
+      if (window.emailjs) return window.emailjs;
+      await new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
+        script.async = true;
+        script.onload = () => resolve();
+        script.onerror = () => reject(new Error('Could not load EmailJS'));
+        document.head.appendChild(script);
+      });
+      return window.emailjs;
+    }
+
+    function showSent() {
+      form.hidden = true;
+      if (sentPanel instanceof HTMLElement) {
+        sentPanel.hidden = false;
+        sentPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        sentPanel.focus({ preventScroll: true });
+      }
+    }
+
+    function resetForm(fields) {
+      form.reset();
+      selectedFiles = [];
+      touched.clear();
+      for (const field of fields) {
+        setFieldError(/** @type {HTMLElement} */ (field), '');
+      }
+      setFilesError('');
+      setStatus('');
+      refreshFileList();
+      updateSubmitState();
+    }
+
+    sendAnother?.addEventListener('click', () => {
+      if (sentPanel instanceof HTMLElement) sentPanel.hidden = true;
+      form.hidden = false;
+      const first = form.querySelector('input[name="from_name"]');
+      if (first instanceof HTMLElement) first.focus();
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (form.dataset.emailjsReady !== '1') {
+        setStatus('The form is offline right now.', 'error', { withEmail: true });
+        return;
+      }
+
+      const fields = form.querySelectorAll('input:not([type="file"]), textarea, select');
+      let ok = true;
+      for (const field of fields) {
+        touched.add(/** @type {HTMLInputElement} */ (field).name);
+        if (!validateField(/** @type {HTMLElement} */ (field), { show: true })) ok = false;
+      }
+      touched.add('files');
+      if (!validateFiles({ show: true })) ok = false;
+      if (!ok) {
+        setStatus('Fix the highlighted fields, then try again.', 'error');
+        const firstInvalid = form.querySelector('.is-invalid, #err-files:not([hidden])');
+        if (firstInvalid instanceof HTMLElement) {
+          const focusTarget =
+            firstInvalid.classList.contains('is-invalid')
+              ? firstInvalid
+              : form.querySelector('input[type="file"]');
+          if (focusTarget instanceof HTMLElement) focusTarget.focus();
+        }
+        updateSubmitState();
+        return;
+      }
+
+      const website = form.elements.namedItem('website');
+      if (website instanceof HTMLInputElement && website.value.trim()) {
+        website.value = normalizeWebsite(website.value);
+      }
+
+      // Bots fill the hidden field; people never see it. Pretend it worked and drop it.
+      if (honeypot instanceof HTMLInputElement && honeypot.value.trim()) {
+        resetForm(fields);
+        showSent();
+        return;
+      }
+
+      const publicKey = form.dataset.publicKey || '';
+      const serviceId = form.dataset.serviceId || '';
+      const templateId = form.dataset.templateId || '';
+
+      sending = true;
+      updateSubmitState();
+      if (submitBtn instanceof HTMLButtonElement) {
+        submitBtn.textContent = 'Sending...';
+      }
+      setStatus('Sending your message...');
+
+      try {
+        const emailjs = await loadEmailJs();
+        emailjs.init({ publicKey });
+        await emailjs.sendForm(serviceId, templateId, form);
+        resetForm(fields);
+        showSent();
+      } catch (err) {
+        console.error(err);
+        const status = err && typeof err === 'object' && 'status' in err ? Number(err.status) : 0;
+        if (status === 413) {
+          touched.add('files');
+          setFilesError('These files are too large to send together. Remove one or use a smaller version.');
+          setStatus(
+            'Your attachments are too large. Remove one and try again, or send without them and we will ask for screenshots by reply.',
+            'error',
+          );
+        } else if (status === 429) {
+          setStatus('That was quick. Give it a few seconds and try again.', 'error');
+        } else {
+          setStatus('Something went wrong sending that.', 'error', { withEmail: true });
+        }
+      } finally {
+        sending = false;
+        if (submitBtn instanceof HTMLButtonElement) {
+          submitBtn.textContent = 'Send it through';
+        }
+        updateSubmitState();
+      }
+    });
+
+    refreshFileList();
+    updateSubmitState();
+  }
+</script>
+
+<style>
+  .contact {
+    padding-bottom: 72px;
+  }
+
+  .hero {
+    padding-top: 48px;
+    padding-bottom: 28px;
+  }
+
+  .crumbs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--muted-3);
+    flex-wrap: wrap;
+  }
+
+  .crumbs a {
+    color: var(--muted-3);
+  }
+
+  .current {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .eyebrow {
+    margin-top: 22px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--orange);
+  }
+
+  h1 {
+    margin-top: 12px;
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.12;
+    text-wrap: balance;
+    max-width: 18ch;
+  }
+
+  .lede {
+    margin-top: 16px;
+    font-size: 17.5px;
+    line-height: 1.65;
+    color: var(--body);
+    max-width: 58ch;
+  }
+
+  .panel {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    gap: 40px 48px;
+    align-items: start;
+    margin-top: 12px;
+  }
+
+  .copy h2 {
+    margin-top: 10px;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    max-width: 18ch;
+  }
+
+  .bullets {
+    margin: 18px 0 0;
+    padding-left: 1.15em;
+    color: var(--body);
+    font-size: 15.5px;
+    line-height: 1.65;
+  }
+
+  .bullets li + li {
+    margin-top: 10px;
+  }
+
+  .aside {
+    margin-top: 28px;
+    padding: 18px 20px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    background: var(--section-bg);
+  }
+
+  .aside-label {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    color: var(--muted-3);
+  }
+
+  .aside p {
+    margin-top: 8px;
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--body);
+  }
+
+  .alt-contact {
+    margin-top: 16px;
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--muted);
+  }
+
+  .form-wrap {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-panel);
+    background: #fff;
+    padding: 28px 28px 24px;
+    box-shadow: 0 12px 40px rgba(26, 26, 26, 0.04);
+  }
+
+  .config-warn {
+    margin-bottom: 16px;
+    padding: 12px 14px;
+    border-radius: var(--radius-card);
+    background: var(--orange-tint);
+    border: 1px solid rgba(232, 89, 12, 0.25);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .form[hidden],
+  .sent[hidden],
+  .submit-hint[hidden],
+  .field-error[hidden],
+  .file-list[hidden] {
+    display: none;
+  }
+
+  .row.two {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  label,
+  .file-block {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  label > span:not(.field-error),
+  .file-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  label em,
+  .file-label em {
+    font-style: normal;
+    font-weight: 500;
+    color: var(--muted-3);
+  }
+
+  input,
+  textarea,
+  select {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font: inherit;
+    font-size: 15px;
+    color: var(--ink);
+    background: #fff;
+    transition: border-color 0.15s ease;
+  }
+
+  input:focus,
+  textarea:focus,
+  select:focus {
+    outline: none;
+    border-color: var(--orange);
+  }
+
+  input.is-invalid,
+  textarea.is-invalid,
+  select.is-invalid {
+    border-color: #b42318;
+  }
+
+  .field-error {
+    font-size: 12.5px;
+    line-height: 1.4;
+    color: #b42318;
+  }
+
+  .submit:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  .file-hint {
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--muted);
+  }
+
+  .file-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
+
+  .file-btn {
+    align-self: flex-start;
+    margin-top: 4px;
+    border: 1px dashed var(--border);
+    background: var(--section-bg);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .file-btn:hover:not(:disabled) {
+    border-color: var(--orange);
+    color: var(--orange);
+  }
+
+  .file-btn:disabled {
+    cursor: default;
+    color: var(--muted-3);
+    border-style: solid;
+  }
+
+  .file-list {
+    margin: 8px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 13.5px;
+    color: var(--muted);
+  }
+
+  /* List rows are created in JS, so they lack Astro's scope class: use :global(). */
+  .file-list :global(li) {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .file-list :global(.file-name) {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--ink);
+  }
+
+  .file-list :global(.file-size) {
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .file-list :global(.file-remove) {
+    flex-shrink: 0;
+    border: 0;
+    background: none;
+    padding: 2px 4px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .file-list :global(.file-remove:hover) {
+    color: #b42318;
+  }
+
+  .file-list :global(.file-total) {
+    border-bottom: 0;
+    padding-bottom: 0;
+    font-weight: 600;
+    color: var(--body);
+  }
+
+  .file-list :global(.file-total[data-over='1']) {
+    color: #b42318;
+  }
+
+  .hp {
+    position: absolute;
+    left: -10000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .submit-hint {
+    margin-top: -6px;
+    text-align: center;
+    font-size: 12.5px;
+    line-height: 1.45;
+    color: var(--muted-2);
+  }
+
+  .sent {
+    text-align: center;
+    padding: 24px 8px 8px;
+    outline: none;
+  }
+
+  .sent-mark {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 16px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #e7f5ec;
+    color: #1b7a3d;
+    font-size: 24px;
+    font-weight: 800;
+  }
+
+  .sent h2 {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .sent p {
+    margin-top: 12px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--body);
+  }
+
+  .sent-next {
+    color: var(--muted);
+  }
+
+  .sent-again {
+    margin-top: 18px;
+    border: 0;
+    background: none;
+    padding: 4px;
+    font: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .sent-again:hover {
+    color: var(--ink);
+  }
+
+  .privacy {
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--muted-2);
+  }
+
+  .submit {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .status {
+    min-height: 1.4em;
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--muted);
+  }
+
+  .status :global(a) {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .status[data-kind='ok'] {
+    color: #1b7a3d;
+    font-weight: 600;
+  }
+
+  .status[data-kind='error'] {
+    color: #b42318;
+    font-weight: 600;
+  }
+
+  @media (max-width: 900px) {
+    .panel {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+
+    .form-wrap {
+      padding: 22px 18px 20px;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .row.two {
+      grid-template-columns: 1fr;
+    }
+
+    h1 {
+      max-width: none;
+    }
+  }
+</style>

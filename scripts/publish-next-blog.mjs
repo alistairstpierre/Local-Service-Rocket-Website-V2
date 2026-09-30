@@ -3,7 +3,7 @@
  *
  * Used by:
  *   - `npm run blog:publish-next` (local)
- *   - `.github/workflows/publish-blog.yml` (weekly schedule + manual dispatch)
+ *   - `.github/workflows/publish-blog.yml` (daily schedule + manual dispatch)
  *
  * Flow: pick earliest ready item with publishAfter <= today → copy .astro into
  * src/pages/blog/ → prepend card to src/data/blog-posts.js → mark queue item published.

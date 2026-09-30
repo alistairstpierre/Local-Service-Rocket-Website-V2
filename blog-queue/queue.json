@@ -1,5 +1,5 @@
 {
-  "timezoneNote": "Cron is Sunday 20:00 UTC = Monday 08:00 Pacific/Auckland (NZST, UTC+12). Live posts are backdated weekly Mondays through 2026-09-08.",
+  "timezoneNote": "Cron is daily 20:00 UTC = 08:00 Pacific/Auckland (NZST, UTC+12). Ships one ready post with publishAfter <= today. Live posts were backdated weekly through 2026-09-08.",
   "items": [
     {
       "slug": "honest-hanks-stack-small-wins",
@@ -8,8 +8,9 @@
       "dek": "Rewired referral, ~$500 LSA setup first, $25k to $80k months and a third van, without a bet-the-shop invoice.",
       "date": "September 15, 2026",
       "publishAfter": "2026-09-15",
-      "status": "ready",
-      "seo": "electrician marketing cost / LSA setup for electricians"
+      "status": "published",
+      "seo": "electrician marketing cost / LSA setup for electricians",
+      "publishedOn": "2026-09-20"
     },
     {
       "slug": "orbit-fees-risk-not-hours",
@@ -18,8 +19,9 @@
       "dek": "Orbit is ~$1.5k/mo + 20% of ad spend so the calendar and the trucks don't collapse when budgets scale. Rewired's plateau made the point.",
       "date": "September 22, 2026",
       "publishAfter": "2026-09-22",
-      "status": "ready",
-      "seo": "Google ads management cost home service"
+      "status": "published",
+      "seo": "Google ads management cost home service",
+      "publishedOn": "2026-09-25"
     },
     {
       "slug": "max-conversions-junk-jobs",
@@ -28,8 +30,9 @@
       "dek": "Google's recommended bid strategy optimises for easy conversions, not profitable jobs. How multi-service trades get a calendar full of the wrong work.",
       "date": "September 29, 2026",
       "publishAfter": "2026-09-29",
-      "status": "ready",
-      "seo": "Google Ads Max Conversions electrician"
+      "status": "published",
+      "seo": "Google Ads Max Conversions electrician",
+      "publishedOn": "2026-09-29"
     },
     {
       "slug": "review-velocity-beats-count",

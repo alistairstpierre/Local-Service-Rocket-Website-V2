@@ -1,14 +1,15 @@
-# Publish next queued blog post every week.
+# Publish next due queued blog post (daily check).
 # No PAT / Deploy Hook needed: GitHub's schedule + GITHUB_TOKEN commits the
 # post; Vercel's normal Git integration redeploys main automatically.
-# Idempotent: if nothing is due, the script no-ops and exits 0.
+# Idempotent: if nothing is due (publishAfter > today), the script no-ops.
 name: Publish next blog post
 
 on:
   workflow_dispatch:
   schedule:
-    # Sunday 20:00 UTC = Monday 08:00 New Zealand (UTC+12)
-    - cron: '0 20 * * 0'
+    # Every day 20:00 UTC = 08:00 New Zealand (UTC+12). Ships at most one
+    # ready post whose publishAfter <= today.
+    - cron: '0 20 * * *'
 
 permissions:
   contents: write

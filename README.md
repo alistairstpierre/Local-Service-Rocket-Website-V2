@@ -38,11 +38,11 @@ Manrope is self-hosted from `public/fonts/`, so no Google Fonts request is made.
 3. Build command: `npm run build` · Output: `dist`
 4. Deploy. No adapter needed — `output: 'static'` in `astro.config.mjs`.
 
-### Weekly blog cron
+### Daily blog cron
 
-One queued post ships each week (Sunday 20:00 UTC / Monday 08:00 NZ) via the GitHub
-Action `.github/workflows/publish-blog.yml`. It commits the next ready draft from
-`blog-queue/`; Vercel redeploys from `main` automatically.
+The GitHub Action `.github/workflows/publish-blog.yml` checks daily (20:00 UTC /
+08:00 NZ) and ships at most one ready draft whose `publishAfter` date has arrived.
+It commits from `blog-queue/`; Vercel redeploys from `main` automatically.
 
 **No PAT, Deploy Hook, or Vercel Cron needed** — a Deploy Hook only rebuilds existing
 code; it cannot move a queued post into the repo. The Action uses GitHub’s built-in
@@ -56,6 +56,26 @@ npm run blog:publish-dry
 
 Details: `blog-queue/README.md`.
 
+### Contact form (EmailJS)
+
+`/contact` sends the free-audit form through EmailJS. Keys live in `.env`
+(see `.env.example`). On Vercel, add the same `PUBLIC_EMAILJS_*` vars.
+
+| Variable | Purpose |
+| --- | --- |
+| `PUBLIC_EMAILJS_SERVICE_ID` | EmailJS service |
+| `PUBLIC_EMAILJS_TEMPLATE_ID` | Email template |
+| `PUBLIC_EMAILJS_PUBLIC_KEY` | EmailJS public key |
+
+In the EmailJS template, map fields `from_name`, `reply_to`, `phone`, `company`,
+`website`, `reason`, `message`. For screenshots: Attachments → one Form File
+Attachment with parameter name `photos` (the form sends up to 4 files under that
+one name, 2 MB combined, which is the Professional plan cap). Without that
+attachment configured, EmailJS treats the file as a text variable and rejects
+anything over 50 KB with a 413. Set Reply-To to `{{reply_to}}` and restrict
+allowed domains in the EmailJS dashboard so the public key only works on your
+site.
+
 ## Pages
 
 | Route | Notes |
@@ -65,10 +85,11 @@ Details: `blog-queue/README.md`.
 | `/about` | Alistair + agency story (from brain dumps) |
 | `/flight-plan` | The System: Pre-flight / Liftoff / Orbit stages |
 | `/get-started` | Get Started funnel |
+| `/contact` | Contact form: question, free audit, or coaching (EmailJS + screenshots) |
 | `/services` | Services overview |
 | `/services/local-seo` | Local SEO & Reviews |
 | `/services/paid-ads` | Paid Ads & LSAs |
-| `/services/websites` | Websites That Convert |
+| `/services/websites` | Websites That Get Calls |
 | `/services/hiring` | Hiring & Recruiting |
 | `/services/branding` | Branding |
 | `/services/tracking` | Tracking & Reporting |
@@ -80,6 +101,7 @@ Details: `blog-queue/README.md`.
 | `/case-studies/hooked-up` | Hooked Up Electric case study |
 | `/blog` | Blog index |
 | `/blog/rewired-big-agency-rebuild` | Rewired big-agency rebuild story |
+| `/blog/electrician-lsa-playbook` | Ultimate electrician LSA playbook (setup, score, 2026 Ads migration) |
 | `/blog/electrician-local-services-ads` | Hooked Up / LSA for electricians |
 | `/blog/hiring-electricians-facebook-vs-indeed` | Facebook hiring vs Indeed |
 | `/blog/bad-vs-good-agency` | Bad vs good agencies |
@@ -97,6 +119,7 @@ Details: `blog-queue/README.md`.
 ├── Claude Design Files/          # Design handoff (reference only)
 ├── Found By Friday Brain Dumps/  # Source transcripts for content
 ├── assets-src/                   # Raster ORIGINALS (not deployed) - input to npm run images
+│                                 # Includes lsa-*.png screenshots for /blog/electrician-lsa-playbook
 ├── content/
 │   ├── CONTENT-GAPS-AND-INTERVIEW.md  # Gaps checklist + dump prompts
 │   └── VSL-SCRIPT.md             # As-recorded transcript + timecoded graphics brief for the /get-started video
@@ -105,7 +128,7 @@ Details: `blog-queue/README.md`.
 │   ├── queue.json                 # Ordered schedule (publishAfter + status)
 │   └── posts/                    # .astro drafts waiting to go live
 ├── .github/workflows/
-│   └── publish-blog.yml          # Weekly schedule: publish-next-blog.mjs → commit → Vercel rebuilds
+│   └── publish-blog.yml          # Daily schedule: publish-next-blog.mjs → commit → Vercel rebuilds
 ├── docs/
 │   ├── BLOG-FRAMEWORK.md         # Editorial standard, Evidence Bank, trade-keyword SEO + topic queue
 │   ├── KEYWORD-RESEARCH-ELECTRICIANS.md  # Planner volumes + primary organic/paid targets for electrician domination
@@ -149,6 +172,7 @@ Details: `blog-queue/README.md`.
 │   │   ├── about.astro
 │   │   ├── flight-plan.astro     # Stage layout w/ tilted photo cards (design: The Flight Plan.dc.html)
 │   │   ├── get-started.astro
+│   │   ├── contact.astro         # Free audit form → EmailJS (PUBLIC_EMAILJS_*)
 │   │   ├── privacy.astro
 │   │   ├── terms.astro
 │   │   ├── for/
