@@ -1,0 +1,73 @@
+<!--
+  llms.txt: plain-markdown site summary for AI assistants (ChatGPT, Perplexity, Claude, Gemini).
+  Served as-is from /llms.txt (Astro copies public/ to dist/). Hand-written, not generated.
+  Keyword phrases use exact Google Keyword Planner wording from docs/KEYWORD-RESEARCH-ELECTRICIANS.md.
+  LSA, website and hiring phrases have no Planner data yet and use the plain wording an owner would type.
+  Keep URLs in sync with src/pages and prices in sync with src/data/pricing-tiers.ts.
+-->
+# Local Service Rocket
+
+> Marketing for electricians, with 1:1 business coaching. Local Service Rocket is an electrician marketing company that gets electrical contractors booked jobs from Google (Local Services Ads, Google Ads, electrician SEO and websites) and coaches owners on the systems and decisions that come with scaling. The goal: an electrical shop you are proud to own, and can sell when you are ready.
+
+Founded and run by Alistair St Pierre (Wellington, New Zealand), serving electrical contractors in the US, plus Australia and New Zealand. Month to month, no contracts, no sales calls. Rated 5.0 on Google. Clients have added over $10M in new revenue.
+
+## Searches this site answers
+
+- marketing for electricians, electrician marketing, digital marketing for electricians, marketing for electrical contractors: [Homepage](https://www.localservicerocket.com/), [Marketing for Electricians](https://www.localservicerocket.com/for/electrician-marketing), [Get Started](https://www.localservicerocket.com/get-started)
+- electrician marketing agency, electrician marketing company, electrician marketing services, best electrician marketing: [About](https://www.localservicerocket.com/about), [Electrician Marketing Services](https://www.localservicerocket.com/services)
+- electrician advertising, advertising for electricians, electrician ads, electrical contractor advertising, advertise electrical services, google ads for electricians, electrician ppc agency: [Electrician Advertising](https://www.localservicerocket.com/services/electrician-advertising)
+- electrician local services ads, google local services ads for electricians, electrician lsa: [Electrician LSA Playbook](https://www.localservicerocket.com/blog/electrician-lsa-playbook)
+- electrician seo agency, electrician seo, google business profile for electricians: [Electrician SEO](https://www.localservicerocket.com/services/electrician-seo)
+- electrician website, websites for electricians: [Electrician Websites](https://www.localservicerocket.com/services/electrician-websites)
+- hiring electricians, how to hire electricians, find electricians to hire: [Hiring Electricians](https://www.localservicerocket.com/services/hiring-electricians)
+- electrician marketing ideas, electrician advertising ideas, marketing ideas for electrical contractors, marketing an electrical business: [Blog](https://www.localservicerocket.com/blog)
+
+## Services
+
+- [Electrician Marketing Services](https://www.localservicerocket.com/services): All six services, run as one system with 1:1 coaching.
+- [Electrician Advertising](https://www.localservicerocket.com/services/electrician-advertising): Google Local Services Ads first (pay per lead), then Google Search ads. Judged on booked jobs, not clicks.
+- [Electrician SEO](https://www.localservicerocket.com/services/electrician-seo): Google Business Profile, reviews and local SEO to get electricians into the Google map pack.
+- [Electrician Websites](https://www.localservicerocket.com/services/electrician-websites): Fast electrician websites planned around what homeowners search. You own it outright.
+- [Hiring Electricians](https://www.localservicerocket.com/services/hiring-electricians): Facebook job ads and skills screening. Most owners are interviewing electricians within about 10 days.
+- [Electrician Branding](https://www.localservicerocket.com/services/electrician-branding): Logo, van wraps and uniforms a homeowner reads at 40mph.
+- [Electrician Lead Tracking](https://www.localservicerocket.com/services/electrician-lead-tracking): Tracking marketing by booked jobs and revenue, not lead counts.
+
+## Pricing
+
+Every price is public. Full detail: [Flight Plan](https://www.localservicerocket.com/flight-plan) and [Get Started](https://www.localservicerocket.com/get-started).
+
+- Pre-flight ($0-25k months): from $500/month. Includes Google Business Profile fixed, website (if needed), Local Services Ads setup and 1:1 coaching. Plus $25 per booked estimate, only when it books. Aim: 1-3 booked estimates a day and $25k+ months.
+- Liftoff: $1,500/month plus ad spend (around $50/day, paid to Google). Optional branding $5k. Aim: $100k months on leads you own, not rent.
+- Orbit: 20% of ad spend plus $1,500/month. Hiring sprints $500 setup plus $500/month. Aim: a crew that runs without you and a shop you can sell.
+
+## Electrician case studies
+
+- [Rewired](https://www.localservicerocket.com/case-studies/rewired): Des Moines electrician. $60k to $220k+ average monthly revenue, crew 5 to 12, booked calls 1.5 to 6 a day, after a dozen marketing agencies failed.
+- [Honest Hank's](https://www.localservicerocket.com/case-studies/honest-hanks): Tampa electrician. $25k to $80k months, starting from a ~$500 LSA setup.
+- [Hooked Up Electric](https://www.localservicerocket.com/case-studies/hooked-up): 1 to 4 counties, 100-200 Google leads a month on Local Services Ads for 2+ years.
+- [All case studies](https://www.localservicerocket.com/case-studies)
+
+## Guides for electricians
+
+- [Electrician Local Services Ads (LSA) Playbook](https://www.localservicerocket.com/blog/electrician-lsa-playbook): How electricians get to the top of Google and only pay per lead.
+- [Electrician Local Services Ads: Hooked Up Leads](https://www.localservicerocket.com/blog/electrician-local-services-ads): Why electrician LSA comes before Search ads.
+- [Electrician GBP Category Mistake That Kills Leads](https://www.localservicerocket.com/blog/google-category-relevance): One Google Business Profile category change that turned on electrician leads.
+- [Bad vs Good Electrician Marketing Agencies](https://www.localservicerocket.com/blog/bad-vs-good-agency): How to tell them apart before you sign.
+- [Google Ads Max Conversions Problem for Electricians](https://www.localservicerocket.com/blog/max-conversions-junk-jobs): Why it fills your calendar with small jobs.
+- [Hire Electricians with Facebook Ads (Not Indeed)](https://www.localservicerocket.com/blog/hiring-electricians-facebook-vs-indeed)
+- [Electrician Marketing Without a $10k Setup](https://www.localservicerocket.com/blog/honest-hanks-stack-small-wins)
+- [Rewired: Electrician Marketing Agency Rebuild Hurt Ads](https://www.localservicerocket.com/blog/rewired-big-agency-rebuild)
+- [What Good Google Marketing Looks Like](https://www.localservicerocket.com/blog/good-google-marketing)
+- [Realistic Marketing Expectations](https://www.localservicerocket.com/blog/realistic-marketing-expectations)
+
+## Contact
+
+- [Get Started](https://www.localservicerocket.com/get-started): Watch the 6-minute walkthrough, then book an onboarding call. No sales call.
+- [Contact](https://www.localservicerocket.com/contact): Ask a question, get a free audit or book a coaching session.
+- Email: hello@localservicerocket.com
+
+## Optional
+
+- [Marketing for Home Service Companies](https://www.localservicerocket.com/marketing-for-service-companies): The same system for other trades (plumbing, HVAC, roofing, waterproofing and more).
+- [Dry Duck Waterproofing Case Study](https://www.localservicerocket.com/case-studies/dry-duck)
+- [Sitemap](https://www.localservicerocket.com/sitemap-index.xml)

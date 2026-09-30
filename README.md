@@ -145,6 +145,7 @@ Old service URLs (`/services/paid-ads`, `/local-seo`, `/websites`, `/hiring`, `/
 │   └── generate-trade-queue-posts.mjs  # Seeds trade-specific drafts into blog-queue/
 ├── public/
 │   ├── robots.txt                # Allow all + Sitemap URL for GSC / crawlers
+│   ├── llms.txt                  # Hand-written site summary for AI assistants; electrician search phrases → pages, pricing, case studies
 │   ├── assets/                   # GENERATED images + trade/service SVGs (do not hand-edit)
 │   └── fonts/                    # Self-hosted Manrope variable woff2
 ├── src/
@@ -243,6 +244,8 @@ The site ships no third-party requests and ~2 kB of JavaScript. Keep it that way
   `public/robots.txt` also points crawlers at that index. Head tags include `rel=sitemap`.
   Format matches Google’s preferred shape: UTF-8 XML at site root, absolute `https` URLs only,
   no fake `lastmod` / `changefreq` / `priority` (Google ignores or distrusts those when inaccurate).
+- **llms.txt:** `public/llms.txt` is hand-written, unlike the sitemap. When you add or rename a page,
+  change pricing, or add an electrician blog post, update it by hand.
 - **Canonical URL form:** `https://www.localservicerocket.com/path`, www host, no trailing slash
   (homepage is `/`). Vercel redirects the apex domain to www, so `site` in `astro.config.mjs` and
   `SITE` in `src/data/schema.ts` must stay on www. `trailingSlash: 'never'` + `build.format: 'file'`
