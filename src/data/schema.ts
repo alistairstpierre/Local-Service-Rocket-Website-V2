@@ -2,15 +2,18 @@
    Stable @ids: #business, #website, per-page #webpage / #service / #faq / #breadcrumbs.
    ImageObject fields reduce GSC “image metadata” warnings. Used by layouts + key pages. */
 
-const SITE = 'https://localservicerocket.com';
+const SITE = 'https://www.localservicerocket.com';
 const YEAR = new Date().getFullYear();
 
 export const businessId = `${SITE}/#business`;
 export const websiteId = `${SITE}/#website`;
 
+/** Canonical form: https://www host, no trailing slash except the homepage. */
 export function absoluteUrl(path: string, site: URL | string = SITE) {
   const base = typeof site === 'string' ? site : site.href;
-  return new URL(path.startsWith('/') ? path : `/${path}`, base).href;
+  const withLead = path.startsWith('/') ? path : `/${path}`;
+  const clean = withLead.length > 1 ? withLead.replace(/\/+$/, '') : withLead;
+  return new URL(clean, base).href;
 }
 
 export function schemaImageObject(

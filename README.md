@@ -235,10 +235,15 @@ The site ships no third-party requests and ~2 kB of JavaScript. Keep it that way
 - **Sitemap (GSC):** `@astrojs/sitemap` runs on every `npm run build` / Vercel deploy and writes
   `sitemap-index.xml` + `sitemap-0.xml` from the live page set (new pages, renamed routes, and
   removals are picked up automatically). Submit this once in Google Search Console:
-  `https://localservicerocket.com/sitemap-index.xml`
+  `https://www.localservicerocket.com/sitemap-index.xml`
   `public/robots.txt` also points crawlers at that index. Head tags include `rel=sitemap`.
   Format matches Google’s preferred shape: UTF-8 XML at site root, absolute `https` URLs only,
   no fake `lastmod` / `changefreq` / `priority` (Google ignores or distrusts those when inaccurate).
+- **Canonical URL form:** `https://www.localservicerocket.com/path`, www host, no trailing slash
+  (homepage is `/`). Vercel redirects the apex domain to www, so `site` in `astro.config.mjs` and
+  `SITE` in `src/data/schema.ts` must stay on www. `trailingSlash: 'never'` + `build.format: 'file'`
+  (Astro) and `cleanUrls` + `trailingSlash: false` (`vercel.json`) make `/services/` 308 to
+  `/services`. Write internal links without a trailing slash.
 - **Agency site (this repo):** `BaseLayout` sets canonical, Open Graph, Twitter Card, `lang=en-US`, and `rel=sitemap`. Pages emit JSON-LD via `src/data/schema.ts` (Organization, WebSite, WebPage/Service/FAQ/Breadcrumb as relevant). Document titles and meta descriptions follow Part 7 length/keyword rules where adapted for a national agency (location omitted when scope is US-wide). H1s are kept reader-first; trade landings and services use keyword-led titles. Homepage is intentionally left as the brand entry.
 - **Client trade sites:** Follow `docs/SITE-STRUCTURE-AND-SEO-GUIDE.md` (one location, service/city pages, schema, Part 7 copy rules). Do not force that full client page map onto the LSR agency marketing site.
 - **Blog posts:** Follow `docs/BLOG-FRAMEWORK.md`. Every post must carry a *receipt* — a real client number, a named company, or a mistake we made — and score 7+ on the Ship Test before it goes live. Posts open with the answer in sentence one (BLUF), use question-shaped H2s, and pass a `faqs` array to `BlogLayout` so `FAQPage` schema and the FAQ block render. Keep `readTime` honest: measure it, don't guess. Any client figure used in a post must already exist on a case study page, and the Evidence Bank in the framework doc is the canonical list. Owners search with their **trade in the query** (`electrician Local Services Ads`, `hire electricians Facebook`) — put the trade in the title when the receipt belongs to that trade, cross-link `/for/{trade}-marketing`, and only write trade spins when you have a second real receipt (see the framework’s trade-keyword section).

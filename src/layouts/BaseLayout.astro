@@ -25,8 +25,10 @@ const {
   jsonLd,
 } = Astro.props;
 
-const site = Astro.site ?? new URL('https://localservicerocket.com');
-const canonical = new URL(Astro.url.pathname, site).href;
+const site = Astro.site ?? new URL('https://www.localservicerocket.com');
+// Self-referential canonical in the one served form: no trailing slash, no .html.
+const cleanPath = Astro.url.pathname.replace(/\.html$/, '').replace(/(.)\/+$/, '$1');
+const canonical = new URL(cleanPath === '/index' ? '/' : cleanPath, site).href;
 const imageUrl = new URL(ogImage, site).href;
 const siteName = 'Local Service Rocket';
 ---

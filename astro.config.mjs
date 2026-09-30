@@ -6,7 +6,11 @@ import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
   output: 'static',
-  site: 'https://localservicerocket.com',
+  // Must match the host Vercel serves (apex redirects to www) so canonicals are self-referential.
+  site: 'https://www.localservicerocket.com',
+  // One URL per page: /services (never /services/). Paired with cleanUrls + trailingSlash:false
+  // in vercel.json so the slash variant 308-redirects instead of serving a duplicate.
+  trailingSlash: 'never',
   // Plain URL list only: Google ignores changefreq/priority, and inaccurate lastmod
   // (e.g. build timestamps) can cause Google to distrust dates sitewide.
   integrations: [sitemap()],
@@ -16,6 +20,8 @@ export default defineConfig({
   prefetch: { prefetchAll: true, defaultStrategy: 'hover' },
 
   build: {
+    // services.html rather than services/index.html, so Astro.url and the sitemap have no slash.
+    format: 'file',
     // Pages are mostly unique scoped CSS, so inlining removes a render-blocking
     // request instead of trading it for a shared cached file.
     inlineStylesheets: 'always',

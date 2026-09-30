@@ -14,7 +14,7 @@ const DIST = path.join(root, 'dist');
 
 const PAGES = process.argv.slice(2).length
   ? process.argv.slice(2)
-  : ['index.html', 'case-studies/index.html', 'for/electrician-marketing/index.html'];
+  : ['index.html', 'case-studies.html', 'for/electrician-marketing.html'];
 
 const kb = (bytes) => `${(bytes / 1024).toFixed(1)} kB`;
 

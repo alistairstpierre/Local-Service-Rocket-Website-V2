@@ -3,4 +3,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://localservicerocket.com/sitemap-index.xml
+Sitemap: https://www.localservicerocket.com/sitemap-index.xml
