@@ -62,13 +62,13 @@ export const pricingTiers: PricingTier[] = [
       [
         { t: '$5k', kind: 'strong' },
         { t: ' ' },
-        { t: 'branding', href: '/services/branding' },
+        { t: 'branding', href: '/services/electrician-branding' },
         { t: ' (optional)', kind: 'muted' },
       ],
     ],
     extras: [
       { label: 'Ad spend', note: 'paid to Google', value: '$50/day' },
-      { label: 'Branding', note: 'optional', value: '$5k', href: '/services/branding' },
+      { label: 'Branding', note: 'optional', value: '$5k', href: '/services/electrician-branding' },
     ],
   },
   {

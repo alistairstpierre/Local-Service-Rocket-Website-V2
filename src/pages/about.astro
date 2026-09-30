@@ -1,13 +1,14 @@
 ---
-/* About page, Alistair St Pierre + Local Service Rocket agency story.
+/* About page, Alistair St Pierre + Local Service Rocket story.
+   Primary keyword: electrician marketing company (docs/KEYWORD-RESEARCH-ELECTRICIANS.md).
    Sourced from Found by Friday brain dumps (journey + 2026.09.09 Q1-10 agency model). */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Picture from '../components/Picture.astro';
 import { absoluteUrl, breadcrumbList, graph, webPageNode } from '../data/schema';
 
-const title = 'Meet the Marketing Agency for Trade Shops | Local Service Rocket';
+const title = 'Electrician Marketing Company Built on Coaching | Local Service Rocket';
 const description =
-  'Meet Alistair St Pierre and Local Service Rocket: Google marketing for home service companies, fees from $500/mo that scale with you.';
+  'Meet the electrician marketing company run by its founder. Google marketing plus 1:1 coaching, with fees that grow only when your shop does. Book onboarding.';
 const pageUrl = absoluteUrl('/about/');
 const jsonLd = graph([
   webPageNode({ pageUrl, name: title, description }),
@@ -35,16 +36,16 @@ const jsonLd = graph([
         <span class="current">About</span>
       </div>
       <div class="eyebrow">ABOUT</div>
-      <h1>Marketing for Owners Building Real Crews</h1>
+      <h1>Electrician Marketing Company Run by Its Founder</h1>
       <p class="lede">
         Local Service Rocket is run by Alistair St Pierre from Wellington, New Zealand. What we do is
         easy to say and hard to do well:
-        <a href="/services/websites">websites</a>,
-        <a href="/services/local-seo">Google rankings</a>, and
-        <a href="/services/paid-ads">ads</a>
-        that turn Google into booked jobs, and then grow with you once your company can handle more.
-        Electricians are where we have the most proof. Other home service trades follow the same
-        plan.
+        <a href="/services/electrician-websites">electrician websites</a>,
+        <a href="/services/electrician-seo">Google rankings</a>, and
+        <a href="/services/electrician-advertising">ads</a>
+        that turn Google into booked jobs, plus 1:1 coaching on the processes and decisions that come
+        with scaling. The goal is an electrical shop you are proud to own, and can sell when you are
+        ready.
       </p>
     </section>
 
@@ -83,10 +84,10 @@ const jsonLd = graph([
         <div class="aside-label">QUICK FACTS</div>
         <ul>
           <li>Based in Wellington, New Zealand</li>
-          <li>Works with home service companies across the US, Australia and NZ</li>
+          <li>Works with electrical contractors across the US, Australia and NZ</li>
           <li>Starts at about $500 a month</li>
           <li>Proves it works before asking you to spend big</li>
-          <li>Google profile, ads, websites, and hiring</li>
+          <li>Google profile, ads, websites, hiring, and 1:1 coaching</li>
         </ul>
       </div>
     </section>
@@ -118,8 +119,8 @@ const jsonLd = graph([
       <div class="measure">
         <div class="measure__spine" aria-hidden="true"></div>
         <div class="measure__copy">
-          <div class="eyebrow">HOW THE AGENCY STARTED</div>
-          <h2>From Confused by Marketing to Running It for Trades</h2>
+          <div class="eyebrow">HOW IT STARTED</div>
+          <h2>From Confused by Marketing to Running It for Electricians</h2>
           <p>
             Before Local Service Rocket I was the tech and operations guy inside someone else’s growing
             business. No share of it, and no real marketing skill. Projects I had started myself before
@@ -146,7 +147,7 @@ const jsonLd = graph([
     <section class="dark-band">
       <div class="container dark-inner">
         <div class="eyebrow on-dark">HOW WE WORK DIFFERENTLY</div>
-        <h2>Most agencies optimize for closing. We optimize for staying.</h2>
+        <h2>Most Agencies Optimize for Closing. We Optimize for Staying.</h2>
         <div class="points">
           <div class="point">
             <div class="num">01</div>
@@ -277,7 +278,7 @@ const jsonLd = graph([
 
     <section class="container story">
       <div class="eyebrow">NEW ZEALAND TIME ZONES</div>
-      <h2>Oddly perfect for trade owners.</h2>
+      <h2>Oddly Perfect for Electrical Contractors</h2>
       <p>
         Depending on your coast I am about 3-6 hours out. Most owners want to talk marketing at the
         <em>end</em> of the day, which is morning or lunchtime here. So you can call after the last
@@ -320,8 +321,8 @@ const jsonLd = graph([
         <a href="/case-studies" class="btn btn-secondary btn-lg">See client results</a>
       </div>
       <p class="fine">
-        Or <a href="/contact">send us a question</a> · Wellington, NZ · Serving US home service
-        companies
+        Or <a href="/contact">send us a question</a> · Wellington, NZ · Serving US electrical
+        contractors
       </p>
     </section>
   </main>

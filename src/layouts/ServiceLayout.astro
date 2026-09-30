@@ -1,5 +1,6 @@
 ---
-/* Shared layout for individual service pages (SEO, ads, websites, etc.).
+/* Shared layout for individual electrician service pages (SEO, advertising, websites, etc.).
+   Each page's title/H1/meta targets one keyword from docs/KEYWORD-RESEARCH-ELECTRICIANS.md.
    Full --max width shell. Section order loosely follows SITE-STRUCTURE-AND-SEO-GUIDE.md
    service pages: hero → optional gallery → included → extras → related → FAQ → CTA.
    Emits Service + WebPage + FAQ + Breadcrumb JSON-LD. */
@@ -84,7 +85,7 @@ const {
   faqs = [
     {
       q: `What does ${crumb} include with Local Service Rocket?`,
-      a: 'Setup plus the ongoing work, measured on booked jobs rather than a dashboard full of numbers that do not pay you. We confirm exactly what your shop needs on the onboarding call.',
+      a: 'Setup plus the ongoing work and 1:1 coaching, measured on booked jobs rather than a dashboard full of numbers that do not pay you. We confirm exactly what your electrical shop needs on the onboarding call.',
     },
     {
       q: 'How do we get started?',
@@ -92,22 +93,23 @@ const {
     },
     {
       q: 'What does it cost to start?',
-      a: 'Usually around $500 a month to begin with. The fee only goes up as your company and your ad spend grow, so we are both after the same thing.',
+      a: 'Pre-flight starts from $500 a month, with the website, Google profile and LSA setup included. The fee only goes up as your company and your ad spend grow, so we are both after the same thing.',
     },
   ],
   faqHeadline = `What to Know Before Starting ${crumb}`,
-  relatedHeadline = 'Most Shops Need More Than One of These',
+  relatedHeadline = 'Most Electrical Shops Need More Than One of These',
   bottomHeadline,
   bottomBody,
 } = Astro.props;
 
 const pageUrl = absoluteUrl(Astro.url.pathname);
+const currentPath = Astro.url.pathname.replace(/\.html$/, '').replace(/\/+$/, '');
 const related = [
-  { href: '/services/local-seo', title: 'Local SEO & Reviews', body: 'Get your Google profile showing on the map.' },
-  { href: '/services/paid-ads', title: 'Paid Ads & LSAs', body: 'Pay-per-lead ads first, Search ads after.' },
-  { href: '/services/websites', title: 'Websites That Get Calls', body: 'A site that turns visitors into phone calls.' },
-  { href: '/services/hiring', title: 'Hiring & Recruiting', body: 'Find techs when the work outruns the crew.' },
-].filter((r) => !Astro.url.pathname.includes(r.href.split('/').pop()!));
+  { href: '/services/electrician-seo', title: 'Electrician SEO', body: 'Get your Google profile into the map pack.' },
+  { href: '/services/electrician-advertising', title: 'Electrician Advertising', body: 'Local Services Ads first, Google Search ads after.' },
+  { href: '/services/electrician-websites', title: 'Electrician Websites', body: 'A site that turns visitors into phone calls.' },
+  { href: '/services/hiring-electricians', title: 'Hiring Electricians', body: 'Find techs when the work outruns the crew.' },
+].filter((r) => r.href !== currentPath);
 
 const jsonLd = graph([
   {
@@ -157,9 +159,9 @@ const jsonLd = graph([
             <a href="/case-studies" class="btn btn-secondary">See client results</a>
           </div>
           <div class="badges">
-            <span>Starts ~$500/mo</span>
+            <span>Built for electricians</span>
+            <span>1:1 coaching included</span>
             <span>No sales calls</span>
-            <span>Booked jobs focus</span>
           </div>
         </div>
 

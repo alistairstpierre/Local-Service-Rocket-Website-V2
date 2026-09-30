@@ -1,21 +1,37 @@
 ---
-/* Tracking & Reporting, booked-jobs philosophy, Google-as-system from 2026.09.10 dump (Q35-37). */
+/* Electrician lead tracking, booked-jobs philosophy, Google-as-system from 2026.09.10 dump (Q35-37).
+   Primary keyword: electrician lead tracking (no volume data yet, see docs/KEYWORD-RESEARCH-ELECTRICIANS.md).
+   Was /services/tracking (301 in vercel.json). */
 import ServiceLayout from '../../layouts/ServiceLayout.astro';
 ---
 
 <ServiceLayout
-  title="Tracking and Reporting for Booked Jobs | Local Service Rocket"
-  description="Tracking for home service marketing that judges Google spend by booked jobs and revenue lift, not vanity leads or fake perfect attribution."
-  crumb="Tracking & Reporting"
-  faqHeadline="What to Know Before Tracking Booked Jobs"
+  title="Electrician Lead Tracking by Booked Jobs | Local Service Rocket"
+  description="See electrician lead tracking that judges your Google spend on booked jobs and revenue, not vanity lead counts or fake attribution. Book onboarding online."
+  crumb="Lead Tracking"
+  faqHeadline="What to Know Before Tracking Electrical Leads"
+  faqs={[
+    {
+      q: 'How should an electrician track marketing leads?',
+      a: 'By booked jobs, not lead counts. A lead is someone who rang. A booked job is a visit on the calendar. We judge Google as one system and check that revenue is climbing faster than spend.',
+    },
+    {
+      q: 'Do I need new tracking software?',
+      a: 'Usually not. Housecall Pro, ServiceTitan and the like already track most of it, and a phone system like OpenPhone shows the calls nobody picked up. We help you use those well.',
+    },
+    {
+      q: 'Can you tell me where every call came from?',
+      a: 'No one honestly can. A homeowner bounces between your ad, website and Google profile before they ring. Local Services Ads are the clean exception, because Google shows you each lead.',
+    },
+  ]}
   icon="/assets/icon-tracking-reporting-v2.svg"
-  headline="Track the jobs that pay you, not a pie chart."
+  headline="Electrician Lead Tracking That Counts Booked Jobs"
   intro="Plenty of agencies promise to tell you where every single call came from. In real life a homeowner sees your ad, scrolls down to the map, reads a review, then rings the number on your Google profile two days later. We judge the work on booked jobs, the quality of the calls, and whether the money coming in is beating the money going out."
   proofTitle="We measure the same thing you do."
   proofBody="Jobs on the calendar. Not a race to push as many low-quality “leads” into your inbox as possible so an agency has a big number to show you."
   proofHref="/get-started"
   proofLinkLabel="See how onboarding works →"
-  includedHeadline="What we actually watch."
+  includedHeadline="What We Watch in Your Electrical Shop’s Numbers"
   included={[
     {
       title: 'Booked jobs, not lead counts',
@@ -42,10 +58,10 @@ import ServiceLayout from '../../layouts/ServiceLayout.astro';
       body: 'Google charges you per lead there and shows you each one, so that lane is easy to judge. Everything else gets looked at as a whole.',
     },
   ]}
-  bottomHeadline="Still paying an agency for “more leads”?"
-  bottomBody="Ask them how many turned into booked jobs, and whether your revenue is beating your spend. That is the only report that matters."
+  bottomHeadline="Know Which Marketing Fills Your Calendar"
+  bottomBody="Still paying an agency for “more leads”? Ask them how many turned into booked jobs, and whether your revenue is beating your spend. That is the only report that matters."
 >
-  <h2>Why we will not promise perfect tracking</h2>
+  <h2>Why We Will Not Promise Perfect Call Tracking</h2>
   <p>
     Even with expensive call tracking, a big chunk of calls that Google sent you can never be pinned
     to one source. A homeowner bounces between your ad, your website and your profile before they

@@ -82,17 +82,21 @@ site.
 | --- | --- |
 | `/` | Homepage — electrician-led (`marketing for electricians`) |
 | `/marketing-for-service-companies` | Broader all-trades offer (former homepage) |
-| `/about` | Alistair + agency story (from brain dumps) |
+| `/about` | Alistair + company story (`electrician marketing company`) |
 | `/flight-plan` | The System: Pre-flight / Liftoff / Orbit stages |
-| `/get-started` | Get Started funnel |
+| `/get-started` | Get Started funnel (`marketing for electrical contractors`) |
 | `/contact` | Contact form: question, free audit, or coaching (EmailJS + screenshots) |
-| `/services` | Services overview |
-| `/services/local-seo` | Local SEO & Reviews |
-| `/services/paid-ads` | Paid Ads & LSAs |
-| `/services/websites` | Websites That Get Calls |
-| `/services/hiring` | Hiring & Recruiting |
-| `/services/branding` | Branding |
-| `/services/tracking` | Tracking & Reporting |
+| `/services` | Services hub (`electrician marketing services`) |
+| `/services/electrician-seo` | Electrician SEO & reviews (`electrician seo agency`) |
+| `/services/electrician-advertising` | Electrician advertising: LSAs + Google Ads (`electrician advertising`) |
+| `/services/electrician-websites` | Electrician websites |
+| `/services/hiring-electricians` | Hiring electricians (Facebook sprints) |
+| `/services/electrician-branding` | Electrician branding |
+| `/services/electrician-lead-tracking` | Lead tracking by booked jobs |
+
+Old service URLs (`/services/paid-ads`, `/local-seo`, `/websites`, `/hiring`, `/branding`,
+`/tracking`) 308-redirect to the new slugs via `redirects` in `vercel.json`. Keyword choices per page:
+`docs/KEYWORD-RESEARCH-ELECTRICIANS.md`.
 | `/for/electrician-marketing` (etc.) | Trade SEO/ad landings for each Who We Help trade |
 | `/case-studies` | Case studies hub: three ways in (Rewired / Honest Hank's / Dry Duck) |
 | `/case-studies/rewired` | Rewired case study |
@@ -196,12 +200,12 @@ site.
 │   │   │   └── rewired.astro
 │   │   └── services/
 │   │       ├── index.astro
-│   │       ├── branding.astro
-│   │       ├── hiring.astro
-│   │       ├── local-seo.astro
-│   │       ├── paid-ads.astro
-│   │       ├── tracking.astro
-│   │       └── websites.astro
+│   │       ├── electrician-advertising.astro
+│   │       ├── electrician-branding.astro
+│   │       ├── electrician-lead-tracking.astro
+│   │       ├── electrician-seo.astro
+│   │       ├── electrician-websites.astro
+│   │       └── hiring-electricians.astro
 │   └── styles/
 │       └── global.css
 ├── astro.config.mjs              # static + sitemap + prefetch + inlined CSS

@@ -1,51 +1,52 @@
 ---
-/* Services overview, six service cards linking to detail pages.
+/* Services hub, six electrician service cards linking to detail pages.
+   Primary keyword: electrician marketing services (docs/KEYWORD-RESEARCH-ELECTRICIANS.md).
    Design source: Services.dc.html. CollectionPage + ItemList schema per SEO guide. */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { absoluteUrl, breadcrumbList, graph } from '../../data/schema';
 
 const cards = [
   {
-    href: '/services/local-seo',
+    href: '/services/electrician-seo',
     icon: '/assets/icon-local-seo-reviews-v2.svg',
-    title: 'Local SEO & Reviews',
-    body: 'Get your Google Business Profile showing on the map for your area, and keep new reviews coming in.',
+    title: 'Electrician SEO & Reviews',
+    body: 'Get your Google Business Profile into the map pack for your area, and keep new reviews coming in.',
   },
   {
-    href: '/services/paid-ads',
+    href: '/services/electrician-advertising',
     icon: '/assets/icon-paid-ads-lsas-v2.svg',
-    title: 'Paid Ads & LSAs',
+    title: 'Electrician Advertising & LSAs',
     body: 'Local Services Ads first, where you pay per lead, then Google Search ads. We prove ads make money before we scale spend.',
   },
   {
-    href: '/services/websites',
+    href: '/services/electrician-websites',
     icon: '/assets/icon-websites-that-convert-v2.svg',
-    title: 'Websites That Get Calls',
+    title: 'Electrician Websites',
     body: 'A fast site that makes a homeowner pick up the phone. You own the whole thing outright.',
   },
   {
-    href: '/services/hiring',
+    href: '/services/hiring-electricians',
     icon: '/assets/icon-hiring-recruiting-v2.svg',
-    title: 'Hiring & Recruiting',
-    body: 'Job ads and screening that put skilled techs in front of you, usually with enough candidates inside about 10 days.',
+    title: 'Hiring Electricians',
+    body: 'Job ads and screening that put skilled electricians in front of you, usually with enough candidates inside about 10 days.',
   },
   {
-    href: '/services/branding',
+    href: '/services/electrician-branding',
     icon: '/assets/icon-branding-v2.svg',
-    title: 'Branding',
-    body: "Logo, van wraps and uniforms your whole city remembers. We built Dry Duck's from scratch.",
+    title: 'Electrician Branding',
+    body: 'Logo, van wraps and uniforms your whole city remembers, instead of another red, white and blue van.',
   },
   {
-    href: '/services/tracking',
+    href: '/services/electrician-lead-tracking',
     icon: '/assets/icon-tracking-reporting-v2.svg',
-    title: 'Tracking & Reporting',
+    title: 'Lead Tracking & Reporting',
     body: 'You see how many calls and booked jobs came from Google, and whether the money in beats the money out.',
   },
 ];
 
-const title = 'Marketing Services for Home Service Shops | Local Service Rocket';
+const title = 'Electrician Marketing Services That Work as One | Local Service Rocket';
 const description =
-  'Six Google-led services for home service companies: Local SEO, paid ads, websites, hiring, branding, and tracking. Start around $500/month.';
+  'Get electrician marketing services that work as one system: SEO, Local Services Ads, websites, hiring and 1:1 coaching. Book your onboarding call online.';
 const pageUrl = absoluteUrl('/services/');
 const jsonLd = graph([
   {
@@ -61,7 +62,7 @@ const jsonLd = graph([
   {
     '@type': 'ItemList',
     '@id': `${pageUrl}#list`,
-    name: 'Local Service Rocket services',
+    name: 'Electrician marketing services',
     itemListElement: cards.map((card, i) => ({
       '@type': 'ListItem',
       position: i + 1,
@@ -80,10 +81,11 @@ const jsonLd = graph([
   <main>
     <div class="intro container">
       <div class="eyebrow">WHAT WE DO</div>
-      <h1>Everything it takes to win on Google. One team.</h1>
+      <h1>Electrician Marketing Services That Work as One</h1>
       <p>
-        Six services that work as one system. We start with the piece that is holding you back,
-        usually around $500 a month, and add the rest as the work pays for it.
+        Six services built for electrical contractors, run as one system with 1:1 coaching on the
+        decisions that come with growth. We start with the piece that is holding you back and add the
+        rest as the work pays for it.
       </p>
     </div>
 
@@ -102,7 +104,7 @@ const jsonLd = graph([
 
     <div class="cta container">
       <div class="cta-panel">
-        <h2>Not sure where to start?</h2>
+        <h2>Find the One Thing Holding Your Shop Back</h2>
         <p>
           That is what the onboarding call is for. We look at your market and tell you the one thing
           to fix first, even when that is the cheapest thing on the list.
