@@ -1,70 +1,93 @@
 ---
-/* Flight Plan pricing offer cards.
-   Used on `/` (below testimonials) and `/get-started`. Data: src/data/pricing-tiers.ts. */
+/* Flight Plan pricing comparison table ("Every price, up front").
+   Used on `/` (below testimonials) and `/get-started`. Data: src/data/pricing-tiers.ts.
+   Desktop: label column + 3 stage columns aligned with CSS subgrid.
+   Mobile: stage tabs + one card at a time, switched by hidden radio inputs (no JS). */
 import { pricingTiers } from '../data/pricing-tiers';
-import GooglePartnerBadge from './GooglePartnerBadge.astro';
 
 interface Props {
   eyebrow?: string;
   h2?: string;
-  /** Plain text or HTML string for the right-hand lede */
-  lede?: string;
+  sub?: string;
   ctaHref?: string;
   ctaLabel?: string;
-  footNote?: string;
 }
 
 const {
-  eyebrow = 'THE OFFER',
-  h2 = 'Skip the Pitch. Prices Start at $500/mo',
-  lede = 'Most agencies want $5,000+ before they prove a thing. We start at $500/mo, month to month, and only step up when your shop does.',
+  eyebrow = 'THE NUMBERS',
+  h2 = 'Every price, up front.',
+  sub = 'Fair pricing that scales as you grow.',
   ctaHref = '/get-started',
-  ctaLabel = 'Schedule onboarding',
-  footNote = 'Month to month. No locked contract. Fee climbs when you do.',
+  ctaLabel = 'Schedule my onboarding call',
 } = Astro.props;
+
+const rowLabels = ["IF YOU'RE AT", 'YOU PAY', 'WE GET YOU TO', 'INCLUDED', 'ON TOP'];
+const startIndex = Math.max(
+  0,
+  pricingTiers.findIndex((t) => t.featured),
+);
 ---
 
 <section class="pricing-offer" id="pricing">
   <div class="container">
-    <div class="pricing-head">
-      <div>
-        <div class="eyebrow">{eyebrow}</div>
-        <h2>{h2}</h2>
-      </div>
-      <p class="pricing-lede" set:html={lede} />
+    <div class="pt-head">
+      <div class="eyebrow">{eyebrow}</div>
+      <h2>{h2}</h2>
+      <p>{sub}</p>
     </div>
 
-    <div class="tiers">
+    <div class="pt-table">
+      <div class="pt-labels" aria-hidden="true">
+        <div></div>
+        {rowLabels.map((l) => <div class="pt-label">{l}</div>)}
+      </div>
+
       {
         pricingTiers.map((tier) => (
-          <div class:list={['tier', { 'tier-featured': tier.featured }]}>
-            {tier.featured && <div class="tier-badge">Most shops start here</div>}
-            <div class="tier-top">
-              <span class="tier-num">{tier.step}</span>
-              <span class="tier-name">{tier.name}</span>
-              <span class="tier-band">{tier.band}</span>
+          <div class:list={['pt-col', { 'pt-featured': tier.featured }]}>
+            <div class="pt-name">
+              {tier.featured && <div class="pt-badge">MOST SHOPS START HERE</div>}
+              <div>
+                {tier.step} · {tier.name}
+              </div>
             </div>
-            <div class="tier-price">
-              {tier.price}
-              <span class:list={['tier-unit', { 'tier-unit-strong': tier.unitStrong }]}>
-                {tier.unit}
-              </span>
+
+            <div class="pt-cell pt-at">{tier.at}</div>
+
+            <div class="pt-cell">
+              <div class="pt-price">
+                {tier.price.prefix && <span class="pt-prefix">{tier.price.prefix}</span>}
+                <span class="pt-amount">{tier.price.amount}</span>
+                {tier.price.unitBelow ? (
+                  <div class="pt-unit">{tier.price.unit}</div>
+                ) : (
+                  <span class="pt-unit">{tier.price.unit}</span>
+                )}
+              </div>
             </div>
-            <div class="tier-aim">
-              <span class="tier-aim-label">{tier.aim}</span>
-              <p class="tier-outcome">{tier.outcome}</p>
+
+            <div class="pt-cell pt-gets">{tier.getsTo}</div>
+
+            <div class="pt-cell pt-list">
+              {tier.included.map((item) => (
+                <div>{item}</div>
+              ))}
             </div>
-            <div class="tier-rows">
-              {tier.rows.map((row) => (
-                <div class="tier-row">
-                  {row.href ? (
-                    <a href={row.href} class="tier-link">
-                      {row.label}
-                    </a>
-                  ) : (
-                    <span>{row.label}</span>
+
+            <div class="pt-cell pt-list pt-last">
+              {tier.onTop.map((line) => (
+                <div>
+                  {line.map((seg) =>
+                    seg.href ? (
+                      <a href={seg.href}>{seg.t}</a>
+                    ) : seg.kind === 'strong' ? (
+                      <b>{seg.t}</b>
+                    ) : seg.kind === 'muted' ? (
+                      <span class="pt-muted">{seg.t}</span>
+                    ) : (
+                      seg.t
+                    ),
                   )}
-                  <b>{row.value}</b>
                 </div>
               ))}
             </div>
@@ -73,13 +96,101 @@ const {
       }
     </div>
 
-    <div class="pricing-foot">
-      <div class="pricing-meta">
-        <GooglePartnerBadge />
-        <span><span class="stars">★★★★★</span> 5.0 on Google</span>
-        <span>{footNote}</span>
+    <div class="pm">
+      {
+        pricingTiers.map((tier, i) => (
+          <input
+            type="radio"
+            name="pm-stage"
+            id={`pm-stage-${i}`}
+            class="pm-radio"
+            checked={i === startIndex}
+            aria-label={tier.name}
+          />
+        ))
+      }
+
+      <div class="pm-tabs">
+        {
+          pricingTiers.map((tier, i) => (
+            <label for={`pm-stage-${i}`} class="pm-tab">
+              {tier.name.replace('-', '\u2011')}
+            </label>
+          ))
+        }
       </div>
-      <a href={ctaHref} class="btn btn-primary">{ctaLabel}</a>
+      <div class="pm-hint">Tap a stage to compare</div>
+
+      <div class="pm-cards">
+        {
+          pricingTiers.map((tier) => (
+            <article class:list={['pm-card', { 'pm-featured': tier.featured }]}>
+              {tier.featured && <div class="pm-badge">MOST SHOPS START HERE</div>}
+              <div class="pm-top">
+                <div class="pm-title">
+                  <span class="pm-num">{tier.step}</span>
+                  <span class="pm-name">{tier.name}</span>
+                </div>
+                <span class="pm-rev">{tier.at}</span>
+              </div>
+
+              <div class="pm-price">
+                {tier.price.prefix && <span class="pm-prefix">{tier.price.prefix.trim()}</span>}
+                <span class="pm-amount">{tier.price.amount}</span>
+                <span class="pm-unit">{tier.price.unitMobile ?? tier.price.unit}</span>
+              </div>
+              <div class="pm-price-sub">{tier.priceSub}</div>
+
+              <div class="pm-goal">
+                <div class="pm-goal-label">WE GET YOU TO</div>
+                <div class="pm-goal-text">{tier.getsTo}</div>
+              </div>
+
+              <div class="pm-label">INCLUDED</div>
+              <ul class="pm-included">
+                {tier.included.map((item) => (
+                  <li>
+                    <span class="pm-check" aria-hidden="true">
+                      ✓
+                    </span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <div class="pm-label pm-label-top">ON TOP</div>
+              <div class="pm-extras">
+                {tier.extras.map((x) => (
+                  <div class="pm-extra">
+                    <span class="pm-extra-label">
+                      {x.href ? <a href={x.href}>{x.label}</a> : x.label}
+                      <span class="pm-extra-note">{x.note}</span>
+                    </span>
+                    <b>{x.value}</b>
+                  </div>
+                ))}
+              </div>
+            </article>
+          ))
+        }
+      </div>
+
+      <div class="pm-dots" aria-hidden="true">
+        {
+          pricingTiers.map((_, i) => (
+            <label for={`pm-stage-${i}`} class="pm-dot" />
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="pt-foot">
+      <a href={ctaHref} class="btn btn-primary btn-lg">{ctaLabel}</a>
+      <div class="pt-meta">
+        <span>Month to month. No contracts.</span>
+        <span class="pt-meta-sep" aria-hidden="true">·</span>
+        <span><span class="stars">★★★★★</span> 5.0 on Google</span>
+      </div>
     </div>
   </div>
 </section>
@@ -87,231 +198,495 @@ const {
 <style>
   .pricing-offer {
     margin-top: 72px;
-    padding: 56px 0;
-    background: var(--section-bg);
+    padding: 56px 0 64px;
+    background: #fff;
     border-top: 1px solid var(--hairline);
-    border-bottom: 1px solid var(--hairline);
   }
 
-  .pricing-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: 40px;
-    flex-wrap: wrap;
+  .pt-head {
+    text-align: center;
   }
 
-  .pricing-head h2 {
+  .pt-head h2 {
     margin-top: 10px;
-    font-size: clamp(26px, 3vw, 34px);
+    font-size: clamp(28px, 3.4vw, 38px);
     font-weight: 800;
     letter-spacing: -0.02em;
     line-height: 1.15;
-    text-wrap: balance;
-    max-width: 18ch;
   }
 
-  .pricing-lede {
-    margin: 0;
-    max-width: 380px;
-    font-size: 15px;
-    line-height: 1.6;
+  .pt-head p {
+    margin-top: 10px;
+    font-size: 16px;
     color: var(--muted);
-    text-wrap: pretty;
   }
 
-  .pricing-lede :global(a) {
-    color: var(--orange);
+  .pt-table {
+    --pt-tint: #fdf5ef;
+    max-width: 1064px;
+    margin: 40px auto 0;
+    display: grid;
+    grid-template-columns: 140px repeat(3, 1fr);
+    grid-template-rows: repeat(6, auto);
+    font-size: 15px;
+  }
+
+  .pt-labels,
+  .pt-col {
+    grid-row: 1 / span 6;
+    display: grid;
+    grid-template-rows: subgrid;
+  }
+
+  .pt-label {
+    padding: 22px 0;
+    border-top: 1px solid var(--hairline);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: var(--muted-3);
+  }
+
+  .pt-name {
+    align-self: end;
+    padding: 34px 24px 20px;
+    text-align: center;
+    font-size: 21px;
+    font-weight: 800;
+  }
+
+  .pt-featured .pt-name {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 14px 24px 20px;
+    background: var(--orange);
+    color: #fff;
+    border-radius: 18px 18px 0 0;
+  }
+
+  .pt-badge {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    opacity: 0.9;
+    white-space: nowrap;
+    margin-bottom: 6px;
+  }
+
+  .pt-cell {
+    padding: 22px 16px;
+    border-top: 1px solid var(--hairline);
+    text-align: center;
+  }
+
+  .pt-featured .pt-cell {
+    background: var(--pt-tint);
+  }
+
+  .pt-featured .pt-last {
+    border-radius: 0 0 18px 18px;
+  }
+
+  .pt-at {
+    font-weight: 700;
+    color: var(--orange-hover);
+  }
+
+  .pt-prefix,
+  .pt-unit {
+    font-size: 15px;
     font-weight: 700;
   }
 
-  .tiers {
-    margin-top: 32px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    align-items: stretch;
+  .pt-prefix {
+    color: var(--muted);
   }
 
-  .tier {
-    position: relative;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-panel);
-    padding: 26px 28px;
-    background: #fff;
-    display: flex;
-    flex-direction: column;
+  .pt-unit {
+    color: var(--muted-3);
   }
 
-  .tier-featured {
-    border: 2px solid var(--orange);
-    padding: 25px 27px;
-    box-shadow: 0 12px 32px rgba(232, 89, 12, 0.12);
-  }
-
-  .tier-badge {
-    position: absolute;
-    top: -11px;
-    left: 22px;
-    background: var(--orange);
-    color: #fff;
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    padding: 5px 10px;
-    border-radius: 99px;
-  }
-
-  .tier-top {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .tier-num {
-    width: 28px;
-    height: 28px;
-    flex: none;
-    border-radius: 99px;
-    background: var(--orange);
-    color: #fff;
-    font-size: 13px;
-    font-weight: 800;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .tier-name {
-    font-size: 16px;
-    font-weight: 800;
-  }
-
-  .tier-band {
-    margin-left: auto;
-    font-size: 9.5px;
-    font-weight: 800;
-    letter-spacing: 0.06em;
-    color: var(--orange);
-    background: var(--orange-tint);
-    padding: 5px 10px;
-    border-radius: 99px;
+  div.pt-unit {
+    font-size: 14px;
     white-space: nowrap;
   }
 
-  .tier-price {
-    margin-top: 18px;
-    font-size: 30px;
+  .pt-amount {
+    font-size: 34px;
     font-weight: 800;
     letter-spacing: -0.02em;
   }
 
-  .tier-unit {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--muted-3);
+  .pt-gets {
+    line-height: 1.55;
+    text-wrap: balance;
   }
 
-  .tier-unit-strong {
-    color: var(--ink);
-  }
-
-  .tier-aim {
-    margin-top: 16px;
-    padding: 12px 14px;
-    background: var(--orange-tint);
-    border-radius: 12px;
-    min-height: 92px;
-  }
-
-  .tier-aim-label {
-    display: block;
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--orange);
-  }
-
-  .tier-outcome {
-    margin: 5px 0 0;
-    font-size: 13.5px;
-    font-weight: 600;
-    line-height: 1.4;
-    color: var(--ink);
-    text-wrap: pretty;
-  }
-
-  .tier-rows {
-    margin-top: auto;
-    padding-top: 16px;
-    border-top: 1px solid var(--hairline);
-    display: flex;
-    flex-direction: column;
-    gap: 9px;
-    font-size: 13px;
-    line-height: 1.45;
+  .pt-list {
+    line-height: 1.9;
     color: var(--body);
   }
 
-  .tier-row {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-  }
-
-  .tier-row b {
+  .pt-list b {
     color: var(--ink);
-    white-space: nowrap;
   }
 
-  .tier-link {
+  .pt-list a {
     color: var(--orange);
     font-weight: 700;
     text-decoration: underline;
     text-underline-offset: 2px;
   }
 
-  .tier-link:hover {
-    color: var(--orange-hover);
+  .pt-muted {
+    color: var(--muted-3);
   }
 
-  .pricing-foot {
-    margin-top: 28px;
+  .pt-foot {
+    margin-top: 36px;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    gap: 30px;
+    gap: 14px;
+  }
+
+  .pt-meta {
+    display: flex;
     flex-wrap: wrap;
-  }
-
-  .pricing-meta {
-    display: flex;
-    align-items: center;
-    gap: 28px;
-    font-size: 13px;
-    font-weight: 600;
+    justify-content: center;
+    gap: 6px;
+    font-size: 14px;
     color: var(--muted);
-    flex-wrap: wrap;
+    text-align: center;
   }
 
   .stars {
     color: var(--orange);
-    letter-spacing: 2px;
+    letter-spacing: 1px;
+  }
+
+  /* MOBILE TABS + CARD */
+  .pm {
+    display: none;
+  }
+
+  .pm-radio {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    pointer-events: none;
+  }
+
+  .pm-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    margin-top: 28px;
+    padding: 4px;
+    background: #f3f3f5;
+    border-radius: var(--radius-pill);
+  }
+
+  .pm-tab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 12px 4px;
+    border-radius: var(--radius-pill);
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--body);
+    white-space: nowrap;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .pm-hint {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted-3);
+  }
+
+  .pm-card {
+    display: none;
+    position: relative;
+    margin-top: 20px;
+    padding: 28px 22px 24px;
+    border: 1px solid var(--border);
+    border-radius: 22px;
+  }
+
+  .pm-featured {
+    margin-top: 30px;
+    border: 2px solid var(--orange);
+  }
+
+  .pm-badge {
+    position: absolute;
+    top: -13px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 6px 14px;
+    border-radius: var(--radius-pill);
+    background: var(--orange);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+
+  .pm-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .pm-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .pm-num {
+    width: 30px;
+    height: 30px;
+    flex: none;
+    border-radius: var(--radius-pill);
+    background: var(--orange);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pm-name {
+    font-size: 21px;
+    font-weight: 800;
+  }
+
+  .pm-rev {
+    padding: 6px 11px;
+    border-radius: var(--radius-pill);
+    background: #fdf0e8;
+    color: var(--orange-hover);
+    font-size: 12px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .pm-price {
+    margin-top: 22px;
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .pm-prefix,
+  .pm-unit {
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .pm-prefix {
+    color: var(--muted);
+  }
+
+  .pm-unit {
+    color: var(--muted-3);
+  }
+
+  .pm-amount {
+    font-size: 44px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+
+  .pm-price-sub {
+    margin-top: 6px;
+    font-size: 15px;
+    color: var(--muted);
+  }
+
+  .pm-goal {
+    margin-top: 20px;
+    padding: 16px 18px;
+    background: #fdf5ef;
+    border-radius: 14px;
+  }
+
+  .pm-goal-label,
+  .pm-label {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+  }
+
+  .pm-goal-label {
+    color: var(--orange-hover);
+  }
+
+  .pm-goal-text {
+    margin-top: 6px;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.45;
+  }
+
+  .pm-label {
+    margin-top: 22px;
+    color: var(--muted-3);
+  }
+
+  .pm-label-top {
+    padding-top: 18px;
+    border-top: 1px solid var(--hairline);
+  }
+
+  .pm-included {
+    list-style: none;
+    margin: 10px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 16px;
+  }
+
+  .pm-included li {
+    display: flex;
+    gap: 10px;
+  }
+
+  .pm-check {
+    color: var(--orange);
+    font-weight: 800;
+  }
+
+  .pm-extras {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .pm-extra {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    font-size: 16px;
+  }
+
+  .pm-extra-label {
+    color: var(--body);
+  }
+
+  .pm-extra-label a {
+    color: var(--orange);
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .pm-extra-note {
+    display: block;
+    margin-top: 2px;
+    font-size: 13.5px;
+    color: var(--muted-3);
+  }
+
+  .pm-extra b {
+    white-space: nowrap;
+  }
+
+  .pm-dots {
+    margin-top: 18px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .pm-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: var(--radius-pill);
+    background: #d9d9d9;
+    cursor: pointer;
+    transition: width 0.2s, background 0.2s;
+  }
+
+  #pm-stage-0:checked ~ .pm-tabs .pm-tab:nth-child(1),
+  #pm-stage-1:checked ~ .pm-tabs .pm-tab:nth-child(2),
+  #pm-stage-2:checked ~ .pm-tabs .pm-tab:nth-child(3) {
+    background: var(--dark);
+    color: #fff;
+  }
+
+  #pm-stage-0:focus-visible ~ .pm-tabs .pm-tab:nth-child(1),
+  #pm-stage-1:focus-visible ~ .pm-tabs .pm-tab:nth-child(2),
+  #pm-stage-2:focus-visible ~ .pm-tabs .pm-tab:nth-child(3) {
+    outline: 2px solid var(--orange);
+    outline-offset: 2px;
+  }
+
+  #pm-stage-0:checked ~ .pm-cards .pm-card:nth-child(1),
+  #pm-stage-1:checked ~ .pm-cards .pm-card:nth-child(2),
+  #pm-stage-2:checked ~ .pm-cards .pm-card:nth-child(3) {
+    display: block;
+  }
+
+  #pm-stage-0:checked ~ .pm-dots .pm-dot:nth-child(1),
+  #pm-stage-1:checked ~ .pm-dots .pm-dot:nth-child(2),
+  #pm-stage-2:checked ~ .pm-dots .pm-dot:nth-child(3) {
+    width: 22px;
+    background: var(--orange);
   }
 
   @media (max-width: 900px) {
-    .tiers {
-      grid-template-columns: 1fr;
+    .pt-table {
+      display: none;
     }
 
-    .pricing-head h2 {
-      max-width: none;
+    .pm {
+      display: block;
+      max-width: 440px;
+      margin: 0 auto;
     }
 
-    .pricing-foot .btn {
+    .pt-head h2 {
+      font-size: 30px;
+    }
+
+    .pt-foot {
+      margin-top: 26px;
+    }
+
+    .pt-foot .btn {
       width: 100%;
+      max-width: 440px;
+      padding: 18px 24px;
+      font-size: 17px;
+    }
+
+    .pt-meta {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .pt-meta-sep {
+      display: none;
     }
   }
 </style>
