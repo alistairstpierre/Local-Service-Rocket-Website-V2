@@ -26,7 +26,7 @@ const LOGO = 120;
 /** @type {Record<string, ImageEntry>} */
 export const images = {
   // Hero carousel: 430px square on desktop, 320px on mobile.
-  'client-rewired': { source: 'client-rewired.png', widths: [430, 860], fallback: 'jpg' },
+  'client-rewired': { source: 'client-rewired.jpg', widths: [430, 860], fallback: 'jpg' },
   'client-motha-electric': { source: 'client-motha-electric.png', widths: [430, 860], fallback: 'jpg' },
   'client-honest-hanks': { source: 'client-honest-hanks.png', widths: [430, 860], fallback: 'jpg' },
   'client-dry-duck': { source: 'client-dry-duck.png', widths: [430, 860], fallback: 'jpg' },

@@ -2,6 +2,7 @@
 /* Case studies hub matching Claude Design “Case Studies.dc.html” layout:
    three “ways in” with full-width featured stories (Rewired, Honest Hank’s, Dry Duck).
    Motha is not featured. Hooked Up + other logos sit in the “also flying” strip.
+   Only logos with their own case study get an href; the rest render unlinked.
    Stats/copy come from brain-dump case pages, not the design mock figures. */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Picture from '../../components/Picture.astro';
@@ -9,7 +10,7 @@ import { absoluteUrl, breadcrumbList, graph, webPageNode } from '../../data/sche
 
 const alsoFlying = [
   { name: 'logo-hooked-up', alt: 'Hooked Up Electric', href: '/case-studies/hooked-up', h: 34 },
-  { name: 'logo-motha', alt: 'Motha Electric', href: '/blog/google-category-relevance', h: 32, radius: true },
+  { name: 'logo-motha', alt: 'Motha Electric', h: 32, radius: true },
   { name: 'logo-coastal-current', alt: 'Coastal Current', h: 34 },
   { name: 'logo-pacific', alt: 'Pacific Home Electric', h: 32 },
   { name: 'logo-definite', alt: 'Definite Electric', h: 32 },

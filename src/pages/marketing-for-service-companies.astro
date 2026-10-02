@@ -7,18 +7,19 @@ import Hero from '../components/Hero.astro';
 import Picture from '../components/Picture.astro';
 import { tradeLabelToSlug } from '../data/trades';
 
-/* Motha Electric is our weakest story. Always last in any client list. */
-const trustLogos = [
+/* Motha Electric is our weakest story. Always last in any client list.
+   Only logos with their own case study get an href; the rest render unlinked. */
+const trustLogos: { href?: string; name: string; alt: string; h: number; radius?: boolean }[] = [
   { href: '/case-studies/rewired', name: 'logo-rewired', alt: 'Rewired', h: 48 },
   { href: '/case-studies/honest-hanks', name: 'logo-honest-hanks', alt: "Honest Hank's", h: 50 },
   { href: '/case-studies/dry-duck', name: 'logo-dry-duck', alt: 'Dry Duck', h: 50 },
   { href: '/case-studies/hooked-up', name: 'logo-hooked-up', alt: 'Hooked Up Electric', h: 44 },
-  { href: '/case-studies', name: 'logo-coastal-current', alt: 'Coastal Current', h: 46 },
-  { href: '/case-studies', name: 'logo-pacific', alt: 'Pacific Home Electric', h: 42 },
-  { href: '/case-studies', name: 'logo-definite', alt: 'Definite Electric', h: 42 },
-  { href: '/case-studies', name: 'logo-austral', alt: 'Austral Energy Solutions', h: 42, radius: true },
-  { href: '/case-studies', name: 'logo-c-tinting', alt: 'C Tinting', h: 44 },
-  { href: '/case-studies', name: 'logo-motha', alt: 'Motha Electric', h: 44, radius: true },
+  { name: 'logo-coastal-current', alt: 'Coastal Current', h: 46 },
+  { name: 'logo-pacific', alt: 'Pacific Home Electric', h: 42 },
+  { name: 'logo-definite', alt: 'Definite Electric', h: 42 },
+  { name: 'logo-austral', alt: 'Austral Energy Solutions', h: 42, radius: true },
+  { name: 'logo-c-tinting', alt: 'C Tinting', h: 44 },
+  { name: 'logo-motha', alt: 'Motha Electric', h: 44, radius: true },
 ];
 
 const services = [
@@ -96,16 +97,19 @@ const trades = [
   <section class="trust">
     <div class="trust-logos container">
       {
-        trustLogos.map((logo) => (
-          <a href={logo.href} class="trust-logo">
-            <Picture
-              name={logo.name}
-              alt={logo.alt}
-              height={logo.h}
-              style={`height:${logo.h}px;${logo.radius ? 'border-radius:6px;' : ''}`}
-            />
-          </a>
-        ))
+        trustLogos.map((logo) => {
+          const Tag = logo.href ? 'a' : 'span';
+          return (
+            <Tag href={logo.href} class="trust-logo">
+              <Picture
+                name={logo.name}
+                alt={logo.alt}
+                height={logo.h}
+                style={`height:${logo.h}px;${logo.radius ? 'border-radius:6px;' : ''}`}
+              />
+            </Tag>
+          );
+        })
       }
     </div>
     <div class="trust-link">
@@ -571,7 +575,7 @@ const trades = [
       opacity 0.2s;
   }
 
-  .trust-logo:hover :global(img) {
+  a.trust-logo:hover :global(img) {
     filter: grayscale(0);
     opacity: 1;
   }
