@@ -41,8 +41,9 @@
       "dek": "Dry Duck racked up reviews in weeks. A dusty pile of old five-stars loses to whoever earns more this week, including competitors like Thrasher's weekly pace.",
       "date": "October 6, 2026",
       "publishAfter": "2026-10-06",
-      "status": "ready",
-      "seo": "Google reviews for local SEO trades"
+      "status": "published",
+      "seo": "Google reviews for local SEO trades",
+      "publishedOn": "2026-10-06"
     },
     {
       "slug": "plumber-google-marketing",

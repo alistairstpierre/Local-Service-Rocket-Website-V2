@@ -4,6 +4,12 @@
    sync with the live Astro file under src/pages/blog/. */
 export const blogPosts = [
   {
+    href: '/blog/review-velocity-beats-count',
+    title: "Review velocity beats review count for local SEO",
+    dek: "Dry Duck racked up reviews in weeks. A dusty pile of old five-stars loses to whoever earns more this week, including competitors like Thrasher's weekly pace.",
+    date: "October 6, 2026",
+  },
+  {
     href: '/blog/max-conversions-junk-jobs',
     title: "Max Conversions is why your electrician ads book fan installs",
     dek: "Google's recommended bid strategy optimises for easy conversions, not profitable jobs. How multi-service trades get a calendar full of the wrong work.",
