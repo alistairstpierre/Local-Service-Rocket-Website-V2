@@ -63,8 +63,9 @@
       "dek": "HVAC marketing on Google — same spine as Rewired. GBP, LSA, Search, booked jobs.",
       "date": "October 20, 2026",
       "publishAfter": "2026-10-20",
-      "status": "ready",
-      "seo": "HVAC marketing"
+      "status": "published",
+      "seo": "HVAC marketing",
+      "publishedOn": "2026-10-20"
     },
     {
       "slug": "roofer-google-marketing",
