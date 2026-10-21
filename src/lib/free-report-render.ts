@@ -808,6 +808,17 @@ function photoSlot(name: string, you: boolean, url?: string): string {
   return `<div class="rpt-photo${you ? ' is-you' : ''}" aria-hidden="true">${pinInitial(name)}</div>`;
 }
 
+const AI_ANSWER_CHARS = 420;
+
+function clipAnswer(text: string, max = AI_ANSWER_CHARS): string {
+  const clean = text.replace(/\s+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+  if (clean.length <= max) return clean;
+  const slice = clean.slice(0, max);
+  const sentence = slice.match(/^[\s\S]*?[.!](?=\s|$)/);
+  const cut = sentence && sentence[0].length > 140 ? sentence[0] : slice.replace(/\s+\S*$/, '');
+  return `${cut.trim()}…`;
+}
+
 function splitTitle(title: string, keyword: string): { before: string; match: string; after: string } {
   const roots = keywordRoots(keyword);
   const re = new RegExp(roots.map((r) => r.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'i');
@@ -1905,7 +1916,7 @@ export function renderReportHtml(report: PublicReport): string {
           .join('')}
       </div>
 
-      <div class="rpt-mini-kicker is-dim rpt-block-kicker">TWO OF THE ${aiTotal} ANSWERS, WORD FOR WORD</div>
+      <div class="rpt-mini-kicker is-dim rpt-block-kicker">TWO OF THE ${aiTotal} ANSWERS</div>
       <div class="rpt-chats">
         <article class="rpt-chat">
           <header><span class="rpt-ai-logo" style="background:#10a37f">GPT</span><b>ChatGPT</b><time>${esc(generated)}</time></header>
@@ -1913,7 +1924,7 @@ export function renderReportHtml(report: PublicReport): string {
             <div class="rpt-bubble">${esc(gptAnswer?.question ?? AIQ[0] ?? '')}</div>
             ${
               gptAnswer?.text
-                ? gptAnswer.text.split(/\n+/).map((p) => `<p>${esc(p)}</p>`).join('')
+                ? clipAnswer(gptAnswer.text).split(/\n+/).map((p) => `<p>${esc(p)}</p>`).join('')
                 : `<p>Here are some of the top-rated ${esc(kwPlural)} in ${esc(cityName)}, based on recent reviews and local reputation:</p>`
             }
             ${itemsFor(Math.max(0, gptQi), Math.max(0, gptPi))
@@ -1928,7 +1939,7 @@ export function renderReportHtml(report: PublicReport): string {
             <div class="rpt-bubble">${esc(gemAnswer?.question ?? AIQ[Math.max(0, gemQi)] ?? '')}</div>
             ${
               gemAnswer?.text
-                ? gemAnswer.text.split(/\n+/).map((p) => `<p>${esc(p)}</p>`).join('')
+                ? clipAnswer(gemAnswer.text).split(/\n+/).map((p) => `<p>${esc(p)}</p>`).join('')
                 : `<p>For an emergency ${esc(keyword)} in ${esc(cityName)}, these providers offer 24/7 or same-day service and are consistently well reviewed:</p>`
             }
             ${itemsFor(Math.max(0, gemQi), Math.max(0, gemPi))
