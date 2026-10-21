@@ -96,8 +96,8 @@ Railway.
 | `/flight-plan` | The System: Pre-flight / Liftoff / Orbit stages |
 | `/get-started` | Get Started funnel (`marketing for electrical contractors`) |
 | `/contact` | Contact form: question, free audit, or coaching (EmailJS + screenshots) |
-| `/free-report` | Electrician-only lead magnet: email + business + city → Railway analysis API |
-| `/free-report/view` | After the form, opens immediately and polls `GET /api/reports/:id`. Sections fill in as snapshots land. No `id` shows the example with GBP photos. |
+| `/free-report` | Electrician-only lead magnet: search the Google listing, then email + city → Railway analysis API |
+| `/free-report/view` | After the form, opens immediately and polls `GET /api/reports/:id`. Sections fill in as snapshots land. No `id` shows the example. |
 | `/services` | Services hub (`electrician marketing services`) |
 | `/services/electrician-seo` | Electrician SEO & reviews (`electrician seo agency`) |
 | `/services/electrician-advertising` | Electrician advertising: LSAs + Google Ads (`electrician advertising`) |

@@ -1,8 +1,8 @@
 ---
-/* Free Google report lead magnet. Collects email + business + city, POSTs to the
-   Railway analysis API, then sends the visitor to /free-report/view/?id= to poll.
-   The API (LSRMarketingAnalysisTool) holds all vendor keys; this static page only
-   knows PUBLIC_ANALYSIS_API_URL. */
+/* Free Google report lead magnet. Collects email + city, searches GET /api/places
+   for the Google listing, then POSTs placeId to the Railway analysis API and
+   sends the visitor to /free-report/view/?id= to poll. Vendor keys stay on
+   Railway; this static page only knows PUBLIC_ANALYSIS_API_URL. */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { absoluteUrl, breadcrumbList, graph, webPageNode } from '../../data/schema';
 
@@ -70,19 +70,20 @@ const apiUrl = (import.meta.env.PUBLIC_ANALYSIS_API_URL || '').replace(/\/$/, ''
             <span class="field-error" data-for="email" hidden></span>
           </label>
           <label>
-            <span>Business name</span>
-            <input type="text" name="businessName" autocomplete="organization" required minlength="2" maxlength="120" />
-            <span class="field-error" data-for="businessName" hidden></span>
-          </label>
-          <label>
             <span>City and state</span>
-            <input type="text" name="city" autocomplete="address-level2" required minlength="2" maxlength="120" placeholder="Tampa, FL" />
+            <input type="text" name="city" id="city-input" autocomplete="address-level2" required minlength="2" maxlength="120" placeholder="Tampa, FL" />
             <span class="field-error" data-for="city" hidden></span>
           </label>
-          <label>
-            <span>Website <em>(optional)</em></span>
-            <input type="url" name="website" inputmode="url" maxlength="200" placeholder="https://yoursite.com" />
-          </label>
+          <div class="search">
+            <label>
+              <span>Your Google listing</span>
+              <input type="text" name="businessName" id="biz-input" autocomplete="off" required minlength="2" maxlength="120" placeholder="Start typing the shop name" />
+              <span class="field-error" data-for="businessName" hidden></span>
+            </label>
+            <input type="hidden" name="placeId" id="place-id" />
+            <div id="biz-picked" class="picked" hidden></div>
+            <ul id="biz-results" class="results" hidden></ul>
+          </div>
           <div class="hp" aria-hidden="true">
             <label for="report-fax">Fax</label>
             <input type="text" id="report-fax" name="fax_number" tabindex="-1" autocomplete="off" />
@@ -102,12 +103,118 @@ const apiUrl = (import.meta.env.PUBLIC_ANALYSIS_API_URL || '').replace(/\/$/, ''
 </BaseLayout>
 
 <script>
+  type PlaceHit = {
+    placeId: string;
+    name: string;
+    rating?: number;
+    reviewCount?: number;
+    category?: string;
+    address?: string;
+  };
+
   const form = document.getElementById('report-form') as HTMLFormElement | null;
   const statusEl = document.getElementById('form-status');
   const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement | null;
-  if (!form) throw new Error('Report form missing');
+  const cityInput = document.getElementById('city-input') as HTMLInputElement | null;
+  const bizInput = document.getElementById('biz-input') as HTMLInputElement | null;
+  const placeInput = document.getElementById('place-id') as HTMLInputElement | null;
+  const resultsEl = document.getElementById('biz-results');
+  const pickedEl = document.getElementById('biz-picked');
+  if (!form || !cityInput || !bizInput || !placeInput || !resultsEl || !pickedEl) {
+    throw new Error('Report form missing');
+  }
 
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  let timer = 0;
+  let searchSeq = 0;
+
+  function esc(value: string): string {
+    return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function hideResults() {
+    resultsEl.hidden = true;
+    resultsEl.innerHTML = '';
+  }
+
+  function clearPick() {
+    placeInput.value = '';
+    pickedEl.hidden = true;
+    pickedEl.innerHTML = '';
+    bizInput.hidden = false;
+  }
+
+  function pickPlace(hit: PlaceHit) {
+    placeInput.value = hit.placeId;
+    bizInput.value = hit.name;
+    bizInput.hidden = true;
+    pickedEl.hidden = false;
+    const bits = [hit.category, hit.address].filter(Boolean).join(' · ');
+    const rating = hit.rating ? `${hit.rating.toFixed(1)}★${hit.reviewCount ? ` (${hit.reviewCount})` : ''}` : '';
+    pickedEl.innerHTML = `<div><strong>${esc(hit.name)}</strong>${rating ? `<span>${esc(rating)}</span>` : ''}${bits ? `<span>${esc(bits)}</span>` : ''}</div><button type="button" class="picked-clear">Change</button>`;
+    hideResults();
+    pickedEl.querySelector('button')?.addEventListener('click', () => {
+      clearPick();
+      bizInput.focus();
+    });
+  }
+
+  async function searchPlaces() {
+    const apiUrl = form.dataset.apiUrl || '';
+    const q = bizInput.value.trim();
+    const city = cityInput.value.trim();
+    if (!apiUrl || q.length < 2 || city.length < 2) {
+      hideResults();
+      return;
+    }
+    const seq = ++searchSeq;
+    resultsEl.hidden = false;
+    resultsEl.innerHTML = '<li class="results-status">Searching Google listings…</li>';
+    try {
+      const res = await fetch(
+        `${apiUrl}/api/places?q=${encodeURIComponent(q)}&city=${encodeURIComponent(city)}`
+      );
+      const json = await res.json();
+      if (seq !== searchSeq) return;
+      if (!res.ok) throw new Error(json.error || 'Search failed');
+      const hits = (json.results || []) as PlaceHit[];
+      if (!hits.length) {
+        resultsEl.innerHTML = '<li class="results-status">No listing found. Keep typing, or submit the name as written.</li>';
+        return;
+      }
+      resultsEl.innerHTML = hits
+        .map(
+          (hit) =>
+            `<li><button type="button"><strong>${esc(hit.name)}</strong><span>${esc([hit.rating ? `${hit.rating.toFixed(1)}★` : '', hit.address || hit.category].filter(Boolean).join(' · '))}</span></button></li>`
+        )
+        .join('');
+      resultsEl.querySelectorAll('button').forEach((btn, i) => {
+        btn.addEventListener('click', () => {
+          const hit = hits[i];
+          if (hit) pickPlace(hit);
+        });
+      });
+    } catch (err) {
+      if (seq !== searchSeq) return;
+      resultsEl.innerHTML = `<li class="results-status">${err instanceof Error ? err.message : 'Search failed'}</li>`;
+    }
+  }
+
+  bizInput.addEventListener('input', () => {
+    if (placeInput.value) clearPick();
+    window.clearTimeout(timer);
+    timer = window.setTimeout(searchPlaces, 350);
+  });
+  cityInput.addEventListener('input', () => {
+    if (placeInput.value) clearPick();
+    if (bizInput.value.trim().length >= 2) {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(searchPlaces, 350);
+    }
+  });
+  document.addEventListener('click', (event) => {
+    if (!form.contains(event.target as Node)) hideResults();
+  });
 
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -119,13 +226,13 @@ const apiUrl = (import.meta.env.PUBLIC_ANALYSIS_API_URL || '').replace(/\/$/, ''
       email: String(data.get('email') || '').trim(),
       businessName: String(data.get('businessName') || '').trim(),
       city: String(data.get('city') || '').trim(),
-      website: String(data.get('website') || '').trim() || undefined,
+      placeId: String(data.get('placeId') || '').trim() || undefined,
     };
 
     const errors: Record<string, string> = {};
     if (!EMAIL_RE.test(payload.email)) errors.email = 'Enter a valid email.';
-    if (payload.businessName.length < 2) errors.businessName = 'Enter the business name.';
     if (payload.city.length < 2) errors.city = 'Enter a city and state.';
+    if (payload.businessName.length < 2) errors.businessName = 'Search for your Google listing.';
     form.querySelectorAll<HTMLElement>('.field-error').forEach((el) => {
       const key = el.dataset.for;
       if (key && errors[key]) {
@@ -189,6 +296,16 @@ const apiUrl = (import.meta.env.PUBLIC_ANALYSIS_API_URL || '').replace(/\/$/, ''
   input { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; font: inherit; }
   input:focus { outline: none; border-color: var(--orange); }
   .field-error { font-size: 12.5px; color: #b42318; }
+  .search { position: relative; display: flex; flex-direction: column; gap: 8px; }
+  .results { list-style: none; margin: 0; padding: 6px; border: 1px solid var(--border); border-radius: 10px; background: #fff; box-shadow: 0 10px 28px rgba(26, 26, 26, 0.08); max-height: 280px; overflow: auto; }
+  .results li + li { border-top: 1px solid #f1f1f1; }
+  .results button { width: 100%; border: 0; background: none; text-align: left; padding: 10px 12px; font: inherit; cursor: pointer; border-radius: 8px; }
+  .results button:hover, .results button:focus { background: #fff7f1; }
+  .results strong, .picked strong { display: block; font-size: 14px; }
+  .results span, .picked span { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .results-status { padding: 10px 12px; font-size: 13px; color: var(--muted); }
+  .picked { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 12px 14px; border: 1px solid var(--orange); border-radius: 10px; background: #fff7f1; }
+  .picked-clear { border: 0; background: none; color: var(--orange); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
   .privacy { font-size: 13px; color: var(--muted); line-height: 1.5; }
   .status { font-size: 14px; color: var(--body); }
   .config-warn { margin-bottom: 16px; padding: 12px 14px; border-radius: var(--radius-card); background: var(--orange-tint); border: 1px solid rgba(232, 89, 12, 0.25); font-size: 14px; }

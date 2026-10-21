@@ -1,8 +1,8 @@
 /* Example businesses and AI answers from Claude Design Files/Free Google Report.dc.html.
-   Used by free-report-render.ts to fill sections we do not collect yet
-   (photo counts, Google posts, press/industry mention counts, extra AI platforms).
-   Live reports overlay geo grid, weekly review bars, photos, H2/alt, SSL,
-   usability, directory ticks, and a 2×3 ChatGPT/Gemini matrix. Not used at build time. */
+   Used by free-report-render.ts as the no-id demo and as fallbacks while a live
+   report is still loading. Press/industry mention counts stay example-only.
+   Live reports overlay geo grid, weekly review bars, H2/alt, SSL, usability,
+   directory ticks, and a 2×3 ChatGPT/Gemini matrix. Not used at build time. */
 
 export type ExampleAuth = {
   bbb: boolean;
@@ -49,8 +49,7 @@ export type ExampleBiz = {
   desc: boolean;
   hours: boolean;
   book: boolean;
-  photos: number;
-  posts30: number;
+  phone: boolean;
   closes: string;
   url: string;
   site: string;
@@ -103,8 +102,7 @@ export const EXAMPLE_BIZ: ExampleBiz[] = [
     desc: false,
     hours: true,
     book: true,
-    photos: 340,
-    posts30: 4,
+    phone: true,
     closes: 'Closes 6 PM',
     url: 'smalljobselectric.com',
     site: 'Small Jobs Electric',
@@ -171,8 +169,7 @@ export const EXAMPLE_BIZ: ExampleBiz[] = [
     desc: true,
     hours: true,
     book: true,
-    photos: 210,
-    posts30: 2,
+    phone: true,
     closes: 'Open 24 hours',
     url: 'mrelectric.com/tampa-bay',
     site: 'Mr. Electric',
@@ -239,8 +236,7 @@ export const EXAMPLE_BIZ: ExampleBiz[] = [
     desc: true,
     hours: true,
     book: true,
-    photos: 185,
-    posts30: 1,
+    phone: true,
     closes: 'Closes 5 PM',
     url: 'brandonelectricinc.com',
     site: 'Brandon Electric',
@@ -307,8 +303,7 @@ export const EXAMPLE_BIZ: ExampleBiz[] = [
     desc: false,
     hours: true,
     book: false,
-    photos: 12,
-    posts30: 0,
+    phone: true,
     closes: 'Closes 5 PM',
     url: 'bayshorehomeservices.com',
     site: 'Bayshore Home Services',
@@ -370,25 +365,18 @@ export const EXAMPLE_AI_QUESTIONS = [
   'best electrician in Tampa, FL',
   'electrician near me in Tampa for a panel upgrade',
   'who do I call for an emergency electrician in Tampa?',
-  'how much does it cost to rewire a house in Tampa, and who does it?',
-  'most reviewed electrician in Tampa Bay',
 ];
 
 export const EXAMPLE_AI_PLATFORMS = [
   { id: 'gpt', name: 'ChatGPT', logo: 'GPT', bg: '#10a37f', cites: false as const },
   { id: 'gem', name: 'Gemini', logo: 'G', bg: '#4285f4', cites: 'B' as const },
-  { id: 'cla', name: 'Claude', logo: 'C', bg: '#d97757', cites: false as const },
-  { id: 'ppx', name: 'Perplexity', logo: 'P', bg: '#20808d', cites: true as const },
-  { id: 'aio', name: 'Google AI Overview', logo: 'AI', bg: '#1a73e8', cites: true as const },
 ];
 
 /** S/M/B = pack #1/#2/#3, Y = subject. Example shortlist order per question × platform. */
 export const EXAMPLE_AI_MATRIX: string[][][] = [
-  [['M', 'S', 'B'], ['B', 'M'], ['M', 'B', 'S'], ['S', 'M', 'B'], ['M', 'B']],
-  [['M', 'B'], ['B', 'M', 'S'], ['B', 'M'], ['M', 'S'], ['B', 'M']],
-  [['M', 'S'], ['M', 'B'], ['M'], ['M', 'B'], ['M', 'B']],
-  [['B', 'M'], ['B'], ['M', 'B'], ['B', 'S', 'M'], ['B', 'M']],
-  [['S', 'M', 'B'], ['S', 'B'], ['S', 'M'], ['S', 'M', 'B'], ['S', 'M']],
+  [['M', 'S', 'B'], ['B', 'M']],
+  [['M', 'B'], ['B', 'M', 'S']],
+  [['M', 'S'], ['M', 'B']],
 ];
 
 export const EXAMPLE_BLURB: Record<string, string> = {

@@ -58,8 +58,6 @@ export type PublicReportBusiness = {
     photoUrl?: string;
     reviewWeeks?: number[];
     packGrid?: (number | null)[];
-    photoCount?: number;
-    posts30?: number;
   };
   website?: {
     rootUrl: string;
@@ -120,7 +118,7 @@ export type PublicAiSearch = {
   answers: { question: string; platform: 'chatgpt' | 'gemini'; text: string }[];
 };
 
-/** Empty report so mergeReport uses EXAMPLE_BIZ, including the GBP photos. */
+/** Empty report so mergeReport uses EXAMPLE_BIZ. */
 export function examplePublicReport(): PublicReport {
   return {
     subjectName: EXAMPLE_BIZ.find((b) => b.you)?.name || 'Your shop',
@@ -337,7 +335,6 @@ function overlayBiz(example: ExampleBiz, live: PublicReportBusiness, keyword: st
     rating: live.gbp.rating ?? (heroOn ? example.rating : 0),
     reviews: live.gbp.reviewCount,
     weeks: live.gbp.reviewWeeks?.length === 8 ? live.gbp.reviewWeeks : heroOn ? example.weeks : EMPTY_WEEKS,
-    years: live.gbp.yearsInBusiness ?? (heroOn ? example.years : 0),
     cat: live.gbp.category ?? (heroOn ? example.cat : ''),
     secondary: live.gbp.secondaryCategoryCount ?? (heroOn ? example.secondary : 0),
     address: live.gbp.hasAddressListed ?? (heroOn ? example.address : false),
@@ -345,8 +342,8 @@ function overlayBiz(example: ExampleBiz, live: PublicReportBusiness, keyword: st
     desc: live.gbp.hasDescription,
     hours: live.gbp.hasHours,
     book: live.gbp.hasBookOnline,
-    photos: live.gbp.photoCount ?? -1,
-    posts30: live.gbp.posts30 ?? -1,
+    phone: live.gbp.hasPhone,
+    years: live.gbp.yearsInBusiness ?? (heroOn && !ready ? example.years : 0),
     photo: live.gbp.photoUrl || (heroOn && !ready ? example.photo : ''),
     grid: live.gbp.packGrid?.length === 25 ? live.gbp.packGrid : packOn && !ready ? example.grid : EMPTY_GRID,
     url,
@@ -406,8 +403,7 @@ function ghostBiz(name: string, pack: number | null, you = false): ExampleBiz {
     desc: false,
     hours: false,
     book: false,
-    photos: -1,
-    posts30: -1,
+    phone: false,
     photo: '',
     grid: EMPTY_GRID,
     url: '',
@@ -768,13 +764,10 @@ export function renderReportHtml(report: PublicReport): string {
     row('Hours · Book online', 'Actions on the profile', B, (b) =>
       b.hours && b.book ? yes('both') : b.hours || b.book ? part(b.hours ? 'hours only' : 'booking only') : no('neither')
     ),
-    row('Photos', 'Total uploaded', B, (b) =>
-      b.photos < 0 ? num('—', 'count not in this scan') : num(b.photos, 'photos', b.photos < 50 ? N : INK)
+    row('Years in business', 'How long Google shows the shop has been open', B, (b) =>
+      b.years ? num(b.years, 'years') : no('not listed')
     ),
-    row('Google posts', 'Last 30 days', B, (b) =>
-      b.posts30 < 0 ? num('—', 'not in this scan') : b.posts30 ? num(b.posts30, 'posts') : no('none')
-    ),
-    row('Years in business', 'From the profile badge', B, (b) => num(`${b.years}+`, 'years')),
+    row('Phone on profile', 'Call button on the listing', B, (b) => (b.phone ? yes('listed') : no('missing'))),
     row('Total reviews', 'Lifetime', B, (b) => num(fmt(b.reviews), `${b.rating.toFixed(1)} ★`, b.you ? N : INK)),
   ];
 
@@ -988,9 +981,6 @@ export function renderReportHtml(report: PublicReport): string {
     gemini: { id: 'gemini', name: 'Gemini', logo: 'G', bg: '#4285f4' },
     gpt: { id: 'gpt', name: 'ChatGPT', logo: 'GPT', bg: '#10a37f' },
     gem: { id: 'gem', name: 'Gemini', logo: 'G', bg: '#4285f4' },
-    cla: { id: 'cla', name: 'Claude', logo: 'C', bg: '#d97757' },
-    ppx: { id: 'ppx', name: 'Perplexity', logo: 'P', bg: '#20808d' },
-    aio: { id: 'aio', name: 'Google AI Overview', logo: 'AI', bg: '#1a73e8' },
   };
   const CODE: Record<string, ExampleBiz> = { S: rivals[0] ?? you, M: rivals[1] ?? you, B: rivals[2] ?? you, Y: you };
   const AIQ = liveAi
@@ -1631,6 +1621,6 @@ export function renderReportHtml(report: PublicReport): string {
       </div>
     </section>`
     )}
-    <p class="rpt-foot">Generated ${esc(generated)} · Data from Google Search, Google Maps, PageSpeed Insights, Google Ads Transparency, ChatGPT, Gemini, Claude, Perplexity and Google AI Overview.</p>
+    <p class="rpt-foot">Generated ${esc(generated)} · Data from Google Search, Google Maps, PageSpeed Insights, Google Ads Transparency, ChatGPT and Gemini.</p>
   </div>`;
 }
