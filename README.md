@@ -96,8 +96,8 @@ Railway.
 | `/flight-plan` | The System: Pre-flight / Liftoff / Orbit stages |
 | `/get-started` | Get Started funnel (`marketing for electrical contractors`) |
 | `/contact` | Contact form: question, free audit, or coaching (EmailJS + screenshots) |
-| `/free-report` | Lead magnet form: email + business + city → Railway analysis API |
-| `/free-report/view` | Polls the API and renders GBP, website, ads, and AI ranking scores |
+| `/free-report` | Electrician-only lead magnet: email + business + city → Railway analysis API |
+| `/free-report/view` | After the form, opens immediately and polls `GET /api/reports/:id`. Sections fill in as snapshots land. No `id` shows the example with GBP photos. |
 | `/services` | Services hub (`electrician marketing services`) |
 | `/services/electrician-seo` | Electrician SEO & reviews (`electrician seo agency`) |
 | `/services/electrician-advertising` | Electrician advertising: LSAs + Google Ads (`electrician advertising`) |
@@ -159,7 +159,8 @@ Old service URLs (`/services/paid-ads`, `/local-seo`, `/websites`, `/hiring`, `/
 │   ├── robots.txt                # Allow all + Sitemap URL for GSC / crawlers
 │   ├── llms.txt                  # Hand-written site summary for AI assistants; electrician search phrases → pages, pricing, case studies
 │   ├── assets/                   # GENERATED images + trade/service SVGs (do not hand-edit)
-│   └── fonts/                    # Self-hosted Manrope variable woff2
+│   ├── fonts/                    # Self-hosted Manrope variable woff2
+│   └── free-report/              # Example report GBP thumbs + one reused Tampa map snapshot
 ├── src/
 │   ├── components/
 │   │   ├── Footer.astro
@@ -169,6 +170,10 @@ Old service URLs (`/services/paid-ads`, `/local-seo`, `/websites`, `/hiring`, `/
 │   │   ├── Nav.astro             # Sticky header; mobile menu + fixed full-width onboarding CTA bar
 │   │   ├── Picture.astro         # <picture> AVIF/WebP wrapper used for every raster
 │   │   └── PricingOffer.astro    # Flight Plan pricing tiers (/ and /get-started)
+│   ├── lib/
+│   │   ├── free-report-copy.ts     # Well / okay / poorly headlines from live ranks
+│   │   ├── free-report-example.ts  # Fallback dataset for photo counts, posts, extra AI platforms
+│   │   └── free-report-render.ts   # Maps PublicReport + examples into the report HTML
 │   ├── data/
 │   │   ├── blog-posts.js         # Blog hub cards (cron prepends here on publish)
 │   │   ├── images.js             # Image manifest (widths, formats) shared by script + Picture
@@ -192,7 +197,7 @@ Old service URLs (`/services/paid-ads`, `/local-seo`, `/websites`, `/hiring`, `/
 │   │   ├── contact.astro         # Free audit form → EmailJS (PUBLIC_EMAILJS_*)
 │   │   ├── free-report/
 │   │   │   ├── index.astro       # Lead magnet form → Railway POST /api/reports
-│   │   │   └── view.astro        # Polls GET /api/reports/:id and renders scores |
+│   │   │   └── view.astro        # Polls GET /api/reports/:id → full report layout
 │   │   ├── privacy.astro
 │   │   ├── terms.astro
 │   │   ├── for/

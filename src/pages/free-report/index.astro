@@ -6,9 +6,9 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { absoluteUrl, breadcrumbList, graph, webPageNode } from '../../data/schema';
 
-const title = 'Free Google Report for Your Shop | Local Service Rocket';
+const title = 'Free Google Report for Electricians | Local Service Rocket';
 const description =
-  'See how your Google Business Profile, website, ads, and AI search rankings stack up against the Map Pack. Enter your shop and get a free comparison report.';
+  'See how your electrician Google Business Profile, website, ads, and AI search rankings stack up against the Map Pack. Enter your shop and get a free comparison report.';
 const pageUrl = absoluteUrl('/free-report/');
 const jsonLd = graph([
   webPageNode({ pageUrl, name: title, description }),
@@ -30,11 +30,12 @@ const apiUrl = (import.meta.env.PUBLIC_ANALYSIS_API_URL || '').replace(/\/$/, ''
         <span class="current">Free Google report</span>
       </div>
       <div class="eyebrow">FREE LEAD MAGNET</div>
-      <h1>See why the other shop is ranking above you.</h1>
+      <h1>See why the other electrician is ranking above you.</h1>
       <p class="lede">
-        We pull your Google Business Profile, website, ads, and AI search rankings, then compare
-        you with the businesses in the Map Pack. No sales call. The report loads on this site and
-        we email a copy.
+        For electrician shops only, for now. We pull your Google Business Profile, website, ads,
+        and AI search rankings, then compare you with the electricians in the Map Pack. No sales
+        call. After you submit, you go straight to the report — it fills in as we pull each
+        section. We also email a copy.
       </p>
     </section>
 
@@ -82,16 +83,12 @@ const apiUrl = (import.meta.env.PUBLIC_ANALYSIS_API_URL || '').replace(/\/$/, ''
             <span>Website <em>(optional)</em></span>
             <input type="url" name="website" inputmode="url" maxlength="200" placeholder="https://yoursite.com" />
           </label>
-          <label>
-            <span>Main service keyword <em>(optional)</em></span>
-            <input type="text" name="keyword" maxlength="80" placeholder="electrician" />
-          </label>
           <div class="hp" aria-hidden="true">
             <label for="report-fax">Fax</label>
             <input type="text" id="report-fax" name="fax_number" tabindex="-1" autocomplete="off" />
           </div>
           <p class="privacy">
-            We use your email to send the report. We never sell your info. See the
+            You’ll land on the report next. We also email the link. We never sell your info. See the
             <a href="/privacy">privacy policy</a>.
           </p>
           <button type="submit" class="btn btn-primary btn-lg" id="submit-btn" disabled={!apiUrl}>
@@ -123,7 +120,6 @@ const apiUrl = (import.meta.env.PUBLIC_ANALYSIS_API_URL || '').replace(/\/$/, ''
       businessName: String(data.get('businessName') || '').trim(),
       city: String(data.get('city') || '').trim(),
       website: String(data.get('website') || '').trim() || undefined,
-      keyword: String(data.get('keyword') || '').trim() || undefined,
     };
 
     const errors: Record<string, string> = {};
@@ -148,7 +144,7 @@ const apiUrl = (import.meta.env.PUBLIC_ANALYSIS_API_URL || '').replace(/\/$/, ''
     }
     if (statusEl) {
       statusEl.hidden = false;
-      statusEl.textContent = 'This usually takes under a minute.';
+      statusEl.textContent = 'Opening your report…';
     }
 
     try {

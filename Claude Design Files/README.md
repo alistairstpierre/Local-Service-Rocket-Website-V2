@@ -16,6 +16,7 @@ The `.dc.html` files in this bundle are **design references created in HTML** �
 - `Case Study - Rewired.dc.html` — case study template (breadcrumb → logo header + headline + team photo → 4-stat band → story sections → dark quote panel → CTA). Honest Hank's and Dry Duck pages should follow this template.
 - `Services.dc.html` — services overview, 6 cards linking to individual service pages (only Paid Ads exists so far).
 - `Service - Paid Ads.dc.html` — individual service page template (hero + dark proof panel → 6 "what's included" cards → CTA).
+- `Free Google Report.dc.html` — lead-magnet report on `/free-report/view`. Recreated in `src/pages/free-report/view.astro` + `src/lib/free-report-render.ts`.
 - `assets/` — all logos, icons, team photos, headshots. Icon set: `icon-*-v2.svg` (services), `trade-*.svg` (trades grid).
 
 ## Design Tokens
