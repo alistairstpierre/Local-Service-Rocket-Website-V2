@@ -1,6 +1,7 @@
 /* Builds the Free Google Report HTML from PublicReport JSON plus the design
    example dataset. Used only by /free-report/view.astro after the Railway
-   poll succeeds. Layout matches Claude Design Files/Free Google Report.dc.html. */
+   poll succeeds. Overall shop rankings stay hidden until every section is
+   ready. Layout matches Claude Design Files/Free Google Report.dc.html. */
 
 import {
   adsHeadlineCopy,
@@ -1523,19 +1524,9 @@ export function renderReportHtml(report: PublicReport): string {
   const gapsHead = gapsHeadingCopy({ pack: packLevel, count: gaps.length });
   const close = closerCopy(packLevel, gaps.length);
   const ctaHref = report.cta?.href || '/get-started';
-
-  return `
-  <div class="rpt">
-    <div class="rpt-hero">
-      <div class="rpt-eyebrow">FREE GOOGLE REPORT<span> · ${esc(generated)}</span></div>
-      <h1>${esc(heroHeadline)}</h1>
-      <p class="rpt-lede">${esc(heroSub)}</p>
-      <div class="rpt-search"><span class="rpt-search-icon" aria-hidden="true"></span><span>${esc(marketQuery)} near ${esc(city)}</span></div>
-
-      ${wait(
-        'hero',
-        'Finding the Map Pack and your Google profile',
-        `<div class="rpt-shop-grid">
+  const rankingsReady =
+    !ready || Boolean(ready.hero && ready.pack && ready.website && ready.ads && ready.ai);
+  const shopRanking = `<div class="rpt-shop-grid">
         ${shopPairs
           .map(
             (pair) => `<div class="rpt-shop-pair">
@@ -1577,8 +1568,30 @@ export function renderReportHtml(report: PublicReport): string {
       <div class="rpt-shop-foot">
         <span>Ranked by overall score: Google profile 25% · reviews 15% · website 25% · ads 18% · AI search 17%.</span>
         <a href="#gaps">See every gap ↓</a>
-      </div>`
-      )}
+      </div>`;
+  const heroHold = `<div class="rpt-rank-hold" role="status">
+        <span class="rpt-spin" aria-hidden="true"></span>
+        <div>
+          <div class="rpt-rank-hold-title">Check back for the full rankings when loading completes.</div>
+          <div class="rpt-rank-hold-sub">Overall place and scores wait until profile, Map Pack, website, ads, and AI search are all in.</div>
+        </div>
+      </div>`;
+
+  return `
+  <div class="rpt">
+    <div class="rpt-hero">
+      <div class="rpt-eyebrow">FREE GOOGLE REPORT<span> · ${esc(generated)}</span></div>
+      ${
+        rankingsReady
+          ? `<h1>${esc(heroHeadline)}</h1>
+      <p class="rpt-lede">${esc(heroSub)}</p>
+      <div class="rpt-search"><span class="rpt-search-icon" aria-hidden="true"></span><span>${esc(marketQuery)} near ${esc(city)}</span></div>
+      ${shopRanking}`
+          : `<h1>We’re building your Google report.</h1>
+      <p class="rpt-lede">Check back for the full rankings when loading completes. The sections below fill in as each check finishes.</p>
+      ${city ? `<div class="rpt-search"><span class="rpt-search-icon" aria-hidden="true"></span><span>${esc(marketQuery)} near ${esc(city)}</span></div>` : ''}
+      ${heroHold}`
+      }
     </div>
 
     ${wait(

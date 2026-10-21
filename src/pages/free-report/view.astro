@@ -28,6 +28,7 @@ const apiUrl = (
       <div class="rpt-dock-bar"><i id="load-bar"></i></div>
       <div class="rpt-dock-row">
         <span id="load-now">Starting your report…</span>
+        <span id="load-eta">About 7 minutes left</span>
         <span id="load-pct">0%</span>
       </div>
       <ol id="load-steps" class="rpt-dock-steps">
@@ -65,9 +66,22 @@ const apiUrl = (
   const errorText = document.getElementById('error-text');
   const reportBox = document.getElementById('state-report');
   const loadNow = document.getElementById('load-now');
+  const loadEta = document.getElementById('load-eta');
   const loadPct = document.getElementById('load-pct');
   const loadBar = document.getElementById('load-bar');
   let lastHtml = '';
+  const STAGE_SEC = { profile: 45, pack: 50, website: 180, ads: 40, ai: 100 } as const;
+
+  function etaLabel(report?: PublicReport): string {
+    const left = STAGES.reduce((sum, key) => {
+      const done =
+        key === 'profile' ? Boolean(report?.ready?.hero) : Boolean(report?.ready?.[key]);
+      return done ? sum : sum + STAGE_SEC[key];
+    }, 0);
+    if (left <= 25) return 'Less than a minute left';
+    if (left <= 90) return 'About a minute left';
+    return `About ${Math.round(left / 60)} minutes left`;
+  }
 
   function showError(message: string) {
     if (dock) dock.hidden = true;
@@ -97,6 +111,7 @@ const apiUrl = (
     if (loadBar) loadBar.style.width = `${pct}%`;
     if (loadPct) loadPct.textContent = `${pct}%`;
     if (loadNow) loadNow.textContent = progress || 'Working…';
+    if (loadEta) loadEta.textContent = etaLabel(report);
     const current = report?.stage && report.stage !== 'complete' && report.stage !== 'queued' ? report.stage : STAGES[n] || 'profile';
     dock.querySelectorAll<HTMLElement>('[data-step]').forEach((el) => {
       const step = el.dataset.step || '';
@@ -165,7 +180,15 @@ const apiUrl = (
     margin-top: 10px; font-size: 13.5px; font-weight: 700;
   }
   #load-now { color: #1a1a1a; }
+  #load-eta { color: #6b6b6b; font-weight: 650; font-variant-numeric: tabular-nums; }
   #load-pct { color: var(--orange); font-variant-numeric: tabular-nums; }
+  .view :global(.rpt-rank-hold) {
+    display: flex; align-items: flex-start; gap: 14px;
+    margin-top: 22px; padding: 22px 20px;
+    border: 1.5px dashed #e3e3e3; border-radius: 16px; background: #fffaf6;
+  }
+  .view :global(.rpt-rank-hold-title) { font-size: 16px; font-weight: 800; letter-spacing: -0.02em; }
+  .view :global(.rpt-rank-hold-sub) { margin-top: 4px; font-size: 13.5px; font-weight: 500; color: #6b6b6b; line-height: 1.45; }
   .rpt-dock-steps {
     display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 8px 0 0; padding: 0; list-style: none;
     font-size: 11.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #b0b0b0;
