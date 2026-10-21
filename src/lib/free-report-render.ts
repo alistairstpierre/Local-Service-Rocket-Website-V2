@@ -34,7 +34,16 @@ export type PublicReportBusiness = {
   name: string;
   isSubject: boolean;
   packPosition?: number;
-  scores: { gbp: number; website: number; ads: number; ai: number; overall: number };
+  scores: {
+    gbp: number;
+    reviews?: number;
+    website: number;
+    speed?: number;
+    site?: number;
+    ads: number;
+    ai: number;
+    overall: number;
+  };
   gbp: {
     rating?: number;
     reviewCount: number;
@@ -43,6 +52,9 @@ export type PublicReportBusiness = {
     reviewsLast3Months?: number;
     reviewsLast6Months?: number;
     hasDescription: boolean;
+    description?: string;
+    descriptionFit?: { keyword: boolean; services: boolean; locations: boolean };
+    descriptionUnknown?: boolean;
     hasPhone: boolean;
     hasWebsite: boolean;
     hasHours: boolean;
@@ -56,6 +68,7 @@ export type PublicReportBusiness = {
     socialProfiles?: string[];
     webReviewSources?: string[];
     photoUrl?: string;
+    photoCount?: number;
     reviewWeeks?: number[];
     packGrid?: (number | null)[];
   };
@@ -95,7 +108,9 @@ export type PublicReportBusiness = {
     lsaPosition?: number;
     lsaCompetitorCount?: number;
     runningSearchAds: boolean;
+    afterHours?: boolean;
     advertiserFound?: boolean;
+    advertiserLastSeen?: string;
     searchAd?: { title?: string; description?: string; url?: string };
   };
   ai?: {
@@ -116,6 +131,7 @@ export type PublicAiSearch = {
   platforms: ('chatgpt' | 'gemini')[];
   matrix: string[][][];
   answers: { question: string; platform: 'chatgpt' | 'gemini'; text: string }[];
+  runs?: number;
 };
 
 /** Empty report so mergeReport uses EXAMPLE_BIZ. */
@@ -126,7 +142,7 @@ export function examplePublicReport(): PublicReport {
     keyword: EXAMPLE_META.keyword,
     primaryCategory: 'Electrician',
     overallScore: 0,
-    pillars: { gbp: 0, website: 0, ads: 0, ai: 0 },
+    pillars: { gbp: 0, reviews: 0, website: 0, ads: 0, ai: 0 },
     businesses: [],
     gaps: [],
     cta: { href: '/get-started', label: 'See how we close these gaps' },
@@ -143,7 +159,7 @@ export function loadingPublicReport(subjectName: string, city: string): PublicRe
     keyword: 'electrician',
     primaryCategory: 'Electrician',
     overallScore: 0,
-    pillars: { gbp: 0, website: 0, ads: 0, ai: 0 },
+    pillars: { gbp: 0, reviews: 0, website: 0, ads: 0, ai: 0 },
     businesses: [],
     gaps: [],
     cta: { href: '/get-started', label: 'See how we close these gaps' },
@@ -160,7 +176,7 @@ export type PublicReport = {
   primaryCategory?: string;
   keywordSource?: string;
   overallScore: number;
-  pillars: { gbp: number; website: number; ads: number; ai?: number };
+  pillars: { gbp: number; reviews?: number; website: number; ads: number; ai?: number };
   businesses: PublicReportBusiness[];
   aiSearch?: PublicAiSearch;
   gaps: string[];
@@ -190,10 +206,6 @@ const N = '#d1402f';
 const A = '#b7791f';
 const TINT = '#fff7f1';
 const WEEKS_N = 8;
-
-const SHOP_PIN_SVG = `<svg class="rpt-from-icon" viewBox="0 0 40 48" aria-hidden="true"><path d="M20 46c8-10 16-18.4 16-28A16 16 0 1 0 4 18c0 9.6 8 18 16 28z" fill="${OR}" stroke="#fff" stroke-width="2"/><path d="M13.5 20.2V16.8c0-1.1.8-2 1.9-2h9.2c1.1 0 1.9.9 1.9 2v3.4H13.5zm0 1.6h13v6.6c0 1-.8 1.8-1.8 1.8h-9.4c-1 0-1.8-.8-1.8-1.8V21.8zm4.4 1.4h4.2v4.2h-4.2v-4.2z" fill="#fff"/></svg>`;
-
-const SERVICE_AREA_SVG = `<svg class="rpt-from-area" viewBox="0 0 120 72" aria-hidden="true"><ellipse cx="60" cy="36" rx="54" ry="30" fill="${OR}" fill-opacity=".10" stroke="${OR}" stroke-opacity=".45" stroke-width="1.5" stroke-dasharray="4 3"/><ellipse cx="60" cy="36" rx="34" ry="18" fill="${OR}" fill-opacity=".12" stroke="${OR}" stroke-opacity=".7" stroke-width="1.5"/><ellipse cx="60" cy="36" rx="14" ry="8" fill="${OR}" fill-opacity=".2" stroke="${OR}" stroke-width="1.5"/><circle cx="60" cy="36" r="3.2" fill="${OR}" stroke="#fff" stroke-width="1.4"/></svg>`;
 
 function esc(value: string): string {
   return value
@@ -254,8 +266,18 @@ function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-function hasHost(list: string[] | undefined, needle: string): boolean {
-  return (list ?? []).some((item) => item.toLowerCase().includes(needle));
+/** Real profile URL, not a bare host like "yelp.com". */
+function hasListing(list: string[] | undefined, needle: string): boolean {
+  return (list ?? []).some((item) => {
+    const raw = item.trim();
+    if (!raw.toLowerCase().includes(needle)) return false;
+    try {
+      const url = new URL(/^https?:\/\//i.test(raw) ? raw : `https://${raw}`);
+      return url.pathname.replace(/\/+$/, '').length > 0;
+    } catch {
+      return false;
+    }
+  });
 }
 
 function namesRoughlyMatch(a: string, b: string): boolean {
@@ -293,26 +315,76 @@ function overlayAuth(example: ExampleAuth, live: PublicReportBusiness, ready?: R
   const base = siteOn || heroOn ? example : blank;
   return {
     ...base,
-    bbb: live.website?.listedOnBBB ?? (siteOn ? example.bbb : false),
-    chamber: listed('chamber') ?? (siteOn ? example.chamber : false),
-    apple: listed('apple') ?? (siteOn ? example.apple : false),
-    bing: listed('bing') ?? (siteOn ? example.bing : false),
-    yp: listed('yellowpages') ?? (siteOn ? example.yp : false),
-    nextdoor: listed('nextdoor') ?? (siteOn ? example.nextdoor : false),
-    facebook: socials ? hasHost(socials, 'facebook.com') : heroOn ? example.facebook : false,
-    instagram: socials ? hasHost(socials, 'instagram.com') : heroOn ? example.instagram : false,
-    youtube: socials ? hasHost(socials, 'youtube.com') : heroOn ? example.youtube : false,
-    linkedin: socials ? hasHost(socials, 'linkedin.com') : heroOn ? example.linkedin : false,
-    yelp: reviews ? hasHost(reviews, 'yelp') : heroOn ? example.yelp : false,
-    angi: reviews ? hasHost(reviews, 'angi') : heroOn ? example.angi : false,
-    homeadvisor: reviews ? hasHost(reviews, 'homeadvisor') : heroOn ? example.homeadvisor : false,
-    thumbtack: reviews ? hasHost(reviews, 'thumbtack') : heroOn ? example.thumbtack : false,
+    bbb: Boolean(live.website?.listedOnBBB || hasListing(reviews, 'bbb') || listed('bbb')),
+    chamber: Boolean(listed('chamber') || hasListing(reviews, 'chamber') || hasListing(socials, 'chamber')),
+    apple: Boolean(listed('apple')),
+    bing: Boolean(listed('bing')),
+    yp: Boolean(listed('yellowpages')),
+    nextdoor: Boolean(listed('nextdoor')),
+    facebook: socials ? hasListing(socials, 'facebook.com') : heroOn ? example.facebook : false,
+    instagram: socials ? hasListing(socials, 'instagram.com') : heroOn ? example.instagram : false,
+    youtube: socials ? hasListing(socials, 'youtube.com') : heroOn ? example.youtube : false,
+    linkedin: socials ? hasListing(socials, 'linkedin.com') : heroOn ? example.linkedin : false,
+    yelp: Boolean(listed('yelp') || hasListing(reviews, 'yelp')),
+    angi: Boolean(listed('angi') || hasListing(reviews, 'angi')),
+    homeadvisor: Boolean(listed('homeadvisor') || hasListing(reviews, 'homeadvisor')),
+    thumbtack: Boolean(listed('thumbtack') || hasListing(reviews, 'thumbtack')),
     press: 0,
     industry: 0,
   };
 }
 
-function overlayBiz(example: ExampleBiz, live: PublicReportBusiness, keyword: string, ready?: ReportReady): ExampleBiz {
+const SERVICE_WORDS = [
+  'panel',
+  'generator',
+  'ev charger',
+  'ev charging',
+  'charger',
+  'lighting',
+  'wiring',
+  'outlet',
+  'repair',
+  'install',
+  'inspection',
+  'commercial',
+  'residential',
+  'emergency',
+  'rewire',
+  'ceiling fan',
+  'surge',
+  'troubleshoot',
+  'upgrade',
+  'new construction',
+  'whole home',
+];
+
+function gradeDescription(
+  text: string | undefined,
+  keyword: string,
+  city: string
+): { keyword: boolean; services: boolean; locations: boolean } {
+  if (!text) return { keyword: false, services: false, locations: false };
+  const t = text.toLowerCase();
+  const kw = keyword.toLowerCase().trim();
+  const hasKeyword = Boolean(kw) && new RegExp(`\\b${escapeRegExp(kw)}s?\\b`).test(t);
+  const hasServices = SERVICE_WORDS.some((word) => t.includes(word));
+  const cityParts = city
+    .toLowerCase()
+    .split(/[,\s/]+/)
+    .map((part) => part.trim())
+    .filter((part) => part.length >= 3 && !['and', 'the'].includes(part));
+  const hasCity = cityParts.some((part) => t.includes(part));
+  const hasServing = /\b(serving|service area|communities|surrounding|greater|metro)\b/.test(t);
+  return { keyword: hasKeyword, services: hasServices, locations: hasCity || hasServing };
+}
+
+function overlayBiz(
+  example: ExampleBiz,
+  live: PublicReportBusiness,
+  keyword: string,
+  city: string,
+  ready?: ReportReady
+): ExampleBiz {
   const siteOn = !ready || ready.website;
   const adsOn = !ready || ready.ads;
   const aiOn = !ready || ready.ai;
@@ -320,6 +392,9 @@ function overlayBiz(example: ExampleBiz, live: PublicReportBusiness, keyword: st
   const heroOn = !ready || ready.hero;
   const title = live.website?.metaTitle ?? (siteOn ? example.title : live.name);
   const url = hostOf(live.website?.rootUrl || live.gbp.websiteUrl) || (siteOn ? example.url : '');
+  const fit =
+    live.gbp.descriptionFit ??
+    (live.gbp.description ? gradeDescription(live.gbp.description, keyword, city) : undefined);
   return {
     ...example,
     name: live.name,
@@ -328,7 +403,10 @@ function overlayBiz(example: ExampleBiz, live: PublicReportBusiness, keyword: st
     you: live.isSubject,
     scores: {
       gbp: live.scores.gbp,
+      rev: live.scores.reviews,
       web: siteOn ? live.scores.website : 0,
+      spd: siteOn ? live.scores.speed : 0,
+      site: siteOn ? live.scores.site : 0,
       ads: adsOn ? live.scores.ads : 0,
       ai: aiOn ? live.scores.ai : 0,
     },
@@ -340,6 +418,12 @@ function overlayBiz(example: ExampleBiz, live: PublicReportBusiness, keyword: st
     address: live.gbp.hasAddressListed ?? (heroOn ? example.address : false),
     addrShort: live.gbp.address ?? (live.gbp.hasAddressListed === false ? 'Hidden' : heroOn ? example.addrShort : '…'),
     desc: live.gbp.hasDescription,
+    descUnknown: !live.gbp.hasDescription && Boolean(live.gbp.descriptionUnknown),
+    description: live.gbp.description,
+    descKeyword: fit?.keyword,
+    descServices: fit?.services,
+    descLocations: fit?.locations,
+    photos: live.gbp.photoCount ?? (heroOn && !ready ? example.photos : 0),
     hours: live.gbp.hasHours,
     book: live.gbp.hasBookOnline,
     phone: live.gbp.hasPhone,
@@ -357,6 +441,7 @@ function overlayBiz(example: ExampleBiz, live: PublicReportBusiness, keyword: st
     altKw: live.website ? (live.website.altKeywordPercent ?? 0) : siteOn ? example.altKw : 0,
     ssl: live.website ? (live.website.ssl ?? live.website.rootUrl.startsWith('https')) : siteOn ? example.ssl : true,
     schema: (live.website?.schemaTypes.length ?? 0) > 0,
+    schemaTypes: live.website?.schemaTypes ?? [],
     sitemap: live.website?.sitemapPages ?? (siteOn ? example.sitemap : 0),
     servicePages: live.website?.servicePages ?? (siteOn ? example.servicePages : 0),
     locationPages: live.website?.locationPages ?? (siteOn ? example.locationPages : 0),
@@ -391,7 +476,7 @@ function ghostBiz(name: string, pack: number | null, you = false): ExampleBiz {
     short: shortName(name),
     pack,
     you,
-    scores: { gbp: 0, web: 0, ads: 0, ai: 0 },
+    scores: { gbp: 0, rev: 0, web: 0, spd: 0, site: 0, ads: 0, ai: 0 },
     rating: 0,
     reviews: 0,
     weeks: EMPTY_WEEKS,
@@ -416,6 +501,7 @@ function ghostBiz(name: string, pack: number | null, you = false): ExampleBiz {
     h2Kw: 0,
     altKw: 0,
     schema: false,
+    schemaTypes: [],
     sitemap: 0,
     servicePages: 0,
     locationPages: 0,
@@ -480,13 +566,15 @@ function mergeReport(report: PublicReport): {
   const exampleYou = EXAMPLE_BIZ.find((b) => b.you)!;
 
   const rivals = liveRivals.length
-    ? liveRivals.slice(0, 3).map((live, i) => overlayBiz(exampleRivals[i] ?? exampleRivals[0]!, live, keyword, ready))
+    ? liveRivals.slice(0, 3).map((live, i) =>
+        overlayBiz(exampleRivals[i] ?? exampleRivals[0]!, live, keyword, city, ready)
+      )
     : streaming
       ? [ghostBiz('Looking up #1', 1), ghostBiz('Looking up #2', 2), ghostBiz('Looking up #3', 3)]
       : exampleRivals;
 
   const you = liveYou
-    ? overlayBiz(exampleYou, liveYou, keyword, ready)
+    ? overlayBiz(exampleYou, liveYou, keyword, city, ready)
     : streaming
       ? ghostBiz(report.subjectName || 'Your shop', null, true)
       : exampleYou;
@@ -502,12 +590,134 @@ function mergeReport(report: PublicReport): {
   };
 }
 
+const WEIGHTS = { gbp: 0.25, rev: 0.15, web: 0.25, ads: 0.18, ai: 0.17 };
+
+function weekAverage(weeks: number[]): number {
+  const ws = weeks.slice(-WEEKS_N);
+  if (!ws.length) return 0;
+  return ws.reduce((sum, n) => sum + n, 0) / WEEKS_N;
+}
+
+function reviewScoreOf(b: ExampleBiz, bestAvg: number): number {
+  const ws = b.weeks.slice(-WEEKS_N);
+  const active = ws.filter((n) => n > 0).length / WEEKS_N;
+  const pace = Math.min(1, weekAverage(b.weeks) / Math.max(0.1, bestAvg));
+  return Math.round(active * 65 + pace * 35);
+}
+
+function applyReviewScores(biz: ExampleBiz[]): void {
+  const bestAvg = Math.max(0.1, ...biz.map((b) => weekAverage(b.weeks)));
+  for (const b of biz) {
+    b.scores.rev = reviewScoreOf(b, bestAvg);
+  }
+}
+
+function clampScore(n: number): number {
+  return Math.max(0, Math.min(100, Math.round(n)));
+}
+
+function speedScoreOf(b: ExampleBiz, bestLcp: number): number {
+  if (b.lcp > 0 && bestLcp > 0) {
+    const lcpScore = 100 * Math.min(1, bestLcp / b.lcp);
+    return clampScore(lcpScore * 0.75 + b.psi * 0.25);
+  }
+  if (b.psi > 0) return clampScore(b.psi);
+  return 0;
+}
+
+function siteScoreOf(b: ExampleBiz): number {
+  let score = 10;
+  if (b.titleKw === 'yes') score += 12;
+  else if (b.titleKw === 'partial') score += 6;
+  if (b.metaDesc) score += 8;
+  if (b.h1Kw) score += 12;
+  if (b.h2Kw > 0) score += 8;
+  score += Math.round((b.altKw / 100) * 6);
+  if (b.schema) score += 8;
+  if (b.servicePages > 0) score += 8;
+  if (b.locationPages > 0) score += 4;
+  if (b.ssl) score += 4;
+  if (b.privacy && b.terms) score += 5;
+  else if (b.privacy || b.terms) score += 2;
+  if (b.ux.phoneHeader) score += 3;
+  if (b.ux.clickCall) score += 3;
+  if (b.ux.ctaFold) score += 3;
+  if (b.ux.form) score += 3;
+  if (b.ux.reviewsHome) score += 3;
+  if (b.ux.map) score += 2;
+  score += Math.round(Math.min(b.rd / 40, 1) * 6);
+  return clampScore(score);
+}
+
+function applyWebsiteScores(biz: ExampleBiz[]): void {
+  const measured = biz.map((b) => b.lcp).filter((n) => n > 0);
+  const bestLcp = measured.length ? Math.min(...measured) : 0;
+  for (const b of biz) {
+    const speed = speedScoreOf(b, bestLcp);
+    const site = siteScoreOf(b);
+    b.scores.spd = speed;
+    b.scores.site = site;
+    b.scores.web = clampScore(speed * 0.3 + site * 0.7);
+  }
+}
+
 function overallOf(s: ExampleBiz['scores']): number {
-  return Math.round(s.gbp * 0.35 + s.web * 0.28 + s.ads * 0.2 + s.ai * 0.17);
+  return Math.round(
+    s.gbp * WEIGHTS.gbp +
+      (s.rev ?? 0) * WEIGHTS.rev +
+      s.web * WEIGHTS.web +
+      s.ads * WEIGHTS.ads +
+      s.ai * WEIGHTS.ai
+  );
 }
 
 function exactScore(s: ExampleBiz['scores']): number {
-  return s.gbp * 0.35 + s.web * 0.28 + s.ads * 0.2 + s.ai * 0.17;
+  return (
+    s.gbp * WEIGHTS.gbp +
+    (s.rev ?? 0) * WEIGHTS.rev +
+    s.web * WEIGHTS.web +
+    s.ads * WEIGHTS.ads +
+    s.ai * WEIGHTS.ai
+  );
+}
+
+function placeShort(n: number): string {
+  const suffix =
+    n % 10 === 1 && n !== 11 ? 'ST' : n % 10 === 2 && n !== 12 ? 'ND' : n % 10 === 3 && n !== 13 ? 'RD' : 'TH';
+  return `${n}${suffix}`;
+}
+
+function rankBy(biz: ExampleBiz[], value: (b: ExampleBiz) => number) {
+  return [...biz]
+    .map((b) => ({ b, v: value(b) }))
+    .sort((x, y) => y.v - x.v)
+    .map((r, i) => ({
+      place: placeShort(i + 1),
+      placeColor: r.b.you ? (i === 0 ? OR : N) : i === 0 ? OR : '#8a8a8a',
+      name: r.b.you ? 'You' : r.b.short,
+      nameColor: r.b.you ? OR : INK,
+      v: r.v,
+      vColor: r.b.you ? OR : INK,
+      bg: r.b.you ? TINT : '#fff',
+      border: r.b.you ? '#f3c7ad' : '#e7e7e7',
+      you: r.b.you,
+      biz: r.b,
+    }));
+}
+
+function rankPills(label: string, ranks: ReturnType<typeof rankBy>, dim = false): string {
+  return `<div class="rpt-ranks${dim ? ' is-dim' : ''}">
+    <span class="rpt-ranks-label">${esc(label)}</span>
+    ${ranks
+      .map(
+        (k) => `<div class="rpt-rank" style="border-color:${k.border};background:${k.bg}">
+      <span style="color:${k.placeColor}">${esc(k.place)}</span>
+      <span class="rpt-rank-name" style="color:${k.nameColor}">${esc(k.name)}</span>
+      <b style="color:${k.vColor}">${k.v}</b>
+    </div>`
+      )
+      .join('')}
+  </div>`;
 }
 
 function placeOrd(n: number): string {
@@ -527,6 +737,54 @@ function part(sub = '') {
 }
 function num(t: string | number, sub = '', color = INK, size = '22px') {
   return { t: String(t), color, pill: 'transparent', sub, size };
+}
+
+function schemaCell(types: string[] | undefined, present: boolean): ReturnType<typeof yes> {
+  const list = (types ?? []).filter(Boolean);
+  const trade = list.find((t) =>
+    /electrician|plumber|hvac|locksmith|roofer|homeandconstruction|localbusiness|professionalservice/i.test(t)
+  );
+  const extra = list.find((t) => /faqpage|service|aggregaterating|review/i.test(t));
+  const generic = list.find((t) => /organization|website|webpage|breadcrumb/i.test(t));
+  const label = (name?: string) => (name ? name.replace(/([a-z])([A-Z])/g, '$1 $2') : '');
+  if (trade) return yes(extra ? `${label(trade)} · ${label(extra)}` : label(trade));
+  if (generic) return part(label(generic));
+  if (present || list.length) return part(label(list[0]) || 'generic only');
+  return no('none');
+}
+
+function isAfterHours(city: string, at?: string): boolean {
+  const tz = timezoneForCity(city);
+  const date = at ? new Date(at) : new Date();
+  if (Number.isNaN(date.getTime())) return false;
+  const raw = new Intl.DateTimeFormat('en-US', { hour: 'numeric', hour12: false, timeZone: tz }).format(date);
+  const hour = Number(raw) === 24 ? 0 : Number(raw);
+  return hour < 8 || hour >= 18;
+}
+
+function timezoneForCity(city: string): string {
+  const token = (city.split(',').pop() ?? city).trim().toUpperCase();
+  const STATE_TZ: Record<string, string> = {
+    AL: 'America/Chicago', AR: 'America/Chicago', IA: 'America/Chicago', IL: 'America/Chicago',
+    KS: 'America/Chicago', LA: 'America/Chicago', MN: 'America/Chicago', MO: 'America/Chicago',
+    MS: 'America/Chicago', ND: 'America/Chicago', NE: 'America/Chicago', OK: 'America/Chicago',
+    SD: 'America/Chicago', TN: 'America/Chicago', TX: 'America/Chicago', WI: 'America/Chicago',
+    IOWA: 'America/Chicago',
+    CT: 'America/New_York', DC: 'America/New_York', DE: 'America/New_York', FL: 'America/New_York',
+    GA: 'America/New_York', IN: 'America/Indiana/Indianapolis', MA: 'America/New_York',
+    MD: 'America/New_York', ME: 'America/New_York', MI: 'America/Detroit', NC: 'America/New_York',
+    NH: 'America/New_York', NJ: 'America/New_York', NY: 'America/New_York', OH: 'America/New_York',
+    PA: 'America/New_York', RI: 'America/New_York', SC: 'America/New_York', VA: 'America/New_York',
+    VT: 'America/New_York', WV: 'America/New_York',
+    AZ: 'America/Phoenix', CA: 'America/Los_Angeles', NV: 'America/Los_Angeles',
+    OR: 'America/Los_Angeles', WA: 'America/Los_Angeles',
+    CO: 'America/Denver', ID: 'America/Boise', MT: 'America/Denver', NM: 'America/Denver',
+    UT: 'America/Denver', WY: 'America/Denver',
+    AK: 'America/Anchorage', HI: 'Pacific/Honolulu',
+  };
+  if (STATE_TZ[token]) return STATE_TZ[token];
+  if (city.toLowerCase().includes('iowa')) return 'America/Chicago';
+  return 'America/Chicago';
 }
 
 type Cell = { t: string; color: string; pill: string; sub: string; size: string; bg?: string };
@@ -556,13 +814,6 @@ function splitTitle(title: string, keyword: string): { before: string; match: st
   const m = title.match(re);
   if (!m || m.index == null) return { before: title, match: '', after: '' };
   return { before: title.slice(0, m.index), match: m[0], after: title.slice(m.index + m[0].length) };
-}
-
-function rankCell(r: number | null): { t: string; bg: string; color: string } {
-  if (r == null) return { t: '–', bg: '#cfd6dc', color: '#5f6368' };
-  if (r <= 3) return { t: String(r), bg: Y, color: '#fff' };
-  if (r <= 10) return { t: String(r), bg: '#f0b429', color: INK };
-  return { t: String(r), bg: N, color: '#fff' };
 }
 
 function ringOf(i: number): number {
@@ -640,6 +891,8 @@ function ctaBand(kicker: string, head: string, sub = '', href = BOOKING_URL, lab
 
 export function renderReportHtml(report: PublicReport): string {
   const { biz: B, keyword, marketQuery, city, generated, liveGaps, mapImageUrl, ready } = mergeReport(report);
+  applyReviewScores(B);
+  applyWebsiteScores(B);
   const mapBg = mapImageUrl
     ? `<img class="rpt-map-bg" src="${esc(mapImageUrl)}" alt="" width="640" height="360" />`
     : '';
@@ -663,6 +916,7 @@ export function renderReportHtml(report: PublicReport): string {
 
   const pillarKeys = [
     ['GOOGLE PROFILE', 'gbp'],
+    ['REVIEWS', 'rev'],
     ['WEBSITE', 'web'],
     ['GOOGLE ADS', 'ads'],
     ['AI SEARCH', 'ai'],
@@ -676,7 +930,7 @@ export function renderReportHtml(report: PublicReport): string {
       photo: b.photo,
       rating: b.rating ? b.rating.toFixed(1) : '—',
       reviews: fmt(b.reviews),
-      years: b.years,
+      years: 0,
       packText: b.you
         ? inPack
           ? `#${b.pack} in the Map Pack`
@@ -689,21 +943,22 @@ export function renderReportHtml(report: PublicReport): string {
       scoreColor: b.you ? OR : INK,
       track: b.you ? '#f3d9c6' : '#f0f0f0',
       bar: b.you ? OR : INK,
-      breakdown: pillarKeys.map(([short, key]) => ({ short, v: b.scores[key] })),
+      breakdown: pillarKeys.map(([short, key]) => ({ short, v: b.scores[key] ?? 0 })),
     }));
   const shopPairs = [shopCards.slice(0, 2), shopCards.slice(2, 4)].filter((pair) => pair.length);
 
-  const heads = B.map((b, i) => ({
-    name: b.short,
-    tag: b.you ? 'YOU' : `#${b.pack} IN PACK`,
-    tagShort: b.you ? 'YOU' : `PACK #${b.pack}`,
-    tagColor: b.you ? OR : '#8a8a8a',
-    bg: b.you ? TINT : 'transparent',
-    radius: i === B.length - 1 ? '0 18px 0 0' : '0',
-  }));
-
-  const youPackLabel = inPack ? `#${you.pack} in the pack` : 'Not in the top 3';
-  const youPackColor = inPack ? Y : N;
+  const packRows = [...B].sort((a, b) => (a.pack ?? 99) - (b.pack ?? 99));
+  const packRowHtml = (r: ExampleBiz) => {
+    const missing = Boolean(r.you) && !(typeof r.pack === 'number' && r.pack >= 1);
+    const rank = missing ? 'Not in the top 3' : `#${r.pack}`;
+    const rankColor = missing ? N : r.you ? Y : '#70757a';
+    return `<div class="rpt-serp-row${r.you ? ' is-you' : ''}${missing ? ' is-missing' : ''}">
+      ${r.you ? '<div class="rpt-mini-kicker">YOU</div>' : ''}
+      <div class="rpt-serp-name"><span>${esc(r.name)}</span><span style="color:${rankColor}">${esc(rank)}</span></div>
+      <div class="rpt-meta is-small"><span>${r.rating.toFixed(1)}</span>${stars()}<span>(${fmt(r.reviews)})</span></div>
+      <div class="rpt-serp-line">${esc(r.addrShort || 'Address hidden')} · <span class="is-open">Open</span></div>
+    </div>`;
+  };
 
   const packLevel = packTier(you.pack);
   const coverLevel = coverageTier(youCov, covOf(leader));
@@ -723,21 +978,45 @@ export function renderReportHtml(report: PublicReport): string {
     ? 'Searched from your address'
     : `Searched from the center of ${city} — your address is hidden`;
 
-  const pins = [
-    { n: 1, x: 22, y: 30 },
-    { n: 2, x: 54, y: 52 },
-    { n: 3, x: 76, y: 22 },
-  ];
-
   const avgOf = (b: ExampleBiz) => b.weeks.slice(-weeksN).reduce((a, c) => a + c, 0) / weeksN;
   const activeOf = (b: ExampleBiz) => b.weeks.slice(-weeksN).filter((w) => w > 0).length;
   const maxW = Math.max(1, ...B.flatMap((b) => b.weeks.slice(-weeksN)));
-  const reviewEngine = B.map((b) => {
+  const rankGbp = rankBy(B, (b) => b.scores.gbp);
+  const rankRev = rankBy(B, (b) => b.scores.rev ?? 0);
+  const rankWeb = rankBy(B, (b) => b.scores.web);
+  const rankSpeed = rankBy(B, (b) => b.scores.spd ?? 0);
+  const rankSite = rankBy(B, (b) => b.scores.site ?? 0);
+  const rankAds = rankBy(B, (b) => b.scores.ads);
+  const rankAi = rankBy(B, (b) => b.scores.ai);
+  const orderGbp = rankGbp.map((r) => r.biz);
+  const orderWeb = rankWeb.map((r) => r.biz);
+  const orderAds = rankAds.map((r) => r.biz);
+  const headsFor = (order: ExampleBiz[]) =>
+    order.map((b, i) => ({
+      name: b.short,
+      tag: b.you ? 'YOU' : `#${b.pack} IN PACK`,
+      tagShort: b.you ? 'YOU' : `PACK #${b.pack}`,
+      tagColor: b.you ? OR : '#8a8a8a',
+      bg: b.you ? TINT : 'transparent',
+      radius: i === order.length - 1 ? '0 18px 0 0' : '0',
+    }));
+  const headsGbp = headsFor(orderGbp);
+  const headsWeb = headsFor(orderWeb);
+  const headsAds = headsFor(orderAds);
+  const reviewEngine = rankRev.map((r) => {
+    const b = r.biz;
     const ws = b.weeks.slice(-weeksN);
     const avg = avgOf(b);
     const active = activeOf(b);
+    const rp = rankRev.findIndex((row) => row.biz === b);
     return {
       ...b,
+      tag: b.you ? 'YOU' : `#${b.pack} IN PACK`,
+      tagColor: b.you ? OR : '#8a8a8a',
+      revScore: b.scores.rev ?? 0,
+      revPlace: `${placeShort(rp + 1)} PLACE`,
+      revPlaceColor: rp === 0 ? OR : b.you ? N : '#8a8a8a',
+      revScoreColor: b.you ? OR : INK,
       avg: avg.toFixed(1),
       avgColor: b.you ? (avg < 1 ? N : OR) : INK,
       bars: ws.map((w) => ({
@@ -750,162 +1029,209 @@ export function renderReportHtml(report: PublicReport): string {
   });
 
   const gbpRows = [
-    row('Keyword in business name', `More relevant for people searching “${marketQuery}”`, B, (b) => {
+    row('Keyword in business name', `More relevant for people searching “${marketQuery}”`, orderGbp, (b) => {
       const fit = nameKeywordFit(b.name, keyword);
       if (fit === 'yes') return yes(`“${marketQuery}”`);
       if (fit === 'weak') return part('says “electric”');
       return no('not in name');
     }),
-    row('Primary category', 'What Google thinks you do', B, (b) =>
+    row('Primary category', 'The primary category you selected', orderGbp, (b) =>
       num(b.cat, b.cat.toLowerCase() === keyword.toLowerCase() ? 'matches search' : 'mismatch', b.cat.toLowerCase() === keyword.toLowerCase() ? INK : N, '13px')
     ),
-    row('Secondary categories', 'Extra services listed', B, (b) => num(b.secondary, 'added', b.secondary <= 1 ? N : INK)),
-    row('Address shown', 'Street address on the pin', B, (b) => (b.address ? yes(b.addrShort) : no('hidden'))),
-    row('Business description', 'The “About” paragraph', B, (b) => (b.desc ? yes('written') : no('missing'))),
-    row('Hours · Book online', 'Actions on the profile', B, (b) =>
+    row('Secondary categories', 'The additional categories you selected', orderGbp, (b) => num(b.secondary, 'added', b.secondary <= 1 ? N : INK)),
+    row('Address shown', 'Street address on the pin', orderGbp, (b) => (b.address ? yes(b.addrShort) : no('hidden'))),
+    row('Business description', 'Keyword, services, and cities in the About', orderGbp, (b) => {
+      if (b.descUnknown) return part('couldn’t read');
+      if (!b.desc) return no('missing');
+      const graded = b.descKeyword != null || b.descServices != null || b.descLocations != null;
+      if (!graded) return yes('written');
+      const bits = [
+        b.descKeyword ? 'keyword' : '',
+        b.descServices ? 'services' : '',
+        b.descLocations ? 'locations' : '',
+      ].filter(Boolean);
+      if (bits.length === 3) return yes('keyword · services · locations');
+      if (bits.length) return part(bits.join(' · '));
+      return part('written, no keyword');
+    }),
+    row('Photos on profile', 'Images on the listing', orderGbp, (b) =>
+      b.photos ? num(fmt(b.photos), 'photos') : b.descUnknown ? part('couldn’t read') : no('none listed')
+    ),
+    row('Hours · Book online', 'Actions on the profile', orderGbp, (b) =>
       b.hours && b.book ? yes('both') : b.hours || b.book ? part(b.hours ? 'hours only' : 'booking only') : no('neither')
     ),
-    row('Years in business', 'How long Google shows the shop has been open', B, (b) =>
-      b.years ? num(b.years, 'years') : no('not listed')
-    ),
-    row('Phone on profile', 'Call button on the listing', B, (b) => (b.phone ? yes('listed') : no('missing'))),
-    row('Total reviews', 'Lifetime', B, (b) => num(fmt(b.reviews), `${b.rating.toFixed(1)} ★`, b.you ? N : INK)),
+    row('Phone on profile', 'Call button on the listing', orderGbp, (b) => (b.phone ? yes('listed') : no('missing'))),
   ];
 
-  const psiColor = (p: number) => (p >= 90 ? '#0cce6b' : p >= 50 ? '#ffa400' : '#ff4e42');
-  const psiTrack = (p: number) => (p >= 90 ? '#dcf6e7' : p >= 50 ? '#fff0d6' : '#ffe3e1');
-  const bestPsi = Math.max(...B.map((b) => b.psi));
-  const speed = B.map((b) => ({
-    ...b,
-    deg: Math.round(b.psi * 3.6),
-    color: psiColor(b.psi),
-    track: psiTrack(b.psi),
-    lcpLabel: `${(b.lcp / 1000).toFixed(1)}s`,
-    tag: b.you ? (b.psi === bestPsi ? 'YOU · FASTEST SITE' : 'YOU') : `#${b.pack} IN PACK`,
-    tagColor: b.you ? (b.psi === bestPsi ? Y : OR) : '#8a8a8a',
-  }));
+  const measuredLcps = B.map((b) => b.lcp).filter((n) => n > 0);
+  const bestLcp = measuredLcps.length ? Math.min(...measuredLcps) : 0;
+  const isFastest = (b: ExampleBiz) => b.lcp > 0 && bestLcp > 0 && b.lcp === bestLcp;
+  const lcpColor = (ms: number) => (ms <= 0 ? '#8a8a8a' : ms <= 2500 ? Y : ms <= 4000 ? A : N);
+  const lcpNote = (ms: number) => {
+    if (ms <= 0) return 'We couldn’t measure load time on this homepage.';
+    if (ms <= 2500) return 'Under Google’s bar. Fast enough.';
+    const over = ((ms - 2500) / 1000).toFixed(1);
+    if (ms <= 4000) return `${over}s over the bar. Visitors start leaving.`;
+    return `${over}s over the bar. Most visitors give up before it loads.`;
+  };
+  const barMaxS = Math.max(5, Math.ceil(Math.max(0, ...B.map((b) => b.lcp)) / 1000) || 5);
+  const speed = rankSpeed.map((r, i) => {
+    const b = r.biz;
+    const seconds = b.lcp > 0 ? b.lcp / 1000 : 0;
+    return {
+      name: b.short,
+      you: b.you,
+      track: b.you ? '#f3d9c6' : '#f0f0f0',
+      lcp: b.lcp > 0 ? `${seconds.toFixed(1)}s` : '—',
+      lcpColor: lcpColor(b.lcp),
+      note: lcpNote(b.lcp),
+      barW: b.lcp > 0 ? Math.min(100, Math.round((seconds / barMaxS) * 100)) : 0,
+      barMark: Math.round((2.5 / barMaxS) * 100),
+      barMax: `${barMaxS}s`,
+      bg: b.you ? TINT : '#fff',
+      border: b.you ? '#f3c7ad' : '#e7e7e7',
+      tag: b.you ? 'YOU' : `#${b.pack} IN PACK`,
+      tagColor: b.you ? OR : '#8a8a8a',
+      place: placeOrd(i + 1),
+      placeColor: i === 0 ? OR : b.you ? N : '#8a8a8a',
+      score: b.scores.spd ?? 0,
+      scoreColor: b.you ? OR : INK,
+    };
+  });
+  const speedPairs = [speed.slice(0, 2), speed.slice(2, 4)].filter((pair) => pair.length);
 
-  const serp = B.map((b) => {
+  const orderSite = rankSite.map((r) => r.biz);
+  const serp = orderSite.map((b) => {
     const s = splitTitle(b.title, keyword);
     const st =
       b.titleKw === 'yes'
-        ? { pill: Y, mark: '✓', status: `Says “${s.match.toLowerCase() || keyword}”` }
+        ? { titlePill: Y, titleMark: '✓', titleStatus: `Says “${s.match.toLowerCase() || keyword}”` }
         : b.titleKw === 'partial'
-          ? { pill: A, mark: '~', status: `“${s.match.toLowerCase()}” — close, not exact` }
-          : { pill: N, mark: '✗', status: 'No service keyword' };
+          ? { titlePill: A, titleMark: '~', titleStatus: `“${s.match.toLowerCase()}” — close, not exact` }
+          : { titlePill: N, titleMark: '✗', titleStatus: 'No service keyword' };
+    const descKw = b.metaDesc ? titleKwOf(b.metaDesc, keyword) : 'no';
     return {
-      ...b,
-      ...s,
-      ...st,
-      desc:
-        b.metaDesc ||
-        'No meta description. Google picks random text from the page instead — “Welcome to our website. We are a family owned and operated business serving…”',
-      descStyle: b.metaDesc ? 'normal' : 'italic',
+      site: b.site,
+      url: b.url,
+      initial: b.site[0] ?? '?',
+      you: b.you,
+      before: s.before,
+      match: s.match,
+      after: s.after,
       hlBg: s.match ? (b.titleKw === 'yes' ? '#e4f4ea' : '#fff3dc') : 'transparent',
       hlLine: s.match ? (b.titleKw === 'yes' ? Y : A) : 'transparent',
+      desc:
+        b.metaDesc ||
+        'No meta description. Google picks random text from the page instead, “Welcome to our website. We are a family owned and operated business serving…”',
+      descStyle: b.metaDesc ? 'normal' : 'italic',
+      descPill: b.metaDesc ? (descKw === 'yes' ? Y : A) : N,
+      descMark: b.metaDesc ? (descKw === 'yes' ? '✓' : '~') : '✗',
+      descStatus: b.metaDesc
+        ? descKw === 'yes'
+          ? 'Written, says what you do'
+          : 'Written, no service keyword'
+        : 'Missing. Google picks random text',
+      ...st,
+      bg: b.you ? TINT : '#fff',
+      border: b.you ? '#f3c7ad' : '#e7e7e7',
     };
   });
+  const serpPairs = [serp.slice(0, 2), serp.slice(2, 4)].filter((pair) => pair.length);
 
   const seoRows = [
-    row('Page title has keyword', 'The blue link in Google', B, (b) =>
-      b.titleKw === 'yes' ? yes(`“${keyword}”`) : b.titleKw === 'partial' ? part('close stem') : no('brand name only')
-    ),
-    row('Meta description', 'The grey text under the link', B, (b) => (b.metaDesc ? yes('written') : no('missing'))),
-    row('H1 has keyword', 'Main headline on the homepage', B, (b) => (b.h1Kw ? yes('') : no(''))),
-    row('H2s with keyword', 'Section headings, homepage', B, (b) => num(b.h2Kw, 'headings', b.h2Kw === 0 ? N : INK)),
-    row('Image alt text w/ keyword', 'Share of images described', B, (b) => num(`${b.altKw}%`, 'of images', b.altKw === 0 ? N : INK)),
-    row('Schema markup', 'Tells Google you’re a business', B, (b) => (b.schema ? yes('present') : no('none'))),
-    row('Service pages', 'One page per service', B, (b) => num(b.servicePages, 'pages', b.servicePages < 3 ? N : INK)),
-    row('Location pages', 'One page per city served', B, (b) => num(b.locationPages, 'pages')),
-    row('SSL (https)', 'Padlock in the browser', B, (b) => (b.ssl ? yes('secure') : no('not secure'))),
-    row('Privacy · Terms', 'Trust pages Google expects', B, (b) =>
+    row('H1 has keyword', 'The main headline on the homepage', orderWeb, (b) => (b.h1Kw ? yes('') : no(''))),
+    row('H2 has keyword', 'At least one section heading on the homepage', orderWeb, (b) => (b.h2Kw > 0 ? yes('') : no(''))),
+    row('Image alt text w/ keyword', 'Share of images described', orderWeb, (b) => num(`${b.altKw}%`, 'of images', b.altKw === 0 ? N : INK)),
+    row('Schema markup', 'The business type Google can read', orderWeb, (b) => schemaCell(b.schemaTypes, b.schema)),
+    row('Service pages', 'One page per service', orderWeb, (b) => num(b.servicePages, 'pages', b.servicePages < 3 ? N : INK)),
+    row('Location pages', 'One page per city served', orderWeb, (b) => num(b.locationPages, 'pages')),
+    row('SSL (https)', 'Padlock in the browser', orderWeb, (b) => (b.ssl ? yes('secure') : no('not secure'))),
+    row('Privacy · Terms', 'Trust pages Google expects', orderWeb, (b) =>
       b.privacy && b.terms ? yes('both') : b.privacy || b.terms ? part(b.privacy ? 'privacy only' : 'terms only') : no('neither')
     ),
   ];
 
   const uxRows = [
-    row('Phone number in header', 'Visible without scrolling', B, (b) => (b.ux.phoneHeader ? yes('') : no(''))),
-    row('Tap-to-call on mobile', 'Number is a link', B, (b) => (b.ux.clickCall ? yes('') : no(''))),
-    row('Call-to-action above the fold', '“Call now” / “Get a quote”', B, (b) => (b.ux.ctaFold ? yes('') : no(''))),
-    row('Contact form', 'Any page', B, (b) => (b.ux.form ? yes('') : no(''))),
-    row('Reviews shown on homepage', 'Stars a visitor can see', B, (b) => (b.ux.reviewsHome ? yes('') : no(''))),
-    row('Map of service area', 'Embedded Google Map', B, (b) => (b.ux.map ? yes('') : no(''))),
+    row('Phone number in header', 'Visible without scrolling', orderWeb, (b) => (b.ux.phoneHeader ? yes('') : no(''))),
+    row('Tap-to-call on mobile', 'Number is a link', orderWeb, (b) => (b.ux.clickCall ? yes('') : no(''))),
+    row('Call-to-action above the fold', '“Call now” / “Get a quote”', orderWeb, (b) => (b.ux.ctaFold ? yes('') : no(''))),
+    row('Contact form', 'Any page', orderWeb, (b) => (b.ux.form ? yes('') : no(''))),
+    row('Reviews shown on homepage', 'Stars a visitor can see', orderWeb, (b) => (b.ux.reviewsHome ? yes('') : no(''))),
+    row('Map of service area', 'Embedded Google Map', orderWeb, (b) => (b.ux.map ? yes('') : no(''))),
   ];
 
-  const CORE = ['bbb', 'chamber', 'apple', 'bing', 'yp', 'nextdoor'] as const;
-  const LEAD = ['yelp', 'angi', 'homeadvisor', 'thumbtack'] as const;
-  const SOC = ['facebook', 'instagram', 'youtube', 'linkedin'] as const;
-  const cnt = (b: ExampleBiz, keys: readonly string[]) => keys.filter((k) => Boolean((b.auth as Record<string, unknown>)[k])).length;
-  const ratio = (b: ExampleBiz, keys: readonly string[]): Cell => {
-    const n = cnt(b, keys);
-    return num(`${n}/${keys.length}`, '', n === keys.length ? Y : n <= keys.length / 3 ? N : INK);
-  };
   const flag = (k: keyof ExampleAuth, okSub = '', noSub = '') => (b: ExampleBiz) => (b.auth[k] ? yes(okSub) : no(noSub));
 
   const authGroups = [
     {
-      label: 'AT A GLANCE',
+      label: 'QUALITY LINKS',
       rows: [
-        row('Core listings', 'BBB, Chamber, Apple, Bing, Yellow Pages, Nextdoor', B, (b) => ratio(b, CORE)),
-        row('Local lead sites', 'Yelp, Angi, HomeAdvisor, Thumbtack', B, (b) => ratio(b, LEAD)),
-        row('Social profiles', 'Facebook, Instagram, YouTube, LinkedIn', B, (b) => ratio(b, SOC)),
-        row('Websites linking to them', 'Referring domains', B, (b) => num(fmt(b.rd), '', b.you ? N : INK)),
-      ],
-    },
-    {
-      label: 'LISTINGS & CITATIONS',
-      rows: [
-        row('Better Business Bureau', 'bbb.org profile', B, flag('bbb', 'accredited', 'not listed')),
-        row('Chamber of Commerce', 'Local chamber member page', B, flag('chamber', 'member', 'not a member')),
-        row('Apple Maps', 'Siri and iPhone searches', B, flag('apple')),
-        row('Bing Places', 'Bing and Copilot', B, flag('bing')),
-        row('Yellow Pages', 'yellowpages.com', B, flag('yp')),
-        row('Nextdoor', 'Neighborhood recommendations', B, flag('nextdoor')),
-      ],
-    },
-    {
-      label: 'LOCAL LEAD SITES',
-      rows: [
-        row('Yelp', 'Second-biggest review site', B, flag('yelp')),
-        row('Angi', 'Formerly Angie’s List', B, flag('angi')),
-        row('HomeAdvisor', 'Owned by Angi', B, flag('homeadvisor')),
-        row('Thumbtack', 'Quote marketplace', B, flag('thumbtack')),
+        row('Referring domains', 'Other websites linking here', orderWeb, (b) => num(fmt(b.rd), '', b.you ? N : INK)),
+        row('Better Business Bureau', 'Exact name on bbb.org', orderWeb, flag('bbb', 'listed', 'not listed')),
+        row('Chamber of Commerce', 'Exact name on a chamber page', orderWeb, flag('chamber', 'member', 'not listed')),
       ],
     },
     {
       label: 'SOCIAL',
       rows: [
-        row('Facebook', 'Business page', B, flag('facebook')),
-        row('Instagram', 'Linked from the website', B, flag('instagram')),
-        row('YouTube', 'Channel with uploads', B, flag('youtube')),
-        row('LinkedIn', 'Company page', B, flag('linkedin')),
+        row('Facebook', 'Business page', orderWeb, flag('facebook')),
+        row('Instagram', 'Linked from the website', orderWeb, flag('instagram')),
+        row('YouTube', 'Channel with uploads', orderWeb, flag('youtube')),
+        row('LinkedIn', 'Company page', orderWeb, flag('linkedin')),
       ],
     },
   ];
 
-  const panelFor = (b: ExampleBiz) => ({
-    name: b.short,
-    tag: b.you ? 'YOU' : `#${b.pack} IN PACK`,
-    tagColor: b.you ? OR : '#8a8a8a',
-    bg: b.you ? TINT : '#fff',
-    border: b.you ? '#f3c7ad' : '#e7e7e7',
-    cov: covOf(b),
-    covColor: covOf(b) >= 20 ? Y : covOf(b) >= 10 ? A : N,
-    cells: b.grid.map((r, i) => ({ ...rankCell(r), border: i === 12 ? '3px solid #1a1a1a' : '0 solid transparent' })),
-    c0: rangeTxt(b.grid.filter((_, i) => ringOf(i) === 0)),
-    c0Color: rangeColor(b.grid.filter((_, i) => ringOf(i) === 0)),
-    c1: rangeTxt(b.grid.filter((_, i) => ringOf(i) === 1)),
-    c1Color: rangeColor(b.grid.filter((_, i) => ringOf(i) === 1)),
-    c2: rangeTxt(b.grid.filter((_, i) => ringOf(i) === 2)),
-    c2Color: rangeColor(b.grid.filter((_, i) => ringOf(i) === 2)),
+  const ring = (b: ExampleBiz, n: number) => b.grid.filter((_, i) => ringOf(i) === n);
+  const dotCell = (r: number | null, i: number) => ({
+    bg: r == null ? '#cfd6dc' : r <= 3 ? Y : r <= 10 ? '#f0b429' : N,
+    ring: i === 12 ? '0 0 0 2px #1a1a1a' : 'none',
   });
-  const geoPanels = [panelFor(you), panelFor(leader)];
-  const coverage = B.map((b) => ({
-    name: b.short,
-    cov: `${covOf(b)}/25`,
-    w: Math.max(2, Math.round((covOf(b) / 25) * 100)),
-    color: b.you ? OR : INK,
-  }));
+  const hereTag = you.address ? 'YOUR ADDRESS' : `CENTER OF ${cityName.toUpperCase()}`;
+  const hereLower = you.address ? 'your address' : 'the middle of your service area';
+  const hereTxt = you.address ? 'your address' : 'the center';
+  const centerLabel = you.address ? 'AT THE ADDRESS' : 'AT THE CENTER';
+  const shownBg = you.address ? TINT : '#fff';
+  const shownBorder = you.address ? OR : '#ececec';
+  const hiddenBg = you.address ? '#fff' : TINT;
+  const hiddenBorder = you.address ? '#ececec' : OR;
+  const shownTag = you.address ? '● THIS IS YOU' : '';
+  const hiddenTag = you.address ? '' : '● THIS IS YOU';
+  const howDots = [1, 1, 2, 4, 6, 1, 1, 1, 3, 5, 1, 1, 1, 2, 4, 1, 1, 1, 3, 12, 2, 2, 4, null, null].map(dotCell);
+  const readingOf = (b: ExampleBiz) => {
+    const cov = covOf(b);
+    const c = b.grid[12];
+    const r2 = ring(b, 2).filter((x): x is number => x != null);
+    const r2max = r2.length ? Math.max(...r2) : null;
+    if (cov === 25) return 'Top 3 at every spot within 5 miles of you.';
+    if (cov >= 20) return `Top 3 almost everywhere around you. Slips to #${r2max} at the edge.`;
+    if (cov >= 10) return `Top 3 near ${hereTxt}, fades out by 5 miles.`;
+    if (cov > 0) return `Only top 3 at a few spots near ${hereTxt}.`;
+    if (c) return `#${c} at ${hereTxt}, not top 3 anywhere, gone by 5 miles.`;
+    return 'Not found anywhere within 5 miles.';
+  };
+  const geoRows = [...B]
+    .sort((x, y) => covOf(y) - covOf(x) || (x.grid[12] ?? 99) - (y.grid[12] ?? 99))
+    .map((b, i) => {
+      const cov = covOf(b);
+      return {
+        place: placeShort(i + 1),
+        placeColor: i === 0 ? OR : b.you ? N : '#8a8a8a',
+        name: b.you ? `You · ${b.short}` : b.short,
+        nameColor: b.you ? OR : INK,
+        bg: b.you ? TINT : '#fff',
+        dots: b.grid.map(dotCell),
+        reading: readingOf(b),
+        cov,
+        covColor: cov >= 20 ? Y : cov >= 10 ? A : N,
+        c0: rangeTxt(ring(b, 0)),
+        c0Color: rangeColor(ring(b, 0)),
+        c1: rangeTxt(ring(b, 1)),
+        c1Color: rangeColor(ring(b, 1)),
+        c2: rangeTxt(ring(b, 2)),
+        c2Color: rangeColor(ring(b, 2)),
+      };
+    });
   const gridAnswer = gridAnswerCopy({
     coverage: coverLevel,
     you: youCov,
@@ -954,28 +1280,51 @@ export function renderReportHtml(report: PublicReport): string {
     site: adBiz.site,
     url: adBiz.url,
     initial: adBiz.site[0] ?? 'A',
-    title: liveAd?.title || `Tampa ${keyword.replace(/^./, (c) => c.toUpperCase())} — Same-Day Service | Licensed & Insured`,
-    desc: liveAd?.description || `Upfront pricing. ${fmt(adBiz.reviews)}+ five-star reviews. Panel upgrades, repairs, EV chargers. Call now for a free estimate.`,
+    title: liveAd?.title || 'No Search Ad on this result right now',
+    desc:
+      liveAd?.description ||
+      'Live ads can be off at night or on a schedule. We still check Google Ads Transparency for recent creatives.',
   };
+  const afterHours =
+    report.businesses.some((b) => b.ads?.afterHours) || isAfterHours(city, report.generatedAt);
   const adsRows = [
-    row('Local Services Ads', 'Google Guaranteed tiles', B, (b) => (b.lsa ? num(`#${b.lsa}`, 'slot', Y) : no('not running'))),
-    row('Search Ads', 'Text ad on the keyword', B, (b) => (b.searchAds ? yes('running') : no('none'))),
-    row('Ads history', 'Google Ads Transparency', B, (b) => (b.transparency ? yes('active advertiser') : no('no ads found'))),
+    row(
+      'Local Services Ads',
+      afterHours ? 'Live tiles — not checked after 6pm' : 'Google Guaranteed tiles',
+      orderAds,
+      (b) => (afterHours ? part('re-run 8am–6pm') : b.lsa ? num(`#${b.lsa}`, 'slot', Y) : no('not running'))
+    ),
+    row(
+      'Search Ads',
+      afterHours ? 'Live text ad — not checked after 6pm' : 'Text ad on the keyword',
+      orderAds,
+      (b) => (afterHours ? part('re-run 8am–6pm') : b.searchAds ? yes('running') : no('none'))
+    ),
+    row('Ads history', 'Google Ads Transparency — not the live search', orderAds, (b) =>
+      b.transparency ? yes('recent ads') : no('none found')
+    ),
   ];
-  const payingRivals = rivals.filter((b) => b.lsa || b.searchAds).length;
-  const youPay = Boolean(you.lsa || you.searchAds);
+  const payingRivals = afterHours
+    ? rivals.filter((b) => b.transparency).length
+    : rivals.filter((b) => b.lsa || b.searchAds).length;
+  const youPay = afterHours ? Boolean(you.transparency) : Boolean(you.lsa || you.searchAds);
   const adsLevel = adsTier(youPay, payingRivals);
+  const historyCount = B.filter((b) => b.transparency).length;
   const adsCopy = adsHeadlineCopy({
     tier: adsLevel,
     youPay,
     payingRivals,
     rivalCount: rivals.length,
     city,
+    historyCount,
+    afterHours,
   });
   const adsHeadline = adsCopy.headline;
   const adsTakeaway = adsCopy.takeaway;
 
   const liveAi = report.aiSearch?.questions.length && report.aiSearch.matrix.length ? report.aiSearch : undefined;
+  const aiRuns = liveAi?.runs && liveAi.runs > 1 ? liveAi.runs : 3;
+  const aiLede = `We asked ChatGPT and Gemini the three questions a ${cityName} homeowner actually types — ${aiRuns} times each, 18 checks total — and averaged who got named.`;
   const streaming = Boolean(ready);
   const PLATFORM_META: Record<string, { id: string; name: string; logo: string; bg: string }> = {
     chatgpt: { id: 'chatgpt', name: 'ChatGPT', logo: 'GPT', bg: '#10a37f' },
@@ -1057,8 +1406,6 @@ export function renderReportHtml(report: PublicReport): string {
   const aiHeadline = aiCopy.headline;
   const aiWhy = aiCopy.why;
 
-  const youReviews8 = you.weeks.slice(-weeksN).reduce((a, c) => a + c, 0);
-  const leaderReviews8 = leader.weeks.slice(-weeksN).reduce((a, c) => a + c, 0);
   const defaultGaps: { head: string; sub: string }[] = [];
   if (coverLevel !== 'well' || !inPack) {
     defaultGaps.push({
@@ -1066,13 +1413,7 @@ export function renderReportHtml(report: PublicReport): string {
         packLevel === 'poor'
           ? 'You’re not in the Map Pack — not even at your own address.'
           : 'You’re in the pack at your address — and thin a mile out.',
-      sub: `${youCenter ? `#${youCenter} at your front door. ` : ''}${leader.short} is top 3 at ${covOf(leader)} of 25 spots within 2 miles of you. You: ${youCov}.`,
-    });
-  }
-  if (you.reviews + 20 < leader.reviews || youReviews8 < leaderReviews8) {
-    defaultGaps.push({
-      head: `${fmt(you.reviews)} reviews vs ${fmt(leader.reviews)} — and the pace is the real gap.`,
-      sub: `You got ${youReviews8} reviews in the last ${weeksN} weeks. The pack leader got ${leaderReviews8}.`,
+      sub: `${youCenter ? `#${youCenter} at your front door. ` : ''}${leader.short} is top 3 at ${covOf(leader)} of 25 spots within 5 miles of you. You: ${youCov}.`,
     });
   }
   if (!you.address) {
@@ -1081,10 +1422,10 @@ export function renderReportHtml(report: PublicReport): string {
       sub: 'Service-area profiles rarely get a pin. Every competitor shows a street address.',
     });
   }
-  if (!you.desc || you.secondary <= 1) {
+  if (you.secondary <= 1) {
     defaultGaps.push({
-      head: `Thin profile: ${you.desc ? 'description present' : 'no description'}, ${you.secondary} secondary categor${you.secondary === 1 ? 'y' : 'ies'}.`,
-      sub: 'Competitors list more secondary categories and post more often.',
+      head: `Thin profile: ${you.secondary} secondary categor${you.secondary === 1 ? 'y' : 'ies'}.`,
+      sub: 'Competitors list more secondary categories.',
     });
   }
   if (!(you.h1Kw && you.titleKw === 'yes')) {
@@ -1093,7 +1434,7 @@ export function renderReportHtml(report: PublicReport): string {
       sub: `“${you.title}” ${you.metaDesc ? 'has a meta description.' : 'has no meta description.'} ${you.schema ? 'Schema is present.' : 'No schema.'}`,
     });
   }
-  if (!youPay && payingRivals) {
+  if (!afterHours && !youPay && payingRivals) {
     defaultGaps.push({
       head: `${payingRivals} competitor${payingRivals === 1 ? '' : 's'} run ads above the map.`,
       sub: 'Local Services Ads and Search Ads sit above the pack. You aren’t running ads.',
@@ -1110,10 +1451,11 @@ export function renderReportHtml(report: PublicReport): string {
       sub: `${topRival.short} was named in ${mentionsOf(topRival)}.`,
     });
   }
-  if (cnt(you, CORE) < CORE.length) {
+  if (!you.auth.bbb || !you.auth.chamber) {
+    const miss = [!you.auth.bbb && 'BBB', !you.auth.chamber && 'Chamber'].filter(Boolean).join(' and ');
     defaultGaps.push({
-      head: `${cnt(you, CORE)} of ${CORE.length} core listings.`,
-      sub: `Competitors show up on the sites Google cross-checks, with ${fmt(Math.min(...rivals.map((b) => b.rd), you.rd))}+ referring domains. You have ${fmt(you.rd)}.`,
+      head: `Missing a quality backlink from ${miss}.`,
+      sub: `The more quality backlinks you have, the better. Competitors have ${fmt(Math.min(...rivals.map((b) => b.rd), you.rd))}+ referring domains. You have ${fmt(you.rd)}.`,
     });
   }
   if (!defaultGaps.length) {
@@ -1122,9 +1464,10 @@ export function renderReportHtml(report: PublicReport): string {
       sub: 'Keep reviews coming, keep the profile complete, and don’t let a rival buy the top of the page unchallenged.',
     });
   }
+  const usableLiveGaps = liveGaps.filter((g) => !/google reviews versus|\d+ google reviews/i.test(g));
   const gapCards = (
-    liveGaps.length
-      ? liveGaps.map((g) => ({
+    usableLiveGaps.length
+      ? usableLiveGaps.map((g) => ({
           head: g,
           sub:
             /ads above the map/i.test(g) && !youPay
@@ -1151,19 +1494,21 @@ export function renderReportHtml(report: PublicReport): string {
     phaseN: wins[i]?.[1] ?? 1,
     phase: `FIXED IN ${(PH[(wins[i]?.[1] ?? 1) - 1] ?? 'Pre-flight').toUpperCase()}`,
   }));
-  const closesTxt = (n: number) => {
-    const ids = gaps.filter((g) => g.phaseN === n).map((g) => g.n);
-    return ids.length ? `CLOSES GAPS ${ids[0]}${ids.length > 1 ? `–${ids[ids.length - 1]}` : ''}` : 'KEEPS THEM CLOSED';
-  };
   const phases = [
-    { n: 1, name: 'Pre-flight', price: 'from $500/mo', goal: '1–3 booked jobs a day and $25k+ months.', includes: 'Google profile fixed · Website (if needed) · 1:1 coaching · LSAs set up · $25 per booked job', closes: closesTxt(1), featured: true },
-    { n: 2, name: 'Liftoff', price: '$1.5k/mo', goal: '$25–100k months on traffic you own.', includes: 'Everything in Pre-flight · Deeper SEO · Managed Google Ads', closes: closesTxt(2), featured: false },
-    { n: 3, name: 'Orbit', price: 'when you’re ready', goal: 'Scale past $100k months without it breaking.', includes: 'Everything in Liftoff · Scaling spend, managed · Risk cover built in', closes: closesTxt(3), featured: false },
+    { n: 1, name: 'Pre-flight', price: 'from $500/mo', goal: '1–3 booked jobs a day and $25k+ months.', includes: 'Google profile fixed · Website (if needed) · 1:1 coaching · LSAs set up · $25 per booked job', featured: true },
+    { n: 2, name: 'Liftoff', price: '$1.5k/mo', goal: '$25–100k months on traffic you own.', includes: 'Everything in Pre-flight · Deeper SEO · Managed Google Ads', featured: false },
+    { n: 3, name: 'Orbit', price: 'when you’re ready', goal: 'Scale past $100k months without it breaking.', includes: 'Everything in Liftoff · Scaling spend, managed · Risk cover built in', featured: false },
   ];
 
   const namedOnSite = Boolean(you.h1Kw || you.titleKw === 'yes');
-  const siteLevel = siteTier({ psi: you.psi, bestPsi, h1Kw: you.h1Kw, titleKw: you.titleKw });
-  const webHeadline = webHeadlineCopy({ tier: siteLevel, psi: you.psi, bestPsi, named: namedOnSite });
+  const youFastest = isFastest(you);
+  const siteLevel = siteTier({ psi: you.psi, fastest: youFastest, h1Kw: you.h1Kw, titleKw: you.titleKw });
+  const webHeadline = webHeadlineCopy({
+    tier: siteLevel,
+    psi: you.psi,
+    fastest: youFastest,
+    named: namedOnSite,
+  });
   const gapsHead = gapsHeadingCopy({ pack: packLevel, count: gaps.length });
   const close = closerCopy(packLevel, gaps.length);
   const ctaHref = report.cta?.href || '/get-started';
@@ -1191,7 +1536,7 @@ export function renderReportHtml(report: PublicReport): string {
                 <div class="rpt-shop-top">
                   <div class="rpt-shop-copy">
                     <div class="rpt-card-name">${esc(c.name)}</div>
-                    <div class="rpt-meta"><b>${esc(c.rating)}</b>${stars()}<span>(${esc(c.reviews)})</span>${c.years ? `<span>· ${c.years}+ yrs</span>` : ''}</div>
+                    <div class="rpt-meta"><b>${esc(c.rating)}</b>${stars()}<span>(${esc(c.reviews)})</span></div>
                     <div class="rpt-shop-pack" style="color:${c.packColor}">${esc(c.packText)}</div>
                   </div>
                   <div class="rpt-shop-place">
@@ -1219,7 +1564,7 @@ export function renderReportHtml(report: PublicReport): string {
           .join('')}
       </div>
       <div class="rpt-shop-foot">
-        <span>Ranked by overall score: Google profile 35% · website 28% · ads 20% · AI search 17%.</span>
+        <span>Ranked by overall score: Google profile 25% · reviews 15% · website 25% · ads 18% · AI search 17%.</span>
         <a href="#gaps">See every gap ↓</a>
       </div>`
       )}
@@ -1231,95 +1576,81 @@ export function renderReportHtml(report: PublicReport): string {
       `<section class="rpt-sec">
       <div class="rpt-sec-label"><span>01</span><i></i><span>GOOGLE MAP PACK</span></div>
       <h2>${esc(packHeadline)}</h2>
-      <p class="rpt-lede">Searched “${esc(marketQuery)}” from ${esc(searchFrom)}, then from 24 more spots out to 2 miles. Three spots on the map decide who gets the call.</p>
+      <p class="rpt-lede">Searched “${esc(marketQuery)}” from ${esc(searchFrom)}, then from 24 more spots out to 5 miles. Three spots on the map decide who gets the call.</p>
+      ${rankPills('PROFILE SCORE', rankGbp)}
 
-      <div class="rpt-geo-top">
+      <div class="rpt-pack">
         <div class="rpt-serp">
-          <div class="rpt-serp-head"><div class="rpt-mini-kicker is-muted">WHAT GOOGLE SHOWS</div><div class="rpt-serp-from">${esc(searchFromLabel)}</div></div>
-          <div class="rpt-fake-map${mapImageUrl ? ' has-map' : ''}">
+          <div class="rpt-serp-head"><div class="rpt-mini-kicker is-muted">STEP 1 · WHAT GOOGLE SHOWS</div><div class="rpt-serp-from">${esc(searchFromLabel)}</div></div>
+          <div class="rpt-fake-map is-tall${mapImageUrl ? ' has-map' : ''}">
             ${mapBg}
-            ${pins.map((pin) => `<div class="rpt-map-pin is-abs" style="left:${pin.x}%;top:${pin.y}%"><span>${pin.n}</span></div>`).join('')}
+            <div class="rpt-here"></div>
+            <div class="rpt-here-tag">${esc(hereTag)}</div>
           </div>
-          ${rivals
-            .map(
-              (r) => `<div class="rpt-serp-row">
-                <div class="rpt-serp-name"><span>${esc(r.name)}</span><span>#${r.pack}</span></div>
-                <div class="rpt-meta is-small"><span>${r.rating.toFixed(1)}</span>${stars()}<span>(${fmt(r.reviews)})</span></div>
-                <div class="rpt-serp-line">${r.years}+ yrs · ${esc(r.addrShort)} · <span class="is-open">Open</span></div>
-              </div>`
-            )
-            .join('')}
-          <div class="rpt-serp-you">
-            <div><div class="rpt-mini-kicker">YOU</div><div class="rpt-card-name">${esc(you.name)}</div></div>
-            <div class="rpt-you-pack is-sm" style="color:${youPackColor}">${esc(youPackLabel)}</div>
-          </div>
-        </div>
-        ${geoPanels
-          .map(
-            (g) => `<div class="rpt-geo" style="border-color:${g.border};background:${g.bg}">
-              <div class="rpt-geo-head">
-                <div><div class="rpt-mini-kicker" style="color:${g.tagColor}">${esc(g.tag)}</div><div class="rpt-card-name">${esc(g.name)}</div></div>
-                <div class="rpt-geo-cov"><div style="color:${g.covColor}">${g.cov}</div><span>of 25 spots in top 3</span></div>
+          ${packRows.map(packRowHtml).join('')}
+          <div class="rpt-starts">
+            <div class="rpt-mini-kicker is-muted">WHERE THE SEARCH STARTS</div>
+            <div class="rpt-from-grid">
+              <div class="rpt-from" style="border-color:${shownBorder};background:${shownBg}">
+                <div class="rpt-from-map is-shown"><div class="rpt-from-pin is-red"></div></div>
+                <div class="rpt-from-title">Address shown</div>
+                <div class="rpt-from-sub">From the pin on your profile</div>
+                ${shownTag ? `<div class="rpt-from-tag">${shownTag}</div>` : '<div class="rpt-from-tag is-empty"></div>'}
               </div>
-              <div class="rpt-grid-map${mapImageUrl ? ' has-map' : ''}">
-                ${mapBg}
-                <div class="rpt-rings"></div>
-                <div class="rpt-cells">${g.cells.map((c) => `<div><b style="background:${c.bg};color:${c.color};border:${c.border}">${esc(c.t)}</b></div>`).join('')}</div>
+              <div class="rpt-from" style="border-color:${hiddenBorder};background:${hiddenBg}">
+                <div class="rpt-from-map is-hidden"><div class="rpt-from-blob"></div><div class="rpt-from-pin is-ink"></div></div>
+                <div class="rpt-from-title">Address hidden</div>
+                <div class="rpt-from-sub">From the middle of your service area</div>
+                ${hiddenTag ? `<div class="rpt-from-tag">${hiddenTag}</div>` : '<div class="rpt-from-tag is-empty"></div>'}
               </div>
-              <div class="rpt-rings-stats">
-                <div><div class="rpt-mini-kicker is-muted">${you.address ? 'AT THE ADDRESS' : 'AT THE CENTER'}</div><div style="color:${g.c0Color}">${esc(g.c0)}</div></div>
-                <div><div class="rpt-mini-kicker is-muted">1 MILE OUT</div><div style="color:${g.c1Color}">${esc(g.c1)}</div></div>
-                <div><div class="rpt-mini-kicker is-muted">2 MILES OUT</div><div style="color:${g.c2Color}">${esc(g.c2)}</div></div>
-              </div>
-            </div>`
-          )
-          .join('')}
-      </div>
-
-      <div class="rpt-legend is-map">
-        <span><i class="dot is-green"></i>Top 3</span>
-        <span><i class="dot is-yellow"></i>4–10</span>
-        <span><i class="dot is-red"></i>11–20</span>
-        <span><i class="dot is-grey"></i>Not found</span>
-        <span><i class="dot is-ring"></i>Business address</span>
-        <span class="rpt-map-credit">Map tiles</span>
-      </div>
-
-      <div class="rpt-geo-bottom">
-        <div class="rpt-search-from">
-          <div class="rpt-mini-kicker is-muted">WHERE WE SEARCH FROM</div>
-          <div class="rpt-from-grid">
-            <div class="rpt-from ${you.address ? 'is-active' : ''}">
-              <div class="rpt-from-map is-shown${mapImageUrl ? ' has-map' : ''}">${mapBg}${SHOP_PIN_SVG}</div>
-              <div class="rpt-from-title">Address shown</div>
-              <div class="rpt-from-sub">We search from the pin on your profile.</div>
-              ${you.address ? '<div class="rpt-from-tag">● THIS IS YOU</div>' : ''}
-            </div>
-            <div class="rpt-from ${you.address ? '' : 'is-active'}">
-              <div class="rpt-from-map is-hidden${mapImageUrl ? ' has-map' : ''}">${mapBg}${SERVICE_AREA_SVG}</div>
-              <div class="rpt-from-title">Address hidden</div>
-              <div class="rpt-from-sub">We search from the middle of the service area on your profile.</div>
-              ${you.address ? '' : '<div class="rpt-from-tag">● THIS IS YOU</div>'}
             </div>
           </div>
         </div>
-        <div class="rpt-coverage">
-          <div class="rpt-mini-kicker is-muted">TOP-3 COVERAGE</div>
-          ${coverage
+
+        <div class="rpt-town">
+          <div class="rpt-town-head">
+            <div class="rpt-mini-kicker is-muted">STEP 2 · DOES IT HOLD UP ACROSS TOWN?</div>
+            <div class="rpt-town-title">Google shows a different top 3 depending on where the customer is standing. So we ran the same search from 25 spots.</div>
+            <div class="rpt-how">
+              <div class="rpt-how-map">
+                <div class="rpt-how-circle"></div>
+                <div class="rpt-how-dots">${howDots.map((d) => `<div><i style="background:${d.bg};box-shadow:${d.ring}"></i></div>`).join('')}</div>
+                <div class="rpt-how-mi">5 mi</div>
+              </div>
+              <div class="rpt-how-copy">
+                <div><b>How to read the dots.</b> Each dot is one spot we searched from. The ringed dot is ${esc(hereLower)}; the inner ring is 2 miles out and the outer ring is 5 miles out.</div>
+                <div class="rpt-how-legend">
+                  <span><i class="dot is-green"></i>In the top 3 there</span>
+                  <span><i class="dot is-yellow"></i>#4–10</span>
+                  <span><i class="dot is-red"></i>#11–20</span>
+                  <span><i class="dot is-grey"></i>Not found</span>
+                </div>
+                <div class="rpt-how-note">More green = more of ${esc(cityName)} sees you in the top 3.</div>
+              </div>
+            </div>
+            <div class="rpt-mini-kicker is-muted rpt-town-rank-kicker">RANKED BY SPOTS IN THE TOP 3</div>
+          </div>
+          ${geoRows
             .map(
-              (a) => `<div class="rpt-cov-row">
-                <div style="color:${a.color}">${esc(a.name)}</div>
-                <div class="rpt-cov-bar"><i style="width:${a.w}%;background:${a.color}"></i></div>
-                <strong>${esc(a.cov)}</strong>
+              (g) => `<div class="rpt-geo-row" style="background:${g.bg}">
+                <div class="rpt-geo-dots">${g.dots.map((d) => `<i style="background:${d.bg};box-shadow:${d.ring}"></i>`).join('')}</div>
+                <div class="rpt-geo-who">
+                  <div class="rpt-geo-who-top"><span style="color:${g.placeColor}">${esc(g.place)}</span><span style="color:${g.nameColor}">${esc(g.name)}</span></div>
+                  <div class="rpt-geo-read">${esc(g.reading)}</div>
+                </div>
+                <div class="rpt-geo-rings">
+                  <div><div class="rpt-mini-kicker is-muted">${esc(centerLabel)}</div><div style="color:${g.c0Color}">${esc(g.c0)}</div></div>
+                  <div><div class="rpt-mini-kicker is-muted">2 MI OUT</div><div style="color:${g.c1Color}">${esc(g.c1)}</div></div>
+                  <div><div class="rpt-mini-kicker is-muted">5 MI OUT</div><div style="color:${g.c2Color}">${esc(g.c2)}</div></div>
+                </div>
+                <div class="rpt-geo-count"><div style="color:${g.covColor}">${g.cov}</div><span>of 25 spots</span></div>
               </div>`
             )
             .join('')}
-          <div class="rpt-cov-note">Spots in the top 3, out of 25 within 2 miles</div>
-        </div>
-        <div class="rpt-callout">
-          <div class="rpt-mini-kicker">THE BIG QUESTION</div>
-          <div class="rpt-callout-head">Do the top 3 rank across your area — or only where they're located?</div>
-          <div class="rpt-callout-body">${esc(gridAnswer)}</div>
+          <div class="rpt-answer">
+            <div class="rpt-mini-kicker">THE ANSWER</div>
+            <div>${esc(gridAnswer)}</div>
+          </div>
         </div>
       </div>
 
@@ -1331,13 +1662,23 @@ export function renderReportHtml(report: PublicReport): string {
       'hero',
       'Counting reviews week by week',
       `<section class="rpt-sec is-tight">
-      <h3>Consistency beats volume. New reviews, week by week.</h3>
-      <p class="rpt-lede">Google trusts a steady stream more than a big number. The last ${weeksN} weeks, side by side.</p>
+      <h3>Who's winning the review war.</h3>
+      <p class="rpt-lede">Not the biggest total, the steadiest stream. Google trusts a shop that gets reviews every week. Scored on weeks with a review (65%) and pace vs the fastest shop (35%), over the last ${weeksN} weeks.</p>
+      ${rankPills('REVIEW SCORE', rankRev)}
       <div class="rpt-reviews">
         ${reviewEngine
           .map(
             (b) => `<article class="rpt-rev ${b.you ? 'is-you' : ''}">
-              <div class="rpt-rev-top"><div>${esc(b.short)}</div><span style="color:${b.you ? OR : '#8a8a8a'}">${b.you ? 'YOU' : `#${b.pack}`}</span></div>
+              <div class="rpt-rev-top">
+                <div>
+                  <div>${esc(b.short)}</div>
+                  <div class="rpt-rev-tag" style="color:${b.tagColor}">${esc(b.tag)}</div>
+                </div>
+                <div class="rpt-rev-score">
+                  <div class="rpt-rev-place" style="color:${b.revPlaceColor}">${esc(b.revPlace)}</div>
+                  <b style="color:${b.revScoreColor}">${b.revScore}</b>
+                </div>
+              </div>
               <div class="rpt-rev-avg"><b style="color:${b.avgColor}">${b.avg}</b><span>reviews / week</span></div>
               <div class="rpt-rev-bars">${b.bars.map((w) => `<i style="height:${w.h}%;background:${w.color}"></i>`).join('')}</div>
               <div class="rpt-rev-axis"><span>${weeksN} wks ago</span><span>this week</span></div>
@@ -1350,7 +1691,7 @@ export function renderReportHtml(report: PublicReport): string {
 
     <section class="rpt-sec is-tight">
       <h3>Profile, line by line.</h3>
-      ${boardHtml('GOOGLE BUSINESS PROFILE', heads, gbpRows)}
+      ${boardHtml('GOOGLE BUSINESS PROFILE', headsGbp, gbpRows)}
     </section>`
     )}
 
@@ -1360,50 +1701,82 @@ export function renderReportHtml(report: PublicReport): string {
       `<section class="rpt-sec">
       <div class="rpt-sec-label"><span>02</span><i></i><span>WEBSITE</span></div>
       <h2>${esc(webHeadline)}</h2>
-      <p class="rpt-lede">Speed, what Google reads, and whether a visitor can actually call you.</p>
+      <p class="rpt-lede">How fast the homepage loads on a phone, and whether the site says what you do and lets a visitor call you. The board below covers that line by line.</p>
+      ${rankPills('WEBSITE SCORE', rankWeb)}
 
-      <div class="rpt-mini-kicker is-muted rpt-block-kicker">MOBILE SPEED · GOOGLE PAGESPEED</div>
-      <div class="rpt-speed">
-        ${speed
+      <div class="rpt-web-head">
+        <div class="rpt-web-head-title">SPEED</div>
+        <div class="rpt-web-head-note">Three phone tests, average of the two fastest. Google’s bar is 2.5 seconds.</div>
+      </div>
+      <div class="rpt-shop-grid is-tight">
+        ${speedPairs
           .map(
-            (s) => `<article class="rpt-speed-card ${s.you ? 'is-you' : ''}">
-              <div class="rpt-speed-ring" style="background:conic-gradient(${s.color} 0 ${s.deg}deg,${s.track} 0)"><div style="color:${s.color}">${s.psi}</div></div>
-              <div><div class="rpt-card-name">${esc(s.short)}</div><div class="rpt-speed-lcp">Loads in <b>${esc(s.lcpLabel)}</b></div><div class="rpt-mini-kicker" style="color:${s.tagColor}">${esc(s.tag)}</div></div>
+            (pair) => `<div class="rpt-shop-pair">
+            ${pair
+              .map(
+                (s) => `<article class="rpt-lcp ${s.you ? 'is-you' : ''}" style="border-color:${s.border};background:${s.bg}">
+              <div class="rpt-lcp-top">
+                <div><div class="rpt-lcp-name">${esc(s.name)}</div><div class="rpt-lcp-tag" style="color:${s.tagColor}">${esc(s.tag)}</div></div>
+                <div class="rpt-lcp-place"><div style="color:${s.placeColor}">${esc(s.place)}</div><b style="color:${s.scoreColor}">${s.score}</b></div>
+              </div>
+              <div class="rpt-lcp-time" style="color:${s.lcpColor}">${esc(s.lcp)}</div>
+              <div class="rpt-lcp-sub">to load on a phone</div>
+              <div class="rpt-lcp-track" style="background:${s.track}"><i style="width:${s.barW}%;background:${s.lcpColor}"></i><em style="left:${s.barMark}%"></em></div>
+              <div class="rpt-lcp-axis"><span>0s</span><span>2.5s · Google’s bar</span><span>${esc(s.barMax)}</span></div>
+              <div class="rpt-lcp-note">${esc(s.note)}</div>
             </article>`
+              )
+              .join('')}
+            </div>`
           )
           .join('')}
       </div>
 
-      <div class="rpt-mini-kicker is-muted rpt-block-kicker">HOW EACH SITE SHOWS UP IN GOOGLE</div>
-      <div class="rpt-serps">
-        ${serp
+      <div class="rpt-web-head">
+        <div class="rpt-web-head-title">WHAT GOOGLE READS</div>
+        <div class="rpt-web-head-note">The title and description, exactly as they appear in a search</div>
+      </div>
+      <div class="rpt-shop-grid is-tight">
+        ${serpPairs
           .map(
-            (s) => `<article class="rpt-blue ${s.you ? 'is-you' : ''}">
+            (pair) => `<div class="rpt-shop-pair">
+            ${pair
+              .map(
+                (s) => `<article class="rpt-blue ${s.you ? 'is-you' : ''}" style="border-color:${s.border};background:${s.bg}">
               <div class="rpt-blue-body">
-                <div class="rpt-blue-site"><div class="rpt-fav">${esc(s.site[0] ?? '?')}</div><div><div>${esc(s.site)}</div><div class="rpt-blue-url">https://${esc(s.url)}</div></div></div>
-                <div class="rpt-blue-title">${esc(s.before)}<span style="background:${s.hlBg};border-bottom:2px solid ${s.hlLine}">${esc(s.match)}</span>${esc(s.after)}</div>
-                <div class="rpt-blue-desc" style="font-style:${s.descStyle}">${esc(s.desc)}</div>
+                <div class="rpt-blue-site"><div class="rpt-fav">${esc(s.initial)}</div><div><div>${esc(s.site)}</div><div class="rpt-blue-url">https://${esc(s.url)}</div></div></div>
+                <div class="rpt-blue-block is-title">
+                  <div class="rpt-blue-kicker">PAGE TITLE</div>
+                  <div class="rpt-blue-title">${esc(s.before)}<span style="background:${s.hlBg};border-bottom:2px solid ${s.hlLine}">${esc(s.match)}</span>${esc(s.after)}</div>
+                </div>
+                <div class="rpt-blue-block is-desc">
+                  <div class="rpt-blue-kicker is-muted">META DESCRIPTION</div>
+                  <div class="rpt-blue-desc" style="font-style:${s.descStyle}">${esc(s.desc)}</div>
+                </div>
               </div>
-              <div class="rpt-blue-foot">
-                <div><span class="rpt-mark" style="background:${s.pill}">${s.mark}</span><div><div class="rpt-mini-kicker is-muted">TITLE</div><div>${esc(s.status)}</div></div></div>
-                <div><span class="rpt-mark" style="background:${s.h1Kw ? Y : N}">${s.h1Kw ? '✓' : '✗'}</span><div><div class="rpt-mini-kicker is-muted">H1 ON PAGE</div><div>“${esc(s.h1)}”</div></div></div>
+              <div class="rpt-blue-checks">
+                <div><span class="rpt-mark" style="background:${s.titlePill}">${s.titleMark}</span><div><div class="rpt-mini-kicker is-muted">PAGE TITLE</div><div>${esc(s.titleStatus)}</div></div></div>
+                <div><span class="rpt-mark" style="background:${s.descPill}">${s.descMark}</span><div><div class="rpt-mini-kicker is-muted">META DESCRIPTION</div><div>${esc(s.descStatus)}</div></div></div>
               </div>
             </article>`
+              )
+              .join('')}
+            </div>`
           )
           .join('')}
       </div>
 
-      ${boardHtml('SEO & SETTINGS', heads, seoRows)}
+      ${boardHtml('SEO & SETTINGS', headsWeb, seoRows)}
       <div class="rpt-mini-kicker is-muted rpt-block-kicker">CAN A VISITOR ACTUALLY CALL YOU?</div>
-      ${boardHtml('USABILITY', heads, uxRows)}
+      ${boardHtml('USABILITY', headsWeb, uxRows)}
 
-      <h3 class="rpt-after">Who vouches for each business?</h3>
-      <p class="rpt-lede">Google cross-checks you against the sites it already trusts. Listings, lead sites, and socials.</p>
+      <h3 class="rpt-after">The backlinks that matter.</h3>
+      <p class="rpt-lede">The more quality backlinks you have, the better. We only pull the most important ones here. Shops should still use a citation service for the rest of the directories.</p>
       <div class="rpt-board">
         <div class="rpt-board-inner">
-          <div class="rpt-board-head" style="grid-template-columns:minmax(170px,1.2fr) repeat(${heads.length},minmax(120px,1fr))">
-            <div class="rpt-board-kicker">AUTHORITY</div>
-            ${heads
+          <div class="rpt-board-head" style="grid-template-columns:minmax(170px,1.2fr) repeat(${headsWeb.length},minmax(120px,1fr))">
+            <div class="rpt-board-kicker">BACKLINKS</div>
+            ${headsWeb
               .map(
                 (h) => `<div class="rpt-board-who" style="background:${h.bg};border-radius:${h.radius}">
                   <div class="rpt-board-tag" style="color:${h.tagColor}">${esc(h.tag)}</div>
@@ -1416,7 +1789,7 @@ export function renderReportHtml(report: PublicReport): string {
             .map(
               (g) => `<div class="rpt-auth-label">${esc(g.label)}</div>${g.rows
                 .map(
-                  (rowItem) => `<div class="rpt-board-row is-tight" style="grid-template-columns:minmax(170px,1.2fr) repeat(${heads.length},minmax(120px,1fr))">
+                  (rowItem) => `<div class="rpt-board-row is-tight" style="grid-template-columns:minmax(170px,1.2fr) repeat(${headsWeb.length},minmax(120px,1fr))">
                     <div class="rpt-board-label">${esc(rowItem.label)}<div class="rpt-board-sub">${esc(rowItem.sub)}</div></div>
                     ${rowItem.cells
                       .map(
@@ -1435,7 +1808,7 @@ export function renderReportHtml(report: PublicReport): string {
       </div>
       ${ctaBand(
         'FREE 20-MIN CALL',
-        siteLevel === 'well' ? 'Keep the site saying what you do.' : you.psi === bestPsi ? 'Fast site. It just needs to say what you do.' : 'Most of these are week-one fixes.',
+        siteLevel === 'well' ? 'Keep the site saying what you do.' : isFastest(you) ? 'Fast site. It just needs to say what you do.' : 'Most of these are week-one fixes.',
         'Title, H1, description and schema are quick wins. We’ll show you what to change first and why.'
       )}
     </section>`
@@ -1447,7 +1820,12 @@ export function renderReportHtml(report: PublicReport): string {
       `<section class="rpt-sec">
       <div class="rpt-sec-label"><span>03</span><i></i><span>GOOGLE ADS</span></div>
       <h2>${esc(adsHeadline)}</h2>
-      <p class="rpt-lede">Before anyone scrolls to the map, this is the top of the page.</p>
+      <p class="rpt-lede">${
+        afterHours
+          ? 'This report ran outside 8am–6pm local time, so we used Ads history instead of the live SERP. Re-run between those hours to see Local Services Ads and Search Ads.'
+          : 'Before anyone scrolls to the map, this is the top of the page. Live ads can be off at night or on a schedule — Ads history is the cached record.'
+      }</p>
+      ${rankPills('ADS SCORE', rankAds)}
       <div class="rpt-ads">
         <div class="rpt-ad-serp">
           <div class="rpt-search is-in"><span class="rpt-search-icon"></span><span>${esc(marketQuery)} ${esc(cityShort)}</span></div>
@@ -1472,7 +1850,7 @@ export function renderReportHtml(report: PublicReport): string {
           <div class="rpt-ad-map">↓ Map Pack appears below this</div>
         </div>
         <div class="rpt-ad-board">
-          ${boardHtml('PAID', heads, adsRows, 'is-flush')}
+          ${boardHtml('PAID', headsAds, adsRows, 'is-flush')}
           <div class="rpt-ad-take"><div class="rpt-mini-kicker">WHAT THIS MEANS</div><div>${esc(adsTakeaway)}</div></div>
         </div>
       </div>
@@ -1482,12 +1860,13 @@ export function renderReportHtml(report: PublicReport): string {
 
   ${wait(
     'ai',
-    'Asking ChatGPT and Gemini three homeowner questions',
+    'Asking ChatGPT and Gemini each question a few times',
     `<section class="rpt-ai">
     <div class="rpt-ai-inner">
       <div class="rpt-sec-label is-peach"><span>04</span><i></i><span>AI SEARCH · CHATGPT & GEMINI</span></div>
       <h2>${esc(aiHeadline)}</h2>
-      <p class="rpt-lede is-dim">We asked ChatGPT and Gemini the three questions a ${esc(cityName)} homeowner actually types. Every answer came back with a shortlist. Here's who made it.</p>
+      <p class="rpt-lede is-dim">${esc(aiLede)}</p>
+      ${rankPills('AI SCORE', rankAi, true)}
       <div class="rpt-ai-top">
         <div class="rpt-ai-board">
           <div class="rpt-mini-kicker is-dim">NAMED IN … OF ${aiTotal} ANSWERS</div>
@@ -1614,7 +1993,6 @@ export function renderReportHtml(report: PublicReport): string {
                   <div class="rpt-phase-top"><b>${esc(ph.name)}</b><span>${esc(ph.price)}</span></div>
                   <div class="rpt-phase-goal">${esc(ph.goal)}</div>
                   <div class="rpt-phase-inc">${esc(ph.includes)}</div>
-                  <div class="rpt-phase-closes">${esc(ph.closes)}</div>
                 </div>
               </div>`
             )

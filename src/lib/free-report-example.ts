@@ -37,7 +37,7 @@ export type ExampleBiz = {
   short: string;
   pack: number | null;
   you: boolean;
-  scores: { gbp: number; web: number; ads: number; ai: number };
+  scores: { gbp: number; rev?: number; web: number; spd?: number; site?: number; ads: number; ai: number };
   rating: number;
   reviews: number;
   weeks: number[];
@@ -47,6 +47,12 @@ export type ExampleBiz = {
   address: boolean;
   addrShort: string;
   desc: boolean;
+  descUnknown?: boolean;
+  description?: string;
+  descKeyword?: boolean;
+  descServices?: boolean;
+  descLocations?: boolean;
+  photos?: number;
   hours: boolean;
   book: boolean;
   phone: boolean;
@@ -61,6 +67,7 @@ export type ExampleBiz = {
   h2Kw: number;
   altKw: number;
   schema: boolean;
+  schemaTypes?: string[];
   sitemap: number;
   servicePages: number;
   locationPages: number;
@@ -167,6 +174,9 @@ export const EXAMPLE_BIZ: ExampleBiz[] = [
     address: true,
     addrShort: 'Carrollwood',
     desc: true,
+    descKeyword: true,
+    descServices: true,
+    descLocations: true,
     hours: true,
     book: true,
     phone: true,
@@ -234,6 +244,9 @@ export const EXAMPLE_BIZ: ExampleBiz[] = [
     address: true,
     addrShort: 'Brandon',
     desc: true,
+    descKeyword: true,
+    descServices: true,
+    descLocations: true,
     hours: true,
     book: true,
     phone: true,

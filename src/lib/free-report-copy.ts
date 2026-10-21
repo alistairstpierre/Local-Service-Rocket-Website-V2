@@ -16,9 +16,14 @@ export function coverageTier(you: number, leader: number): CopyTier {
   return 'poor';
 }
 
-export function siteTier(input: { psi: number; bestPsi: number; h1Kw: boolean; titleKw: 'yes' | 'partial' | 'no' }): CopyTier {
+export function siteTier(input: {
+  psi: number;
+  fastest: boolean;
+  h1Kw: boolean;
+  titleKw: 'yes' | 'partial' | 'no';
+}): CopyTier {
   const named = input.h1Kw || input.titleKw === 'yes';
-  if (input.psi >= 80 && named) return 'well';
+  if (input.fastest && named) return 'well';
   if (input.psi >= 50 || named) return 'okay';
   return 'poor';
 }
@@ -96,7 +101,7 @@ export function gridAnswerCopy(input: {
     return `You hold the area: ${input.you} of 25 spots in the top 3. ${others}. Keep the profile complete so that circle doesn’t shrink.`;
   }
   if (input.coverage === 'okay') {
-    return `You show up at ${input.you} of 25 spots. ${others}. They still take calls a mile out where you drop.`;
+    return `You show up at ${input.you} of 25 spots. ${others}. They still take calls 2 miles out where you drop.`;
   }
   return `Across your area. ${others}. You: ${input.you} of 25. A stronger profile widens that circle — right now yours barely leaves the center.`;
 }
@@ -104,19 +109,37 @@ export function gridAnswerCopy(input: {
 export function webHeadlineCopy(input: {
   tier: CopyTier;
   psi: number;
-  bestPsi: number;
+  fastest: boolean;
   named: boolean;
 }): string {
   if (input.tier === 'well') return 'Fast site, and it says what you do.';
-  if (input.named && input.psi < input.bestPsi) return 'It says what you do. The page is still slower than the pack.';
-  if (!input.named && input.psi >= 50) return 'Fast site. Google just can’t tell what it’s about.';
+  if (input.named && !input.fastest) return 'It says what you do. The page is still slower than the pack.';
+  if (!input.named && (input.fastest || input.psi >= 50)) return 'Fast site. Google just can’t tell what it’s about.';
   return 'Your website is slowing you down.';
 }
 
-export function adsHeadlineCopy(input: { tier: CopyTier; youPay: boolean; payingRivals: number; rivalCount: number; city: string }): {
+export function adsHeadlineCopy(input: {
+  tier: CopyTier;
+  youPay: boolean;
+  payingRivals: number;
+  rivalCount: number;
+  city: string;
+  historyCount?: number;
+  afterHours?: boolean;
+}): {
   headline: string;
   takeaway: string;
 } {
+  const night =
+    'Live Local Services Ads and Search Ads can be off at night or on a schedule.';
+  if (input.afterHours && !input.youPay) {
+    return {
+      headline: `This report ran outside 8am–6pm in ${input.city}. Live ads were not on the page.`,
+      takeaway: input.historyCount
+        ? `Google Ads Transparency still shows recent ads for ${input.historyCount} of these shops. Re-run the report between 8am and 6pm to see the live Local Services Ads and Search Ads.`
+        : `Live ads are usually off overnight. Re-run the report between 8am and 6pm local time to see the live SERP.`,
+    };
+  }
   if (input.tier === 'well') {
     return {
       headline: 'You’re already buying this search.',
@@ -129,9 +152,15 @@ export function adsHeadlineCopy(input: { tier: CopyTier; youPay: boolean; paying
       takeaway: 'A homeowner can see a Google Guaranteed badge or a paid text ad before they see the map.',
     };
   }
+  if (input.historyCount) {
+    return {
+      headline: `Nobody in ${input.city} is paying for this search right now.`,
+      takeaway: `${night} Google Ads Transparency still shows recent ads for ${input.historyCount} of these shops.`,
+    };
+  }
   return {
-    headline: `Nobody in ${input.city} is paying for this search.`,
-    takeaway: 'No Local Services Ads and no Search Ads on this keyword.',
+    headline: `Nobody in ${input.city} is paying for this search right now.`,
+    takeaway: `${night} No Local Services Ads, no Search Ads, and no recent ads in Transparency either.`,
   };
 }
 
@@ -143,7 +172,7 @@ export function aiHeadlineCopy(input: {
   rivalCount: number;
 }): { headline: string; why: string } {
   const whyBase =
-    `Every one of the ${input.total} answers came back with a shortlist people call from. AI pulls from the same signals as the Map Pack: reviews, listings, and a website that says what you do.`;
+    `We asked each question 3 times on ChatGPT and 3 times on Gemini (18 checks) and averaged the shortlists. AI pulls from the same signals as the Map Pack: reviews, listings, and a website that says what you do.`;
   if (input.tier === 'well') {
     return {
       headline: `Named in ${input.you} of ${input.total} AI answers. You’re on the shortlist.`,
@@ -189,15 +218,16 @@ export function mapCtaCopy(tier: CopyTier, city: string): string {
   return `Want to rank across ${city}, not just your own street?`;
 }
 
-export function closerCopy(pack: CopyTier, count: number): { head: string; body: string } {
+export function closerCopy(pack: CopyTier, _count: number): { head: string; body: string } {
+  const head = 'Work with a company that makes your Google the perfect way for more customers to find you.';
   if (pack === 'well') {
     return {
-      head: count ? `One plan keeps all ${count} closed.` : 'One plan keeps the lead closed.',
+      head,
       body: 'We keep the profile, site and ads tight — and coach you 1:1 every week so the #1 spot doesn’t slide.',
     };
   }
   return {
-    head: `One plan closes all ${count}.`,
-      body: 'We do the marketing (profile, site, ads) and coach you 1:1 every week so you understand every move and own the results. One team instead of eight vendors.',
+    head,
+    body: 'We do the marketing (profile, site, ads) and coach you 1:1 every week so you understand every move and own the results. One team instead of eight vendors.',
   };
 }
