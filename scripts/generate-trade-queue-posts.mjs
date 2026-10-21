@@ -21,9 +21,9 @@ const proof = {
     line: 'Rewired (electrical, Des Moines) went from about $60k to $220k+ months and 5 to 12 crew over 3+ years',
   },
   'honest-hanks': {
-    name: "Honest Hank's",
+    name: 'Honest Hank’s',
     href: '/case-studies/honest-hanks',
-    line: "Honest Hank's (electrician, Tampa) went from about $25k to $80k months in roughly eight months, starting on a ~$500 LSA setup",
+    line: 'Honest Hank’s (electrician, Tampa) went from about $25k to $80k months in roughly eight months, starting on a ~$500 LSA setup',
   },
   'dry-duck': {
     name: 'Dry Duck',
