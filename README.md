@@ -76,6 +76,16 @@ anything over 50 KB with a 413. Set Reply-To to `{{reply_to}}` and restrict
 allowed domains in the EmailJS dashboard so the public key only works on your
 site.
 
+### Free Google report (Railway API)
+
+`/free-report` posts to the analysis API in `LSRMarketingAnalysisTool` (hosted
+on Railway). This site only needs the public API URL — vendor keys stay on
+Railway.
+
+| Variable | Purpose |
+| --- | --- |
+| `PUBLIC_ANALYSIS_API_URL` | Origin of the Railway API, e.g. `https://api-production-cdde3.up.railway.app` |
+
 ## Pages
 
 | Route | Notes |
@@ -86,6 +96,8 @@ site.
 | `/flight-plan` | The System: Pre-flight / Liftoff / Orbit stages |
 | `/get-started` | Get Started funnel (`marketing for electrical contractors`) |
 | `/contact` | Contact form: question, free audit, or coaching (EmailJS + screenshots) |
+| `/free-report` | Lead magnet form: email + business + city → Railway analysis API |
+| `/free-report/view` | Polls the API and renders GBP, website, ads, and AI ranking scores |
 | `/services` | Services hub (`electrician marketing services`) |
 | `/services/electrician-seo` | Electrician SEO & reviews (`electrician seo agency`) |
 | `/services/electrician-advertising` | Electrician advertising: LSAs + Google Ads (`electrician advertising`) |
@@ -178,6 +190,9 @@ Old service URLs (`/services/paid-ads`, `/local-seo`, `/websites`, `/hiring`, `/
 │   │   ├── flight-plan.astro     # Stage layout w/ tilted photo cards (design: The Flight Plan.dc.html)
 │   │   ├── get-started.astro
 │   │   ├── contact.astro         # Free audit form → EmailJS (PUBLIC_EMAILJS_*)
+│   │   ├── free-report/
+│   │   │   ├── index.astro       # Lead magnet form → Railway POST /api/reports
+│   │   │   └── view.astro        # Polls GET /api/reports/:id and renders scores |
 │   │   ├── privacy.astro
 │   │   ├── terms.astro
 │   │   ├── for/

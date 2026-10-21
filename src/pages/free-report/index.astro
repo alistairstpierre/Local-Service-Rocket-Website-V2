@@ -1,0 +1,201 @@
+---
+/* Free Google report lead magnet. Collects email + business + city, POSTs to the
+   Railway analysis API, then sends the visitor to /free-report/view/?id= to poll.
+   The API (LSRMarketingAnalysisTool) holds all vendor keys; this static page only
+   knows PUBLIC_ANALYSIS_API_URL. */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { absoluteUrl, breadcrumbList, graph, webPageNode } from '../../data/schema';
+
+const title = 'Free Google Report for Your Shop | Local Service Rocket';
+const description =
+  'See how your Google Business Profile, website, ads, and AI search rankings stack up against the Map Pack. Enter your shop and get a free comparison report.';
+const pageUrl = absoluteUrl('/free-report/');
+const jsonLd = graph([
+  webPageNode({ pageUrl, name: title, description }),
+  breadcrumbList(pageUrl, [
+    { name: 'Home', path: '/' },
+    { name: 'Free Google report', path: '/free-report' },
+  ]),
+]);
+
+const apiUrl = (import.meta.env.PUBLIC_ANALYSIS_API_URL || '').replace(/\/$/, '');
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <main class="report">
+    <section class="hero container">
+      <div class="crumbs">
+        <a href="/">Home</a>
+        <span>/</span>
+        <span class="current">Free Google report</span>
+      </div>
+      <div class="eyebrow">FREE LEAD MAGNET</div>
+      <h1>See why the other shop is ranking above you.</h1>
+      <p class="lede">
+        We pull your Google Business Profile, website, ads, and AI search rankings, then compare
+        you with the businesses in the Map Pack. No sales call. The report loads on this site and
+        we email a copy.
+      </p>
+    </section>
+
+    <section class="panel container">
+      <div class="copy">
+        <h2>What the report covers</h2>
+        <ul class="bullets">
+          <li>Map Pack position and Google profile completeness</li>
+          <li>Reviews and how fast they are coming in</li>
+          <li>Website SEO, schema, and mobile speed</li>
+          <li>Whether you or competitors show in LSAs and Search Ads</li>
+          <li>Whether ChatGPT or Gemini names you for the money search</li>
+        </ul>
+        <p class="alt">
+          Already know you want help? <a href="/get-started">Schedule onboarding</a>.
+        </p>
+      </div>
+
+      <div class="form-wrap">
+        {
+          !apiUrl && (
+            <p class="config-warn" role="status">
+              The report API is not wired yet. Set PUBLIC_ANALYSIS_API_URL (see README) or email
+              <a href="mailto:hello@localservicerocket.com">hello@localservicerocket.com</a>.
+            </p>
+          )
+        }
+        <form id="report-form" class="form" novalidate data-api-url={apiUrl}>
+          <label>
+            <span>Email</span>
+            <input type="email" name="email" autocomplete="email" required maxlength="160" />
+            <span class="field-error" data-for="email" hidden></span>
+          </label>
+          <label>
+            <span>Business name</span>
+            <input type="text" name="businessName" autocomplete="organization" required minlength="2" maxlength="120" />
+            <span class="field-error" data-for="businessName" hidden></span>
+          </label>
+          <label>
+            <span>City and state</span>
+            <input type="text" name="city" autocomplete="address-level2" required minlength="2" maxlength="120" placeholder="Tampa, FL" />
+            <span class="field-error" data-for="city" hidden></span>
+          </label>
+          <label>
+            <span>Website <em>(optional)</em></span>
+            <input type="url" name="website" inputmode="url" maxlength="200" placeholder="https://yoursite.com" />
+          </label>
+          <label>
+            <span>Main service keyword <em>(optional)</em></span>
+            <input type="text" name="keyword" maxlength="80" placeholder="electrician" />
+          </label>
+          <div class="hp" aria-hidden="true">
+            <label for="report-fax">Fax</label>
+            <input type="text" id="report-fax" name="fax_number" tabindex="-1" autocomplete="off" />
+          </div>
+          <p class="privacy">
+            We use your email to send the report. We never sell your info. See the
+            <a href="/privacy">privacy policy</a>.
+          </p>
+          <button type="submit" class="btn btn-primary btn-lg" id="submit-btn" disabled={!apiUrl}>
+            Get my free report
+          </button>
+          <p class="status" id="form-status" role="status" hidden></p>
+        </form>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<script>
+  const form = document.getElementById('report-form') as HTMLFormElement | null;
+  const statusEl = document.getElementById('form-status');
+  const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement | null;
+  if (!form) throw new Error('Report form missing');
+
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const apiUrl = form.dataset.apiUrl || '';
+    const data = new FormData(form);
+    if (String(data.get('fax_number') || '')) return;
+
+    const payload = {
+      email: String(data.get('email') || '').trim(),
+      businessName: String(data.get('businessName') || '').trim(),
+      city: String(data.get('city') || '').trim(),
+      website: String(data.get('website') || '').trim() || undefined,
+      keyword: String(data.get('keyword') || '').trim() || undefined,
+    };
+
+    const errors: Record<string, string> = {};
+    if (!EMAIL_RE.test(payload.email)) errors.email = 'Enter a valid email.';
+    if (payload.businessName.length < 2) errors.businessName = 'Enter the business name.';
+    if (payload.city.length < 2) errors.city = 'Enter a city and state.';
+    form.querySelectorAll<HTMLElement>('.field-error').forEach((el) => {
+      const key = el.dataset.for;
+      if (key && errors[key]) {
+        el.hidden = false;
+        el.textContent = errors[key];
+      } else {
+        el.hidden = true;
+        el.textContent = '';
+      }
+    });
+    if (Object.keys(errors).length || !apiUrl) return;
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Starting your report…';
+    }
+    if (statusEl) {
+      statusEl.hidden = false;
+      statusEl.textContent = 'This usually takes under a minute.';
+    }
+
+    try {
+      const res = await fetch(`${apiUrl}/api/reports`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Could not start the report.');
+      window.location.href = `/free-report/view/?id=${encodeURIComponent(json.id)}`;
+    } catch (err) {
+      if (statusEl) {
+        statusEl.textContent = err instanceof Error ? err.message : 'Could not start the report.';
+      }
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Get my free report';
+      }
+    }
+  });
+</script>
+
+<style>
+  .hero { padding-top: 48px; padding-bottom: 20px; }
+  .crumbs { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted-3); }
+  .crumbs a { color: var(--muted-3); }
+  .current { color: var(--ink); font-weight: 600; }
+  .eyebrow { margin-top: 22px; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; color: var(--orange); }
+  h1 { margin-top: 12px; font-size: clamp(28px, 4vw, 42px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.12; max-width: 16ch; }
+  .lede { margin-top: 16px; font-size: 17.5px; line-height: 1.65; color: var(--body); max-width: 58ch; }
+  .panel { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 40px 48px; padding-bottom: 72px; }
+  .copy h2 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; }
+  .bullets { margin: 18px 0 0; padding-left: 1.15em; color: var(--body); line-height: 1.65; }
+  .bullets li + li { margin-top: 10px; }
+  .alt { margin-top: 18px; color: var(--muted); font-size: 14px; }
+  .form-wrap { border: 1px solid var(--border); border-radius: var(--radius-panel); background: #fff; padding: 28px; box-shadow: 0 12px 40px rgba(26, 26, 26, 0.04); }
+  .form { display: flex; flex-direction: column; gap: 16px; }
+  label { display: flex; flex-direction: column; gap: 6px; }
+  label span { font-size: 13px; font-weight: 700; }
+  label em { font-style: normal; font-weight: 500; color: var(--muted-3); }
+  input { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; font: inherit; }
+  input:focus { outline: none; border-color: var(--orange); }
+  .field-error { font-size: 12.5px; color: #b42318; }
+  .privacy { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .status { font-size: 14px; color: var(--body); }
+  .config-warn { margin-bottom: 16px; padding: 12px 14px; border-radius: var(--radius-card); background: var(--orange-tint); border: 1px solid rgba(232, 89, 12, 0.25); font-size: 14px; }
+  .hp { position: absolute; left: -9999px; }
+  @media (max-width: 900px) { .panel { grid-template-columns: 1fr; } }
+</style>
