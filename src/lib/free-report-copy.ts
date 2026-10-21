@@ -126,41 +126,48 @@ export function adsHeadlineCopy(input: {
   city: string;
   historyCount?: number;
   afterHours?: boolean;
+  fromLocation?: boolean;
+  locationLabel?: string;
 }): {
   headline: string;
   takeaway: string;
 } {
+  const place = input.locationLabel || input.city;
+  const local =
+    input.fromLocation
+      ? ` Only ads that Google showed from ${place} — not ads running in another city.`
+      : '';
   const night =
     'Live Local Services Ads and Search Ads can be off at night or on a schedule.';
   if (input.afterHours && !input.youPay) {
     return {
       headline: `This report ran outside 8am–6pm in ${input.city}. Live ads were not on the page.`,
       takeaway: input.historyCount
-        ? `Google Ads Transparency still shows recent ads for ${input.historyCount} of these shops. Re-run the report between 8am and 6pm to see the live Local Services Ads and Search Ads.`
-        : `Live ads are usually off overnight. Re-run the report between 8am and 6pm local time to see the live SERP.`,
+        ? `Google Ads Transparency still shows recent ads for ${input.historyCount} of these shops. Re-run the report between 8am and 6pm to see the live Local Services Ads and Search Ads from ${place}.`
+        : `Live ads are usually off overnight. Re-run the report between 8am and 6pm local time to see the ads that show from ${place}.`,
     };
   }
   if (input.tier === 'well') {
     return {
       headline: 'You’re already buying this search.',
-      takeaway: 'Keep the Google Guaranteed tile and the text ad honest. The shops that stop paying disappear from the top of the page.',
+      takeaway: `Keep the Google Guaranteed tile and the text ad honest. The shops that stop paying disappear from the top of the page.${local}`,
     };
   }
   if (input.payingRivals) {
     return {
       headline: `${input.payingRivals} of ${input.rivalCount} competitors have bought ads on this search.`,
-      takeaway: 'A homeowner can see a Google Guaranteed badge or a paid text ad before they see the map.',
+      takeaway: `A homeowner can see a Google Guaranteed badge or a paid text ad before they see the map.${local}`,
     };
   }
   if (input.historyCount) {
     return {
       headline: `Nobody in ${input.city} is paying for this search right now.`,
-      takeaway: `${night} Google Ads Transparency still shows recent ads for ${input.historyCount} of these shops.`,
+      takeaway: `${night}${local} Google Ads Transparency still shows recent ads for ${input.historyCount} of these shops.`,
     };
   }
   return {
     headline: `Nobody in ${input.city} is paying for this search right now.`,
-    takeaway: `${night} No Local Services Ads, no Search Ads, and no recent ads in Transparency either.`,
+    takeaway: `${night}${local} No Local Services Ads, no Search Ads, and no recent ads in Transparency either.`,
   };
 }
 

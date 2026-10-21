@@ -173,7 +173,7 @@ Old service URLs (`/services/paid-ads`, `/local-seo`, `/websites`, `/hiring`, `/
 │   ├── lib/
 │   │   ├── free-report-copy.ts     # Well / okay / poorly headlines from live ranks
 │   │   ├── free-report-example.ts  # Fallback dataset for photo counts, posts, extra AI platforms
-│   │   └── free-report-render.ts   # Maps PublicReport + examples into the report HTML (STEP 1/2 Map Pack, boards in score order, review 65/35, website = speed 30% + site 70% unpublished, About keyword/services/locations, fastest = lowest LCP)
+│   │   └── free-report-render.ts   # Maps PublicReport + examples into the report HTML (STEP 1/2 Map Pack, boards in score order, review 65/35, website = speed 30% + site 70% unpublished, About keyword/services/locations, fastest = lowest LCP, ads from shop pin)
 │   ├── data/
 │   │   ├── blog-posts.js         # Blog hub cards (cron prepends here on publish)
 │   │   ├── images.js             # Image manifest (widths, formats) shared by script + Picture

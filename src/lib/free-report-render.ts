@@ -113,6 +113,8 @@ export type PublicReportBusiness = {
     lsaCompetitorCount?: number;
     runningSearchAds: boolean;
     afterHours?: boolean;
+    fromLocation?: boolean;
+    locationLabel?: string;
     advertiserFound?: boolean;
     advertiserLastSeen?: string;
     searchAd?: { title?: string; description?: string; url?: string };
@@ -1316,20 +1318,33 @@ export function renderReportHtml(report: PublicReport): string {
   };
   const afterHours =
     report.businesses.some((b) => b.ads?.afterHours) || isAfterHours(city, report.generatedAt);
+  const fromLocation = report.businesses.some((b) => b.ads?.fromLocation === true);
+  const locationSearchFailed = !afterHours && !fromLocation && report.businesses.some((b) => b.ads?.fromLocation === false);
+  const adsLocation =
+    report.businesses.find((b) => b.ads?.locationLabel)?.ads?.locationLabel ||
+    (you.address ? 'your shop address' : city);
   const adsRows = [
     row(
       'Local Services Ads',
-      afterHours ? 'Live tiles — not checked after 6pm' : 'Google Guaranteed tiles',
+      afterHours
+        ? 'Live tiles — not checked after 6pm'
+        : fromLocation
+          ? `Tiles Google showed from ${adsLocation}`
+          : 'Google Guaranteed tiles',
       orderAds,
       (b) => (afterHours ? part('re-run 8am–6pm') : b.lsa ? num(`#${b.lsa}`, 'slot', Y) : no('not running'))
     ),
     row(
       'Search Ads',
-      afterHours ? 'Live text ad — not checked after 6pm' : 'Text ad on the keyword',
+      afterHours
+        ? 'Live text ad — not checked after 6pm'
+        : fromLocation
+          ? `Text ads Google showed from ${adsLocation}`
+          : 'Text ad on the keyword',
       orderAds,
       (b) => (afterHours ? part('re-run 8am–6pm') : b.searchAds ? yes('running') : no('none'))
     ),
-    row('Ads history', 'Google Ads Transparency — not the live search', orderAds, (b) =>
+    row('Ads history', 'Google Ads Transparency — national record, not this location', orderAds, (b) =>
       b.transparency ? yes('recent ads') : no('none found')
     ),
   ];
@@ -1347,6 +1362,8 @@ export function renderReportHtml(report: PublicReport): string {
     city,
     historyCount,
     afterHours,
+    fromLocation,
+    locationLabel: adsLocation,
   });
   const adsHeadline = adsCopy.headline;
   const adsTakeaway = adsCopy.takeaway;
@@ -1876,8 +1893,12 @@ export function renderReportHtml(report: PublicReport): string {
       <h2>${esc(adsHeadline)}</h2>
       <p class="rpt-lede">${
         afterHours
-          ? 'This report ran outside 8am–6pm local time, so we used Ads history instead of the live SERP. Re-run between those hours to see Local Services Ads and Search Ads.'
-          : 'Before anyone scrolls to the map, this is the top of the page. Live ads can be off at night or on a schedule — Ads history is the cached record.'
+          ? `This report ran outside 8am–6pm local time, so we used Ads history instead of the live SERP. Re-run between those hours to see only the Local Services Ads and Search Ads that show from ${esc(adsLocation)}.`
+          : fromLocation
+            ? `Only the ads Google showed from ${esc(adsLocation)}. A campaign aimed at another city will not appear here. Ads history is the national record, not this search.`
+            : locationSearchFailed
+              ? 'We could not pull the live local search this time. Ads history is Google’s national record, not ads from this location.'
+              : 'Before anyone scrolls to the map, this is the top of the page. Live ads can be off at night or on a schedule — Ads history is the cached record.'
       }</p>
       ${rankPills('ADS SCORE', rankAds)}
       <div class="rpt-ads">
@@ -2055,6 +2076,6 @@ export function renderReportHtml(report: PublicReport): string {
       </div>
     </section>`
     )}
-    <p class="rpt-foot">Generated ${esc(generated)} · Data from Google Search, Google Maps, PageSpeed Insights, Google Ads Transparency, ChatGPT and Gemini.</p>
+    <p class="rpt-foot">Generated ${esc(generated)} · Data from Google Search, Google Maps, PageSpeed Insights, Google Ads Transparency, ChatGPT and Gemini.<br />This report currently works for US businesses only.</p>
   </div>`;
 }
