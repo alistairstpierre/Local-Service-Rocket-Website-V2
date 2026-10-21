@@ -1,7 +1,9 @@
 /* Builds the Free Google Report HTML from PublicReport JSON plus the design
    example dataset. Used only by /free-report/view.astro after the Railway
    poll succeeds. Overall shop rankings stay hidden until every section is
-   ready. Layout matches Claude Design Files/Free Google Report.dc.html. */
+   ready. The Profile line-by-line board stays hidden until About and photo
+   counts are loaded for every shop. Layout matches
+   Claude Design Files/Free Google Report.dc.html. */
 
 import {
   adsHeadlineCopy,
@@ -544,6 +546,15 @@ function ghostBiz(name: string, pack: number | null, you = false): ExampleBiz {
       industry: 0,
     },
   };
+}
+
+/** Profile line-by-line waits for DataForSEO About + photo counts. */
+export function profileBoardReady(report: PublicReport): boolean {
+  const ready = report.ready;
+  if (!ready) return true;
+  if (ready.hero && ready.pack && ready.website && ready.ads && ready.ai) return true;
+  if (!ready.hero || report.businesses.length === 0) return false;
+  return report.businesses.every((b) => b.gbp.gbpInfoLoaded === true);
 }
 
 function mergeReport(report: PublicReport): {
@@ -1532,6 +1543,7 @@ export function renderReportHtml(report: PublicReport): string {
   const ctaHref = report.cta?.href || '/get-started';
   const rankingsReady =
     !ready || Boolean(ready.hero && ready.pack && ready.website && ready.ads && ready.ai);
+  const profileReady = profileBoardReady(report);
   const shopRanking = `<div class="rpt-shop-grid">
         ${shopPairs
           .map(
@@ -1717,13 +1729,25 @@ export function renderReportHtml(report: PublicReport): string {
           )
           .join('')}
       </div>
-    </section>
+    </section>`
+    )}
 
-    <section class="rpt-sec is-tight">
+    ${
+      profileReady
+        ? `<section class="rpt-sec is-tight">
       <h3>Profile, line by line.</h3>
       ${boardHtml('GOOGLE BUSINESS PROFILE', headsGbp, gbpRows)}
     </section>`
-    )}
+        : `<section class="rpt-sec is-tight" aria-busy="true">
+      <div class="rpt-rank-hold" role="status">
+        <span class="rpt-spin" aria-hidden="true"></span>
+        <div>
+          <div class="rpt-rank-hold-title">Pulling About and photos from each Google listing.</div>
+          <div class="rpt-rank-hold-sub">This board waits until the business description and photo counts are in for every shop.</div>
+        </div>
+      </div>
+    </section>`
+    }
 
     ${wait(
       'website',
