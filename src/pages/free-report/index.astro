@@ -2,7 +2,7 @@
 /* Free Google report landing. Matches Claude Design Files/Free Report - Landing.dc.html.
    Collects email, a picked Google listing, phone, city, and optional marketing-SMS consent,
    then POSTs placeId to the Railway analysis API and sends the visitor to
-   /free-report/view/?id= to poll. Vendor keys stay on Railway. */
+   /free-report/view?id= to poll. Vendor keys stay on Railway. */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Picture from '../../components/Picture.astro';
 import { BOOKING_URL } from '../../lib/free-report-example';
@@ -772,7 +772,7 @@ const proofLogos: { href?: string; name: string; alt: string; h: number; radius?
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || 'Could not start the report.');
-      window.location.href = `/free-report/view/?id=${encodeURIComponent(json.id)}`;
+      window.location.href = `/free-report/view?id=${encodeURIComponent(json.id)}`;
     } catch (err) {
       submitting = false;
       setError(err instanceof Error ? err.message : 'Could not start the report.');
