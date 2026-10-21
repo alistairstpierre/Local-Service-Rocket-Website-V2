@@ -28,7 +28,7 @@ const apiUrl = (
       <div class="rpt-dock-bar"><i id="load-bar"></i></div>
       <div class="rpt-dock-row">
         <span id="load-now">Starting your report…</span>
-        <span id="load-eta">About 7 minutes left</span>
+        <span id="load-eta">About 4 minutes left</span>
         <span id="load-pct">0%</span>
       </div>
       <ol id="load-steps" class="rpt-dock-steps">
@@ -70,7 +70,7 @@ const apiUrl = (
   const loadPct = document.getElementById('load-pct');
   const loadBar = document.getElementById('load-bar');
   let lastHtml = '';
-  const STAGE_SEC = { profile: 45, pack: 50, website: 180, ads: 40, ai: 100 } as const;
+  const STAGE_SEC = { profile: 30, pack: 40, website: 90, ads: 25, ai: 55 } as const;
 
   function etaLabel(report?: PublicReport): string {
     const left = STAGES.reduce((sum, key) => {

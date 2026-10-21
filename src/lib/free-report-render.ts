@@ -56,6 +56,7 @@ export type PublicReportBusiness = {
     description?: string;
     descriptionFit?: { keyword: boolean; services: boolean; locations: boolean };
     descriptionUnknown?: boolean;
+    gbpInfoLoaded?: boolean;
     hasPhone: boolean;
     hasWebsite: boolean;
     hasHours: boolean;
@@ -419,7 +420,12 @@ function overlayBiz(
     address: live.gbp.hasAddressListed ?? (heroOn ? example.address : false),
     addrShort: live.gbp.address ?? (live.gbp.hasAddressListed === false ? 'Hidden' : heroOn ? example.addrShort : '…'),
     desc: live.gbp.hasDescription,
-    descUnknown: !live.gbp.hasDescription && Boolean(live.gbp.descriptionUnknown),
+    descUnknown:
+      !heroOn ||
+      (!live.gbp.hasDescription &&
+        live.gbp.gbpInfoLoaded !== true &&
+        Boolean(ready) &&
+        !(ready.pack && ready.website && ready.ads && ready.ai)),
     description: live.gbp.description,
     descKeyword: fit?.keyword,
     descServices: fit?.services,
@@ -1053,7 +1059,7 @@ export function renderReportHtml(report: PublicReport): string {
     row('Secondary categories', 'The additional categories you selected', orderGbp, (b) => num(b.secondary, 'added', b.secondary <= 1 ? N : INK)),
     row('Address shown', 'Street address on the pin', orderGbp, (b) => (b.address ? yes(b.addrShort) : no('hidden'))),
     row('Business description', 'Keyword, services, and cities in the About', orderGbp, (b) => {
-      if (b.descUnknown) return part('couldn’t read');
+      if (b.descUnknown) return part('checking…');
       if (!b.desc) return no('missing');
       const graded = b.descKeyword != null || b.descServices != null || b.descLocations != null;
       if (!graded) return yes('written');
@@ -1067,7 +1073,7 @@ export function renderReportHtml(report: PublicReport): string {
       return part('written, no keyword');
     }),
     row('Photos on profile', 'Images on the listing', orderGbp, (b) =>
-      b.photos ? num(fmt(b.photos), 'photos') : b.descUnknown ? part('couldn’t read') : no('none listed')
+      b.photos ? num(fmt(b.photos), 'photos') : b.descUnknown ? part('checking…') : no('none listed')
     ),
     row('Hours · Book online', 'Actions on the profile', orderGbp, (b) =>
       b.hours && b.book ? yes('both') : b.hours || b.book ? part(b.hours ? 'hours only' : 'booking only') : no('neither')
