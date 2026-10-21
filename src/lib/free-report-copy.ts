@@ -174,13 +174,13 @@ export function gapsHeadingCopy(input: { pack: CopyTier; count: number }): { lab
     return {
       label: 'WHERE YOU’RE LOSING GROUND',
       headline: `${input.count} gaps between you and #1.`,
-      lede: 'What each one is costing you — and what closing it gets you.',
+      lede: 'What’s missing, what closing it gets you, and when it gets fixed.',
     };
   }
   return {
     label: 'WHERE YOU’RE LOSING',
     headline: `${input.count} gaps between you and the top 3.`,
-    lede: 'What each one is costing you — and what closing it gets you.',
+    lede: 'What’s missing, what closing it gets you, and when it gets fixed.',
   };
 }
 
@@ -198,6 +198,6 @@ export function closerCopy(pack: CopyTier, count: number): { head: string; body:
   }
   return {
     head: `One plan closes all ${count}.`,
-    body: 'We do the marketing — profile, site, ads — and coach you 1:1 every week so you understand every move and own the results.',
+      body: 'We do the marketing (profile, site, ads) and coach you 1:1 every week so you understand every move and own the results. One team instead of eight vendors.',
   };
 }

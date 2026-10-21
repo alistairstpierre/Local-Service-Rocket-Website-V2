@@ -506,6 +506,16 @@ function overallOf(s: ExampleBiz['scores']): number {
   return Math.round(s.gbp * 0.35 + s.web * 0.28 + s.ads * 0.2 + s.ai * 0.17);
 }
 
+function exactScore(s: ExampleBiz['scores']): number {
+  return s.gbp * 0.35 + s.web * 0.28 + s.ads * 0.2 + s.ai * 0.17;
+}
+
+function placeOrd(n: number): string {
+  const suffix =
+    n % 10 === 1 && n !== 11 ? 'ST' : n % 10 === 2 && n !== 12 ? 'ND' : n % 10 === 3 && n !== 13 ? 'RD' : 'TH';
+  return `${n}${suffix} PLACE`;
+}
+
 function yes(sub = '') {
   return { t: '✓', color: '#fff', pill: Y, sub, size: '15px' };
 }
@@ -647,23 +657,41 @@ export function renderReportHtml(report: PublicReport): string {
   const cityShort = city.toLowerCase();
   const kwPlural = keyword.endsWith('s') ? keyword : `${keyword}s`;
   const inPack = typeof you.pack === 'number' && you.pack <= 3;
-  const ov = overallOf(you.scores);
-  const leaderOverall = Math.max(...rivals.map((b) => overallOf(b.scores)), 0);
   const youCenter = you.grid[12];
   const youCov = covOf(you);
   const weeksN = WEEKS_N;
 
-  const pillars = (
-    [
-      ['GOOGLE PROFILE', 'gbp'],
-      ['WEBSITE', 'web'],
-      ['GOOGLE ADS', 'ads'],
-      ['AI SEARCH', 'ai'],
-    ] as const
-  ).map(([short, k]) => {
-    const leaderScore = Math.max(...rivals.map((b) => b.scores[k]), 0);
-    return { short, you: you.scores[k], leader: leaderScore, youW: you.scores[k], leaderW: leaderScore };
-  });
+  const pillarKeys = [
+    ['GOOGLE PROFILE', 'gbp'],
+    ['WEBSITE', 'web'],
+    ['GOOGLE ADS', 'ads'],
+    ['AI SEARCH', 'ai'],
+  ] as const;
+  const shopCards = [...B]
+    .map((b) => ({ b, sc: overallOf(b.scores), ex: exactScore(b.scores) }))
+    .sort((x, y) => y.ex - x.ex)
+    .map(({ b, sc }, i) => ({
+      you: b.you,
+      name: b.name,
+      photo: b.photo,
+      rating: b.rating ? b.rating.toFixed(1) : '—',
+      reviews: fmt(b.reviews),
+      years: b.years,
+      packText: b.you
+        ? inPack
+          ? `#${b.pack} in the Map Pack`
+          : 'Not in the Map Pack'
+        : `#${b.pack} in the Map Pack`,
+      packColor: b.you ? (inPack ? Y : N) : INK,
+      place: placeOrd(i + 1),
+      placeColor: b.you ? (i < 3 ? OR : N) : i === 0 ? OR : '#8a8a8a',
+      score: sc,
+      scoreColor: b.you ? OR : INK,
+      track: b.you ? '#f3d9c6' : '#f0f0f0',
+      bar: b.you ? OR : INK,
+      breakdown: pillarKeys.map(([short, key]) => ({ short, v: b.scores[key] })),
+    }));
+  const shopPairs = [shopCards.slice(0, 2), shopCards.slice(2, 4)].filter((pair) => pair.length);
 
   const heads = B.map((b, i) => ({
     name: b.short,
@@ -674,35 +702,8 @@ export function renderReportHtml(report: PublicReport): string {
     radius: i === B.length - 1 ? '0 18px 0 0' : '0',
   }));
 
-  const last30 = (b: ExampleBiz) => b.weeks.slice(-4).reduce((a, c) => a + c, 0);
-  const edgesOf = (b: ExampleBiz) => {
-    const L: string[] = [];
-    if (nameKeywordFit(b.name, keyword) === 'yes' && nameKeywordFit(you.name, keyword) !== 'yes') {
-      L.push(`“${keyword}” in the name`);
-    }
-    if (b.address && !you.address) L.push('Street address shown');
-    if (last30(b) > last30(you) + 5) L.push(`${last30(b)} reviews in 30 days`);
-    if (b.lsa && !you.lsa) L.push(`Local Services Ad · slot #${b.lsa}`);
-    if (b.searchAds && !you.searchAds) L.push('Google Search Ads running');
-    if (b.gpt != null && you.gpt == null) L.push('Recommended by ChatGPT');
-    if (b.gem != null && you.gem == null) L.push('Recommended by Gemini');
-    if (b.titleKw === 'yes' && you.titleKw !== 'yes') L.push(`“${keyword}” in page title`);
-    if (b.secondary > you.secondary + 1) L.push(`${b.secondary} secondary categories`);
-    if (b.desc && !you.desc) L.push('Profile description');
-    if (b.auth.bbb && !you.auth.bbb) L.push('BBB accredited');
-    return L;
-  };
-
-  const rivalCards = rivals.map((b) => {
-    const L = edgesOf(b);
-    return { ...b, edges: L.slice(0, 4), more: L.length > 4 ? `+${L.length - 4} more below ↓` : 'Full breakdown below ↓' };
-  });
-
   const youPackLabel = inPack ? `#${you.pack} in the pack` : 'Not in the top 3';
   const youPackColor = inPack ? Y : N;
-  const youPackSub = youCenter
-    ? `#${youCenter} from ${you.address ? 'your own address' : `the center of ${cityName}`} · ${youCov} of 25 spots nearby`
-    : 'Not found within 2 miles';
 
   const packLevel = packTier(you.pack);
   const coverLevel = coverageTier(youCov, covOf(leader));
@@ -1178,47 +1179,48 @@ export function renderReportHtml(report: PublicReport): string {
       ${wait(
         'hero',
         'Finding the Map Pack and your Google profile',
-        `<div class="rpt-rivals">
-        ${rivalCards
+        `<div class="rpt-shop-grid">
+        ${shopPairs
           .map(
-            (r) => `<article class="rpt-card">
-              <div class="rpt-card-photo">${photoSlot(r.name, false, r.photo)}<div class="rpt-map-pin"><span>${r.pack}</span></div></div>
-              <div class="rpt-card-body">
-                <div class="rpt-card-name">${esc(r.name)}</div>
-                <div class="rpt-meta"><b>${r.rating ? r.rating.toFixed(1) : '—'}</b>${stars()}<span>(${fmt(r.reviews)})</span>${r.years ? `<span>· ${r.years}+ yrs</span>` : ''}</div>
-                <div class="rpt-mini-kicker">THEY HAVE · YOU DON'T</div>
-                <div class="rpt-edges">${r.edges.map((e) => `<div class="rpt-edge"><span>✓</span>${esc(e)}</div>`).join('')}</div>
-                <div class="rpt-more">${esc(r.more)}</div>
+            (pair) => `<div class="rpt-shop-pair">
+            ${pair
+              .map(
+                (c) => `<article class="rpt-shop${c.you ? ' is-you' : ''}">
+              <div class="rpt-shop-photo">${photoSlot(c.name, false, c.photo)}${c.you ? '<div class="rpt-shop-badge">YOU</div>' : ''}</div>
+              <div class="rpt-shop-body">
+                <div class="rpt-shop-top">
+                  <div class="rpt-shop-copy">
+                    <div class="rpt-card-name">${esc(c.name)}</div>
+                    <div class="rpt-meta"><b>${esc(c.rating)}</b>${stars()}<span>(${esc(c.reviews)})</span>${c.years ? `<span>· ${c.years}+ yrs</span>` : ''}</div>
+                    <div class="rpt-shop-pack" style="color:${c.packColor}">${esc(c.packText)}</div>
+                  </div>
+                  <div class="rpt-shop-place">
+                    <div class="rpt-shop-place-l" style="color:${c.placeColor}">${esc(c.place)}</div>
+                    <div class="rpt-shop-score" style="color:${c.scoreColor}">${c.score}</div>
+                  </div>
+                </div>
+                <div class="rpt-shop-bd-head"><span>SCORE BREAKDOWN</span><span>/100</span></div>
+                <div class="rpt-shop-bars">
+                  ${c.breakdown
+                    .map(
+                      (p) => `<div>
+                    <div class="rpt-shop-row-top"><span>${esc(p.short)}</span><b style="color:${c.scoreColor}">${p.v}</b></div>
+                    <div class="rpt-shop-track" style="background:${c.track}"><div class="rpt-shop-bar" style="background:${c.bar};width:${p.v}%"></div></div>
+                  </div>`
+                    )
+                    .join('')}
+                </div>
               </div>
             </article>`
+              )
+              .join('')}
+          </div>`
           )
           .join('')}
       </div>
-
-      <div class="rpt-you">
-        <div class="rpt-you-photo">${photoSlot(you.name, true, you.photo)}<div class="rpt-you-badge">YOU</div></div>
-        <div class="rpt-you-copy">
-          <div class="rpt-card-name">${esc(you.name)}</div>
-          <div class="rpt-meta"><b>${you.rating ? you.rating.toFixed(1) : '—'}</b>${stars()}<span>(${fmt(you.reviews)})</span>${you.years ? `<span>· ${you.years}+ yrs</span>` : ''}</div>
-          <div class="rpt-you-pack" style="color:${youPackColor}">${esc(youPackLabel)}</div>
-          <div class="rpt-you-sub">${esc(youPackSub)}</div>
-          <a class="rpt-jump" href="#gaps">See every gap ↓</a>
-        </div>
-        <div class="rpt-ring-wrap">
-          <div class="rpt-ring" style="background:conic-gradient(${OR} 0 ${Math.round(ov * 3.6)}deg,#f3d9c6 0)"><div>${ov}</div></div>
-          <div><div class="rpt-mini-kicker is-muted">OVERALL SCORE</div><div class="rpt-ring-lead">Pack leader: ${leaderOverall}</div></div>
-        </div>
-        <div class="rpt-pillar-grid">
-          ${pillars
-            .map(
-              (p) => `<div class="rpt-pillar">
-                <div class="rpt-pillar-top"><span>${esc(p.short)}</span><span><b>${p.you}</b> vs ${p.leader}</span></div>
-                <div class="rpt-bars"><div><i style="width:${p.youW}%"></i></div><div><i class="is-ink" style="width:${p.leaderW}%"></i></div></div>
-              </div>`
-            )
-            .join('')}
-          <div class="rpt-legend"><span><i class="is-you"></i>You</span><span><i class="is-them"></i>Best competitor</span></div>
-        </div>
+      <div class="rpt-shop-foot">
+        <span>Ranked by overall score: Google profile 35% · website 28% · ads 20% · AI search 17%.</span>
+        <a href="#gaps">See every gap ↓</a>
       </div>`
       )}
     </div>
@@ -1433,8 +1435,8 @@ export function renderReportHtml(report: PublicReport): string {
       </div>
       ${ctaBand(
         'FREE 20-MIN CALL',
-        siteLevel === 'well' ? 'Keep the site saying what you do.' : 'Most of these are week-one fixes.',
-        siteLevel === 'well' ? 'A fast page that names the service still needs reviews and the pack to stay #1.' : 'Fast site. It just needs to say what you do.'
+        siteLevel === 'well' ? 'Keep the site saying what you do.' : you.psi === bestPsi ? 'Fast site. It just needs to say what you do.' : 'Most of these are week-one fixes.',
+        'Title, H1, description and schema are quick wins. We’ll show you what to change first and why.'
       )}
     </section>`
     )}
@@ -1501,7 +1503,7 @@ export function renderReportHtml(report: PublicReport): string {
         </div>
         <div class="rpt-callout">
           <div class="rpt-mini-kicker">WHY THIS MATTERS</div>
-          <div class="rpt-callout-head">Homeowners are asking AI first — and calling from its shortlist.</div>
+          <div class="rpt-callout-head">Homeowners are asking AI first, and calling from its shortlist.</div>
           <div class="rpt-callout-body">${esc(aiWhy)}</div>
         </div>
       </div>
@@ -1536,7 +1538,7 @@ export function renderReportHtml(report: PublicReport): string {
                 : `<p>Here are some of the top-rated ${esc(kwPlural)} in ${esc(cityName)}, based on recent reviews and local reputation:</p>`
             }
             ${itemsFor(Math.max(0, gptQi), Math.max(0, gptPi))
-              .map((it) => `<div class="rpt-chat-item"><span>${it.n}.</span><div><b>${esc(it.name)}</b> — ${esc(it.text)}</div></div>`)
+              .map((it) => `<div class="rpt-chat-item"><span>${it.n}.</span><div><b>${esc(it.name)}</b>, ${esc(it.text)}</div></div>`)
               .join('')}
           </div>
           <footer class="${gptHit ? 'is-hit' : 'is-miss'}"><span>${gptHit ? '✓' : '✗'}</span><div><b>${esc(you.name)} ${gptHit ? 'is mentioned' : 'isn’t mentioned'}</b><div>${gptHit ? 'Named in the answer' : 'Not named, not cited'}</div></div></footer>
@@ -1551,7 +1553,7 @@ export function renderReportHtml(report: PublicReport): string {
                 : `<p>For an emergency ${esc(keyword)} in ${esc(cityName)}, these providers offer 24/7 or same-day service and are consistently well reviewed:</p>`
             }
             ${itemsFor(Math.max(0, gemQi), Math.max(0, gemPi))
-              .map((it) => `<div class="rpt-chat-item"><span>•</span><div><b>${esc(it.name)}</b> — ${esc(it.text)}</div></div>`)
+              .map((it) => `<div class="rpt-chat-item"><span>•</span><div><b>${esc(it.name)}</b>, ${esc(it.text)}</div></div>`)
               .join('')}
           </div>
           <footer class="${gemHit ? 'is-hit' : 'is-miss'}"><span>${gemHit ? '✓' : '✗'}</span><div><b>${esc(you.name)} ${gemHit ? 'is mentioned' : 'isn’t mentioned'}</b><div>${gemHit ? 'Named in the answer' : 'Not named, not cited'}</div></div></footer>
@@ -1601,7 +1603,7 @@ export function renderReportHtml(report: PublicReport): string {
             <a class="rpt-btn" href="${BOOKING_URL}">Book a free call</a>
             <a class="rpt-btn is-ghost" href="${esc(ctaHref.startsWith('http') ? ctaHref : '/flight-plan')}">See the full flight plan</a>
           </div>
-          <div class="rpt-fine">20 minutes. We walk through your report, show what we'd fix first and what it costs.</div>
+          <div class="rpt-fine">20 minutes. We walk through your report, what we'd fix first and what it costs.</div>
         </div>
         <div class="rpt-phases">
           ${phases

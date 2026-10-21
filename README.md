@@ -84,7 +84,7 @@ Railway.
 
 | Variable | Purpose |
 | --- | --- |
-| `PUBLIC_ANALYSIS_API_URL` | Origin of the Railway API, e.g. `https://api-production-cdde3.up.railway.app` |
+| `PUBLIC_ANALYSIS_API_URL` | Origin of the Railway API, e.g. `https://api-production-cdde3.up.railway.app`. Local `astro dev` uses `http://localhost:4322` instead so listing search does not burn the live daily cap. |
 
 ## Pages
 
@@ -96,7 +96,7 @@ Railway.
 | `/flight-plan` | The System: Pre-flight / Liftoff / Orbit stages |
 | `/get-started` | Get Started funnel (`marketing for electrical contractors`) |
 | `/contact` | Contact form: question, free audit, or coaching (EmailJS + screenshots) |
-| `/free-report` | Electrician-only lead magnet: search the Google listing, then email + city → Railway analysis API |
+| `/free-report` | Electrician-only landing (`Free Report - Landing.dc.html`): email, city, then GBP picker, phone, SMS consent → Railway analysis API |
 | `/free-report/view` | After the form, opens immediately and polls `GET /api/reports/:id`. Sections fill in as snapshots land. No `id` shows the example. |
 | `/services` | Services hub (`electrician marketing services`) |
 | `/services/electrician-seo` | Electrician SEO & reviews (`electrician seo agency`) |

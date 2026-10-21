@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#fff}a{color:#e8590c;text-decoration:none}a:hover{color:#c2400b}input::placeholder{color:#b0b0b0}</style></helmet>
+<div data-screen-label="Free Report Landing" style="background:#fff;color:#1a1a1a;font-family:'Manrope',sans-serif;min-height:100vh">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px clamp(20px,5vw,48px);border-bottom:1px solid #ececec;background:#fff">
+    <a href="Local Service Rocket - Homepage.dc.html" style="display:flex;align-items:center;gap:9px;color:#1a1a1a;font-weight:800;font-size:15px"><img src="assets/lsr-logo.svg" alt="" style="width:28px;height:28px">Local Service Rocket</a>
+    <div style="display:flex;gap:14px;align-items:center"><span style="font-size:13px;font-weight:600;color:#6b6b6b">(888) 371-6365</span><a href="https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg9d1R" style="padding:9px 20px;border-radius:99px;border:1.5px solid #d9d9d9;color:#1a1a1a;font-weight:700;font-size:13px">Schedule onboarding</a></div>
+  </div>
+
+  <!-- HERO + FORM -->
+  <div style="max-width:1160px;margin:0 auto;padding:56px clamp(20px,5vw,48px) 0;display:flex;flex-wrap:wrap;gap:40px 56px;align-items:flex-start">
+    <div style="flex:1 1 380px;min-width:0">
+      <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:99px;border:1px solid #e5e5e5;background:#fafafa;font-size:11px;font-weight:700;color:#e8590c;letter-spacing:.06em"><img src="assets/trade-electrical.svg" alt="" style="width:14px;height:14px">FREE REPORT · YOU VS YOUR MAP PACK</div>
+      <h1 style="margin:18px 0 0;font-size:clamp(34px,5vw,54px);line-height:1.02;font-weight:800;letter-spacing:-.035em;text-wrap:balance">{{ headline }}</h1>
+      <p style="margin:18px 0 0;font-size:16.5px;line-height:1.6;color:#6b6b6b;max-width:520px;text-wrap:pretty">We pull your Google Business Profile, website, ads and AI search results and put them next to the three electricians in your Map Pack. Not just the order. What's behind it, line by line.</p>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:24px">
+        <div style="display:flex;align-items:center;gap:10px;font-size:14.5px;font-weight:700"><span style="width:22px;height:22px;border-radius:99px;background:#1b8a4b;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none">✓</span>Where you rank, and the reasons why.</div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:14.5px;font-weight:700"><span style="width:22px;height:22px;border-radius:99px;background:#1b8a4b;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none">✓</span>Who's winning the review war.</div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:14.5px;font-weight:700"><span style="width:22px;height:22px;border-radius:99px;background:#1b8a4b;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none">✓</span>Who's buying the ads. Who AI recommends.</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:14px;margin-top:32px;flex-wrap:wrap">
+        <div style="display:flex"><img src="assets/lewis-carter.png" alt="" style="width:34px;height:34px;border-radius:99px;object-fit:cover;border:2px solid #fff"><img src="assets/jason-hooked-up.png" alt="" style="width:34px;height:34px;border-radius:99px;object-fit:cover;border:2px solid #fff;margin-left:-10px"><img src="assets/john-headshot.png" alt="" style="width:34px;height:34px;border-radius:99px;object-fit:cover;border:2px solid #fff;margin-left:-10px"></div>
+        <div style="font-size:12.5px;color:#6b6b6b;line-height:1.4"><b style="color:#1a1a1a">The same checks we run for Rewired, Honest Hank's and Hooked Up Electric.</b><br>Seven electrical shops. $10M+ in revenue.</div>
+      </div>
+    </div>
+
+    <form onSubmit="{{ submit }}" style="flex:0 1 420px;min-width:0;width:100%;border:1px solid #e7e7e7;border-radius:20px;padding:26px 26px 22px;background:#fff;box-shadow:0 18px 50px -30px rgba(0,0,0,.25);display:flex;flex-direction:column;gap:14px">
+      <div><div style="font-weight:800;font-size:19px;letter-spacing:-.02em">Get your report</div><div style="font-size:12.5px;color:#8a8a8a;margin-top:3px">20 seconds to fill in. Report builds in about 2 minutes and fills in as we go.</div></div>
+      <label style="display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:700;color:#4a4a4a">Email<input name="email" type="email" required="{{ true }}" placeholder="you@yourshop.com" onChange="{{ onField }}" style="font-family:inherit;font-size:15px;padding:13px 14px;border:1.5px solid #e3e3e3;border-radius:12px;outline:none;color:#1a1a1a;background:#fff;width:100%;box-sizing:border-box" style-focus="border-color:#e8590c;box-shadow:0 0 0 3px rgba(232,89,12,.14)"></label>
+      <div style="display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:700;color:#4a4a4a;position:relative">
+        <label for="gbp-search">Select your Google Business Profile</label>
+        <sc-if value="{{ hasPick }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;align-items:center;gap:12px;border:1.5px solid #1b8a4b;border-radius:12px;padding:10px 12px;background:#f3faf5">
+            <div style="width:36px;height:36px;border-radius:8px;background:#e8f5ec;display:flex;align-items:center;justify-content:center;flex:none;color:#1b8a4b;font-size:16px">✓</div>
+            <div style="min-width:0;flex:1"><div style="font-size:14px;font-weight:800;color:#1a1a1a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ pick.name }}</div><div style="font-size:12px;color:#6b6b6b;font-weight:600;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><span style="color:#1a1a1a">{{ pick.rating }}</span> <span style="color:#fbbc04">★</span> ({{ pick.reviews }}) · {{ pick.address }}</div></div>
+            <button type="button" onClick="{{ clearPick }}" style="font-family:inherit;font-size:12px;font-weight:700;color:#6b6b6b;background:none;border:0;cursor:pointer;padding:4px 6px;flex:none" style-hover="color:#1a1a1a">Change</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ noPick }}" hint-placeholder-val="{{ true }}">
+          <div style="position:relative">
+            <span style="position:absolute;left:14px;top:50%;width:14px;height:14px;margin-top:-8px;border:2px solid #9aa0a6;border-radius:50%;pointer-events:none"><span style="position:absolute;width:2px;height:6px;background:#9aa0a6;right:-4px;bottom:-5px;transform:rotate(-45deg)"></span></span>
+            <input id="gbp-search" name="business" type="text" autoComplete="off" placeholder="Start typing your business name" value="{{ query }}" onChange="{{ onQuery }}" onFocus="{{ openList }}" onBlur="{{ closeList }}" style="font-family:inherit;font-size:15px;padding:13px 14px 13px 40px;border:1.5px solid #e3e3e3;border-radius:12px;outline:none;color:#1a1a1a;background:#fff;width:100%;box-sizing:border-box" style-focus="border-color:#e8590c;box-shadow:0 0 0 3px rgba(232,89,12,.14)">
+          </div>
+          <sc-if value="{{ showList }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;left:0;right:0;top:100%;margin-top:6px;z-index:20;background:#fff;border:1px solid #e3e3e3;border-radius:14px;box-shadow:0 16px 40px -16px rgba(0,0,0,.3);overflow:hidden;font-family:Arial,Helvetica,sans-serif">
+              <sc-for list="{{ results }}" as="r" hint-placeholder-count="3">
+                <div onMouseDown="{{ r.select }}" style="display:flex;align-items:center;gap:12px;padding:11px 14px;cursor:pointer;border-top:1px solid #f0f0f0" style-hover="background:#fff7f1">
+                  <span style="width:18px;height:18px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#ea4335;flex:none"></span>
+                  <div style="min-width:0;flex:1"><div style="font-size:14px;color:#1f1f1f;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.name }}</div><div style="font-size:12px;color:#70757a;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><span style="color:#1f1f1f">{{ r.rating }}</span> <span style="color:#fbbc04">★</span> ({{ r.reviews }}) · {{ r.cat }} · {{ r.address }}</div></div>
+                </div>
+              </sc-for>
+              <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}"><div style="padding:12px 14px;font-size:13px;color:#70757a;font-family:'Manrope',sans-serif">No profiles match. Check the spelling, or add your city.</div></sc-if>
+              <div style="padding:7px 14px;border-top:1px solid #f0f0f0;font-size:10px;color:#9aa0a6;text-align:right;font-family:'Manrope',sans-serif">Results from Google Maps</div>
+            </div>
+          </sc-if>
+        </sc-if>
+      </div>
+      <label style="display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:700;color:#4a4a4a">Mobile number<input name="phone" type="tel" required="{{ true }}" placeholder="(813) 555-0142" autoComplete="tel" onChange="{{ onField }}" style="font-family:inherit;font-size:15px;padding:13px 14px;border:1.5px solid #e3e3e3;border-radius:12px;outline:none;color:#1a1a1a;background:#fff;width:100%;box-sizing:border-box" style-focus="border-color:#e8590c;box-shadow:0 0 0 3px rgba(232,89,12,.14)"></label>
+      <label style="display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:700;color:#4a4a4a">City and state<input name="city" type="text" required="{{ true }}" placeholder="Tampa, FL" onChange="{{ onField }}" style="font-family:inherit;font-size:15px;padding:13px 14px;border:1.5px solid #e3e3e3;border-radius:12px;outline:none;color:#1a1a1a;background:#fff;width:100%;box-sizing:border-box" style-focus="border-color:#e8590c;box-shadow:0 0 0 3px rgba(232,89,12,.14)"></label>
+      <label aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden">Fax<input name="fax" type="text" tabIndex="-1" autoComplete="off" onChange="{{ onField }}"></label>
+      <label style="display:flex;align-items:flex-start;gap:10px;font-size:12px;color:#6b6b6b;line-height:1.5;cursor:pointer;margin-top:2px"><input name="smsConsent" type="checkbox" onChange="{{ onCheck }}" style="width:17px;height:17px;margin:1px 0 0;accent-color:#e8590c;flex:none;cursor:pointer"><span>I agree to receive marketing texts from Local Service Rocket. Msg &amp; data rates may apply. Reply STOP to opt out.</span></label>
+      <sc-if value="{{ hasError }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px;font-weight:700;color:#d1402f">{{ error }}</div></sc-if>
+      <button type="submit" disabled="{{ submitting }}" style="font-family:inherit;margin-top:4px;padding:15px 20px;border-radius:99px;border:0;background:{{ btnBg }};color:#fff;font-weight:800;font-size:15.5px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px" style-hover="background:#c2400b"><span>{{ submitLabel }}</span><span style="font-size:16px">→</span></button>
+      <div style="font-size:11.5px;color:#8a8a8a;line-height:1.55;text-align:center">You'll land on the report next. We email the link too. We never sell your info. <a href="#" style="color:#6b6b6b;text-decoration:underline">Privacy policy</a></div>
+    </form>
+  </div>
+
+  <!-- WHAT YOU'LL SEE -->
+  <div style="max-width:1160px;margin:72px auto 0;padding:0 clamp(20px,5vw,48px)">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap">
+      <div><div style="font-size:11px;font-weight:700;letter-spacing:.1em;color:#e8590c">WHAT THE REPORT COVERS</div><h2 style="margin:10px 0 0;font-size:clamp(26px,3.2vw,34px);font-weight:800;letter-spacing:-.02em;line-height:1.12;text-wrap:balance">Where you stand in five places, and the reason why, every time.</h2></div>
+      <a href="Free Google Report.dc.html" style="font-size:13px;font-weight:800;color:#e8590c;white-space:nowrap">Open a sample report →</a>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:28px">
+
+      <div style="border:1px solid #e7e7e7;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;min-width:0">
+        <div style="background:#fafafa;padding:14px;height:122px;display:flex;flex-direction:column;gap:6px;justify-content:center;font-family:Arial,Helvetica,sans-serif">
+          <div style="display:flex;align-items:center;gap:8px"><span style="width:16px;height:16px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#ea4335;flex:none"></span><span style="height:7px;border-radius:99px;background:#cfcfcf;width:62%"></span></div>
+          <div style="display:flex;align-items:center;gap:8px"><span style="width:16px;height:16px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#ea4335;flex:none"></span><span style="height:7px;border-radius:99px;background:#cfcfcf;width:48%"></span></div>
+          <div style="display:flex;align-items:center;gap:8px"><span style="width:16px;height:16px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#ea4335;flex:none"></span><span style="height:7px;border-radius:99px;background:#cfcfcf;width:55%"></span></div>
+          <div style="margin-top:4px;border:1.5px dashed #e8590c;border-radius:8px;padding:5px 8px;font-family:'Manrope',sans-serif;font-size:11px;font-weight:800;color:#d1402f;background:#fff7f1">YOU · not in the top 3</div>
+        </div>
+        <div style="padding:16px 18px"><div style="font-weight:800;font-size:15px;line-height:1.3">Map Pack: your spot, and why</div><div style="font-size:12.5px;color:#6b6b6b;margin-top:4px;line-height:1.45">Searched from your address and 24 points around it. Name, categories, address, activity, what the top 3 have that you don't.</div></div>
+      </div>
+
+      <div style="border:1px solid #e7e7e7;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;min-width:0">
+        <div style="background:#fafafa;padding:14px;height:122px;display:flex;flex-direction:column;justify-content:flex-end">
+          <div style="display:flex;justify-content:space-between;font-size:11px;font-weight:800"><span>#1 · 11 / wk</span><span style="color:#d1402f">You · 0.4 / wk</span></div>
+          <div style="display:flex;gap:10px;align-items:flex-end;margin-top:8px;height:58px">
+            <div style="flex:1;display:flex;align-items:flex-end;gap:3px;height:100%"><span style="flex:1;background:#1a1a1a;height:70%;border-radius:2px 2px 0 0"></span><span style="flex:1;background:#1a1a1a;height:90%;border-radius:2px 2px 0 0"></span><span style="flex:1;background:#1a1a1a;height:80%;border-radius:2px 2px 0 0"></span><span style="flex:1;background:#1a1a1a;height:75%;border-radius:2px 2px 0 0"></span><span style="flex:1;background:#1a1a1a;height:95%;border-radius:2px 2px 0 0"></span><span style="flex:1;background:#1a1a1a;height:85%;border-radius:2px 2px 0 0"></span><span style="flex:1;background:#1a1a1a;height:100%;border-radius:2px 2px 0 0"></span><span style="flex:1;background:#1a1a1a;height:80%;border-radius:2px 2px 0 0"></span></div>
+            <div style="flex:1;display:flex;align-items:flex-end;gap:3px;height:100%"><span style="flex:1;background:#e8590c;height:14%;border-radius:2px 2px 0 0"></span><span style="flex:1;background:#e3e3e3;height:4%"></span><span style="flex:1;background:#e3e3e3;height:4%"></span><span style="flex:1;background:#e3e3e3;height:4%"></span><span style="flex:1;background:#e3e3e3;height:4%"></span><span style="flex:1;background:#e8590c;height:14%;border-radius:2px 2px 0 0"></span><span style="flex:1;background:#e3e3e3;height:4%"></span><span style="flex:1;background:#e3e3e3;height:4%"></span></div>
+          </div>
+        </div>
+        <div style="padding:16px 18px"><div style="font-weight:800;font-size:15px;line-height:1.3">Who's winning the review war</div><div style="font-size:12.5px;color:#6b6b6b;margin-top:4px;line-height:1.45">Reviews per week, you vs each of them. Google trusts a steady stream over a big total.</div></div>
+      </div>
+
+      <div style="border:1px solid #e7e7e7;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;min-width:0">
+        <div style="background:#fafafa;padding:14px;height:122px;display:flex;flex-direction:column;justify-content:center;gap:10px">
+          <div style="display:flex;align-items:center;gap:14px">
+            <div style="width:52px;height:52px;border-radius:50%;background:conic-gradient(#ffa400 0 205deg,#fff0d6 0);display:flex;align-items:center;justify-content:center;flex:none"><div style="width:40px;height:40px;border-radius:50%;background:#fafafa;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#ffa400">57</div></div>
+            <div style="font-size:11px;font-weight:800;color:#8a8a8a">THEIR SPEED</div>
+            <div style="width:52px;height:52px;border-radius:50%;background:conic-gradient(#0cce6b 0 353deg,#dcf6e7 0);display:flex;align-items:center;justify-content:center;flex:none;margin-left:auto"><div style="width:40px;height:40px;border-radius:50%;background:#fafafa;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#0cce6b">98</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:11.5px;font-weight:700;background:#fff;border:1px solid #ececec;border-radius:8px;padding:6px 9px"><span style="width:16px;height:16px;border-radius:99px;background:#d1402f;color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;flex:none">✗</span>Page title says “electrician”</div>
+        </div>
+        <div style="padding:16px 18px"><div style="font-weight:800;font-size:15px;line-height:1.3">Whose website Google can read</div><div style="font-size:12.5px;color:#6b6b6b;margin-top:4px;line-height:1.45">Titles, H1s, schema, mobile speed. Which sites say "electrician" and which don't.</div></div>
+      </div>
+
+      <div style="border:1px solid #e7e7e7;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;min-width:0">
+        <div style="background:#fafafa;padding:14px;height:122px;display:flex;flex-direction:column;justify-content:center;gap:6px;font-family:Arial,Helvetica,sans-serif">
+          <div style="font-size:10px;font-weight:700;color:#202124">Sponsored</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
+            <div style="background:#fff;border:1px solid #dadce0;border-radius:7px;padding:7px"><div style="display:flex;align-items:center;gap:3px;font-size:7px;font-weight:700;color:#188038"><span style="width:8px;height:8px;border-radius:50%;background:#188038;flex:none"></span>GUARANTEED</div><div style="height:5px;border-radius:99px;background:#cfcfcf;width:80%;margin-top:7px"></div><div style="height:5px;border-radius:99px;background:#e3e3e3;width:55%;margin-top:4px"></div></div>
+            <div style="background:#fff;border:1px solid #dadce0;border-radius:7px;padding:7px"><div style="display:flex;align-items:center;gap:3px;font-size:7px;font-weight:700;color:#188038"><span style="width:8px;height:8px;border-radius:50%;background:#188038;flex:none"></span>GUARANTEED</div><div style="height:5px;border-radius:99px;background:#cfcfcf;width:70%;margin-top:7px"></div><div style="height:5px;border-radius:99px;background:#e3e3e3;width:50%;margin-top:4px"></div></div>
+            <div style="background:#fff7f1;border:1.5px dashed #e8590c;border-radius:7px;padding:7px;display:flex;align-items:center;justify-content:center;text-align:center;font-family:'Manrope',sans-serif;font-size:9.5px;font-weight:800;color:#d1402f;line-height:1.3">YOU<br>not here</div>
+          </div>
+        </div>
+        <div style="padding:16px 18px"><div style="font-weight:800;font-size:15px;line-height:1.3">Who's paying for the top of the page</div><div style="font-size:12.5px;color:#6b6b6b;margin-top:4px;line-height:1.45">Local Services Ads and Search Ads above the map. Who has the Google Guaranteed badge.</div></div>
+      </div>
+
+      <div style="border:1px solid #e7e7e7;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;min-width:0">
+        <div style="background:#fafafa;padding:14px;height:122px;display:flex;flex-direction:column;justify-content:center;gap:7px">
+          <div style="display:flex;justify-content:flex-end"><div style="background:#ececef;border-radius:12px 12px 3px 12px;padding:5px 10px;font-size:11px;font-weight:600">best electrician in Tampa</div></div>
+          <div style="font-size:11px;line-height:1.5;color:#4a4a4a"><span style="font-weight:800;color:#8a8a8a">1.</span> <span style="background:#fff1e8;border-radius:3px;padding:0 3px;font-weight:700">Competitor A</span> &nbsp;<span style="font-weight:800;color:#8a8a8a">2.</span> <span style="background:#fff1e8;border-radius:3px;padding:0 3px;font-weight:700">Competitor B</span> &nbsp;<span style="font-weight:800;color:#8a8a8a">3.</span> <span style="background:#fff1e8;border-radius:3px;padding:0 3px;font-weight:700">Competitor C</span></div>
+          <div style="display:flex;align-items:center;gap:7px;font-size:11.5px;font-weight:800;color:#d1402f"><span style="width:16px;height:16px;border-radius:99px;background:#d1402f;color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;flex:none">✗</span>You're not mentioned</div>
+        </div>
+        <div style="padding:16px 18px"><div style="font-weight:800;font-size:15px;line-height:1.3">Who AI recommends</div><div style="font-size:12.5px;color:#6b6b6b;margin-top:4px;line-height:1.45">We ask ChatGPT and Gemini for the best electrician in your city. Who they name, and who they don't.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SAMPLE -->
+  <sc-if value="{{ showSample }}" hint-placeholder-val="{{ true }}">
+  <div style="max-width:1160px;margin:72px auto 0;padding:0 clamp(20px,5vw,48px)">
+    <div style="background:#1b1d23;color:#f5f5f7;border-radius:22px;padding:clamp(24px,4vw,44px);display:flex;flex-wrap:wrap;gap:32px 48px;align-items:center">
+      <div style="flex:1 1 300px;min-width:0">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.1em;color:#ff8f52">WHAT IT LOOKS LIKE</div>
+        <h2 style="margin:12px 0 0;font-size:clamp(26px,3.2vw,36px);font-weight:800;letter-spacing:-.025em;line-height:1.1;text-wrap:balance">This is what a Tampa electrician sees when they search for themselves.</h2>
+        <p style="margin:14px 0 0;font-size:14.5px;line-height:1.6;color:#a1a1a6;text-wrap:pretty">Three shops in the pack, and the report shows why: all three have "Electric" in the name, a street address on the pin and 20+ new reviews a month. Two run Google Guaranteed ads. The shop that ran the report had none of that, and didn't rank, even from its own address.</p>
+        <a href="Free Google Report.dc.html" style="display:inline-flex;margin-top:22px;padding:12px 24px;border-radius:99px;border:1.5px solid rgba(255,255,255,.25);color:#f5f5f7;font-weight:700;font-size:13.5px">Open the sample report →</a>
+      </div>
+      <div style="flex:1 1 320px;min-width:0;border-radius:16px;overflow:hidden;font-family:Arial,Helvetica,sans-serif;background:#fff;color:#1f1f1f;border:1px solid #dadce0">
+        <div style="height:92px;background:#e9eef2;position:relative;overflow:hidden">
+          <div style="position:absolute;inset:0;background-image:linear-gradient(#d9e1e8 1px,transparent 1px),linear-gradient(90deg,#d9e1e8 1px,transparent 1px);background-size:32px 32px"></div>
+          <div style="position:absolute;left:-10%;right:-10%;top:42px;height:9px;background:#fff;transform:rotate(-5deg)"></div>
+          <div style="position:absolute;top:-10%;bottom:-10%;left:38%;width:7px;background:#fff;transform:rotate(14deg)"></div>
+          <div style="position:absolute;left:20%;top:28%;width:24px;height:24px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#ea4335;border:2px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center"><span style="transform:rotate(45deg);color:#fff;font-size:11px;font-weight:700">1</span></div>
+          <div style="position:absolute;left:52%;top:48%;width:24px;height:24px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#ea4335;border:2px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center"><span style="transform:rotate(45deg);color:#fff;font-size:11px;font-weight:700">2</span></div>
+          <div style="position:absolute;left:76%;top:20%;width:24px;height:24px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#ea4335;border:2px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center"><span style="transform:rotate(45deg);color:#fff;font-size:11px;font-weight:700">3</span></div>
+        </div>
+        <sc-for list="{{ sampleRows }}" as="r" hint-placeholder-count="3">
+          <div style="display:flex;justify-content:space-between;gap:12px;padding:11px 14px;border-top:1px solid #e8eaed;align-items:center">
+            <div style="min-width:0"><div style="font-size:14px">{{ r.name }}</div><div style="font-size:12px;color:#70757a;margin-top:2px;display:flex;align-items:center;gap:4px;flex-wrap:wrap"><span style="color:#1f1f1f">{{ r.rating }}</span><span style="color:#fbbc04;letter-spacing:-1px">★★★★★</span><span>({{ r.reviews }})</span><span>· Electrician</span></div></div>
+            <div style="font-size:9.5px;font-weight:700;color:{{ r.badgeColor }};white-space:nowrap;flex:none">{{ r.badge }}</div>
+          </div>
+        </sc-for>
+        <div style="margin:10px;border:1.5px dashed #e8590c;border-radius:10px;padding:10px 12px;background:#fff7f1;font-family:'Manrope',sans-serif;display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap"><div><div style="font-size:9.5px;font-weight:800;letter-spacing:.08em;color:#e8590c">YOU</div><div style="font-weight:800;font-size:13.5px;color:#1a1a1a">Bayshore Home Services</div></div><div style="font-weight:800;font-size:13px;color:#d1402f;text-align:right">Not in the top 3<div style="font-size:10.5px;color:#8a8a8a;font-weight:600">even from your own address</div></div></div>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- PROOF -->
+  <sc-if value="{{ showProof }}" hint-placeholder-val="{{ true }}">
+  <div style="max-width:1160px;margin:72px auto 0;padding:0 clamp(20px,5vw,48px)">
+    <div style="text-align:center;font-size:11px;font-weight:700;letter-spacing:.1em;color:#8a8a8a">ELECTRICAL SHOPS WE'VE GROWN</div><h2 style="margin:10px auto 0;font-size:clamp(24px,3vw,32px);font-weight:800;letter-spacing:-.02em;line-height:1.15;text-align:center;max-width:620px;text-wrap:balance">Seven electrical companies. $10M+ in client revenue. Three of them run without the owner in every job.</h2>
+    <div style="display:flex;align-items:center;justify-content:center;gap:36px;flex-wrap:wrap;margin-top:20px">
+      <img src="assets/logo-rewired.png" alt="Rewired" style="height:42px;filter:grayscale(1);opacity:.62" style-hover="filter:grayscale(0);opacity:1">
+      <img src="assets/logo-motha.jpg" alt="Motha Electric" style="height:40px;border-radius:6px;filter:grayscale(1);opacity:.62" style-hover="filter:grayscale(0);opacity:1">
+      <img src="assets/logo-honest-hanks.png" alt="Honest Hank's" style="height:44px;filter:grayscale(1);opacity:.62" style-hover="filter:grayscale(0);opacity:1">
+      <img src="assets/logo-hooked-up.png" alt="Hooked Up Electric" style="height:40px;filter:grayscale(1);opacity:.62" style-hover="filter:grayscale(0);opacity:1">
+      <img src="assets/logo-coastal-current.png" alt="Coastal Current" style="height:40px;filter:grayscale(1);opacity:.62" style-hover="filter:grayscale(0);opacity:1">
+      <img src="assets/logo-pacific.jpg" alt="Pacific Home Electric" style="height:38px;filter:grayscale(1);opacity:.62" style-hover="filter:grayscale(0);opacity:1">
+      <img src="assets/logo-definite.jpg" alt="Definite Electric" style="height:38px;filter:grayscale(1);opacity:.62" style-hover="filter:grayscale(0);opacity:1">
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:36px">
+      <div style="border:1px solid #e7e7e7;border-radius:14px;padding:20px 22px;display:flex;flex-direction:column">
+        <div style="font-size:30px;font-weight:800;letter-spacing:-.03em;color:#e8590c;line-height:1">$60k → $220k+</div><div style="font-size:11.5px;color:#8a8a8a;margin-top:4px">monthly revenue · 5 → 15 crew</div>
+        <p style="margin:14px 0 0;font-size:13.5px;line-height:1.6;color:#4a4a4a;flex:1">"My company went through upwards of a dozen other marketing companies prior to landing here."</p>
+        <div style="display:flex;align-items:center;gap:9px;margin-top:14px"><img src="assets/john-headshot.png" alt="" style="width:28px;height:28px;border-radius:99px;object-fit:cover"><div><div style="font-size:12px;font-weight:700">John Senn, owner</div><div style="font-size:10.5px;color:#999">Rewired · Des Moines, IA</div></div></div>
+      </div>
+      <div style="border:1px solid #e7e7e7;border-radius:14px;padding:20px 22px;display:flex;flex-direction:column">
+        <div style="font-size:30px;font-weight:800;letter-spacing:-.03em;color:#e8590c;line-height:1">600%</div><div style="font-size:11.5px;color:#8a8a8a;margin-top:4px">growth in 2024</div>
+        <p style="margin:14px 0 0;font-size:13.5px;line-height:1.6;color:#4a4a4a;flex:1">"Your response time, your availability, your honesty and the highest integrity."</p>
+        <div style="display:flex;align-items:center;gap:9px;margin-top:14px"><img src="assets/jason-hooked-up.png" alt="" style="width:28px;height:28px;border-radius:99px;object-fit:cover"><div><div style="font-size:12px;font-weight:700">Jason, owner</div><div style="font-size:10.5px;color:#999">Hooked Up Electric · Merkel, TX</div></div></div>
+      </div>
+      <div style="border:1px solid #e7e7e7;border-radius:14px;padding:20px 22px;display:flex;flex-direction:column">
+        <div style="font-size:30px;font-weight:800;letter-spacing:-.03em;color:#e8590c;line-height:1">3rd van</div><div style="font-size:11.5px;color:#8a8a8a;margin-top:4px">wrapped · hiring another electrician</div>
+        <p style="margin:14px 0 0;font-size:13.5px;line-height:1.6;color:#4a4a4a;flex:1">"We just purchased our third van and got it wrapped. These guys have been with me every step."</p>
+        <div style="display:flex;align-items:center;gap:9px;margin-top:14px"><img src="assets/lewis-carter.png" alt="" style="width:28px;height:28px;border-radius:99px;object-fit:cover"><div><div style="font-size:12px;font-weight:700">Lewis Carter, owner</div><div style="font-size:10.5px;color:#999">Honest Hank's · Tampa, FL</div></div></div>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- BOTTOM -->
+  <div style="max-width:1160px;margin:72px auto 0;padding:0 clamp(20px,5vw,48px) 64px">
+    <div style="border:1px solid #e7e7e7;border-radius:18px;padding:26px 30px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap">
+      <div style="min-width:0"><div style="font-weight:800;font-size:18px;letter-spacing:-.01em">Want the report first? <a href="#top" onClick="{{ toForm }}" style="color:#e8590c">Scroll up ↑</a></div><div style="font-size:13.5px;color:#6b6b6b;margin-top:5px;line-height:1.5">Already know you want help closing the gaps? Skip the report. Our services start at <b style="color:#1a1a1a">$500/month</b>.</div></div>
+      <a href="https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg9d1R" style="padding:13px 26px;border-radius:99px;background:#e8590c;color:#fff;font-weight:800;font-size:14.5px;white-space:nowrap">Schedule onboarding</a>
+    </div>
+    <div style="display:flex;gap:22px;justify-content:center;margin-top:22px;font-size:12px;color:#8a8a8a;flex-wrap:wrap"><span>★★★★★ 5.0 on Google</span><span>Google Partner</span><span>7 electrical shops scaled</span></div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;headlineVariant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Who ranks highest&quot;,&quot;options&quot;:[&quot;Who ranks highest&quot;,&quot;Who gets the calls&quot;,&quot;How you stack up&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Copy&quot;},&quot;showSample&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Sections&quot;},&quot;showProof&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Sections&quot;}}">
+class Component extends DCLogic {
+  state = { fields: {}, error: '', submitting: false, query: '', open: false, pick: null };
+  profiles() {
+    return [
+      { name: 'Bayshore Home Services', rating: '5.0', reviews: '132', cat: 'Electrician', address: 'Tampa, FL' },
+      { name: 'Bayshore Electric LLC', rating: '4.7', reviews: '58', cat: 'Electrician', address: '4210 W Kennedy Blvd, Tampa' },
+      { name: 'Bay Shore Electrical Contractors', rating: '4.9', reviews: '211', cat: 'Electrical contractor', address: 'St. Petersburg, FL' },
+      { name: 'Small Jobs Electric, Inc.', rating: '4.8', reviews: '2,382', cat: 'Electrician', address: 'Town ’N’ Country, Tampa' },
+      { name: 'Mr. Electric of Tampa Bay', rating: '4.9', reviews: '1,099', cat: 'Electrician', address: 'Carrollwood, Tampa' },
+      { name: 'Brandon Electric', rating: '4.8', reviews: '1,480', cat: 'Electrician', address: 'Brandon, FL' },
+      { name: 'Honest Hank’s Electric', rating: '5.0', reviews: '318', cat: 'Electrician', address: 'Tampa, FL' }
+    ];
+  }
+  renderVals() {
+    const { query, open, pick } = this.state;
+    const q = query.trim().toLowerCase();
+    const results = q.length < 2 ? [] : this.profiles().filter(p => p.name.toLowerCase().includes(q) || p.address.toLowerCase().includes(q)).slice(0, 5).map(p => Object.assign({}, p, { select: e => { e.preventDefault(); this.setState(s => ({ pick: p, open: false, query: p.name, error: '', fields: Object.assign({}, s.fields, { business: p.name }) })); } }));
+    const v = this.props.headlineVariant ?? 'Who ranks highest';
+    const headline = v === 'Who gets the calls' ? 'See which electricians in your city are getting the calls, and why.' : v === 'How you stack up' ? 'See how you stack up against the electricians in your Map Pack.' : 'See who ranks highest for electricians in your city, and why.';
+    const { error, submitting } = this.state;
+    return {
+      headline,
+      showSample: this.props.showSample ?? true,
+      showProof: this.props.showProof ?? true,
+      hasError: !!error, error, submitting,
+      query, results, hasPick: !!pick, noPick: !pick, pick: pick || {}, showList: open && !pick && q.length >= 2, noResults: results.length === 0,
+      onQuery: e => this.setState({ query: e.target.value, open: true, error: '' }),
+      openList: () => this.setState({ open: true }),
+      closeList: () => setTimeout(() => this.setState({ open: false }), 120),
+      clearPick: () => this.setState(s => ({ pick: null, query: '', open: true, fields: Object.assign({}, s.fields, { business: '' }) })),
+      btnBg: submitting ? '#f0894f' : '#e8590c',
+      submitLabel: submitting ? 'Pulling your Google Business Profile…' : 'Get my free report',
+      onField: e => this.setState(s => ({ fields: Object.assign({}, s.fields, { [e.target.name]: e.target.value }), error: '' })),
+      onCheck: e => this.setState(s => ({ fields: Object.assign({}, s.fields, { [e.target.name]: e.target.checked }) })),
+      submit: e => {
+        e.preventDefault();
+        const f = this.state.fields;
+        if (!f.email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.email)) return this.setState({ error: 'Enter the email you want the report sent to.' });
+        if (!this.state.pick) return this.setState({ error: 'Pick your Google Business Profile from the list so we compare the right listing.' });
+        if (!f.phone || f.phone.replace(/\D/g, '').length < 10) return this.setState({ error: 'Add a mobile number with area code.' });
+        if (!f.city) return this.setState({ error: 'Add your city and state so we search from the right place.' });
+        if (f.fax) return;
+        this.setState({ submitting: true });
+        setTimeout(() => { window.location.href = 'Free Google Report.dc.html'; }, 1400);
+      },
+      toForm: e => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); const el = document.querySelector('input[name="email"]'); if (el) setTimeout(() => el.focus({ preventScroll: true }), 500); },
+      sampleRows: [
+        { name: 'Small Jobs Electric, Inc.', rating: '4.8', reviews: '2,382', badge: '15+ YEARS', badgeColor: '#70757a' },
+        { name: 'Mr. Electric of Tampa Bay', rating: '4.9', reviews: '1,099', badge: '✓ GOOGLE GUARANTEED', badgeColor: '#188038' },
+        { name: 'Brandon Electric', rating: '4.8', reviews: '1,480', badge: '✓ GOOGLE GUARANTEED', badgeColor: '#188038' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

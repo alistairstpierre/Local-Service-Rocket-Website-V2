@@ -275,11 +275,69 @@ const apiUrl = (import.meta.env.PUBLIC_ANALYSIS_API_URL || '').replace(/\/$/, ''
     transform: rotate(-45deg);
   }
 
+  .view :global(.rpt-shop-grid) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr));
+    gap: 14px;
+    margin-top: 32px;
+    align-items: stretch;
+  }
+  .view :global(.rpt-shop-pair) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    align-items: stretch;
+    min-width: 0;
+  }
+  .view :global(.rpt-shop) {
+    border: 1px solid #e7e7e7;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .view :global(.rpt-shop.is-you) {
+    border: 1.5px dashed var(--orange);
+    background: #fff7f1;
+  }
+  .view :global(.rpt-shop-photo) { position: relative; height: 150px; background: #f1f3f4; }
+  .view :global(.rpt-shop-photo .rpt-photo) { height: 150px; width: 100%; }
+  .view :global(.rpt-shop-badge) {
+    position: absolute; left: 12px; top: 12px; padding: 5px 10px; border-radius: 99px;
+    background: var(--orange); color: #fff; font-size: 10.5px; font-weight: 800; letter-spacing: 0.08em;
+  }
+  .view :global(.rpt-shop-body) { padding: 16px 18px 18px; display: flex; flex-direction: column; flex: 1; }
+  .view :global(.rpt-shop-top) { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .view :global(.rpt-shop-copy) { min-width: 0; }
+  .view :global(.rpt-shop-pack) { font-size: 12px; font-weight: 800; margin-top: 8px; }
+  .view :global(.rpt-shop-place) { text-align: right; flex: none; }
+  .view :global(.rpt-shop-place-l) { font-size: 10px; font-weight: 800; letter-spacing: 0.08em; white-space: nowrap; }
+  .view :global(.rpt-shop-score) { font-size: 32px; font-weight: 800; letter-spacing: -0.04em; line-height: 1; margin-top: 3px; }
+  .view :global(.rpt-shop-bd-head) {
+    display: flex; justify-content: space-between; gap: 8px;
+    font-size: 10.5px; font-weight: 800; letter-spacing: 0.08em; color: #8a8a8a; margin-top: 18px;
+  }
+  .view :global(.rpt-shop-bars) { display: flex; flex-direction: column; gap: 9px; margin-top: 10px; }
+  .view :global(.rpt-shop-row-top) {
+    display: flex; justify-content: space-between; gap: 6px;
+    font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em; color: #8a8a8a;
+  }
+  .view :global(.rpt-shop-row-top span) { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .view :global(.rpt-shop-row-top b) { font-size: 13px; flex: none; }
+  .view :global(.rpt-shop-track) { height: 5px; border-radius: 99px; margin-top: 4px; }
+  .view :global(.rpt-shop-bar) { height: 5px; border-radius: 99px; max-width: 100%; }
+  .view :global(.rpt-shop-foot) {
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    margin-top: 14px; flex-wrap: wrap; font-size: 12.5px; color: #6b6b6b; font-weight: 600;
+  }
+  .view :global(.rpt-shop-foot a) { font-size: 13px; font-weight: 800; color: var(--orange); white-space: nowrap; }
   .view :global(.rpt-rivals) {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 14px;
-    margin-top: 32px;
+    margin-top: 18px;
   }
   .view :global(.rpt-card) {
     border: 1px solid #e7e7e7;

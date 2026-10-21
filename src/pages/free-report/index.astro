@@ -1,14 +1,16 @@
 ---
-/* Free Google report lead magnet. Collects email + city, searches GET /api/places
-   for the Google listing, then POSTs placeId to the Railway analysis API and
-   sends the visitor to /free-report/view/?id= to poll. Vendor keys stay on
-   Railway; this static page only knows PUBLIC_ANALYSIS_API_URL. */
+/* Free Google report landing. Matches Claude Design Files/Free Report - Landing.dc.html.
+   Collects email, a picked Google listing, phone, city, and optional marketing-SMS consent,
+   then POSTs placeId to the Railway analysis API and sends the visitor to
+   /free-report/view/?id= to poll. Vendor keys stay on Railway. */
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Picture from '../../components/Picture.astro';
+import { BOOKING_URL } from '../../lib/free-report-example';
 import { absoluteUrl, breadcrumbList, graph, webPageNode } from '../../data/schema';
 
 const title = 'Free Google Report for Electricians | Local Service Rocket';
 const description =
-  'See how your electrician Google Business Profile, website, ads, and AI search rankings stack up against the Map Pack. Enter your shop and get a free comparison report.';
+  'See who ranks highest for electricians in your city, and why. We put your Google Business Profile, website, ads, and AI search next to the Map Pack.';
 const pageUrl = absoluteUrl('/free-report/');
 const jsonLd = graph([
   webPageNode({ pageUrl, name: title, description }),
@@ -18,85 +20,329 @@ const jsonLd = graph([
   ]),
 ]);
 
-const apiUrl = (import.meta.env.PUBLIC_ANALYSIS_API_URL || '').replace(/\/$/, '');
+const apiUrl = (
+  import.meta.env.DEV ? 'http://localhost:4322' : import.meta.env.PUBLIC_ANALYSIS_API_URL || ''
+).replace(/\/$/, '');
+
+const proofLogos: { href?: string; name: string; alt: string; h: number; radius?: boolean }[] = [
+  { href: '/case-studies/rewired', name: 'logo-rewired', alt: 'Rewired', h: 42 },
+  { name: 'logo-motha', alt: 'Motha Electric', h: 40, radius: true },
+  { href: '/case-studies/honest-hanks', name: 'logo-honest-hanks', alt: "Honest Hank's", h: 44 },
+  { href: '/case-studies/hooked-up', name: 'logo-hooked-up', alt: 'Hooked Up Electric', h: 40 },
+  { name: 'logo-coastal-current', alt: 'Coastal Current', h: 40 },
+  { name: 'logo-pacific', alt: 'Pacific Home Electric', h: 38 },
+  { name: 'logo-definite', alt: 'Definite Electric', h: 38 },
+];
 ---
 
 <BaseLayout title={title} description={description} jsonLd={jsonLd}>
-  <main class="report">
-    <section class="hero container">
-      <div class="crumbs">
-        <a href="/">Home</a>
-        <span>/</span>
-        <span class="current">Free Google report</span>
+  <main class="land">
+    <section class="hero" id="top">
+      <div class="copy">
+        <div class="pill">
+          <img src="/assets/trade-electrical.svg" alt="" width="14" height="14" />
+          FREE REPORT · YOU VS YOUR MAP PACK
+        </div>
+        <h1>See who ranks highest for electricians in your city, and why.</h1>
+        <p class="lede">
+          We pull your Google Business Profile, website, ads and AI search results and put
+          them next to the three electricians in your Map Pack. Not just the order. What's
+          behind it, line by line.
+        </p>
+        <ul class="checks">
+          <li><span class="tick" aria-hidden="true">✓</span>Where you rank, and the reasons why.</li>
+          <li><span class="tick" aria-hidden="true">✓</span>Who's winning the review war.</li>
+          <li><span class="tick" aria-hidden="true">✓</span>Who's buying the ads. Who AI recommends.</li>
+        </ul>
+        <div class="faces">
+          <div class="stack">
+            <Picture name="lewis-carter" alt="" width={34} height={34} loading="eager" />
+            <Picture name="jason-hooked-up" alt="" width={34} height={34} loading="eager" />
+            <Picture name="john-headshot" alt="" width={34} height={34} loading="eager" />
+          </div>
+          <div class="faces-copy">
+            <b>The same checks we run for Rewired, Honest Hank's and Hooked Up Electric.</b>
+            <br />Seven electrical shops. $10M+ in revenue.
+          </div>
+        </div>
       </div>
-      <div class="eyebrow">FREE LEAD MAGNET</div>
-      <h1>See why the other electrician is ranking above you.</h1>
-      <p class="lede">
-        For electrician shops only, for now. We pull your Google Business Profile, website, ads,
-        and AI search rankings, then compare you with the electricians in the Map Pack. No sales
-        call. After you submit, you go straight to the report — it fills in as we pull each
-        section. We also email a copy.
-      </p>
+
+      <form id="report-form" class="card" novalidate data-api-url={apiUrl}>
+        <div>
+          <div class="card-title">Get your report</div>
+          <div class="card-sub">20 seconds to fill in. Report builds in about 2 minutes and fills in as we go.</div>
+        </div>
+
+        <label>
+          Email
+          <input type="email" name="email" id="email-input" autocomplete="email" required maxlength="160" placeholder="you@yourshop.com" />
+        </label>
+
+        <label>
+          City and state
+          <input type="text" name="city" id="city-input" autocomplete="address-level2" required maxlength="120" placeholder="Tampa, FL" />
+        </label>
+
+        <div class="search locked" id="search-block">
+          <label for="gbp-search">Select your Google Business Profile</label>
+          <p class="search-hint" id="search-hint">Add your city and state first so we can find the right listing.</p>
+          <div id="biz-picked" class="picked" hidden></div>
+          <div id="search-wrap" class="search-wrap" hidden>
+            <span class="mag" aria-hidden="true"></span>
+            <input
+              id="gbp-search"
+              name="businessName"
+              type="text"
+              autocomplete="off"
+              maxlength="120"
+              placeholder="Start typing your business name"
+              disabled
+            />
+            <div id="biz-results" class="results" hidden></div>
+          </div>
+          <input type="hidden" name="placeId" id="place-id" />
+        </div>
+
+        <label>
+          Mobile number
+          <input type="tel" name="phone" id="phone-input" autocomplete="tel" required placeholder="(813) 555-0142" />
+        </label>
+
+        <div class="hp" aria-hidden="true">
+          <label for="report-fax">Fax</label>
+          <input type="text" id="report-fax" name="fax_number" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <label class="consent">
+          <input type="checkbox" name="smsConsent" />
+          <span>I agree to receive marketing texts from Local Service Rocket. Msg &amp; data rates may apply. Reply STOP to opt out.</span>
+        </label>
+
+        <p class="error" id="form-error" hidden></p>
+
+        <button type="submit" class="submit" id="submit-btn" disabled>
+          <span id="submit-label">Get my free report</span>
+          <span aria-hidden="true">→</span>
+        </button>
+        <p class="privacy">
+          You'll land on the report next. We email the link too. We never sell your info.
+          <a href="/privacy">Privacy policy</a>
+        </p>
+      </form>
     </section>
 
-    <section class="panel container">
-      <div class="copy">
-        <h2>What the report covers</h2>
-        <ul class="bullets">
-          <li>Map Pack position and Google profile completeness</li>
-          <li>Reviews and how fast they are coming in</li>
-          <li>Website SEO, schema, and mobile speed</li>
-          <li>Whether you or competitors show in LSAs and Search Ads</li>
-          <li>Whether ChatGPT or Gemini names you for the money search</li>
-        </ul>
-        <p class="alt">
-          Already know you want help? <a href="/get-started">Schedule onboarding</a>.
-        </p>
+    <section class="covers">
+      <div class="covers-head">
+        <div>
+          <div class="kicker">WHAT THE REPORT COVERS</div>
+          <h2>Where you stand in five places, and the reason why, every time.</h2>
+        </div>
+        <a class="sample-link" href="/free-report/view">Open a sample report →</a>
       </div>
+      <div class="cover-grid">
+        <article class="cover">
+          <div class="mock mock-pack">
+            <div class="pack-row"><span class="pin"></span><span class="bar" style="width:62%"></span></div>
+            <div class="pack-row"><span class="pin"></span><span class="bar" style="width:48%"></span></div>
+            <div class="pack-row"><span class="pin"></span><span class="bar" style="width:55%"></span></div>
+            <div class="you-chip">YOU · not in the top 3</div>
+          </div>
+          <div class="cover-copy">
+            <h3>Map Pack: your spot, and why</h3>
+            <p>Searched from your address and 24 points around it. Name, categories, address, activity, what the top 3 have that you don't.</p>
+          </div>
+        </article>
 
-      <div class="form-wrap">
-        {
-          !apiUrl && (
-            <p class="config-warn" role="status">
-              The report API is not wired yet. Set PUBLIC_ANALYSIS_API_URL (see README) or email
-              <a href="mailto:hello@localservicerocket.com">hello@localservicerocket.com</a>.
-            </p>
-          )
-        }
-        <form id="report-form" class="form" novalidate data-api-url={apiUrl}>
-          <label>
-            <span>Email</span>
-            <input type="email" name="email" autocomplete="email" required maxlength="160" />
-            <span class="field-error" data-for="email" hidden></span>
-          </label>
-          <label>
-            <span>City and state</span>
-            <input type="text" name="city" id="city-input" autocomplete="address-level2" required minlength="2" maxlength="120" placeholder="Tampa, FL" />
-            <span class="field-error" data-for="city" hidden></span>
-          </label>
-          <div class="search">
-            <label>
-              <span>Your Google listing</span>
-              <input type="text" name="businessName" id="biz-input" autocomplete="off" required minlength="2" maxlength="120" placeholder="Start typing the shop name" />
-              <span class="field-error" data-for="businessName" hidden></span>
-            </label>
-            <input type="hidden" name="placeId" id="place-id" />
-            <div id="biz-picked" class="picked" hidden></div>
-            <ul id="biz-results" class="results" hidden></ul>
+        <article class="cover">
+          <div class="mock mock-reviews">
+            <div class="rev-legend"><span>#1 · 11 / wk</span><span class="bad">You · 0.4 / wk</span></div>
+            <div class="rev-bars">
+              <div class="rev-col">
+                <span style="height:70%"></span><span style="height:90%"></span><span style="height:80%"></span>
+                <span style="height:75%"></span><span style="height:95%"></span><span style="height:85%"></span>
+                <span style="height:100%"></span><span style="height:80%"></span>
+              </div>
+              <div class="rev-col you">
+                <span class="hot" style="height:14%"></span><span class="dim"></span><span class="dim"></span>
+                <span class="dim"></span><span class="dim"></span><span class="hot" style="height:14%"></span>
+                <span class="dim"></span><span class="dim"></span>
+              </div>
+            </div>
           </div>
-          <div class="hp" aria-hidden="true">
-            <label for="report-fax">Fax</label>
-            <input type="text" id="report-fax" name="fax_number" tabindex="-1" autocomplete="off" />
+          <div class="cover-copy">
+            <h3>Who's winning the review war</h3>
+            <p>Reviews per week, you vs each of them. Google trusts a steady stream over a big total.</p>
           </div>
-          <p class="privacy">
-            You’ll land on the report next. We also email the link. We never sell your info. See the
-            <a href="/privacy">privacy policy</a>.
+        </article>
+
+        <article class="cover">
+          <div class="mock mock-web">
+            <div class="gauges">
+              <div class="gauge orange"><div>57</div></div>
+              <div class="gauge-label">THEIR SPEED</div>
+              <div class="gauge green"><div>98</div></div>
+            </div>
+            <div class="fail-chip"><span>✗</span>Page title says “electrician”</div>
+          </div>
+          <div class="cover-copy">
+            <h3>Whose website Google can read</h3>
+            <p>Titles, H1s, schema, mobile speed. Which sites say "electrician" and which don't.</p>
+          </div>
+        </article>
+
+        <article class="cover">
+          <div class="mock mock-ads">
+            <div class="sponsored">Sponsored</div>
+            <div class="ads">
+              <div class="ad"><div class="g">GUARANTEED</div><span class="bar"></span><span class="bar short"></span></div>
+              <div class="ad"><div class="g">GUARANTEED</div><span class="bar"></span><span class="bar short"></span></div>
+              <div class="ad missing">YOU<br />not here</div>
+            </div>
+          </div>
+          <div class="cover-copy">
+            <h3>Who's paying for the top of the page</h3>
+            <p>Local Services Ads and Search Ads above the map. Who has the Google Guaranteed badge.</p>
+          </div>
+        </article>
+
+        <article class="cover">
+          <div class="mock mock-ai">
+            <div class="bubble">best electrician in Tampa</div>
+            <div class="ai-names">
+              <span class="n">1.</span> <em>Competitor A</em>
+              <span class="n">2.</span> <em>Competitor B</em>
+              <span class="n">3.</span> <em>Competitor C</em>
+            </div>
+            <div class="fail-chip"><span>✗</span>You're not mentioned</div>
+          </div>
+          <div class="cover-copy">
+            <h3>Who AI recommends</h3>
+            <p>We ask ChatGPT and Gemini for the best electrician in your city. Who they name, and who they don't.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="sample">
+      <div class="sample-inner">
+        <div class="sample-copy">
+          <div class="kicker light">WHAT IT LOOKS LIKE</div>
+          <h2>This is what a Tampa electrician sees when they search for themselves.</h2>
+          <p>
+            Three shops in the pack, and the report shows why: all three have "Electric" in the
+            name, a street address on the pin and 20+ new reviews a month. Two run Google
+            Guaranteed ads. The shop that ran the report had none of that, and didn't rank, even
+            from its own address.
           </p>
-          <button type="submit" class="btn btn-primary btn-lg" id="submit-btn" disabled={!apiUrl}>
-            Get my free report
-          </button>
-          <p class="status" id="form-status" role="status" hidden></p>
-        </form>
+          <a class="ghost" href="/free-report/view">Open the sample report →</a>
+        </div>
+        <div class="serp">
+          <div class="serp-map">
+            <span class="road-v"></span>
+            <span class="m-pin" style="left:20%;top:28%"><i>1</i></span>
+            <span class="m-pin" style="left:52%;top:48%"><i>2</i></span>
+            <span class="m-pin" style="left:76%;top:20%"><i>3</i></span>
+          </div>
+          <div class="serp-row">
+            <div>
+              <div class="serp-name">Small Jobs Electric, Inc.</div>
+              <div class="serp-meta"><b>4.8</b> <span class="stars">★★★★★</span> (2,382) · Electrician</div>
+            </div>
+            <div class="badge muted">15+ YEARS</div>
+          </div>
+          <div class="serp-row">
+            <div>
+              <div class="serp-name">Mr. Electric of Tampa Bay</div>
+              <div class="serp-meta"><b>4.9</b> <span class="stars">★★★★★</span> (1,099) · Electrician</div>
+            </div>
+            <div class="badge good">✓ GOOGLE GUARANTEED</div>
+          </div>
+          <div class="serp-row">
+            <div>
+              <div class="serp-name">Brandon Electric</div>
+              <div class="serp-meta"><b>4.8</b> <span class="stars">★★★★★</span> (1,480) · Electrician</div>
+            </div>
+            <div class="badge good">✓ GOOGLE GUARANTEED</div>
+          </div>
+          <div class="you-row">
+            <div>
+              <div class="you-kicker">YOU</div>
+              <div class="you-name">Bayshore Home Services</div>
+            </div>
+            <div class="you-miss">
+              Not in the top 3
+              <span>even from your own address</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="proof">
+      <div class="proof-kicker">ELECTRICAL SHOPS WE'VE GROWN</div>
+      <h2>Seven electrical companies. $10M+ in client revenue. Three of them run without the owner in every job.</h2>
+      <div class="logos">
+        {
+          proofLogos.map((logo) => {
+            const pic = (
+              <Picture name={logo.name} alt={logo.alt} height={logo.h} class={logo.radius ? 'round' : undefined} />
+            );
+            return logo.href ? <a href={logo.href}>{pic}</a> : pic;
+          })
+        }
+      </div>
+      <div class="quotes">
+        <article>
+          <div class="stat">$60k → $220k+</div>
+          <div class="stat-sub">monthly revenue · 5 → 15 crew</div>
+          <p>"My company went through upwards of a dozen other marketing companies prior to landing here."</p>
+          <div class="who">
+            <Picture name="john-headshot" alt="John Senn" width={28} height={28} />
+            <div>
+              <div class="who-name">John Senn, owner</div>
+              <div class="who-meta">Rewired · Des Moines, IA</div>
+            </div>
+          </div>
+        </article>
+        <article>
+          <div class="stat">600%</div>
+          <div class="stat-sub">growth in 2024</div>
+          <p>"Your response time, your availability, your honesty and the highest integrity."</p>
+          <div class="who">
+            <Picture name="jason-hooked-up" alt="Jason" width={28} height={28} />
+            <div>
+              <div class="who-name">Jason, owner</div>
+              <div class="who-meta">Hooked Up Electric · Merkel, TX</div>
+            </div>
+          </div>
+        </article>
+        <article>
+          <div class="stat">3rd van</div>
+          <div class="stat-sub">wrapped · hiring another electrician</div>
+          <p>"We just purchased our third van and got it wrapped. These guys have been with me every step."</p>
+          <div class="who">
+            <Picture name="lewis-carter" alt="Lewis Carter" width={28} height={28} />
+            <div>
+              <div class="who-name">Lewis Carter, owner</div>
+              <div class="who-meta">Honest Hank's · Tampa, FL</div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="bottom">
+      <div class="cta">
+        <div>
+          <div class="cta-title">Want the report first? <a href="#top" id="to-form">Scroll up ↑</a></div>
+          <p>Already know you want help closing the gaps? Skip the report. Our services start at <b>$500/month</b>.</p>
+        </div>
+        <a class="book" href={BOOKING_URL}>Schedule onboarding</a>
+      </div>
+      <div class="strip">
+        <span>★★★★★ 5.0 on Google</span>
+        <span>Google Partner</span>
+        <span>7 electrical shops scaled</span>
       </div>
     </section>
   </main>
@@ -113,107 +359,365 @@ const apiUrl = (import.meta.env.PUBLIC_ANALYSIS_API_URL || '').replace(/\/$/, ''
   };
 
   const form = document.getElementById('report-form') as HTMLFormElement | null;
-  const statusEl = document.getElementById('form-status');
+  const errorEl = document.getElementById('form-error');
   const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement | null;
+  const submitLabel = document.getElementById('submit-label');
+  const emailInput = document.getElementById('email-input') as HTMLInputElement | null;
+  const phoneInput = document.getElementById('phone-input') as HTMLInputElement | null;
   const cityInput = document.getElementById('city-input') as HTMLInputElement | null;
-  const bizInput = document.getElementById('biz-input') as HTMLInputElement | null;
+  const bizInput = document.getElementById('gbp-search') as HTMLInputElement | null;
   const placeInput = document.getElementById('place-id') as HTMLInputElement | null;
   const resultsEl = document.getElementById('biz-results');
   const pickedEl = document.getElementById('biz-picked');
-  if (!form || !cityInput || !bizInput || !placeInput || !resultsEl || !pickedEl) {
+  const searchWrap = document.getElementById('search-wrap');
+  const searchBlock = document.getElementById('search-block');
+  const searchHint = document.getElementById('search-hint');
+  if (
+    !form ||
+    !emailInput ||
+    !phoneInput ||
+    !cityInput ||
+    !bizInput ||
+    !placeInput ||
+    !resultsEl ||
+    !pickedEl ||
+    !searchWrap ||
+    !searchBlock
+  ) {
     throw new Error('Report form missing');
   }
 
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const STATE_NAME: Record<string, string> = {
+    al: 'alabama', ak: 'alaska', az: 'arizona', ar: 'arkansas', ca: 'california',
+    co: 'colorado', ct: 'connecticut', de: 'delaware', fl: 'florida', ga: 'georgia',
+    hi: 'hawaii', id: 'idaho', il: 'illinois', in: 'indiana', ia: 'iowa',
+    ks: 'kansas', ky: 'kentucky', la: 'louisiana', me: 'maine', md: 'maryland',
+    ma: 'massachusetts', mi: 'michigan', mn: 'minnesota', ms: 'mississippi', mo: 'missouri',
+    mt: 'montana', ne: 'nebraska', nv: 'nevada', nh: 'newhampshire', nj: 'newjersey',
+    nm: 'newmexico', ny: 'newyork', nc: 'northcarolina', nd: 'northdakota', oh: 'ohio',
+    ok: 'oklahoma', or: 'oregon', pa: 'pennsylvania', ri: 'rhodeisland', sc: 'southcarolina',
+    sd: 'southdakota', tn: 'tennessee', tx: 'texas', ut: 'utah', vt: 'vermont',
+    va: 'virginia', wa: 'washington', wv: 'westvirginia', wi: 'wisconsin', wy: 'wyoming',
+  };
+  const placeCache = new Map<string, PlaceHit[]>();
+  const pending = new Map<string, Promise<PlaceHit[]>>();
   let timer = 0;
-  let searchSeq = 0;
+  let searchGen = 0;
+  let hits: PlaceHit[] = [];
+  let submitting = false;
+
+  function foldText(value: string): string {
+    return value.toLowerCase().replace(/['’]/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
+  }
+
+  function cacheKey(query: string, city: string): string {
+    return `${foldText(city)}|${foldText(query)}`;
+  }
+
+  function locationTokens(city: string): Set<string> {
+    const out = new Set<string>();
+    for (const token of city.toLowerCase().split(/[^a-z0-9]+/).filter((part) => part.length >= 2)) {
+      out.add(token);
+      if (STATE_NAME[token]) out.add(STATE_NAME[token]);
+    }
+    for (const [abbr, name] of Object.entries(STATE_NAME)) {
+      if (out.has(name)) out.add(abbr);
+    }
+    return out;
+  }
+
+  function searchQuery(q: string, city: string): string {
+    const skip = locationTokens(city);
+    return foldText(q)
+      .split(/\s+/)
+      .filter((word) => word.length >= 2 && !skip.has(word))
+      .join(' ')
+      .trim();
+  }
+
+  function queryTokens(q: string, city: string): string[] {
+    return searchQuery(q, city).split(/\s+/).filter(Boolean);
+  }
+
+  function isElectricHit(hit: PlaceHit): boolean {
+    return /electric/i.test(`${hit.name || ''} ${hit.category || ''}`);
+  }
+
+  function hitMatches(hit: PlaceHit, q: string, city: string): boolean {
+    const tokens = queryTokens(q, city);
+    if (!tokens.length) return false;
+    const name = foldText(hit.name || '');
+    if (tokens.every((token) => name.includes(token))) return true;
+    const hay = foldText([hit.name, hit.address, hit.category].filter(Boolean).join(' '));
+    return tokens.every((token) => hay.includes(token));
+  }
+
+  function rankHits(list: PlaceHit[], q: string, city: string): PlaceHit[] {
+    const tokens = queryTokens(q, city);
+    const joined = tokens.join(' ');
+    return [...list].sort((a, b) => {
+      const aName = foldText(a.name || '');
+      const bName = foldText(b.name || '');
+      const aElectric = isElectricHit(a) ? 0 : 1;
+      const bElectric = isElectricHit(b) ? 0 : 1;
+      const aStart = aName.startsWith(joined) ? 0 : 1;
+      const bStart = bName.startsWith(joined) ? 0 : 1;
+      return aElectric - bElectric || aStart - bStart || aName.localeCompare(bName);
+    });
+  }
+
+  function cachedHits(q: string, city: string): PlaceHit[] {
+    const tokens = queryTokens(q, city);
+    if (!tokens.length) return [];
+    const cityKey = foldText(city);
+    const seen = new Set<string>();
+    const out: PlaceHit[] = [];
+    for (const [key, list] of placeCache) {
+      if (!key.startsWith(`${cityKey}|`)) continue;
+      for (const hit of list) {
+        if (!hit.placeId || seen.has(hit.placeId) || !hitMatches(hit, q, city)) continue;
+        seen.add(hit.placeId);
+        out.push(hit);
+      }
+    }
+    return rankHits(out, q, city);
+  }
 
   function esc(value: string): string {
     return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
+  function setError(message: string) {
+    if (!errorEl) return;
+    errorEl.hidden = !message;
+    errorEl.textContent = message;
+  }
+
+  function cityReady(): boolean {
+    return cityInput.value.trim().length >= 2;
+  }
+
+  function formReady(): boolean {
+    return (
+      Boolean(form.dataset.apiUrl) &&
+      EMAIL_RE.test(emailInput.value.trim()) &&
+      cityReady() &&
+      Boolean(placeInput.value) &&
+      phoneInput.value.replace(/\D/g, '').length >= 10
+    );
+  }
+
+  function syncSubmit() {
+    if (!submitBtn) return;
+    submitBtn.disabled = submitting || !formReady();
+  }
+
+  function unlockSearch() {
+    const open = cityReady();
+    searchBlock.classList.toggle('locked', !open);
+    if (searchHint) searchHint.hidden = open;
+    if (placeInput.value) {
+      searchWrap.hidden = true;
+      bizInput.disabled = true;
+      return;
+    }
+    searchWrap.hidden = !open;
+    bizInput.disabled = !open;
+  }
+
   function hideResults() {
     resultsEl.hidden = true;
     resultsEl.innerHTML = '';
+    hits = [];
   }
 
   function clearPick() {
     placeInput.value = '';
     pickedEl.hidden = true;
     pickedEl.innerHTML = '';
-    bizInput.hidden = false;
+    bizInput.value = '';
+    searchGen += 1;
+    window.clearTimeout(timer);
+    hideResults();
+    unlockSearch();
+    syncSubmit();
+  }
+
+  function metaLine(hit: PlaceHit): string {
+    const rating = hit.rating ? `${hit.rating.toFixed(1)}` : '';
+    const reviews = hit.reviewCount != null ? `(${hit.reviewCount.toLocaleString('en-US')})` : '';
+    return [rating && `${esc(rating)} <span class="star">★</span> ${esc(reviews)}`, hit.category, hit.address]
+      .filter(Boolean)
+      .join(' · ');
   }
 
   function pickPlace(hit: PlaceHit) {
     placeInput.value = hit.placeId;
     bizInput.value = hit.name;
-    bizInput.hidden = true;
+    searchWrap.hidden = true;
     pickedEl.hidden = false;
-    const bits = [hit.category, hit.address].filter(Boolean).join(' · ');
-    const rating = hit.rating ? `${hit.rating.toFixed(1)}★${hit.reviewCount ? ` (${hit.reviewCount})` : ''}` : '';
-    pickedEl.innerHTML = `<div><strong>${esc(hit.name)}</strong>${rating ? `<span>${esc(rating)}</span>` : ''}${bits ? `<span>${esc(bits)}</span>` : ''}</div><button type="button" class="picked-clear">Change</button>`;
+    pickedEl.innerHTML = `<div class="check" aria-hidden="true">✓</div><div class="picked-copy"><div class="picked-name">${esc(hit.name)}</div><div class="picked-meta">${metaLine(hit)}</div></div><button type="button" class="picked-clear">Change</button>`;
     hideResults();
+    setError('');
+    unlockSearch();
+    syncSubmit();
     pickedEl.querySelector('button')?.addEventListener('click', () => {
       clearPick();
-      bizInput.focus();
+      if (cityReady()) bizInput.focus();
     });
   }
 
-  async function searchPlaces() {
-    const apiUrl = form.dataset.apiUrl || '';
+  function renderHits(list: PlaceHit[], status?: string) {
+    resultsEl.hidden = false;
+    const foot = status || 'Results from Google Maps';
+    if (!list.length) {
+      resultsEl.innerHTML = `<div class="results-status">${esc(status || 'Searching Google listings…')}</div><div class="results-foot">Results from Google Maps</div>`;
+      return;
+    }
+    resultsEl.innerHTML =
+      list
+        .map(
+          (hit) =>
+            `<button type="button" class="hit"><span class="pin"></span><span><span class="hit-name">${esc(hit.name)}</span><span class="hit-meta">${metaLine(hit)}</span></span></button>`
+        )
+        .join('') + `<div class="results-foot">${esc(foot)}</div>`;
+    resultsEl.querySelectorAll<HTMLButtonElement>('button.hit').forEach((btn, i) => {
+      btn.addEventListener('mousedown', (event) => {
+        event.preventDefault();
+        const hit = list[i];
+        if (hit) pickPlace(hit);
+      });
+    });
+  }
+
+  function paintResults(status?: string): boolean {
     const q = bizInput.value.trim();
     const city = cityInput.value.trim();
-    if (!apiUrl || q.length < 2 || city.length < 2) {
+    if (!cityReady() || q.length < 2 || placeInput.value) {
+      hideResults();
+      return false;
+    }
+    const list = cachedHits(q, city);
+    if (list.length) {
+      hits = list;
+      renderHits(list, status);
+      return true;
+    }
+    hits = [];
+    const query = searchQuery(q, city);
+    renderHits([], status || (query.length < 3 ? 'Keep typing the shop name…' : 'Searching Google listings…'));
+    return false;
+  }
+
+  async function pullPlaces(query: string, city: string): Promise<PlaceHit[]> {
+    const key = cacheKey(query, city);
+    const cached = placeCache.get(key);
+    if (cached) return cached;
+    const already = pending.get(key);
+    if (already) return already;
+    const apiUrl = form.dataset.apiUrl || '';
+    if (!apiUrl) throw new Error('The report API is not wired yet.');
+    const req = (async () => {
+      const params = new URLSearchParams({ q: query, city });
+      const res = await fetch(`${apiUrl}/api/places?${params}`);
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json.error || 'Search failed');
+      const list = (json.results || []) as PlaceHit[];
+      placeCache.set(key, list);
+      return list;
+    })();
+    pending.set(key, req);
+    try {
+      return await req;
+    } finally {
+      pending.delete(key);
+    }
+  }
+
+  async function pullAndPaint(query: string, city: string, gen: number) {
+    try {
+      const list = await pullPlaces(query, city);
+      if (gen !== searchGen || placeInput.value) return;
+      const q = bizInput.value.trim();
+      const liveCity = cityInput.value.trim();
+      if (q.length < 2) {
+        hideResults();
+        return;
+      }
+      if (liveCity.toLowerCase() !== city.toLowerCase()) return;
+      if (searchQuery(q, liveCity).toLowerCase() !== query.toLowerCase()) {
+        paintResults();
+        return;
+      }
+      hits = list;
+      paintResults();
+    } catch (err) {
+      if (gen !== searchGen) return;
+      if (paintResults()) return;
+      if (bizInput.value.trim().length < 2) {
+        hideResults();
+        return;
+      }
+      renderHits([], err instanceof Error ? err.message : 'Search failed');
+    }
+  }
+
+  function scheduleSearch(immediate = false) {
+    window.clearTimeout(timer);
+    const gen = ++searchGen;
+    if (placeInput.value) return;
+    const q = bizInput.value.trim();
+    const city = cityInput.value.trim();
+    if (!cityReady() || q.length < 2) {
       hideResults();
       return;
     }
-    const seq = ++searchSeq;
-    resultsEl.hidden = false;
-    resultsEl.innerHTML = '<li class="results-status">Searching Google listings…</li>';
-    try {
-      const res = await fetch(
-        `${apiUrl}/api/places?q=${encodeURIComponent(q)}&city=${encodeURIComponent(city)}`
-      );
-      const json = await res.json();
-      if (seq !== searchSeq) return;
-      if (!res.ok) throw new Error(json.error || 'Search failed');
-      const hits = (json.results || []) as PlaceHit[];
-      if (!hits.length) {
-        resultsEl.innerHTML = '<li class="results-status">No listing found. Keep typing, or submit the name as written.</li>';
-        return;
-      }
-      resultsEl.innerHTML = hits
-        .map(
-          (hit) =>
-            `<li><button type="button"><strong>${esc(hit.name)}</strong><span>${esc([hit.rating ? `${hit.rating.toFixed(1)}★` : '', hit.address || hit.category].filter(Boolean).join(' · '))}</span></button></li>`
-        )
-        .join('');
-      resultsEl.querySelectorAll('button').forEach((btn, i) => {
-        btn.addEventListener('click', () => {
-          const hit = hits[i];
-          if (hit) pickPlace(hit);
-        });
-      });
-    } catch (err) {
-      if (seq !== searchSeq) return;
-      resultsEl.innerHTML = `<li class="results-status">${err instanceof Error ? err.message : 'Search failed'}</li>`;
-    }
+    const query = searchQuery(q, city);
+    const exact = query ? placeCache.get(cacheKey(query, city)) : undefined;
+    paintResults(exact ? undefined : pending.size > 0 ? 'Updating listings…' : undefined);
+    if (query.length < 3) return;
+    if (exact) return;
+    timer = window.setTimeout(() => {
+      void pullAndPaint(query, city, gen);
+    }, immediate ? 0 : 200);
   }
 
   bizInput.addEventListener('input', () => {
     if (placeInput.value) clearPick();
-    window.clearTimeout(timer);
-    timer = window.setTimeout(searchPlaces, 350);
+    setError('');
+    scheduleSearch();
+    syncSubmit();
+  });
+  bizInput.addEventListener('focus', () => {
+    if (cityReady() && bizInput.value.trim().length >= 2 && !placeInput.value) scheduleSearch(true);
   });
   cityInput.addEventListener('input', () => {
+    setError('');
     if (placeInput.value) clearPick();
-    if (bizInput.value.trim().length >= 2) {
-      window.clearTimeout(timer);
-      timer = window.setTimeout(searchPlaces, 350);
-    }
+    unlockSearch();
+    syncSubmit();
+    if (cityReady() && bizInput.value.trim().length >= 2 && !placeInput.value) scheduleSearch();
+    else hideResults();
   });
+  emailInput.addEventListener('input', () => {
+    setError('');
+    syncSubmit();
+  });
+  phoneInput.addEventListener('input', () => {
+    setError('');
+    syncSubmit();
+  });
+  unlockSearch();
+  syncSubmit();
   document.addEventListener('click', (event) => {
     if (!form.contains(event.target as Node)) hideResults();
+  });
+  document.getElementById('to-form')?.addEventListener('click', (event) => {
+    event.preventDefault();
+    document.getElementById('top')?.scrollIntoView({ behavior: 'smooth' });
+    const email = form.querySelector<HTMLInputElement>('input[name="email"]');
+    window.setTimeout(() => email?.focus({ preventScroll: true }), 500);
   });
 
   form.addEventListener('submit', async (event) => {
@@ -226,33 +730,39 @@ const apiUrl = (import.meta.env.PUBLIC_ANALYSIS_API_URL || '').replace(/\/$/, ''
       email: String(data.get('email') || '').trim(),
       businessName: String(data.get('businessName') || '').trim(),
       city: String(data.get('city') || '').trim(),
+      phone: String(data.get('phone') || '').trim(),
       placeId: String(data.get('placeId') || '').trim() || undefined,
+      smsConsent: data.get('smsConsent') === 'on',
     };
 
-    const errors: Record<string, string> = {};
-    if (!EMAIL_RE.test(payload.email)) errors.email = 'Enter a valid email.';
-    if (payload.city.length < 2) errors.city = 'Enter a city and state.';
-    if (payload.businessName.length < 2) errors.businessName = 'Search for your Google listing.';
-    form.querySelectorAll<HTMLElement>('.field-error').forEach((el) => {
-      const key = el.dataset.for;
-      if (key && errors[key]) {
-        el.hidden = false;
-        el.textContent = errors[key];
-      } else {
-        el.hidden = true;
-        el.textContent = '';
-      }
-    });
-    if (Object.keys(errors).length || !apiUrl) return;
+    if (!EMAIL_RE.test(payload.email)) {
+      setError('Enter the email you want the report sent to.');
+      return;
+    }
+    if (!payload.placeId) {
+      setError('Pick your Google Business Profile from the list so we compare the right listing.');
+      return;
+    }
+    if (payload.phone.replace(/\D/g, '').length < 10) {
+      setError('Add a mobile number with area code.');
+      return;
+    }
+    if (payload.city.length < 2) {
+      setError('Add your city and state so we search from the right place.');
+      return;
+    }
+    if (!apiUrl) {
+      setError('The report API is not wired yet.');
+      return;
+    }
 
+    submitting = true;
     if (submitBtn) {
       submitBtn.disabled = true;
-      submitBtn.textContent = 'Starting your report…';
+      submitBtn.classList.add('busy');
     }
-    if (statusEl) {
-      statusEl.hidden = false;
-      statusEl.textContent = 'Opening your report…';
-    }
+    if (submitLabel) submitLabel.textContent = 'Pulling your Google Business Profile…';
+    setError('');
 
     try {
       const res = await fetch(`${apiUrl}/api/reports`, {
@@ -264,51 +774,575 @@ const apiUrl = (import.meta.env.PUBLIC_ANALYSIS_API_URL || '').replace(/\/$/, ''
       if (!res.ok) throw new Error(json.error || 'Could not start the report.');
       window.location.href = `/free-report/view/?id=${encodeURIComponent(json.id)}`;
     } catch (err) {
-      if (statusEl) {
-        statusEl.textContent = err instanceof Error ? err.message : 'Could not start the report.';
-      }
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Get my free report';
-      }
+      submitting = false;
+      setError(err instanceof Error ? err.message : 'Could not start the report.');
+      if (submitBtn) submitBtn.classList.remove('busy');
+      if (submitLabel) submitLabel.textContent = 'Get my free report';
+      syncSubmit();
     }
   });
 </script>
 
 <style>
-  .hero { padding-top: 48px; padding-bottom: 20px; }
-  .crumbs { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted-3); }
-  .crumbs a { color: var(--muted-3); }
-  .current { color: var(--ink); font-weight: 600; }
-  .eyebrow { margin-top: 22px; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; color: var(--orange); }
-  h1 { margin-top: 12px; font-size: clamp(28px, 4vw, 42px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.12; max-width: 16ch; }
-  .lede { margin-top: 16px; font-size: 17.5px; line-height: 1.65; color: var(--body); max-width: 58ch; }
-  .panel { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 40px 48px; padding-bottom: 72px; }
-  .copy h2 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; }
-  .bullets { margin: 18px 0 0; padding-left: 1.15em; color: var(--body); line-height: 1.65; }
-  .bullets li + li { margin-top: 10px; }
-  .alt { margin-top: 18px; color: var(--muted); font-size: 14px; }
-  .form-wrap { border: 1px solid var(--border); border-radius: var(--radius-panel); background: #fff; padding: 28px; box-shadow: 0 12px 40px rgba(26, 26, 26, 0.04); }
-  .form { display: flex; flex-direction: column; gap: 16px; }
-  label { display: flex; flex-direction: column; gap: 6px; }
-  label span { font-size: 13px; font-weight: 700; }
-  label em { font-style: normal; font-weight: 500; color: var(--muted-3); }
-  input { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; font: inherit; }
-  input:focus { outline: none; border-color: var(--orange); }
-  .field-error { font-size: 12.5px; color: #b42318; }
-  .search { position: relative; display: flex; flex-direction: column; gap: 8px; }
-  .results { list-style: none; margin: 0; padding: 6px; border: 1px solid var(--border); border-radius: 10px; background: #fff; box-shadow: 0 10px 28px rgba(26, 26, 26, 0.08); max-height: 280px; overflow: auto; }
-  .results li + li { border-top: 1px solid #f1f1f1; }
-  .results button { width: 100%; border: 0; background: none; text-align: left; padding: 10px 12px; font: inherit; cursor: pointer; border-radius: 8px; }
-  .results button:hover, .results button:focus { background: #fff7f1; }
-  .results strong, .picked strong { display: block; font-size: 14px; }
-  .results span, .picked span { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; }
-  .results-status { padding: 10px 12px; font-size: 13px; color: var(--muted); }
-  .picked { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 12px 14px; border: 1px solid var(--orange); border-radius: 10px; background: #fff7f1; }
-  .picked-clear { border: 0; background: none; color: var(--orange); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
-  .privacy { font-size: 13px; color: var(--muted); line-height: 1.5; }
-  .status { font-size: 14px; color: var(--body); }
-  .config-warn { margin-bottom: 16px; padding: 12px 14px; border-radius: var(--radius-card); background: var(--orange-tint); border: 1px solid rgba(232, 89, 12, 0.25); font-size: 14px; }
-  .hp { position: absolute; left: -9999px; }
-  @media (max-width: 900px) { .panel { grid-template-columns: 1fr; } }
+  .land {
+    --land: 1160px;
+    --pin: #ea4335;
+    --good: #1b8a4b;
+    --fail: #d1402f;
+  }
+  .hero,
+  .covers,
+  .sample,
+  .proof,
+  .bottom {
+    max-width: var(--land);
+    margin: 0 auto;
+    padding-left: clamp(20px, 5vw, 48px);
+    padding-right: clamp(20px, 5vw, 48px);
+  }
+  .hero {
+    padding-top: 56px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px 56px;
+    align-items: flex-start;
+  }
+  .copy { flex: 1 1 380px; min-width: 0; }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 99px;
+    border: 1px solid #e5e5e5;
+    background: #fafafa;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--orange);
+    letter-spacing: 0.06em;
+  }
+  h1 {
+    margin: 18px 0 0;
+    font-size: clamp(34px, 5vw, 54px);
+    line-height: 1.02;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+  .lede {
+    margin: 18px 0 0;
+    font-size: 16.5px;
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 520px;
+    text-wrap: pretty;
+  }
+  .checks { list-style: none; margin: 24px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .checks li { display: flex; align-items: center; gap: 10px; font-size: 14.5px; font-weight: 700; }
+  .tick {
+    width: 22px;
+    height: 22px;
+    border-radius: 99px;
+    background: var(--good);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+  .faces { display: flex; align-items: center; gap: 14px; margin-top: 32px; flex-wrap: wrap; }
+  .stack { display: flex; }
+  .stack :global(picture) { display: block; }
+  .stack :global(img) {
+    width: 34px;
+    height: 34px;
+    border-radius: 99px;
+    object-fit: cover;
+    border: 2px solid #fff;
+  }
+  .stack :global(picture + picture) { margin-left: -10px; }
+  .faces-copy { font-size: 12.5px; color: var(--muted); line-height: 1.4; }
+  .faces-copy b { color: var(--ink); }
+
+  .card {
+    flex: 0 1 420px;
+    min-width: 0;
+    width: 100%;
+    border: 1px solid #e7e7e7;
+    border-radius: 20px;
+    padding: 26px 26px 22px;
+    background: #fff;
+    box-shadow: 0 18px 50px -30px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .card-title { font-weight: 800; font-size: 19px; letter-spacing: -0.02em; }
+  .card-sub { font-size: 12.5px; color: var(--muted-2); margin-top: 3px; }
+  .card label { display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 700; color: #4a4a4a; }
+  .card input[type='email'],
+  .card input[type='tel'],
+  .card input[type='text'] {
+    font: inherit;
+    font-size: 15px;
+    font-weight: 400;
+    padding: 13px 14px;
+    border: 1.5px solid #e3e3e3;
+    border-radius: 12px;
+    outline: none;
+    color: var(--ink);
+    background: #fff;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .card input:focus { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(232, 89, 12, 0.14); }
+  .search { display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 700; color: #4a4a4a; position: relative; }
+  .search.locked .search-wrap { display: none; }
+  .search-hint { margin: 0; font-size: 12px; font-weight: 500; color: var(--muted-2); line-height: 1.4; }
+  .search-wrap { position: relative; }
+  .mag {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    width: 14px;
+    height: 14px;
+    margin-top: -8px;
+    border: 2px solid #9aa0a6;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .mag::after {
+    content: '';
+    position: absolute;
+    width: 2px;
+    height: 6px;
+    background: #9aa0a6;
+    right: -4px;
+    bottom: -5px;
+    transform: rotate(-45deg);
+  }
+  #gbp-search { padding-left: 40px; }
+  .results {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    margin-top: 6px;
+    z-index: 20;
+    background: #fff;
+    border: 1px solid #e3e3e3;
+    border-radius: 14px;
+    box-shadow: 0 16px 40px -16px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 400;
+  }
+  .results :global(.hit) {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    border: 0;
+    border-top: 1px solid #f0f0f0;
+    background: none;
+    color: #1f1f1f;
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+    border-radius: 0;
+  }
+  .results :global(.hit:first-child) { border-top: 0; }
+  .results :global(.hit:hover),
+  .results :global(.hit:focus) { background: #fff7f1; }
+  .results :global(.pin),
+  .pack-row .pin,
+  .m-pin {
+    width: 18px;
+    height: 18px;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    background: var(--pin);
+    flex: none;
+  }
+  .results :global(.hit-name),
+  .serp-name { display: block; font-size: 14px; color: #1f1f1f; font-weight: 400; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .results :global(.hit-meta),
+  .picked :global(.picked-meta) { display: block; font-size: 12px; color: #70757a; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .results :global(.star),
+  .picked :global(.star) { color: #fbbc04; }
+  .results :global(.results-status) { padding: 12px 14px; font-size: 13px; color: #70757a; font-family: inherit; }
+  .results :global(.results-foot) { padding: 7px 14px; border-top: 1px solid #f0f0f0; font-size: 10px; color: #9aa0a6; text-align: right; font-family: inherit; }
+  .picked:not([hidden]) {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1.5px solid var(--good);
+    border-radius: 12px;
+    padding: 10px 12px;
+    background: #f3faf5;
+  }
+  .picked[hidden] { display: none; }
+  .picked :global(.check) {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: #e8f5ec;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    color: var(--good);
+    font-size: 16px;
+  }
+  .picked :global(.picked-copy) { min-width: 0; flex: 1; }
+  .picked :global(.picked-name) { font-size: 14px; font-weight: 800; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .picked :global(.picked-clear) {
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    background: none;
+    border: 0;
+    cursor: pointer;
+    padding: 4px 6px;
+    flex: none;
+  }
+  .picked :global(.picked-clear:hover) { color: var(--ink); }
+  .consent {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 12px !important;
+    font-weight: 400 !important;
+    color: var(--muted) !important;
+    line-height: 1.5;
+    cursor: pointer;
+    margin-top: 2px;
+  }
+  .consent input {
+    width: 17px;
+    height: 17px;
+    margin: 1px 0 0;
+    accent-color: var(--orange);
+    flex: none;
+    cursor: pointer;
+  }
+  .error { font-size: 12.5px; font-weight: 700; color: var(--fail); margin: 0; }
+  .submit {
+    font-family: inherit;
+    margin-top: 4px;
+    padding: 15px 20px;
+    border-radius: 99px;
+    border: 0;
+    background: var(--orange);
+    color: #fff;
+    font-weight: 800;
+    font-size: 15.5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .submit:hover:not(:disabled) { background: var(--orange-hover); }
+  .submit:disabled { cursor: not-allowed; background: #f3d2bf; }
+  .submit.busy { background: #f0894f; }
+  .privacy { font-size: 11.5px; color: var(--muted-2); line-height: 1.55; text-align: center; margin: 0; }
+  .privacy a { color: var(--muted); text-decoration: underline; }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+  .covers { margin-top: 72px; }
+  .covers-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+  .kicker { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--orange); }
+  .kicker.light { color: var(--orange-on-dark); }
+  .covers h2, .sample h2, .proof h2 {
+    margin: 10px 0 0;
+    font-size: clamp(26px, 3.2vw, 34px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.12;
+    text-wrap: balance;
+  }
+  .sample-link { font-size: 13px; font-weight: 800; color: var(--orange); white-space: nowrap; }
+  .cover-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-top: 28px; }
+  .cover { border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
+  .mock { background: #fafafa; padding: 14px; height: 122px; display: flex; flex-direction: column; box-sizing: border-box; }
+  .cover-copy { padding: 16px 18px; }
+  .cover-copy h3 { margin: 0; font-weight: 800; font-size: 15px; line-height: 1.3; }
+  .cover-copy p { margin: 4px 0 0; font-size: 12.5px; color: var(--muted); line-height: 1.45; }
+  .mock-pack { justify-content: center; gap: 6px; font-family: Arial, Helvetica, sans-serif; }
+  .pack-row { display: flex; align-items: center; gap: 8px; }
+  .pack-row .pin { width: 16px; height: 16px; }
+  .bar { height: 7px; border-radius: 99px; background: #cfcfcf; display: block; }
+  .you-chip {
+    margin-top: 4px;
+    border: 1.5px dashed var(--orange);
+    border-radius: 8px;
+    padding: 5px 8px;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--fail);
+    background: #fff7f1;
+  }
+  .mock-reviews { justify-content: flex-end; }
+  .rev-legend { display: flex; justify-content: space-between; font-size: 11px; font-weight: 800; }
+  .rev-legend .bad { color: var(--fail); }
+  .rev-bars { display: flex; gap: 10px; align-items: flex-end; margin-top: 8px; height: 58px; }
+  .rev-col { flex: 1; display: flex; align-items: flex-end; gap: 3px; height: 100%; }
+  .rev-col span { flex: 1; background: #1a1a1a; border-radius: 2px 2px 0 0; }
+  .rev-col.you .hot { background: var(--orange); }
+  .rev-col.you .dim { background: #e3e3e3; height: 4%; border-radius: 0; }
+  .mock-web { justify-content: center; gap: 10px; }
+  .gauges { display: flex; align-items: center; gap: 14px; }
+  .gauge {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+  .gauge.orange { background: conic-gradient(#ffa400 0 205deg, #fff0d6 0); }
+  .gauge.green { background: conic-gradient(#0cce6b 0 353deg, #dcf6e7 0); margin-left: auto; }
+  .gauge div {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #fafafa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 800;
+  }
+  .gauge.orange div { color: #ffa400; }
+  .gauge.green div { color: #0cce6b; }
+  .gauge-label { font-size: 11px; font-weight: 800; color: var(--muted-2); }
+  .fail-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11.5px;
+    font-weight: 700;
+    background: #fff;
+    border: 1px solid #ececec;
+    border-radius: 8px;
+    padding: 6px 9px;
+  }
+  .fail-chip span {
+    width: 16px;
+    height: 16px;
+    border-radius: 99px;
+    background: var(--fail);
+    color: #fff;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+  .mock-ads { justify-content: center; gap: 6px; font-family: Arial, Helvetica, sans-serif; }
+  .sponsored { font-size: 10px; font-weight: 700; color: #202124; }
+  .ads { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+  .ad { background: #fff; border: 1px solid #dadce0; border-radius: 7px; padding: 7px; }
+  .ad .g { display: flex; align-items: center; gap: 3px; font-size: 7px; font-weight: 700; color: #188038; }
+  .ad .g::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #188038; }
+  .ad .bar { height: 5px; border-radius: 99px; background: #cfcfcf; width: 80%; margin-top: 7px; }
+  .ad .bar.short { width: 55%; margin-top: 4px; background: #e3e3e3; }
+  .ad.missing {
+    background: #fff7f1;
+    border: 1.5px dashed var(--orange);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-family: inherit;
+    font-size: 9.5px;
+    font-weight: 800;
+    color: var(--fail);
+    line-height: 1.3;
+  }
+  .mock-ai { justify-content: center; gap: 7px; }
+  .bubble { align-self: flex-end; background: #ececef; border-radius: 12px 12px 3px 12px; padding: 5px 10px; font-size: 11px; font-weight: 600; }
+  .ai-names { font-size: 11px; line-height: 1.5; color: #4a4a4a; }
+  .ai-names .n { font-weight: 800; color: var(--muted-2); }
+  .ai-names em { background: #fff1e8; border-radius: 3px; padding: 0 3px; font-weight: 700; font-style: normal; }
+  .mock-ai .fail-chip { border: 0; background: none; padding: 0; color: var(--fail); font-weight: 800; }
+
+  .sample { margin-top: 72px; }
+  .sample-inner {
+    background: #1b1d23;
+    color: #f5f5f7;
+    border-radius: 22px;
+    padding: clamp(24px, 4vw, 44px);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px 48px;
+    align-items: center;
+  }
+  .sample-copy { flex: 1 1 300px; min-width: 0; }
+  .sample h2 { font-size: clamp(26px, 3.2vw, 36px); letter-spacing: -0.025em; line-height: 1.1; }
+  .sample p { margin: 14px 0 0; font-size: 14.5px; line-height: 1.6; color: #a1a1a6; text-wrap: pretty; }
+  .ghost {
+    display: inline-flex;
+    margin-top: 22px;
+    padding: 12px 24px;
+    border-radius: 99px;
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
+    color: #f5f5f7;
+    font-weight: 700;
+    font-size: 13.5px;
+  }
+  .ghost:hover { color: #fff; }
+  .serp {
+    flex: 1 1 320px;
+    min-width: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #fff;
+    color: #1f1f1f;
+    border: 1px solid #dadce0;
+  }
+  .serp-map {
+    height: 92px;
+    background: #e9eef2;
+    position: relative;
+    overflow: hidden;
+  }
+  .serp-map::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(#d9e1e8 1px, transparent 1px), linear-gradient(90deg, #d9e1e8 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+  .serp-map::after {
+    content: '';
+    position: absolute;
+    left: -10%;
+    right: -10%;
+    top: 42px;
+    height: 9px;
+    background: #fff;
+    transform: rotate(-5deg);
+  }
+  .road-v {
+    position: absolute;
+    top: -10%;
+    bottom: -10%;
+    left: 38%;
+    width: 7px;
+    background: #fff;
+    transform: rotate(14deg);
+  }
+  .m-pin {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+  }
+  .m-pin i {
+    font-style: normal;
+    transform: rotate(45deg);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .serp-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 11px 14px;
+    border-top: 1px solid #e8eaed;
+    align-items: center;
+  }
+  .serp-meta { font-size: 12px; color: #70757a; margin-top: 2px; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+  .serp-meta b { color: #1f1f1f; font-weight: 400; }
+  .stars { color: #fbbc04; letter-spacing: -1px; }
+  .badge { font-size: 9.5px; font-weight: 700; white-space: nowrap; flex: none; }
+  .badge.muted { color: #70757a; }
+  .badge.good { color: #188038; }
+  .you-row {
+    margin: 10px;
+    border: 1.5px dashed var(--orange);
+    border-radius: 10px;
+    padding: 10px 12px;
+    background: #fff7f1;
+    font-family: inherit;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .you-kicker { font-size: 9.5px; font-weight: 800; letter-spacing: 0.08em; color: var(--orange); }
+  .you-name { font-weight: 800; font-size: 13.5px; color: var(--ink); }
+  .you-miss { font-weight: 800; font-size: 13px; color: var(--fail); text-align: right; }
+  .you-miss span { display: block; font-size: 10.5px; color: var(--muted-2); font-weight: 600; }
+
+  .proof { margin-top: 72px; }
+  .proof-kicker { text-align: center; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--muted-2); }
+  .proof h2 {
+    margin: 10px auto 0;
+    font-size: clamp(24px, 3vw, 32px);
+    text-align: center;
+    max-width: 620px;
+  }
+  .logos { display: flex; align-items: center; justify-content: center; gap: 36px; flex-wrap: wrap; margin-top: 20px; }
+  .logos :global(img) { height: 40px; width: auto; filter: grayscale(1); opacity: 0.62; }
+  .logos :global(a:hover img),
+  .logos :global(picture:hover img) { filter: grayscale(0); opacity: 1; }
+  .logos :global(img.round) { border-radius: 6px; }
+  .quotes { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-top: 36px; }
+  .quotes article { border: 1px solid var(--border); border-radius: 14px; padding: 20px 22px; display: flex; flex-direction: column; }
+  .stat { font-size: 30px; font-weight: 800; letter-spacing: -0.03em; color: var(--orange); line-height: 1; }
+  .stat-sub { font-size: 11.5px; color: var(--muted-2); margin-top: 4px; }
+  .quotes p { margin: 14px 0 0; font-size: 13.5px; line-height: 1.6; color: #4a4a4a; flex: 1; }
+  .who { display: flex; align-items: center; gap: 9px; margin-top: 14px; }
+  .who :global(img) { width: 28px; height: 28px; border-radius: 99px; object-fit: cover; }
+  .who-name { font-size: 12px; font-weight: 700; }
+  .who-meta { font-size: 10.5px; color: #999; }
+
+  .bottom { margin-top: 72px; padding-bottom: 64px; }
+  .cta {
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 26px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .cta-title { font-weight: 800; font-size: 18px; letter-spacing: -0.01em; }
+  .cta p { margin: 5px 0 0; font-size: 13.5px; color: var(--muted); line-height: 1.5; }
+  .cta b { color: var(--ink); }
+  .book {
+    padding: 13px 26px;
+    border-radius: 99px;
+    background: var(--orange);
+    color: #fff;
+    font-weight: 800;
+    font-size: 14.5px;
+    white-space: nowrap;
+  }
+  .book:hover { color: #fff; background: var(--orange-hover); }
+  .strip { display: flex; gap: 22px; justify-content: center; margin-top: 22px; font-size: 12px; color: var(--muted-2); flex-wrap: wrap; }
+
+  @media (max-width: 720px) {
+    .hero { padding-top: 36px; }
+    h1 { font-size: 34px; }
+  }
 </style>

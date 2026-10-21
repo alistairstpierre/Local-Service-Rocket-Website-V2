@@ -24,57 +24,38 @@
     <p style="margin:14px 0 0;font-size:16px;color:#6b6b6b;line-height:1.55;max-width:640px;text-wrap:pretty">{{ heroSub }}</p>
     <div style="display:inline-flex;align-items:center;gap:12px;margin-top:18px;border:1px solid #dfe1e5;border-radius:99px;padding:10px 18px 10px 16px;box-shadow:0 1px 6px rgba(32,33,36,.16);font-family:Arial,Helvetica,sans-serif;font-size:15px;color:#202124;max-width:100%"><span style="width:16px;height:16px;border:2px solid #9aa0a6;border-radius:50%;position:relative;flex:none"><span style="position:absolute;width:2px;height:7px;background:#9aa0a6;right:-4px;bottom:-5px;transform:rotate(-45deg)"></span></span><span style="white-space:nowrap">{{ keyword }} near {{ city }}</span></div>
 
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:32px;align-items:stretch">
-      <sc-for list="{{ rivalCards }}" as="r" hint-placeholder-count="3">
-        <div style="border:1px solid #e7e7e7;border-radius:16px;overflow:hidden;background:#fff;display:flex;flex-direction:column;min-width:0">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:14px;margin-top:32px;align-items:stretch">
+      <sc-for list="{{ cardPairs }}" as="pair" hint-placeholder-count="2">
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:stretch;min-width:0">
+      <sc-for list="{{ pair }}" as="r" hint-placeholder-count="2">
+        <div style="border:{{ r.border }};border-radius:16px;overflow:hidden;background:{{ r.bg }};display:flex;flex-direction:column;min-width:0">
           <div style="position:relative;height:150px;background:#f1f3f4">
-            <image-slot id="{{ r.slotId }}" src="{{ r.photo }}" shape="rect" placeholder="Their Google profile photo" style="width:100%;height:150px;display:block"></image-slot>
-            <div style="position:absolute;left:12px;top:12px;width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#ea4335;border:2px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;pointer-events:none"><span style="transform:rotate(45deg);color:#fff;font-size:13px;font-weight:800">{{ r.pack }}</span></div>
+            <image-slot id="{{ r.slotId }}" src="{{ r.photo }}" shape="rect" placeholder="{{ r.placeholder }}" style="width:100%;height:150px;display:block"></image-slot>
+            <sc-if value="{{ r.isYou }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:12px;top:12px;padding:5px 10px;border-radius:99px;background:#e8590c;color:#fff;font-size:10.5px;font-weight:800;letter-spacing:.08em;pointer-events:none">YOU</div></sc-if>
           </div>
           <div style="padding:16px 18px 18px;display:flex;flex-direction:column;flex:1">
-            <div style="font-weight:800;font-size:16px;line-height:1.25">{{ r.name }}</div>
-            <div style="font-size:13px;color:#6b6b6b;margin-top:4px;display:flex;align-items:center;gap:5px;flex-wrap:wrap"><b style="color:#1a1a1a">{{ r.rating }}</b><span style="color:#fbbc04;letter-spacing:-1px">★★★★★</span><span>({{ r.reviews }})</span><span>· {{ r.years }}+ yrs</span></div>
-            <div style="font-size:10.5px;font-weight:800;letter-spacing:.08em;color:#e8590c;margin-top:16px">THEY HAVE · YOU DON'T</div>
-            <div style="display:flex;flex-direction:column;gap:7px;margin-top:8px">
-              <sc-for list="{{ r.edges }}" as="e" hint-placeholder-count="4">
-                <div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;line-height:1.3"><span style="width:18px;height:18px;border-radius:99px;background:#1b8a4b;color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none">✓</span>{{ e }}</div>
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+              <div style="min-width:0"><div style="font-weight:800;font-size:16px;line-height:1.25">{{ r.name }}</div>
+                <div style="font-size:13px;color:#6b6b6b;margin-top:4px;display:flex;align-items:center;gap:5px;flex-wrap:wrap"><b style="color:#1a1a1a">{{ r.rating }}</b><span style="color:#fbbc04;letter-spacing:-1px">★★★★★</span><span>({{ r.reviews }})</span><span>· {{ r.years }}+ yrs</span></div>
+                <div style="font-size:12px;font-weight:800;color:{{ r.packColor }};margin-top:8px">{{ r.packText }}</div></div>
+              <div style="text-align:right;flex:none"><div style="font-size:10px;font-weight:800;letter-spacing:.08em;color:{{ r.placeColor }};white-space:nowrap">{{ r.place }}</div><div style="font-size:32px;font-weight:800;letter-spacing:-.04em;line-height:1;margin-top:3px;color:{{ r.scoreColor }}">{{ r.score }}</div></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;gap:8px;font-size:10.5px;font-weight:800;letter-spacing:.08em;color:#8a8a8a;margin-top:18px"><span>SCORE BREAKDOWN</span><span>/100</span></div>
+            <div style="display:flex;flex-direction:column;gap:9px;margin-top:10px">
+              <sc-for list="{{ r.breakdown }}" as="p" hint-placeholder-count="4">
+                <div style="min-width:0">
+                  <div style="display:flex;justify-content:space-between;gap:6px;font-size:10.5px;font-weight:700;letter-spacing:.04em;color:#8a8a8a"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.short }}</span><b style="color:{{ r.scoreColor }};font-size:13px;flex:none">{{ p.v }}</b></div>
+                  <div style="height:5px;border-radius:99px;background:{{ r.track }};margin-top:4px"><div style="height:5px;border-radius:99px;background:{{ r.bar }};width:{{ p.v }}%"></div></div>
+                </div>
               </sc-for>
             </div>
-            <div style="font-size:12px;color:#8a8a8a;font-weight:600;margin-top:auto;padding-top:14px">{{ r.more }}</div>
           </div>
         </div>
       </sc-for>
+      </div>
+      </sc-for>
     </div>
-
-    <div style="margin-top:14px;border:1.5px dashed #e8590c;border-radius:16px;background:#fff7f1;display:flex;flex-wrap:wrap;align-items:center;gap:20px 24px;padding:16px 18px">
-      <div style="position:relative;width:132px;height:132px;flex:none;border-radius:12px;overflow:hidden;background:#fbe9dc">
-        <image-slot id="gbp-photo-you" src="{{ youPhoto }}" shape="rect" placeholder="Your Google profile photo" style="width:132px;height:132px;display:block"></image-slot>
-        <div style="position:absolute;left:10px;top:10px;padding:4px 9px;border-radius:99px;background:#e8590c;color:#fff;font-size:10px;font-weight:800;letter-spacing:.08em;pointer-events:none">YOU</div>
-      </div>
-      <div style="flex:1 1 220px;min-width:0">
-        <div style="font-weight:800;font-size:17px;line-height:1.25">{{ subject }}</div>
-        <div style="font-size:13px;color:#6b6b6b;margin-top:4px;display:flex;align-items:center;gap:5px;flex-wrap:wrap"><b style="color:#1a1a1a">{{ youRating }}</b><span style="color:#fbbc04;letter-spacing:-1px">★★★★★</span><span>({{ youReviews }})</span><span>· {{ youYears }}+ yrs</span></div>
-        <div style="font-size:24px;font-weight:800;letter-spacing:-.02em;color:{{ youPackColor }};margin-top:12px;line-height:1.1">{{ youPackLabel }}</div>
-        <div style="font-size:12.5px;color:#6b6b6b;margin-top:4px;line-height:1.4">{{ youPackSub }}</div>
-        <a href="#gaps" style="display:inline-block;margin-top:10px;font-size:13px;font-weight:800;color:#e8590c">See every gap ↓</a>
-      </div>
-      <div style="display:flex;align-items:center;gap:12px;flex:none">
-        <div style="width:72px;height:72px;border-radius:50%;background:conic-gradient(#e8590c 0 {{ overallDeg }}deg,#f3d9c6 0);display:flex;align-items:center;justify-content:center;flex:none"><div style="width:56px;height:56px;border-radius:50%;background:#fff7f1;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;letter-spacing:-.03em">{{ overall }}</div></div>
-        <div><div style="font-size:10.5px;font-weight:800;letter-spacing:.08em;color:#8a8a8a">OVERALL SCORE</div><div style="font-size:13px;font-weight:700;margin-top:3px">Pack leader: {{ leaderOverall }}</div></div>
-      </div>
-      <div style="flex:1 1 240px;min-width:0;display:grid;grid-template-columns:1fr 1fr;gap:10px 18px">
-        <sc-for list="{{ pillars }}" as="p" hint-placeholder-count="4">
-          <div style="min-width:0">
-            <div style="display:flex;justify-content:space-between;gap:6px;font-size:10.5px;font-weight:700;letter-spacing:.04em;color:#8a8a8a"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.short }}</span><span style="flex:none"><b style="color:#1a1a1a;font-size:13px">{{ p.you }}</b> vs {{ p.leader }}</span></div>
-            <div style="margin-top:5px;display:flex;flex-direction:column;gap:3px">
-              <div style="height:5px;border-radius:99px;background:#f3d9c6"><div style="height:5px;border-radius:99px;background:#e8590c;width:{{ p.youW }}%"></div></div>
-              <div style="height:5px;border-radius:99px;background:#f3d9c6"><div style="height:5px;border-radius:99px;background:#1a1a1a;width:{{ p.leaderW }}%"></div></div>
-            </div>
-          </div>
-        </sc-for>
-        <div style="grid-column:1 / -1;display:flex;gap:14px;font-size:10.5px;color:#8a8a8a;font-weight:600"><span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:5px;border-radius:99px;background:#e8590c"></span>You</span><span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:5px;border-radius:99px;background:#1a1a1a"></span>Best competitor</span></div>
-      </div>
-    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:14px;flex-wrap:wrap;font-size:12.5px;color:#6b6b6b;font-weight:600"><span>Ranked by overall score: Google profile 35% · website 28% · ads 20% · AI search 17%.</span><a href="#gaps" style="font-size:13px;font-weight:800;color:#e8590c;white-space:nowrap">See every gap ↓</a></div>
   </div>
 
   <!-- 01 MAP PACK -->
@@ -179,22 +160,22 @@
         </div>
         <div style="background:#fff7f1;border:1px solid #f3c7ad;border-radius:18px;padding:22px;min-width:0">
           <div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#e8590c">THE BIG QUESTION</div>
-          <div style="font-size:18px;font-weight:800;line-height:1.3;margin-top:8px;text-wrap:balance">Do the top 3 rank across your area — or only where they're located?</div>
+          <div style="font-size:18px;font-weight:800;line-height:1.3;margin-top:8px;text-wrap:balance">Do the top 3 rank across your area, or only where they're located?</div>
           <div style="font-size:14px;color:#4a4a4a;margin-top:10px;line-height:1.6;text-wrap:pretty">{{ gridAnswer }}</div>
         </div>
       </div>
     </div>
 
     <div style="margin-top:40px;background:#1b1d23;color:#f5f5f7;border-radius:18px;padding:22px 26px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap">
-      <div style="min-width:0;flex:1 1 320px"><div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#ff8f52">MORE CUSTOMERS · FREE 20-MIN CALL</div><div style="font-size:18px;font-weight:800;letter-spacing:-.02em;margin-top:4px;line-height:1.3;text-wrap:balance">Every spot on that map where they rank and you don't is a customer calling them.</div><div style="font-size:13px;color:#a1a1a6;margin-top:4px;line-height:1.5">Let's talk about what it takes to be the name people see across {{ cityShortCap }} — not just on your street.</div></div>
+      <div style="min-width:0;flex:1 1 320px"><div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#ff8f52">FREE 20-MIN CALL</div><div style="font-size:18px;font-weight:800;letter-spacing:-.02em;margin-top:4px;line-height:1.3;text-wrap:balance">Want to rank across {{ cityShortCap }}, not just your own street?</div><div style="font-size:13px;color:#a1a1a6;margin-top:4px;line-height:1.5">We'll walk through your profile and show you which fixes widen that circle.</div></div>
       <a href="https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg9d1R" style="padding:12px 24px;border-radius:99px;background:#e8590c;color:#fff;font-weight:800;font-size:14px;flex:none">Book a free call</a>
     </div>
   </div>
 
   <!-- REVIEW ENGINE -->
   <div style="max-width:1160px;margin:72px auto 0;padding:0 clamp(20px,5vw,48px)">
-    <h3 style="margin:0;font-size:clamp(22px,2.8vw,30px);font-weight:800;letter-spacing:-.03em;line-height:1.15;text-wrap:balance">Consistency beats volume. New reviews, week by week.</h3>
-    <p style="margin:8px 0 0;font-size:14.5px;color:#6b6b6b;line-height:1.55;max-width:640px;text-wrap:pretty">Google trusts a steady stream more than a big number. The last {{ weeksN }} weeks, side by side.</p>
+    <h3 style="margin:0;font-size:clamp(22px,2.8vw,30px);font-weight:800;letter-spacing:-.03em;line-height:1.15;text-wrap:balance">Who's winning the review war.</h3>
+    <p style="margin:8px 0 0;font-size:14.5px;color:#6b6b6b;line-height:1.55;max-width:640px;text-wrap:pretty">Not the biggest total, the steadiest stream. Google trusts a shop that gets reviews every week. The last {{ weeksN }} weeks, side by side.</p>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:14px;margin-top:24px">
       <sc-for list="{{ reviewEngine }}" as="b" hint-placeholder-count="4">
         <div style="border:1px solid {{ b.border }};border-radius:16px;padding:20px;background:{{ b.bg }};min-width:0">
@@ -217,7 +198,7 @@
 
   <!-- GBP BOARD -->
   <div style="max-width:1160px;margin:56px auto 0;padding:0 clamp(20px,5vw,48px)">
-    <h3 style="margin:0;font-size:clamp(22px,2.8vw,30px);font-weight:800;letter-spacing:-.03em;line-height:1.15">Profile, line by line.</h3>
+    <h3 style="margin:0;font-size:clamp(22px,2.8vw,30px);font-weight:800;letter-spacing:-.03em;line-height:1.15">Why their profiles rank. Line by line.</h3><p style="margin:8px 0 0;font-size:14.5px;color:#6b6b6b;line-height:1.55;max-width:640px;text-wrap:pretty">Every row is something Google reads before it decides who gets a pin. Red is where you're behind.</p>
     <div style="margin-top:20px;border:1px solid #e7e7e7;border-radius:18px;overflow-x:auto;background:#fff">
       <div style="min-width:760px">
         <div style="display:grid;grid-template-columns:minmax(170px,1.2fr) repeat(4,minmax(120px,1fr))">
@@ -353,7 +334,7 @@
 
   <div style="max-width:1160px;margin:40px auto 0;padding:0 clamp(20px,5vw,48px)">
     <div style="background:#1b1d23;color:#f5f5f7;border-radius:18px;padding:22px 26px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap">
-      <div style="min-width:0;flex:1 1 320px"><div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#ff8f52">MORE JOBS BOOKED · FREE 20-MIN CALL</div><div style="font-size:18px;font-weight:800;letter-spacing:-.02em;margin-top:4px;line-height:1.3;text-wrap:balance">{{ webCtaHead }}</div><div style="font-size:13px;color:#a1a1a6;margin-top:4px;line-height:1.5">A site that ranks, loads fast and makes people call — that's more jobs booked without spending a dollar more on ads.</div></div>
+      <div style="min-width:0;flex:1 1 320px"><div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#ff8f52">FREE 20-MIN CALL</div><div style="font-size:18px;font-weight:800;letter-spacing:-.02em;margin-top:4px;line-height:1.3;text-wrap:balance">{{ webCtaHead }}</div><div style="font-size:13px;color:#a1a1a6;margin-top:4px;line-height:1.5">Title, H1, description and schema are quick wins. We'll show you what to change first and why.</div></div>
       <a href="https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg9d1R" style="padding:12px 24px;border-radius:99px;background:#e8590c;color:#fff;font-weight:800;font-size:14px;flex:none">Book a free call</a>
     </div>
   </div>
@@ -435,7 +416,7 @@
         </div>
         <div style="border:1px solid #f3c7ad;background:#fff7f1;color:#1a1a1a;border-radius:18px;padding:22px;min-width:0">
           <div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#e8590c">WHY THIS MATTERS</div>
-          <div style="font-size:18px;font-weight:800;line-height:1.3;margin-top:8px;text-wrap:balance">Homeowners are asking AI first — and calling from its shortlist.</div>
+          <div style="font-size:18px;font-weight:800;line-height:1.3;margin-top:8px;text-wrap:balance">Homeowners are asking AI first, and calling from its shortlist.</div>
           <div style="font-size:14px;color:#4a4a4a;margin-top:10px;line-height:1.6;text-wrap:pretty">{{ aiWhy }}</div>
         </div>
       </div>
@@ -472,7 +453,7 @@
             <div style="font-size:14px;line-height:1.6;margin-top:16px;color:#2a2a2a">{{ gpt.intro }}</div>
             <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px">
               <sc-for list="{{ gpt.items }}" as="it" hint-placeholder-count="3">
-                <div style="display:flex;gap:10px;font-size:14px;line-height:1.55;color:#2a2a2a"><span style="font-weight:800;color:#8a8a8a;flex:none">{{ it.n }}.</span><div><b style="background:#fff1e8;border-radius:3px;padding:0 3px">{{ it.name }}</b> — {{ it.text }}</div></div>
+                <div style="display:flex;gap:10px;font-size:14px;line-height:1.55;color:#2a2a2a"><span style="font-weight:800;color:#8a8a8a;flex:none">{{ it.n }}.</span><div><b style="background:#fff1e8;border-radius:3px;padding:0 3px">{{ it.name }}</b>, {{ it.text }}</div></div>
               </sc-for>
             </div>
             <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:14px">
@@ -493,7 +474,7 @@
               <div style="min-width:0">
                 <div style="font-size:14px;line-height:1.6;color:#1f1f1f">{{ aio.intro }}</div>
                 <sc-for list="{{ aio.items }}" as="it" hint-placeholder-count="2">
-                  <div style="display:flex;gap:8px;margin-top:8px;font-size:14px;line-height:1.55;color:#1f1f1f"><span style="color:#5f6368;flex:none">•</span><div><b style="background:#fff1e8;border-radius:3px;padding:0 3px">{{ it.name }}</b> — {{ it.text }}</div></div>
+                  <div style="display:flex;gap:8px;margin-top:8px;font-size:14px;line-height:1.55;color:#1f1f1f"><span style="color:#5f6368;flex:none">•</span><div><b style="background:#fff1e8;border-radius:3px;padding:0 3px">{{ it.name }}</b>, {{ it.text }}</div></div>
                 </sc-for>
               </div>
               <div style="display:flex;flex-direction:column;gap:8px;min-width:0">
@@ -508,7 +489,7 @@
       </div>
 
       <div style="margin-top:32px;background:#fff;color:#1a1a1a;border-radius:18px;padding:22px 26px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap">
-        <div style="min-width:0;flex:1 1 320px"><div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#e8590c">A BRAND PEOPLE TRUST · FREE 20-MIN CALL</div><div style="font-size:18px;font-weight:800;letter-spacing:-.02em;margin-top:4px;line-height:1.3;text-wrap:balance">Imagine being the name AI recommends when someone asks for an electrician.</div><div style="font-size:13px;color:#6b6b6b;margin-top:4px;line-height:1.5">That's the brand everyone in town already trusts before they pick up the phone. It's built on the same fixes that win the Map Pack.</div></div>
+        <div style="min-width:0;flex:1 1 320px"><div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#e8590c">FREE 20-MIN CALL</div><div style="font-size:18px;font-weight:800;letter-spacing:-.02em;margin-top:4px;line-height:1.3;text-wrap:balance">AI pulls from the same signals as the Map Pack.</div><div style="font-size:13px;color:#6b6b6b;margin-top:4px;line-height:1.5">Reviews, listings and a site that says what you do. Fix those and you show up in both places.</div></div>
         <a href="https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg9d1R" style="padding:12px 24px;border-radius:99px;background:#e8590c;color:#fff;font-weight:800;font-size:14px;flex:none">Book a free call</a>
       </div>
     </div>
@@ -517,8 +498,8 @@
   <!-- GAPS + CTA -->
   <div id="gaps" style="max-width:1160px;margin:96px auto 0;padding:0 clamp(20px,5vw,48px)">
     <div style="display:flex;align-items:center;gap:12px"><span style="font-size:11px;font-weight:800;letter-spacing:.12em;color:#e8590c">05</span><span style="height:1px;width:28px;background:#e8590c"></span><span style="font-size:11px;font-weight:700;letter-spacing:.1em;color:#e8590c">WHERE YOU'RE LOSING</span></div>
-    <h2 style="margin:12px 0 0;font-size:clamp(26px,3.4vw,38px);font-weight:800;letter-spacing:-.03em;line-height:1.1;text-wrap:balance">{{ gapCount }} gaps. Every one is a call going to {{ leaderShort }} instead of you.</h2>
-    <p style="margin:10px 0 0;font-size:15px;color:#6b6b6b;max-width:640px;line-height:1.55;text-wrap:pretty">What each one is costing you — and what closing it gets you.</p>
+    <h2 style="margin:12px 0 0;font-size:clamp(26px,3.4vw,38px);font-weight:800;letter-spacing:-.03em;line-height:1.1;text-wrap:balance">{{ gapCount }} gaps between you and the top 3.</h2>
+    <p style="margin:10px 0 0;font-size:15px;color:#6b6b6b;max-width:640px;line-height:1.55;text-wrap:pretty">What's missing, what closing it gets you, and when it gets fixed.</p>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px;margin-top:28px">
       <sc-for list="{{ gaps }}" as="g" hint-placeholder-count="8">
         <div style="border:1px solid #e7e7e7;border-radius:16px;padding:20px 22px 16px;display:flex;flex-direction:column;min-width:0">
@@ -537,8 +518,8 @@
     <div style="margin-top:28px;background:#1b1d23;color:#f5f5f7;border-radius:22px;padding:clamp(24px,4vw,40px);display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:32px;align-items:start">
       <div style="min-width:0">
         <div style="font-size:11px;font-weight:800;letter-spacing:.1em;color:#ff8f52">HOW WE CLOSE THEM · COACHING + MARKETING</div>
-        <div style="font-size:clamp(24px,3vw,34px);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-top:10px;text-wrap:balance">More calls. A bigger crew. The name people in {{ cityShortCap }} think of first.</div>
-        <p style="font-size:14.5px;color:#a1a1a6;line-height:1.6;margin:14px 0 0;text-wrap:pretty">One flight plan closes all {{ gapCount }} gaps. We do the marketing — profile, site, ads — and coach you 1:1 every week so you understand every move and own the results. No eight vendors. No black box.</p>
+        <div style="font-size:clamp(24px,3vw,34px);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-top:10px;text-wrap:balance">One plan closes all {{ gapCount }}.</div>
+        <p style="font-size:14.5px;color:#a1a1a6;line-height:1.6;margin:14px 0 0;text-wrap:pretty">We do the marketing (profile, site, ads) and coach you 1:1 every week so you understand every move and own the results. One team instead of eight vendors.</p>
         <div style="display:flex;gap:24px;margin-top:24px;flex-wrap:wrap">
           <div><div style="font-size:26px;font-weight:800;color:#ff8f52;letter-spacing:-.02em;line-height:1">$10M+</div><div style="font-size:11.5px;color:#a1a1a6;margin-top:4px">client revenue</div></div>
           <div><div style="font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1">600%</div><div style="font-size:11.5px;color:#a1a1a6;margin-top:4px">growth in a year · Rewired</div></div>
@@ -548,7 +529,7 @@
           <a href="https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg9d1R" style="padding:13px 28px;border-radius:99px;background:#e8590c;color:#fff;font-weight:800;font-size:14.5px">Book a free call</a>
           <a href="The Flight Plan.dc.html" style="padding:13px 28px;border-radius:99px;border:1.5px solid rgba(255,255,255,.25);color:#f5f5f7;font-weight:700;font-size:14.5px">See the full flight plan</a>
         </div>
-        <div style="font-size:12px;color:#8a8a8f;margin-top:14px">20 minutes. We walk through your report, show what we'd fix first and what it costs. No pitch.</div>
+        <div style="font-size:12px;color:#8a8a8f;margin-top:14px">20 minutes. We walk through your report, what we'd fix first and what it costs.</div>
       </div>
       <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
         <sc-for list="{{ phases }}" as="ph" hint-placeholder-count="3">
@@ -646,8 +627,8 @@ class Component extends DCLogic {
     const pins = [{ n: 1, x: 22, y: 30 }, { n: 2, x: 54, y: 52 }, { n: 3, x: 76, y: 22 }];
     const packRows = rivals.map(b => ({ n: b.pack, name: b.name, rating: b.rating.toFixed(1), reviews: fmt(b.reviews), cat: b.cat, years: b.years, address: b.addrShort, closes: b.closes }));
     const cityName = city.split(',')[0];
-    const searchFrom = you.address ? 'your address' : 'the middle of your service area — your address is hidden';
-    const searchFromLabel = you.address ? 'Searched from your address' : 'Searched from the center of ' + city + ' — your address is hidden';
+    const searchFrom = you.address ? 'your address' : 'the middle of your service area, your address is hidden';
+    const searchFromLabel = you.address ? 'Searched from your address' : 'Searched from the center of ' + city + ', your address is hidden';
     const inPack = you.pack && you.pack <= 3;
     const kwRoot = 'electric';
     const nameHas = b => b.name.toLowerCase().includes(kwRoot);
@@ -693,8 +674,8 @@ class Component extends DCLogic {
     };
     const serp = B.map(b => {
       const s = split(b.title);
-      const st = b.titleKw === 'yes' ? { pill: Y, mark: '✓', status: 'Says “' + s.match.toLowerCase() + '”' } : b.titleKw === 'partial' ? { pill: A, mark: '~', status: '“' + s.match.toLowerCase() + '” — close, not exact' } : { pill: N, mark: '✗', status: 'No service keyword' };
-      return { site: b.site, url: b.url, initial: b.site[0], favicon: fav(b), before: s.before, match: s.match, after: s.after, hlBg: s.match ? (b.titleKw === 'yes' ? '#e4f4ea' : '#fff3dc') : 'transparent', hlLine: s.match ? (b.titleKw === 'yes' ? Y : A) : 'transparent', desc: b.metaDesc || 'No meta description. Google picks random text from the page instead — “Welcome to our website. We are a family owned and operated business serving…”', descStyle: b.metaDesc ? 'normal' : 'italic', titlePill: st.pill, titleMark: st.mark, titleStatus: st.status, h1: b.h1, h1Pill: b.h1Kw ? Y : N, h1Mark: b.h1Kw ? '✓' : '✗', bg: b.you ? TINT : '#fff', border: b.you ? '#f3c7ad' : '#e7e7e7' };
+      const st = b.titleKw === 'yes' ? { pill: Y, mark: '✓', status: 'Says “' + s.match.toLowerCase() + '”' } : b.titleKw === 'partial' ? { pill: A, mark: '~', status: '“' + s.match.toLowerCase() + '”, close, not exact' } : { pill: N, mark: '✗', status: 'No service keyword' };
+      return { site: b.site, url: b.url, initial: b.site[0], favicon: fav(b), before: s.before, match: s.match, after: s.after, hlBg: s.match ? (b.titleKw === 'yes' ? '#e4f4ea' : '#fff3dc') : 'transparent', hlLine: s.match ? (b.titleKw === 'yes' ? Y : A) : 'transparent', desc: b.metaDesc || 'No meta description. Google picks random text from the page instead, “Welcome to our website. We are a family owned and operated business serving…”', descStyle: b.metaDesc ? 'normal' : 'italic', titlePill: st.pill, titleMark: st.mark, titleStatus: st.status, h1: b.h1, h1Pill: b.h1Kw ? Y : N, h1Mark: b.h1Kw ? '✓' : '✗', bg: b.you ? TINT : '#fff', border: b.you ? '#f3c7ad' : '#e7e7e7' };
     });
 
     const seoRows = keep([
@@ -768,8 +749,8 @@ class Component extends DCLogic {
     const geoPanels = [panelFor(you), panelFor(leader)];
     const coverage = B.map(b => ({ name: b.short, cov: covOf(b) + '/25', w: Math.max(2, Math.round(covOf(b) / 25 * 100)), color: b.you ? OR : INK, nameColor: b.you ? OR : INK }));
     const youCenter = you.grid[12], youCov = covOf(you);
-    const gridHeadline = youCenter && youCenter <= 3 ? 'You rank at your front door. They rank across town.' : youCenter ? 'They rank across town. You’re #' + youCenter + ' at your own front door — and gone a mile out.' : 'They rank across town. You don’t show up anywhere within 2 miles.';
-    const gridAnswer = 'Across your area. ' + leader.short + ' is in the top 3 at ' + covOf(leader) + ' of 25 spots within 2 miles; ' + rivals[1].short + ' at ' + covOf(rivals[1]) + ', ' + rivals[2].short + ' at ' + covOf(rivals[2]) + '. You: ' + youCov + ' of 25. A stronger profile widens that circle — right now yours doesn’t reach past the center point.';
+    const gridHeadline = youCenter && youCenter <= 3 ? 'You rank at your front door. They rank across town.' : youCenter ? 'They rank across town. You’re #' + youCenter + ' at your own front door, and gone a mile out.' : 'They rank across town. You don’t show up anywhere within 2 miles.';
+    const gridAnswer = 'Across your area. ' + leader.short + ' is in the top 3 at ' + covOf(leader) + ' of 25 spots within 2 miles; ' + rivals[1].short + ' at ' + covOf(rivals[1]) + ', ' + rivals[2].short + ' at ' + covOf(rivals[2]) + '. You: ' + youCov + ' of 25. A stronger profile widens that circle, right now yours doesn’t reach past the center point.';
 
     const last30 = b => b.weeks.slice(-4).reduce((a, c) => a + c, 0);
     const edgesOf = b => {
@@ -788,21 +769,30 @@ class Component extends DCLogic {
       if (all && b.posts30 && !you.posts30) L.push('Google posts this month');
       return L;
     };
-    const rivalCards = rivals.map(b => { const L = edgesOf(b); return { slotId: 'gbp-photo-' + b.pack, photo: b.photo, pack: b.pack, name: b.name, rating: b.rating.toFixed(1), reviews: fmt(b.reviews), years: b.years, edges: L.slice(0, 4), more: L.length > 4 ? '+' + (L.length - 4) + ' more below ↓' : 'Full breakdown below ↓' }; });
+    const ord = n => n + (n % 10 === 1 && n !== 11 ? 'ST' : n % 10 === 2 && n !== 12 ? 'ND' : n % 10 === 3 && n !== 13 ? 'RD' : 'TH');
+    const exact = s => s.gbp * .35 + s.web * .28 + s.ads * .2 + s.ai * .17;
+    const ranked = B.map(b => ({ b, sc: overall(b.scores), ex: exact(b.scores) })).sort((x, y) => y.ex - x.ex);
+    const placeOf = b => ranked.findIndex(r => r.b === b);
+    const placeLabel = b => ord(placeOf(b) + 1) + ' PLACE';
+    const PK = [['GOOGLE PROFILE', 'gbp'], ['WEBSITE', 'web'], ['GOOGLE ADS', 'ads'], ['AI SEARCH', 'ai']];
+    const breakdownFor = b => PK.map(([short, k]) => ({ short, them: b.scores[k], you: you.scores[k], themW: b.scores[k], youW: you.scores[k] }));
+    const leaderboard = ranked.map((r, i) => ({ place: ord(i + 1), placeColor: r.b.you ? N : (i === 0 ? OR : '#8a8a8a'), name: r.b.you ? 'You · ' + r.b.short : r.b.short, score: r.sc, w: r.sc, color: r.b.you ? OR : INK, nameColor: r.b.you ? OR : INK }));
+    const youPlace = placeOf(you);
+    const cards = ranked.map(({ b, sc }, i) => ({ isYou: !!b.you, isRival: !b.you, border: b.you ? '1.5px dashed #e8590c' : '1px solid #e7e7e7', bg: b.you ? TINT : '#fff', slotId: b.you ? 'gbp-photo-you' : 'gbp-photo-' + b.pack, photo: b.photo, placeholder: b.you ? 'Your Google profile photo' : 'Their Google profile photo', pack: b.pack, name: b.name, rating: b.rating.toFixed(1), reviews: fmt(b.reviews), years: b.years, packText: b.you ? (inPack ? '#' + b.pack + ' in the Map Pack' : 'Not in the Map Pack') : '#' + b.pack + ' in the Map Pack', packColor: b.you ? (inPack ? Y : N) : '#1a1a1a', place: ord(i + 1) + ' PLACE', placeColor: b.you ? (i < 3 ? OR : N) : (i === 0 ? OR : '#8a8a8a'), score: sc, scoreColor: b.you ? OR : INK, track: b.you ? '#f3d9c6' : '#f0f0f0', bar: b.you ? OR : INK, breakdown: PK.map(([short, k]) => ({ short, v: b.scores[k] })) }));
 
     const lsaBiz = rivals.filter(b => b.lsa).sort((a, b) => a.lsa - b.lsa);
     const lsaTiles = lsaBiz.map(b => ({ name: b.name, rating: b.rating.toFixed(1), reviews: '(' + fmt(b.reviews) + ')', line: b.closes.startsWith('Open') ? 'Open 24 hours · Serves Tampa' : 'Serves Tampa', badge: 'GOOGLE GUARANTEED', badgeColor: '#188038', badgeBg: '#188038', border: '#dadce0', borderStyle: 'solid', bg: '#fff', nameWeight: '400' }));
-    while (lsaTiles.length < 3) lsaTiles.push({ name: you.name, rating: you.rating.toFixed(1), reviews: '(' + fmt(you.reviews) + ')', line: 'Not running Local Services Ads', badge: 'YOU — NOT HERE', badgeColor: N, badgeBg: N, border: OR, borderStyle: 'dashed', bg: TINT, nameWeight: '700' });
+    while (lsaTiles.length < 3) lsaTiles.push({ name: you.name, rating: you.rating.toFixed(1), reviews: '(' + fmt(you.reviews) + ')', line: 'Not running Local Services Ads', badge: 'YOU · NOT HERE', badgeColor: N, badgeBg: N, border: OR, borderStyle: 'dashed', bg: TINT, nameWeight: '700' });
     const adBiz = rivals.find(b => b.searchAds && !b.lsa) || rivals.find(b => b.searchAds);
-    const ad = { site: adBiz.site, url: adBiz.url, initial: adBiz.site[0], favicon: fav(adBiz), title: 'Tampa Electrician — Same-Day Service | Licensed & Insured', desc: 'Upfront pricing. ' + fmt(adBiz.reviews) + '+ five-star reviews. Panel upgrades, repairs, EV chargers. Call now for a free estimate.' };
+    const ad = { site: adBiz.site, url: adBiz.url, initial: adBiz.site[0], favicon: fav(adBiz), title: 'Tampa Electrician | Same-Day Service | Licensed & Insured', desc: 'Upfront pricing. ' + fmt(adBiz.reviews) + '+ five-star reviews. Panel upgrades, repairs, EV chargers. Call now for a free estimate.' };
     const adsRows = [
       row('Local Services Ads', 'Google Guaranteed tiles', b => b.lsa ? num('#' + b.lsa, 'slot', Y) : no('not running')),
       row('Search Ads', 'Text ad on the keyword', b => b.searchAds ? yes('running') : no('none')),
       row('Ads history', 'Google Ads Transparency', b => b.transparency ? yes('active advertiser') : no('no ads found'))
     ];
     const payingRivals = rivals.filter(b => b.lsa || b.searchAds).length;
-    const adsHeadline = payingRivals ? payingRivals + ' of 3 competitors have bought the top of the page.' : 'Nobody in ' + city + ' is paying for this search. The lane is open.';
-    const adsTakeaway = payingRivals ? 'A homeowner sees ' + lsaBiz.length + ' competitor' + (lsaBiz.length === 1 ? '' : 's') + ' with a “Google Guaranteed” badge' + (payingRivals > lsaBiz.length ? ' plus a paid text ad' : '') + ' before they see any map. You’re not on this screen at all.' : 'No Local Services Ads, no Search Ads. The first business to show up here owns the top of the page.';
+    const adsHeadline = payingRivals ? payingRivals + ' of 3 competitors have bought the top of the page.' : 'Nobody in ' + city + ' is paying for this search yet.';
+    const adsTakeaway = payingRivals ? 'A homeowner sees ' + lsaBiz.length + ' competitor' + (lsaBiz.length === 1 ? '' : 's') + ' with a “Google Guaranteed” badge' + (payingRivals > lsaBiz.length ? ' plus a paid text ad' : '') + ' before they reach the map. You aren’t on this screen.' : 'No Local Services Ads, no Search Ads from any competitor. The top of the page is unclaimed.';
 
     const srcPill = (t, cited, title) => ({ t, title: title || '', border: cited ? OR : '#e3e3e3', bg: cited ? '#fff1e8' : '#fafafa', color: cited ? '#c2400b' : '#6b6b6b' });
     const blurb = { 'Small Jobs Electric, Inc.': 'praised for fast residential repairs and transparent pricing, with thousands of 4.8-star reviews.', 'Mr. Electric of Tampa Bay': 'licensed, available 24/7, and consistently rated 4.9 stars for residential and commercial work.', 'Brandon Electric': 'family-owned since 1993, known for panel upgrades and generator installs across Tampa.' };
@@ -823,16 +813,16 @@ class Component extends DCLogic {
     const gpt = Object.assign({ prompt: AIQ[0], intro: 'Here are some of the top-rated electricians in Tampa, based on recent reviews and local reputation:', items: itemsFor(0, 0), sources: [srcPill('yelp.com'), srcPill('mrelectric.com'), srcPill('angi.com'), srcPill('bbb.org')] }, verdictFor(AIM[0][0].includes('Y')));
     const aio = Object.assign({ prompt: AIQ[2], intro: 'For an emergency electrician in Tampa, these providers offer 24/7 or same-day service and are consistently well reviewed:', items: itemsFor(2, 4), sources: [srcPill('mrelectric.com', true, '24/7 Emergency Electrician in Tampa Bay'), srcPill('brandonelectricinc.com', true, 'Emergency Electrical Service · Tampa'), srcPill('yelp.com', false, 'Top 10 Emergency Electricians in Tampa, FL')] }, verdictFor(AIM[2][4].includes('Y')));
     const aiHeadline = 'Named in ' + youM + ' of ' + aiTotal + ' AI answers. ' + topRival.short + ': ' + mentionsOf(topRival) + '.';
-    const aiWhy = 'Every one of the ' + aiTotal + ' answers came back with 1–3 names — that’s the shortlist people call from. AI pulls from the same signals as the Map Pack: reviews, listings, and a website that says what you do. ' + (youM === 0 ? 'Right now none of them point to you.' : 'You made ' + youM + ' of them.');
+    const aiWhy = 'Every one of the ' + aiTotal + ' answers came back with 1–3 names. That’s the shortlist people call from. AI pulls from the same signals as the Map Pack: reviews, listings, and a website that says what you do. ' + (youM === 0 ? 'Right now none of them point to you.' : 'You made ' + youM + ' of them.');
 
     const youTotalW = you.weeks.slice(-weeksN).reduce((a, c) => a + c, 0), leaderTotalW = leader.weeks.slice(-weeksN).reduce((a, c) => a + c, 0);
     const gaps = [
-      { head: inPack ? 'You’re in the pack at your address — and nowhere else.' : 'You’re not in the Map Pack — not even at your own address.', sub: (youCenter ? '#' + youCenter + ' at your front door, gone a mile out. ' : '') + leader.short + ' is top 3 at ' + covOf(leader) + ' of 25 spots within 2 miles of you.' },
-      { head: fmt(you.reviews) + ' reviews vs ' + fmt(leader.reviews) + ' — and the pace is the real gap.', sub: 'You got ' + youTotalW + ' reviews in the last ' + weeksN + ' weeks. The pack leader got ' + leaderTotalW + '.' },
+      { head: inPack ? 'You’re in the pack at your address, and nowhere else.' : 'You’re not in the Map Pack, not even at your own address.', sub: (youCenter ? '#' + youCenter + ' at your front door, gone a mile out. ' : '') + leader.short + ' is top 3 at ' + covOf(leader) + ' of 25 spots within 2 miles of you.' },
+      { head: fmt(you.reviews) + ' reviews vs ' + fmt(leader.reviews) + '. The pace is the real gap.', sub: 'You got ' + youTotalW + ' reviews in the last ' + weeksN + ' weeks. The pack leader got ' + leaderTotalW + '.' },
       { head: 'Your address is hidden.', sub: 'Service-area profiles rarely get a pin. Every competitor shows a street address.' },
       { head: 'Thin profile: no description, 1 secondary category' + (all ? ', ' + you.photos + ' photos.' : '.'), sub: 'Competitors list 4–6 secondary categories' + (all ? ' and post monthly.' : '.') },
-      { head: 'Your site title and H1 never say “' + keyword + '”.', sub: '“' + you.title + '” tells Google nothing about what you do. No meta description, no schema.' },
-      { head: 'Two competitors own the paid spots above the map.', sub: 'Mr. Electric and Brandon Electric run Local Services Ads with the Google Guaranteed badge. You run nothing.' },
+      { head: 'Your site title and H1 never say “' + keyword + '”.', sub: '“' + you.title + '” doesn’t tell Google what you do. No meta description, no schema.' },
+      { head: 'Two competitors run ads above the map.', sub: 'Mr. Electric and Brandon Electric run Local Services Ads with the Google Guaranteed badge. You aren’t running ads.' },
       { head: '5 AI assistants, ' + aiTotal + ' answers, ' + youM + ' mention' + (youM === 1 ? '' : 's') + ' of you.', sub: topRival.short + ' was named in ' + mentionsOf(topRival) + '. Google’s AI Overview and Perplexity link straight to competitor websites.' },
       { head: cnt(you, CORE) + ' of ' + CORE.length + ' core listings. No BBB, no Chamber of Commerce.', sub: 'Every competitor is on ' + Math.min(...rivals.map(b => cnt(b, CORE))) + '+ of the sites Google cross-checks, with ' + fmt(Math.min(...rivals.map(b => b.rd))) + '+ websites linking to them. You have ' + fmt(you.rd) + '.' }
     ];
@@ -851,16 +841,16 @@ class Component extends DCLogic {
 
     return {
       subject: you.name, city, cityShort, cityShortCap: city.split(',')[0], adQuery: keyword + ' ' + cityShort, keyword, generated, weeksN,
-      heroHeadline: inPack ? 'You’re #' + you.pack + ' in ' + city.split(',')[0] + '. Here’s what the shops above you are doing.' : rivals.length + ' ' + kwPlural + ' in ' + city.split(',')[0] + ' are getting the calls meant for you.',
-      heroSub: 'We searched “' + keyword + '” from your address and 24 spots around it. These three showed up' + (inPack ? '.' : '. You didn’t.') + ' Here’s what they have that you don’t.',
-      rivalCards, youPhoto: you.photo, youYears: you.years, youPackSub: youCenter ? '#' + youCenter + ' from ' + (you.address ? 'your own address' : 'the center of ' + cityName) + ' · ' + youCov + ' of 25 spots nearby' : 'Not found within 2 miles',
+      heroHeadline: inPack ? 'You’re #' + you.pack + ' in ' + city.split(',')[0] + '. Here’s what the shops above you are doing.' : rivals.length + ' ' + kwPlural + ' in ' + city.split(',')[0] + ' show up for “' + keyword + '”. You don’t.',
+      heroSub: 'We searched “' + keyword + '” from your address and 24 spots around it. These three showed up' + (inPack ? '.' : '. You didn’t.') + ' Here’s how your profile, site and ads compare.',
+      cards, cardPairs: [cards.slice(0, 2), cards.slice(2, 4)], youPhoto: you.photo, youPlaceLabel: ord(youPlace + 1) + ' PLACE', youPlaceColor: youPlace < 3 ? (youPlace === 0 ? OR : '#8a8a8a') : N, leaderboard, youYears: you.years, youPackSub: youCenter ? '#' + youCenter + ' from ' + (you.address ? 'your own address' : 'the center of ' + cityName) + ' · ' + youCov + ' of 25 spots nearby' : 'Not found within 2 miles',
       searchFrom, searchFromLabel, centerLabel: you.address ? 'AT THE ADDRESS' : 'AT THE CENTER',
       shownBorder: you.address ? OR : '#ececec', hiddenBorder: you.address ? '#ececec' : OR, hiddenBg: you.address ? '#fff' : TINT, shownTag: you.address ? '● THIS IS YOU' : '', hiddenTag: you.address ? '' : '● THIS IS YOU',
       gridAnswer, geoPanels, coverage, authGroups,
-      webCtaHead: 'Your competitors’ websites are booking jobs while people sleep. Yours could too.',
+      webCtaHead: you.psi === bestPsi ? 'Fast site. It just needs to say what you do.' : 'Most of these are week-one fixes.',
       aiTotal, aiBoard, aiPlatforms, aiMatrix, gpt, aio, aiWhy, aiCardBg: dark ? '#23252c' : '#fff', aiCardBorder: dark ? '#30323a' : '#e7e7e7', aiRule: dark ? '#30323a' : '#ececec', aiTrack: dark ? '#30323a' : '#f3f3f3',
       overall: ov, overallDeg: Math.round(ov * 3.6), leaderOverall, pillars, heads,
-      packHeadline: inPack ? 'You’re #' + you.pack + ' in the pack. Here’s who’s above you.' : 'You’re not in the top 3 — even from your own address.',
+      packHeadline: inPack ? 'You’re #' + you.pack + ' in the pack. Here’s who’s above you.' : 'You’re not in the top 3, even from your own address.',
       pins, packRows, youRating: you.rating.toFixed(1), youReviews: fmt(you.reviews), youCat: you.cat,
       youPackLabel: inPack ? '#' + you.pack + ' in the pack' : 'Not in the top 3', youPackColor: inPack ? Y : N,
       reviewEngine, gbpRows,
