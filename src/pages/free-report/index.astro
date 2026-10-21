@@ -91,7 +91,6 @@ const proofLogos: { href?: string; name: string; alt: string; h: number; radius?
             <span class="mag" aria-hidden="true"></span>
             <input
               id="gbp-search"
-              name="businessName"
               type="text"
               autocomplete="off"
               maxlength="120"
@@ -100,6 +99,7 @@ const proofLogos: { href?: string; name: string; alt: string; h: number; radius?
             />
             <div id="biz-results" class="results" hidden></div>
           </div>
+          <input type="hidden" name="businessName" id="business-name" />
           <input type="hidden" name="placeId" id="place-id" />
         </div>
 
@@ -366,6 +366,7 @@ const proofLogos: { href?: string; name: string; alt: string; h: number; radius?
   const phoneInput = document.getElementById('phone-input') as HTMLInputElement | null;
   const cityInput = document.getElementById('city-input') as HTMLInputElement | null;
   const bizInput = document.getElementById('gbp-search') as HTMLInputElement | null;
+  const nameInput = document.getElementById('business-name') as HTMLInputElement | null;
   const placeInput = document.getElementById('place-id') as HTMLInputElement | null;
   const resultsEl = document.getElementById('biz-results');
   const pickedEl = document.getElementById('biz-picked');
@@ -378,6 +379,7 @@ const proofLogos: { href?: string; name: string; alt: string; h: number; radius?
     !phoneInput ||
     !cityInput ||
     !bizInput ||
+    !nameInput ||
     !placeInput ||
     !resultsEl ||
     !pickedEl ||
@@ -504,6 +506,7 @@ const proofLogos: { href?: string; name: string; alt: string; h: number; radius?
       EMAIL_RE.test(emailInput.value.trim()) &&
       cityReady() &&
       Boolean(placeInput.value) &&
+      (nameInput.value.trim().length >= 2 || bizInput.value.trim().length >= 2) &&
       phoneInput.value.replace(/\D/g, '').length >= 10
     );
   }
@@ -534,6 +537,7 @@ const proofLogos: { href?: string; name: string; alt: string; h: number; radius?
 
   function clearPick() {
     placeInput.value = '';
+    nameInput.value = '';
     pickedEl.hidden = true;
     pickedEl.innerHTML = '';
     bizInput.value = '';
@@ -554,6 +558,7 @@ const proofLogos: { href?: string; name: string; alt: string; h: number; radius?
 
   function pickPlace(hit: PlaceHit) {
     placeInput.value = hit.placeId;
+    nameInput.value = hit.name;
     bizInput.value = hit.name;
     searchWrap.hidden = true;
     pickedEl.hidden = false;
@@ -728,7 +733,7 @@ const proofLogos: { href?: string; name: string; alt: string; h: number; radius?
 
     const payload = {
       email: String(data.get('email') || '').trim(),
-      businessName: String(data.get('businessName') || '').trim(),
+      businessName: nameInput.value.trim() || bizInput.value.trim() || String(data.get('businessName') || '').trim(),
       city: String(data.get('city') || '').trim(),
       phone: String(data.get('phone') || '').trim(),
       placeId: String(data.get('placeId') || '').trim() || undefined,
