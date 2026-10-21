@@ -79,13 +79,13 @@ const proofLogos: { href?: string; name: string; alt: string; h: number; radius?
         </label>
 
         <label>
-          City and state
+          Business city and state
           <input type="text" name="city" id="city-input" autocomplete="address-level2" required maxlength="120" placeholder="Tampa, FL" />
         </label>
 
         <div class="search locked" id="search-block">
           <label for="gbp-search">Select your Google Business Profile</label>
-          <p class="search-hint" id="search-hint">Add your city and state first so we can find the right listing.</p>
+          <p class="search-hint" id="search-hint">Add the business city and state first so we can find the right listing.</p>
           <div id="biz-picked" class="picked" hidden></div>
           <div id="search-wrap" class="search-wrap" hidden>
             <span class="mag" aria-hidden="true"></span>
@@ -753,7 +753,7 @@ const proofLogos: { href?: string; name: string; alt: string; h: number; radius?
       return;
     }
     if (payload.city.length < 2) {
-      setError('Add your city and state so we search from the right place.');
+      setError('Add the business city and state so we search from the right place.');
       return;
     }
     if (!apiUrl) {
