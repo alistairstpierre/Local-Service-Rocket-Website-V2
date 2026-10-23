@@ -1223,7 +1223,7 @@ export function renderReportHtml(report: PublicReport): string {
   const uxRows = [
     row('Phone number in header', 'Visible without scrolling', orderWeb, (b) => (b.ux.phoneHeader ? yes('') : no(''))),
     row('Tap-to-call on mobile', 'Number is a link', orderWeb, (b) => (b.ux.clickCall ? yes('') : no(''))),
-    row('Call-to-action above the fold', '“Call now” / “Get a quote”', orderWeb, (b) => (b.ux.ctaFold ? yes('') : no(''))),
+    row('Call-to-action above the fold', 'A button at the top of the page', orderWeb, (b) => (b.ux.ctaFold ? yes('') : no(''))),
     row('Contact form', 'Any page', orderWeb, (b) => (b.ux.form ? yes('') : no(''))),
     row('Reviews shown on homepage', 'Stars a visitor can see', orderWeb, (b) => (b.ux.reviewsHome ? yes('') : no(''))),
     row('Map of service area', 'Embedded Google Map', orderWeb, (b) => (b.ux.map ? yes('') : no(''))),
