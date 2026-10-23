@@ -13,7 +13,6 @@ import {
   closerCopy,
   coverageTier,
   gapsHeadingCopy,
-  gridAnswerCopy,
   heroCopy,
   mapCtaCopy,
   packHeadlineCopy,
@@ -657,8 +656,7 @@ function siteScoreOf(b: ExampleBiz): number {
   if (b.servicePages > 0) score += 8;
   if (b.locationPages > 0) score += 4;
   if (b.ssl) score += 4;
-  if (b.privacy && b.terms) score += 5;
-  else if (b.privacy || b.terms) score += 2;
+  if (b.privacy) score += 5;
   if (b.ux.phoneHeader) score += 3;
   if (b.ux.clickCall) score += 3;
   if (b.ux.ctaFold) score += 3;
@@ -993,8 +991,10 @@ export function renderReportHtml(report: PublicReport): string {
 
   const packLevel = packTier(you.pack);
   const coverLevel = coverageTier(youCov, covOf(leader));
+  const overallPlace =
+    [...B].sort((a, b) => exactScore(b.scores) - exactScore(a.scores)).findIndex((b) => b.you) + 1;
   const hero = heroCopy({
-    tier: packLevel,
+    overall: overallPlace,
     pack: you.pack,
     rivals: rivals.length,
     kwPlural,
@@ -1177,8 +1177,8 @@ export function renderReportHtml(report: PublicReport): string {
     row('Service pages', 'One page per service', orderWeb, (b) => num(b.servicePages, 'pages', b.servicePages < 3 ? N : INK)),
     row('Location pages', 'One page per city served', orderWeb, (b) => num(b.locationPages, 'pages')),
     row('SSL (https)', 'Padlock in the browser', orderWeb, (b) => (b.ssl ? yes('secure') : no('not secure'))),
-    row('Privacy · Terms', 'Trust pages Google expects', orderWeb, (b) =>
-      b.privacy && b.terms ? yes('both') : b.privacy || b.terms ? part(b.privacy ? 'privacy only' : 'terms only') : no('neither')
+    row('Privacy policy', 'The privacy page Google expects', orderWeb, (b) =>
+      b.privacy ? yes('listed') : no('missing')
     ),
   ];
 
@@ -1237,6 +1237,7 @@ export function renderReportHtml(report: PublicReport): string {
     if (cov === 25) return 'Top 3 at every spot within 5 miles of you.';
     if (cov >= 20) return `Top 3 almost everywhere around you. Slips to #${r2max} at the edge.`;
     if (cov >= 10) return `Top 3 near ${hereTxt}, fades out by 5 miles.`;
+    if (c === 1 && cov > 0) return `#1 at ${hereTxt}. Other shops cover more spots farther out.`;
     if (cov > 0) return `Only top 3 at a few spots near ${hereTxt}.`;
     if (c) return `#${c} at ${hereTxt}, not top 3 anywhere, gone by 5 miles.`;
     return 'Not found anywhere within 5 miles.';
@@ -1263,17 +1264,6 @@ export function renderReportHtml(report: PublicReport): string {
         c2Color: rangeColor(ring(b, 2)),
       };
     });
-  const gridAnswer = gridAnswerCopy({
-    coverage: coverLevel,
-    you: youCov,
-    leader: leader.short,
-    leaderCov: covOf(leader),
-    second: rivals[1]?.short,
-    secondCov: rivals[1] ? covOf(rivals[1]) : undefined,
-    third: rivals[2]?.short,
-    thirdCov: rivals[2] ? covOf(rivals[2]) : undefined,
-  });
-
   const lsaBiz = B.filter((b) => b.lsa).sort((a, b) => (a.lsa ?? 99) - (b.lsa ?? 99));
   const lsaTiles = lsaBiz.map((b) => ({
     name: b.name,
@@ -1671,7 +1661,8 @@ export function renderReportHtml(report: PublicReport): string {
             <div class="rpt-mini-kicker is-muted">STEP 2 · DOES IT HOLD UP ACROSS TOWN?</div>
             <div class="rpt-town-title">Google shows a different top 3 depending on where the customer is standing. So we ran the same search from 25 spots.</div>
             <div class="rpt-how">
-              <div class="rpt-how-map">
+              <div class="rpt-how-map${mapImageUrl ? ' has-map' : ''}">
+                ${mapBg}
                 <div class="rpt-how-circle"></div>
                 <div class="rpt-how-dots">${howDots.map((d) => `<div><i style="background:${d.bg};box-shadow:${d.ring}"></i></div>`).join('')}</div>
                 <div class="rpt-how-mi">5 mi</div>
@@ -1692,7 +1683,7 @@ export function renderReportHtml(report: PublicReport): string {
           ${geoRows
             .map(
               (g) => `<div class="rpt-geo-row" style="background:${g.bg}">
-                <div class="rpt-geo-dots">${g.dots.map((d) => `<i style="background:${d.bg};box-shadow:${d.ring}"></i>`).join('')}</div>
+                <div class="rpt-geo-map${mapImageUrl ? ' has-map' : ''}">${mapBg}<div class="rpt-geo-dots">${g.dots.map((d) => `<i style="background:${d.bg};box-shadow:${d.ring}"></i>`).join('')}</div></div>
                 <div class="rpt-geo-who">
                   <div class="rpt-geo-who-top"><span style="color:${g.placeColor}">${esc(g.place)}</span><span style="color:${g.nameColor}">${esc(g.name)}</span></div>
                   <div class="rpt-geo-read">${esc(g.reading)}</div>
@@ -1706,10 +1697,6 @@ export function renderReportHtml(report: PublicReport): string {
               </div>`
             )
             .join('')}
-          <div class="rpt-answer">
-            <div class="rpt-mini-kicker">THE ANSWER</div>
-            <div>${esc(gridAnswer)}</div>
-          </div>
         </div>
       </div>
 

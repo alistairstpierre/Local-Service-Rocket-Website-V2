@@ -41,7 +41,7 @@ export function aiTier(you: number, rival: number, total: number): CopyTier {
 }
 
 export function heroCopy(input: {
-  tier: CopyTier;
+  overall: number;
   pack?: number | null;
   rivals: number;
   kwPlural: string;
@@ -49,16 +49,19 @@ export function heroCopy(input: {
   query: string;
 }): { headline: string; sub: string } {
   const q = `‘${input.query}’`;
-  if (input.tier === 'well') {
+  if (input.overall === 1) {
     return {
       headline: `You’re #1 for ${q} in ${input.city}.`,
       sub: 'Here’s how your profile, site and ads compare — and where the pack can still take a job from you.',
     };
   }
-  if (input.tier === 'okay') {
+  if (input.overall >= 2) {
     return {
-      headline: `${input.rivals} ${input.kwPlural} in ${input.city} show up for ${q}. You’re #${input.pack}.`,
-      sub: 'Here’s how your profile, site and ads compare.',
+      headline: `You’re #${input.overall} overall for ${q} in ${input.city}.`,
+      sub:
+        input.pack === 1
+          ? 'You’re first in the Map Pack. The overall score still includes reviews, website, ads, and AI — that’s why another shop can sit above you here.'
+          : 'Here’s how your profile, site and ads compare.',
     };
   }
   return {
@@ -77,33 +80,6 @@ export function packHeadlineCopy(input: {
   return input.address
     ? 'You’re not in the top 3 — even from your own address.'
     : 'You’re not in the top 3 — even from the center of your service area.';
-}
-
-export function gridAnswerCopy(input: {
-  coverage: CopyTier;
-  you: number;
-  leader: string;
-  leaderCov: number;
-  second?: string;
-  secondCov?: number;
-  third?: string;
-  thirdCov?: number;
-}): string {
-  const others = [
-    `${input.leader} is in the top 3 at ${input.leaderCov} of 25`,
-    input.second ? `${input.second} at ${input.secondCov ?? 0}` : '',
-    input.third ? `${input.third} at ${input.thirdCov ?? 0}` : '',
-  ]
-    .filter(Boolean)
-    .join('; ');
-
-  if (input.coverage === 'well') {
-    return `You hold the area: ${input.you} of 25 spots in the top 3. ${others}. Keep the profile complete so that circle doesn’t shrink.`;
-  }
-  if (input.coverage === 'okay') {
-    return `You show up at ${input.you} of 25 spots. ${others}. They still take calls 2 miles out where you drop.`;
-  }
-  return `Across your area. ${others}. You: ${input.you} of 25. A stronger profile widens that circle — right now yours barely leaves the center.`;
 }
 
 export function webHeadlineCopy(input: {

@@ -171,7 +171,7 @@ Old service URLs (`/services/paid-ads`, `/local-seo`, `/websites`, `/hiring`, `/
 │   │   ├── Picture.astro         # <picture> AVIF/WebP wrapper used for every raster
 │   │   └── PricingOffer.astro    # Flight Plan pricing tiers (/ and /get-started)
 │   ├── lib/
-│   │   ├── free-report-copy.ts     # Well / okay / poorly headlines from live ranks
+│   │   ├── free-report-copy.ts     # Headlines from overall score (not Map Pack alone); US-only note lives in the report footer
 │   │   ├── free-report-example.ts  # Fallback dataset for photo counts, posts, extra AI platforms
 │   │   └── free-report-render.ts   # Maps PublicReport + examples into the report HTML (STEP 1/2 Map Pack, boards in score order, review 65/35, website = speed 30% + site 70% unpublished, About keyword/services/locations, fastest = lowest LCP, ads from shop pin)
 │   ├── data/
