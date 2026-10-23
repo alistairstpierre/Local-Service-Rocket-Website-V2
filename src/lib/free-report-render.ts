@@ -189,6 +189,8 @@ export type PublicReport = {
   generatedAt?: string;
   /** One static map of the shop pin, reused on the Map Pack SERP, grids, and search-from cards. */
   mapImageUrl?: string;
+  /** Miles from the shop pin to each edge of that square map. Places the 2 / 5 mile dots. */
+  mapHalfMiles?: number;
   stage?: 'queued' | 'profile' | 'pack' | 'website' | 'ads' | 'ai' | 'complete';
   ready?: {
     hero: boolean;
@@ -566,6 +568,7 @@ function mergeReport(report: PublicReport): {
   generated: string;
   liveGaps: string[];
   mapImageUrl?: string;
+  mapHalfMiles?: number;
   ready?: ReportReady;
 } {
   const marketQuery = report.keyword || EXAMPLE_META.keyword;
@@ -608,6 +611,7 @@ function mergeReport(report: PublicReport): {
     generated,
     liveGaps: report.gaps,
     mapImageUrl: report.mapImageUrl,
+    mapHalfMiles: report.mapHalfMiles,
     ready,
   };
 }
@@ -852,18 +856,48 @@ function ringOf(i: number): number {
   return Math.max(Math.abs(Math.floor(i / 5) - 2), Math.abs((i % 5) - 2));
 }
 
+const RING_MILES = [0, 2, 5] as const;
+
+function cellOffsetMiles(index: number): { north: number; east: number } {
+  const row = Math.floor(index / 5);
+  const col = index % 5;
+  const dy = 2 - row;
+  const dx = col - 2;
+  const miles = RING_MILES[ringOf(index)] ?? 5;
+  const dist = Math.hypot(dx, dy);
+  if (!dist) return { north: 0, east: 0 };
+  return { north: (dy / dist) * miles, east: (dx / dist) * miles };
+}
+
+function cellPct(index: number, halfMiles: number): { left: number; top: number } {
+  const { north, east } = cellOffsetMiles(index);
+  const clamp = (n: number) => Math.max(4, Math.min(96, n));
+  return {
+    left: clamp(50 + (east / halfMiles) * 50),
+    top: clamp(50 - (north / halfMiles) * 50),
+  };
+}
+
+function dotStyle(left: number, top: number, extra: string): string {
+  return `left:${left.toFixed(1)}%;top:${top.toFixed(1)}%;${extra}`;
+}
+
 function rangeTxt(arr: (number | null)[]): string {
   const v = arr.filter((x): x is number => x != null);
+  const missed = arr.length - v.length;
   if (!v.length) return 'Not found';
   const mn = Math.min(...v);
-  const mx = Math.max(...v);
-  return mn === mx ? `#${mn}` : `#${mn}–${mx}`;
+  const ranks = mn === Math.max(...v) ? `#${mn}` : `#${mn}–${Math.max(...v)}`;
+  return missed ? `${ranks} / gone` : ranks;
 }
 
 function rangeColor(arr: (number | null)[]): string {
   const v = arr.filter((x): x is number => x != null);
   if (!v.length) return N;
+  const missed = arr.length - v.length;
   const mx = Math.max(...v);
+  if (missed * 2 >= arr.length) return N;
+  if (missed) return mx <= 10 ? A : N;
   return mx <= 3 ? Y : mx <= 10 ? A : N;
 }
 
@@ -922,11 +956,12 @@ function ctaBand(kicker: string, head: string, sub = '', href = BOOKING_URL, lab
 }
 
 export function renderReportHtml(report: PublicReport): string {
-  const { biz: B, keyword, marketQuery, city, generated, liveGaps, mapImageUrl, ready } = mergeReport(report);
+  const { biz: B, keyword, marketQuery, city, generated, liveGaps, mapImageUrl, mapHalfMiles, ready } =
+    mergeReport(report);
   applyReviewScores(B);
   applyWebsiteScores(B);
   const mapBg = mapImageUrl
-    ? `<img class="rpt-map-bg" src="${esc(mapImageUrl)}" alt="" width="640" height="360" />`
+    ? `<img class="rpt-map-bg" src="${esc(mapImageUrl)}" alt="" width="640" height="640" />`
     : '';
   const wait = (key: keyof ReportReady | 'all', label: string, inner: string) => {
     const on =
@@ -1232,6 +1267,22 @@ export function renderReportHtml(report: PublicReport): string {
   const shownTag = you.address ? '● THIS IS YOU' : '';
   const hiddenTag = you.address ? '' : '● THIS IS YOU';
   const howDots = [1, 1, 2, 4, 6, 1, 1, 1, 3, 5, 1, 1, 1, 2, 4, 1, 1, 1, 3, 12, 2, 2, 4, null, null].map(dotCell);
+  const geoClass = mapHalfMiles ? ' is-geo' : '';
+  const howCircle =
+    mapHalfMiles
+      ? `<div class="rpt-how-circle is-outer" style="width:${((5 / mapHalfMiles) * 100).toFixed(1)}%;height:${((5 / mapHalfMiles) * 100).toFixed(1)}%"></div>
+                <div class="rpt-how-circle is-inner" style="width:${((2 / mapHalfMiles) * 100).toFixed(1)}%;height:${((2 / mapHalfMiles) * 100).toFixed(1)}%"></div>`
+      : '<div class="rpt-how-circle"></div>';
+  const renderDots = (dots: { bg: string; ring: string }[]) =>
+    dots
+      .map((d, i) => {
+        const pos = mapHalfMiles ? cellPct(i, mapHalfMiles) : null;
+        const style = pos
+          ? dotStyle(pos.left, pos.top, `background:${d.bg};box-shadow:${d.ring}`)
+          : `background:${d.bg};box-shadow:${d.ring}`;
+        return pos ? `<i style="${style}"></i>` : `<div><i style="${style}"></i></div>`;
+      })
+      .join('');
   const readingOf = (b: ExampleBiz) => {
     const cov = covOf(b);
     const c = b.grid[12];
@@ -1666,8 +1717,8 @@ export function renderReportHtml(report: PublicReport): string {
             <div class="rpt-how">
               <div class="rpt-how-map${mapImageUrl ? ' has-map' : ''}">
                 ${mapBg}
-                <div class="rpt-how-circle"></div>
-                <div class="rpt-how-dots">${howDots.map((d) => `<div><i style="background:${d.bg};box-shadow:${d.ring}"></i></div>`).join('')}</div>
+                ${howCircle}
+                <div class="rpt-how-dots${geoClass}">${renderDots(howDots)}</div>
                 <div class="rpt-how-mi">5 mi</div>
               </div>
               <div class="rpt-how-copy">
@@ -1686,7 +1737,7 @@ export function renderReportHtml(report: PublicReport): string {
           ${geoRows
             .map(
               (g) => `<div class="rpt-geo-row" style="background:${g.bg}">
-                <div class="rpt-geo-map${mapImageUrl ? ' has-map' : ''}">${mapBg}<div class="rpt-geo-dots">${g.dots.map((d) => `<i style="background:${d.bg};box-shadow:${d.ring}"></i>`).join('')}</div></div>
+                <div class="rpt-geo-map${mapImageUrl ? ' has-map' : ''}">${mapBg}<div class="rpt-geo-dots${geoClass}">${renderDots(g.dots)}</div></div>
                 <div class="rpt-geo-who">
                   <div class="rpt-geo-who-top"><span style="color:${g.placeColor}">${esc(g.place)}</span><span style="color:${g.nameColor}">${esc(g.name)}</span></div>
                   <div class="rpt-geo-read">${esc(g.reading)}</div>
