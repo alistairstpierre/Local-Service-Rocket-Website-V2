@@ -584,13 +584,16 @@ function mergeReport(report: PublicReport): {
   const exampleRivals = EXAMPLE_BIZ.filter((b) => !b.you);
   const exampleYou = EXAMPLE_BIZ.find((b) => b.you)!;
 
+  const packPending = Boolean(ready && !ready.pack);
   const rivals = liveRivals.length
     ? liveRivals.slice(0, 3).map((live, i) =>
         overlayBiz(exampleRivals[i] ?? exampleRivals[0]!, live, keyword, city, ready)
       )
-    : streaming
+    : packPending
       ? [ghostBiz('Looking up #1', 1), ghostBiz('Looking up #2', 2), ghostBiz('Looking up #3', 3)]
-      : exampleRivals;
+      : liveYou
+        ? []
+        : exampleRivals;
 
   const you = liveYou
     ? overlayBiz(exampleYou, liveYou, keyword, city, ready)
@@ -1215,8 +1218,8 @@ export function renderReportHtml(report: PublicReport): string {
 
   const ring = (b: ExampleBiz, n: number) => b.grid.filter((_, i) => ringOf(i) === n);
   const dotCell = (r: number | null, i: number) => ({
-    bg: r == null ? '#cfd6dc' : r <= 3 ? Y : r <= 10 ? '#f0b429' : N,
-    ring: i === 12 ? '0 0 0 2px #1a1a1a' : 'none',
+    bg: r == null ? '#6b7280' : r <= 3 ? Y : r <= 10 ? '#f0b429' : N,
+    ring: i === 12 ? '0 0 0 2px #fff, 0 0 0 4px #1a1a1a' : '0 0 0 1.5px #fff',
   });
   const hereTag = you.address ? 'YOUR ADDRESS' : `CENTER OF ${cityName.toUpperCase()}`;
   const hereLower = you.address ? 'your address' : 'the middle of your service area';
