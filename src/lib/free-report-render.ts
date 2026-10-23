@@ -957,22 +957,22 @@ export function renderReportHtml(report: PublicReport): string {
   const coverLevel = coverageTier(youCov, covOf(leader));
   const overallPlace =
     [...B].sort((a, b) => exactScore(b.scores) - exactScore(a.scores)).findIndex((b) => b.you) + 1;
-  const nearMeQuery = `${marketQuery} near me`;
+  const cityQuery = [marketQuery, city].filter(Boolean).join(' ');
   const hero = heroCopy({
     overall: overallPlace,
     pack: you.pack,
     rivals: rivals.length,
     kwPlural,
     city: cityName,
-    query: nearMeQuery,
+    query: cityQuery,
   });
   const heroHeadline = hero.headline;
   const heroSub = hero.sub;
   const packHeadline = packHeadlineCopy({ tier: packLevel, pack: you.pack, address: you.address });
   const searchFrom = you.address ? 'your address' : 'the middle of your service area — your address is hidden';
   const searchFromLabel = you.address
-    ? `Searched “${nearMeQuery}” from your address`
-    : `Searched “${nearMeQuery}” from the center of ${city} — your address is hidden`;
+    ? `Searched “${cityQuery}” from your address`
+    : `Searched “${cityQuery}” from the center of ${city} — your address is hidden`;
 
   const avgOf = (b: ExampleBiz) => b.weeks.slice(-weeksN).reduce((a, c) => a + c, 0) / weeksN;
   const activeOf = (b: ExampleBiz) => b.weeks.slice(-weeksN).filter((w) => w > 0).length;
@@ -1466,11 +1466,11 @@ export function renderReportHtml(report: PublicReport): string {
         rankingsReady
           ? `<h1>${esc(heroHeadline)}</h1>
       <p class="rpt-lede">${esc(heroSub)}</p>
-      <div class="rpt-search"><span class="rpt-search-icon" aria-hidden="true"></span><span>${esc(nearMeQuery)}</span></div>
+      <div class="rpt-search"><span class="rpt-search-icon" aria-hidden="true"></span><span>${esc(cityQuery)}</span></div>
       ${shopRanking}`
           : `<h1>We’re building your Google report.</h1>
       <p class="rpt-lede">Check back for the full rankings when loading completes. The sections below fill in as each check finishes.</p>
-      ${city ? `<div class="rpt-search"><span class="rpt-search-icon" aria-hidden="true"></span><span>${esc(nearMeQuery)}</span></div>` : ''}
+      ${city ? `<div class="rpt-search"><span class="rpt-search-icon" aria-hidden="true"></span><span>${esc(cityQuery)}</span></div>` : ''}
       ${heroHold}`
       }
     </div>
@@ -1481,7 +1481,7 @@ export function renderReportHtml(report: PublicReport): string {
       `<section class="rpt-sec">
       <div class="rpt-sec-label"><span>01</span><i></i><span>GOOGLE MAP PACK</span></div>
       <h2>${esc(packHeadline)}</h2>
-      <p class="rpt-lede">Searched “${esc(nearMeQuery)}” from ${esc(searchFrom)}, then from 24 more spots out to 5 miles. Three spots on the map decide who gets the call.</p>
+      <p class="rpt-lede">Searched “${esc(cityQuery)}” from ${esc(searchFrom)}, then from 24 more spots out to 5 miles. Three spots on the map decide who gets the call.</p>
       ${rankPills('PROFILE SCORE', rankGbp)}
 
       <div class="rpt-pack">
