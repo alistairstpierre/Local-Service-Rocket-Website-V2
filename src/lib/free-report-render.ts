@@ -151,6 +151,8 @@ export function examplePublicReport(): PublicReport {
     cta: { href: '/get-started', label: 'See how we close these gaps' },
     generatedAt: new Date().toISOString(),
     mapImageUrl: '/free-report/map.jpg',
+    gridSize: 5,
+    gridRingMiles: [0, 1, 3],
   };
 }
 
@@ -187,8 +189,12 @@ export type PublicReport = {
   generatedAt?: string;
   /** One static map of the shop pin, reused on the Map Pack SERP, grids, and search-from cards. */
   mapImageUrl?: string;
-  /** Miles from the shop pin to each edge of that square map. Places the 2 / 5 mile dots. */
+  /** Miles from the shop pin to each edge of that square map. Used to place the 1 / 3 mile dots. */
   mapHalfMiles?: number;
+  /** Edge length of packGrid (5 = 0 / 1 / 3 mile rings). */
+  gridSize?: number;
+  /** Miles for each Chebyshev ring, index 0 = the shop pin. */
+  gridRingMiles?: number[];
   stage?: 'queued' | 'profile' | 'pack' | 'website' | 'ads' | 'ai' | 'complete';
   ready?: {
     hero: boolean;
@@ -810,6 +816,19 @@ function ringOf(i: number): number {
   return Math.max(Math.abs(Math.floor(i / 5) - 2), Math.abs((i % 5) - 2));
 }
 
+/** Live reports send [0, 1, 3]. Older stored reports may still be 2 / 5. */
+function ringMilesOf(report: PublicReport): [number, number, number] {
+  const rings = report.gridRingMiles;
+  if (rings && rings.length >= 3) {
+    return [rings[0] ?? 0, rings[1] ?? 1, rings[rings.length - 1] ?? 3];
+  }
+  return [0, 1, 3];
+}
+
+function mileLabel(miles: number): string {
+  return `${miles} MI OUT`;
+}
+
 function rangeTxt(arr: (number | null)[]): string {
   const v = arr.filter((x): x is number => x != null);
   const missed = arr.length - v.length;
@@ -886,6 +905,7 @@ function ctaBand(kicker: string, head: string, sub = '', href = BOOKING_URL, lab
 export function renderReportHtml(report: PublicReport): string {
   const { biz: B, keyword, marketQuery, city, generated, liveGaps, mapImageUrl, ready } =
     mergeReport(report);
+  const [, innerMi, outerMi] = ringMilesOf(report);
   applyReviewScores(B);
   applyWebsiteScores(B);
   const mapBg = mapImageUrl
@@ -1196,13 +1216,13 @@ export function renderReportHtml(report: PublicReport): string {
     const c = b.grid[12];
     const r2 = ring(b, 2).filter((x): x is number => x != null);
     const r2max = r2.length ? Math.max(...r2) : null;
-    if (cov === 25) return 'Top 3 at every spot within 5 miles of you.';
+    if (cov === 25) return `Top 3 at every spot within ${outerMi} miles of you.`;
     if (cov >= 20) return `Top 3 almost everywhere around you. Slips to #${r2max} at the edge.`;
-    if (cov >= 10) return `Top 3 near ${hereTxt}, fades out by 5 miles.`;
+    if (cov >= 10) return `Top 3 near ${hereTxt}, fades out by ${outerMi} miles.`;
     if (c === 1 && cov > 0) return `#1 at ${hereTxt}. Other shops cover more spots farther out.`;
     if (cov > 0) return `Only top 3 at a few spots near ${hereTxt}.`;
-    if (c) return `#${c} at ${hereTxt}, not top 3 anywhere, gone by 5 miles.`;
-    return 'Not found anywhere within 5 miles.';
+    if (c) return `#${c} at ${hereTxt}, not top 3 anywhere, gone by ${outerMi} miles.`;
+    return `Not found anywhere within ${outerMi} miles.`;
   };
   const geoRows = [...B]
     .sort((x, y) => covOf(y) - covOf(x) || (x.grid[12] ?? 99) - (y.grid[12] ?? 99))
@@ -1317,7 +1337,7 @@ export function renderReportHtml(report: PublicReport): string {
         packLevel === 'poor'
           ? 'You’re not in the Map Pack — not even at your own address.'
           : 'You’re in the pack at your address — and thin a mile out.',
-      sub: `${youCenter ? `#${youCenter} at your front door. ` : ''}${leader.short} is top 3 at ${covOf(leader)} of 25 spots within 5 miles of you. You: ${youCov}.`,
+      sub: `${youCenter ? `#${youCenter} at your front door. ` : ''}${leader.short} is top 3 at ${covOf(leader)} of 25 spots within ${outerMi} miles of you. You: ${youCov}.`,
     });
   }
   if (!you.address) {
@@ -1481,7 +1501,7 @@ export function renderReportHtml(report: PublicReport): string {
       `<section class="rpt-sec">
       <div class="rpt-sec-label"><span>01</span><i></i><span>GOOGLE MAP PACK</span></div>
       <h2>${esc(packHeadline)}</h2>
-      <p class="rpt-lede">Searched “${esc(cityQuery)}” from ${esc(searchFrom)}, then from 24 more spots out to 5 miles. Three spots on the map decide who gets the call.</p>
+      <p class="rpt-lede">Searched “${esc(cityQuery)}” from ${esc(searchFrom)}, then from 24 more spots out to ${outerMi} miles. Three spots on the map decide who gets the call.</p>
       ${rankPills('PROFILE SCORE', rankGbp)}
 
       <div class="rpt-pack">
@@ -1515,16 +1535,16 @@ export function renderReportHtml(report: PublicReport): string {
         <div class="rpt-town">
           <div class="rpt-town-head">
             <div class="rpt-mini-kicker is-muted">STEP 2 · DOES IT HOLD UP ACROSS TOWN?</div>
-            <div class="rpt-town-title">Google shows a different top 3 depending on where the customer is standing. So we ran the same search from 25 spots.</div>
+            <div class="rpt-town-title">Google shows a different top 3 depending on where the customer is standing. So we ran the same search from 25 spots at 0, ${innerMi}, and ${outerMi} miles.</div>
             <div class="rpt-how">
               <div class="rpt-how-map${mapImageUrl ? ' has-map' : ''}">
                 ${mapBg}
                 <div class="rpt-how-circle"></div>
                 <div class="rpt-how-dots">${howDots.map((d) => `<div><i style="background:${d.bg};box-shadow:${d.ring}"></i></div>`).join('')}</div>
-                <div class="rpt-how-mi">5 mi</div>
+                <div class="rpt-how-mi">${outerMi} mi</div>
               </div>
               <div class="rpt-how-copy">
-                <div><b>How to read the dots.</b> Each dot is one spot we searched from. The ringed dot is ${esc(hereLower)}; the inner square is 2 miles out and the outer square is 5 miles out.</div>
+                <div><b>How to read the dots.</b> Each dot is one spot we searched from. The ringed dot is ${esc(hereLower)}; the inner square is ${innerMi} mile${innerMi === 1 ? '' : 's'} out and the outer square is ${outerMi} miles out.</div>
                 <div class="rpt-how-legend">
                   <span><i class="dot is-green"></i>In the top 3 there</span>
                   <span><i class="dot is-yellow"></i>#4–10</span>
@@ -1546,8 +1566,8 @@ export function renderReportHtml(report: PublicReport): string {
                 </div>
                 <div class="rpt-geo-rings">
                   <div><div class="rpt-mini-kicker is-muted">${esc(centerLabel)}</div><div style="color:${g.c0Color}">${esc(g.c0)}</div></div>
-                  <div><div class="rpt-mini-kicker is-muted">2 MI OUT</div><div style="color:${g.c1Color}">${esc(g.c1)}</div></div>
-                  <div><div class="rpt-mini-kicker is-muted">5 MI OUT</div><div style="color:${g.c2Color}">${esc(g.c2)}</div></div>
+                  <div><div class="rpt-mini-kicker is-muted">${esc(mileLabel(innerMi))}</div><div style="color:${g.c1Color}">${esc(g.c1)}</div></div>
+                  <div><div class="rpt-mini-kicker is-muted">${esc(mileLabel(outerMi))}</div><div style="color:${g.c2Color}">${esc(g.c2)}</div></div>
                 </div>
                 <div class="rpt-geo-count"><div style="color:${g.covColor}">${g.cov}</div><span>of 25 spots</span></div>
               </div>`
