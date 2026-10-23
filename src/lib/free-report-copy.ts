@@ -52,7 +52,7 @@ export function heroCopy(input: {
   if (input.overall === 1) {
     return {
       headline: `You’re #1 for ${q} in ${input.city}.`,
-      sub: 'Here’s how your profile, site and ads compare — and where the pack can still take a job from you.',
+      sub: 'Here’s how your profile, site and AI search compare — and where the pack can still take a job from you.',
     };
   }
   if (input.overall >= 2) {
@@ -60,13 +60,13 @@ export function heroCopy(input: {
       headline: `You’re #${input.overall} overall for ${q} in ${input.city}.`,
       sub:
         input.pack === 1
-          ? 'You’re first in the Map Pack. The overall score still includes reviews, website, ads, and AI — that’s why another shop can sit above you here.'
-          : 'Here’s how your profile, site and ads compare.',
+          ? 'You’re first in the Map Pack. The overall score still includes reviews, website, and AI — that’s why another shop can sit above you here.'
+          : 'Here’s how your profile, site and AI search compare.',
     };
   }
   return {
     headline: `${input.rivals} ${input.kwPlural} in ${input.city} show up for ${q}. You don’t.`,
-    sub: 'Here’s how your profile, site and ads compare.',
+    sub: 'Here’s how your profile, site and AI search compare.',
   };
 }
 

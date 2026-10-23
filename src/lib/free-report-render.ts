@@ -6,8 +6,6 @@
    Claude Design Files/Free Google Report.dc.html. */
 
 import {
-  adsHeadlineCopy,
-  adsTier,
   aiHeadlineCopy,
   aiTier,
   closerCopy,
@@ -430,7 +428,7 @@ function overlayBiz(
       (!live.gbp.hasDescription &&
         live.gbp.gbpInfoLoaded !== true &&
         Boolean(ready) &&
-        !(ready.pack && ready.website && ready.ads && ready.ai)),
+        !(ready.pack && ready.website && ready.ai)),
     description: live.gbp.description,
     descKeyword: fit?.keyword,
     descServices: fit?.services,
@@ -555,7 +553,7 @@ function ghostBiz(name: string, pack: number | null, you = false): ExampleBiz {
 export function profileBoardReady(report: PublicReport): boolean {
   const ready = report.ready;
   if (!ready) return true;
-  if (ready.hero && ready.pack && ready.website && ready.ads && ready.ai) return true;
+  if (ready.hero && ready.pack && ready.website && ready.ai) return true;
   if (!ready.hero || report.businesses.length === 0) return false;
   return report.businesses.every((b) => b.gbp.gbpInfoLoaded === true);
 }
@@ -616,7 +614,7 @@ function mergeReport(report: PublicReport): {
   };
 }
 
-const WEIGHTS = { gbp: 0.25, rev: 0.15, web: 0.25, ads: 0.18, ai: 0.17 };
+const WEIGHTS = { gbp: 0.3, rev: 0.2, web: 0.3, ai: 0.2 };
 
 function weekAverage(weeks: number[]): number {
   const ws = weeks.slice(-WEEKS_N);
@@ -688,22 +686,12 @@ function applyWebsiteScores(biz: ExampleBiz[]): void {
 
 function overallOf(s: ExampleBiz['scores']): number {
   return Math.round(
-    s.gbp * WEIGHTS.gbp +
-      (s.rev ?? 0) * WEIGHTS.rev +
-      s.web * WEIGHTS.web +
-      s.ads * WEIGHTS.ads +
-      s.ai * WEIGHTS.ai
+    s.gbp * WEIGHTS.gbp + (s.rev ?? 0) * WEIGHTS.rev + s.web * WEIGHTS.web + s.ai * WEIGHTS.ai
   );
 }
 
 function exactScore(s: ExampleBiz['scores']): number {
-  return (
-    s.gbp * WEIGHTS.gbp +
-    (s.rev ?? 0) * WEIGHTS.rev +
-    s.web * WEIGHTS.web +
-    s.ads * WEIGHTS.ads +
-    s.ai * WEIGHTS.ai
-  );
+  return s.gbp * WEIGHTS.gbp + (s.rev ?? 0) * WEIGHTS.rev + s.web * WEIGHTS.web + s.ai * WEIGHTS.ai;
 }
 
 function placeShort(n: number): string {
@@ -776,40 +764,6 @@ function schemaCell(types: string[] | undefined, present: boolean): ReturnType<t
   if (generic) return part(label(generic));
   if (present || list.length) return part(label(list[0]) || 'generic only');
   return no('none');
-}
-
-function isAfterHours(city: string, at?: string): boolean {
-  const tz = timezoneForCity(city);
-  const date = at ? new Date(at) : new Date();
-  if (Number.isNaN(date.getTime())) return false;
-  const raw = new Intl.DateTimeFormat('en-US', { hour: 'numeric', hour12: false, timeZone: tz }).format(date);
-  const hour = Number(raw) === 24 ? 0 : Number(raw);
-  return hour < 8 || hour >= 18;
-}
-
-function timezoneForCity(city: string): string {
-  const token = (city.split(',').pop() ?? city).trim().toUpperCase();
-  const STATE_TZ: Record<string, string> = {
-    AL: 'America/Chicago', AR: 'America/Chicago', IA: 'America/Chicago', IL: 'America/Chicago',
-    KS: 'America/Chicago', LA: 'America/Chicago', MN: 'America/Chicago', MO: 'America/Chicago',
-    MS: 'America/Chicago', ND: 'America/Chicago', NE: 'America/Chicago', OK: 'America/Chicago',
-    SD: 'America/Chicago', TN: 'America/Chicago', TX: 'America/Chicago', WI: 'America/Chicago',
-    IOWA: 'America/Chicago',
-    CT: 'America/New_York', DC: 'America/New_York', DE: 'America/New_York', FL: 'America/New_York',
-    GA: 'America/New_York', IN: 'America/Indiana/Indianapolis', MA: 'America/New_York',
-    MD: 'America/New_York', ME: 'America/New_York', MI: 'America/Detroit', NC: 'America/New_York',
-    NH: 'America/New_York', NJ: 'America/New_York', NY: 'America/New_York', OH: 'America/New_York',
-    PA: 'America/New_York', RI: 'America/New_York', SC: 'America/New_York', VA: 'America/New_York',
-    VT: 'America/New_York', WV: 'America/New_York',
-    AZ: 'America/Phoenix', CA: 'America/Los_Angeles', NV: 'America/Los_Angeles',
-    OR: 'America/Los_Angeles', WA: 'America/Los_Angeles',
-    CO: 'America/Denver', ID: 'America/Boise', MT: 'America/Denver', NM: 'America/Denver',
-    UT: 'America/Denver', WY: 'America/Denver',
-    AK: 'America/Anchorage', HI: 'Pacific/Honolulu',
-  };
-  if (STATE_TZ[token]) return STATE_TZ[token];
-  if (city.toLowerCase().includes('iowa')) return 'America/Chicago';
-  return 'America/Chicago';
 }
 
 type Cell = { t: string; color: string; pill: string; sub: string; size: string; bg?: string };
@@ -966,7 +920,7 @@ export function renderReportHtml(report: PublicReport): string {
   const wait = (key: keyof ReportReady | 'all', label: string, inner: string) => {
     const on =
       ready &&
-      (key === 'all' ? !(ready.hero && ready.pack && ready.website && ready.ads && ready.ai) : !ready[key]);
+      (key === 'all' ? !(ready.hero && ready.pack && ready.website && ready.ai) : !ready[key]);
     if (!on) return inner;
     return `<div class="rpt-wait">${inner}<div class="rpt-wait-mask" role="status"><span class="rpt-spin" aria-hidden="true"></span><span>${esc(label)}</span></div></div>`;
   };
@@ -974,7 +928,6 @@ export function renderReportHtml(report: PublicReport): string {
   const rivals = B.filter((b) => !b.you);
   const leader = rivals[0] ?? you;
   const cityName = city.split(',')[0] ?? city;
-  const cityShort = city.toLowerCase();
   const kwPlural = keyword.endsWith('s') ? keyword : `${keyword}s`;
   const inPack = typeof you.pack === 'number' && you.pack <= 3;
   const youCenter = you.grid[12];
@@ -985,7 +938,6 @@ export function renderReportHtml(report: PublicReport): string {
     ['GOOGLE PROFILE', 'gbp'],
     ['REVIEWS', 'rev'],
     ['WEBSITE', 'web'],
-    ['GOOGLE ADS', 'ads'],
     ['AI SEARCH', 'ai'],
   ] as const;
   const shopCards = [...B]
@@ -1031,21 +983,22 @@ export function renderReportHtml(report: PublicReport): string {
   const coverLevel = coverageTier(youCov, covOf(leader));
   const overallPlace =
     [...B].sort((a, b) => exactScore(b.scores) - exactScore(a.scores)).findIndex((b) => b.you) + 1;
+  const nearMeQuery = `${marketQuery} near me`;
   const hero = heroCopy({
     overall: overallPlace,
     pack: you.pack,
     rivals: rivals.length,
     kwPlural,
     city: cityName,
-    query: marketQuery,
+    query: nearMeQuery,
   });
   const heroHeadline = hero.headline;
   const heroSub = hero.sub;
   const packHeadline = packHeadlineCopy({ tier: packLevel, pack: you.pack, address: you.address });
   const searchFrom = you.address ? 'your address' : 'the middle of your service area — your address is hidden';
   const searchFromLabel = you.address
-    ? 'Searched from your address'
-    : `Searched from the center of ${city} — your address is hidden`;
+    ? `Searched “${nearMeQuery}” from your address`
+    : `Searched “${nearMeQuery}” from the center of ${city} — your address is hidden`;
 
   const avgOf = (b: ExampleBiz) => b.weeks.slice(-weeksN).reduce((a, c) => a + c, 0) / weeksN;
   const activeOf = (b: ExampleBiz) => b.weeks.slice(-weeksN).filter((w) => w > 0).length;
@@ -1055,11 +1008,9 @@ export function renderReportHtml(report: PublicReport): string {
   const rankWeb = rankBy(B, (b) => b.scores.web);
   const rankSpeed = rankBy(B, (b) => b.scores.spd ?? 0);
   const rankSite = rankBy(B, (b) => b.scores.site ?? 0);
-  const rankAds = rankBy(B, (b) => b.scores.ads);
   const rankAi = rankBy(B, (b) => b.scores.ai);
   const orderGbp = rankGbp.map((r) => r.biz);
   const orderWeb = rankWeb.map((r) => r.biz);
-  const orderAds = rankAds.map((r) => r.biz);
   const headsFor = (order: ExampleBiz[]) =>
     order.map((b, i) => ({
       name: b.short,
@@ -1071,7 +1022,6 @@ export function renderReportHtml(report: PublicReport): string {
     }));
   const headsGbp = headsFor(orderGbp);
   const headsWeb = headsFor(orderWeb);
-  const headsAds = headsFor(orderAds);
   const reviewEngine = rankRev.map((r) => {
     const b = r.biz;
     const ws = b.weeks.slice(-weeksN);
@@ -1318,100 +1268,6 @@ export function renderReportHtml(report: PublicReport): string {
         c2Color: rangeColor(ring(b, 2)),
       };
     });
-  const lsaBiz = B.filter((b) => b.lsa).sort((a, b) => (a.lsa ?? 99) - (b.lsa ?? 99));
-  const lsaTiles = lsaBiz.map((b) => ({
-    name: b.name,
-    rating: b.rating.toFixed(1),
-    reviews: `(${fmt(b.reviews)})`,
-    line: b.closes.startsWith('Open') ? `Open 24 hours · Serves ${cityName}` : `Serves ${cityName}`,
-    badge: b.you ? 'YOU · GOOGLE GUARANTEED' : 'GOOGLE GUARANTEED',
-    badgeColor: '#188038',
-    badgeBg: '#188038',
-    border: b.you ? OR : '#dadce0',
-    borderStyle: 'solid',
-    bg: b.you ? TINT : '#fff',
-    nameWeight: b.you ? '700' : '400',
-    you: b.you,
-  }));
-  while (lsaTiles.length < 3 && !you.lsa) {
-    lsaTiles.push({
-      name: you.name,
-      rating: you.rating.toFixed(1),
-      reviews: `(${fmt(you.reviews)})`,
-      line: 'Not running Local Services Ads',
-      badge: 'YOU — NOT HERE',
-      badgeColor: N,
-      badgeBg: N,
-      border: OR,
-      borderStyle: 'dashed',
-      bg: TINT,
-      nameWeight: '700',
-      you: true,
-    });
-  }
-  const adBiz = rivals.find((b) => b.searchAds && !b.lsa) || rivals.find((b) => b.searchAds) || leader;
-  const liveAd = report.businesses.find((b) => b.ads?.searchAd?.title)?.ads?.searchAd;
-  const ad = {
-    site: adBiz.site,
-    url: adBiz.url,
-    initial: adBiz.site[0] ?? 'A',
-    title: liveAd?.title || 'No Search Ad on this result right now',
-    desc:
-      liveAd?.description ||
-      'Live ads can be off at night or on a schedule. We still check Google Ads Transparency for recent creatives.',
-  };
-  const afterHours =
-    report.businesses.some((b) => b.ads?.afterHours) || isAfterHours(city, report.generatedAt);
-  const fromLocation = report.businesses.some((b) => b.ads?.fromLocation === true);
-  const locationSearchFailed = !afterHours && !fromLocation && report.businesses.some((b) => b.ads?.fromLocation === false);
-  const adsLocation =
-    report.businesses.find((b) => b.ads?.locationLabel)?.ads?.locationLabel ||
-    (you.address ? 'your shop address' : city);
-  const adsRows = [
-    row(
-      'Local Services Ads',
-      afterHours
-        ? 'Live tiles — not checked after 6pm'
-        : fromLocation
-          ? `Tiles Google showed from ${adsLocation}`
-          : 'Google Guaranteed tiles',
-      orderAds,
-      (b) => (afterHours ? part('re-run 8am–6pm') : b.lsa ? num(`#${b.lsa}`, 'slot', Y) : no('not running'))
-    ),
-    row(
-      'Search Ads',
-      afterHours
-        ? 'Live text ad — not checked after 6pm'
-        : fromLocation
-          ? `Text ads Google showed from ${adsLocation}`
-          : 'Text ad on the keyword',
-      orderAds,
-      (b) => (afterHours ? part('re-run 8am–6pm') : b.searchAds ? yes('running') : no('none'))
-    ),
-    row('Ads history', 'Google Ads Transparency — national record, not this location', orderAds, (b) =>
-      b.transparency ? yes('recent ads') : no('none found')
-    ),
-  ];
-  const payingRivals = afterHours
-    ? rivals.filter((b) => b.transparency).length
-    : rivals.filter((b) => b.lsa || b.searchAds).length;
-  const youPay = afterHours ? Boolean(you.transparency) : Boolean(you.lsa || you.searchAds);
-  const adsLevel = adsTier(youPay, payingRivals);
-  const historyCount = B.filter((b) => b.transparency).length;
-  const adsCopy = adsHeadlineCopy({
-    tier: adsLevel,
-    youPay,
-    payingRivals,
-    rivalCount: rivals.length,
-    city,
-    historyCount,
-    afterHours,
-    fromLocation,
-    locationLabel: adsLocation,
-  });
-  const adsHeadline = adsCopy.headline;
-  const adsTakeaway = adsCopy.takeaway;
-
   const liveAi = report.aiSearch?.questions.length && report.aiSearch.matrix.length ? report.aiSearch : undefined;
   const aiRuns = liveAi?.runs && liveAi.runs > 1 ? liveAi.runs : 3;
   const aiLede = `We asked ChatGPT and Gemini the three questions a ${cityName} homeowner actually types — ${aiRuns} times each, 18 checks total — and averaged who got named.`;
@@ -1524,17 +1380,6 @@ export function renderReportHtml(report: PublicReport): string {
       sub: `“${you.title}” ${you.metaDesc ? 'has a meta description.' : 'has no meta description.'} ${you.schema ? 'Schema is present.' : 'No schema.'}`,
     });
   }
-  if (!afterHours && !youPay && payingRivals) {
-    defaultGaps.push({
-      head: `${payingRivals} competitor${payingRivals === 1 ? '' : 's'} run ads above the map.`,
-      sub: 'Local Services Ads and Search Ads sit above the pack. You aren’t running ads.',
-    });
-  } else if (!youPay && packLevel === 'poor') {
-    defaultGaps.push({
-      head: 'Nobody is buying ads on this search.',
-      sub: 'Local Services Ads and Search Ads sit above the pack when someone turns them on.',
-    });
-  }
   if (youM < mentionsOf(topRival)) {
     defaultGaps.push({
       head: `${AIP.length} AI assistants, ${aiTotal} answers, ${youM} mention${youM === 1 ? '' : 's'} of you.`,
@@ -1554,15 +1399,14 @@ export function renderReportHtml(report: PublicReport): string {
       sub: 'Keep reviews coming, keep the profile complete, and don’t let a rival buy the top of the page unchallenged.',
     });
   }
-  const usableLiveGaps = liveGaps.filter((g) => !/google reviews versus|\d+ google reviews/i.test(g));
+  const usableLiveGaps = liveGaps.filter(
+    (g) => !/google reviews versus|\d+ google reviews|ads above the map|buying ads/i.test(g)
+  );
   const gapCards = (
     usableLiveGaps.length
       ? usableLiveGaps.map((g) => ({
           head: g,
-          sub:
-            /ads above the map/i.test(g) && !youPay
-              ? 'You aren’t running ads.'
-              : 'What this is costing you — and what closing it gets you.',
+          sub: 'What this is costing you — and what closing it gets you.',
         }))
       : defaultGaps
   ).slice(0, 8);
@@ -1603,7 +1447,7 @@ export function renderReportHtml(report: PublicReport): string {
   const close = closerCopy(packLevel, gaps.length);
   const ctaHref = report.cta?.href || '/get-started';
   const rankingsReady =
-    !ready || Boolean(ready.hero && ready.pack && ready.website && ready.ads && ready.ai);
+    !ready || Boolean(ready.hero && ready.pack && ready.website && ready.ai);
   const profileReady = profileBoardReady(report);
   const shopRanking = `<div class="rpt-shop-grid">
         ${shopPairs
@@ -1645,14 +1489,14 @@ export function renderReportHtml(report: PublicReport): string {
           .join('')}
       </div>
       <div class="rpt-shop-foot">
-        <span>Ranked by overall score: Google profile 25% · reviews 15% · website 25% · ads 18% · AI search 17%.</span>
+        <span>Ranked by overall score: Google profile 30% · reviews 20% · website 30% · AI search 20%.</span>
         <a href="#gaps">See every gap ↓</a>
       </div>`;
   const heroHold = `<div class="rpt-rank-hold" role="status">
         <span class="rpt-spin" aria-hidden="true"></span>
         <div>
           <div class="rpt-rank-hold-title">Check back for the full rankings when loading completes.</div>
-          <div class="rpt-rank-hold-sub">Overall place and scores wait until profile, Map Pack, website, ads, and AI search are all in.</div>
+          <div class="rpt-rank-hold-sub">Overall place and scores wait until profile, Map Pack, website, and AI search are all in.</div>
         </div>
       </div>`;
 
@@ -1664,11 +1508,11 @@ export function renderReportHtml(report: PublicReport): string {
         rankingsReady
           ? `<h1>${esc(heroHeadline)}</h1>
       <p class="rpt-lede">${esc(heroSub)}</p>
-      <div class="rpt-search"><span class="rpt-search-icon" aria-hidden="true"></span><span>${esc(marketQuery)} near ${esc(city)}</span></div>
+      <div class="rpt-search"><span class="rpt-search-icon" aria-hidden="true"></span><span>${esc(nearMeQuery)}</span></div>
       ${shopRanking}`
           : `<h1>We’re building your Google report.</h1>
       <p class="rpt-lede">Check back for the full rankings when loading completes. The sections below fill in as each check finishes.</p>
-      ${city ? `<div class="rpt-search"><span class="rpt-search-icon" aria-hidden="true"></span><span>${esc(marketQuery)} near ${esc(city)}</span></div>` : ''}
+      ${city ? `<div class="rpt-search"><span class="rpt-search-icon" aria-hidden="true"></span><span>${esc(nearMeQuery)}</span></div>` : ''}
       ${heroHold}`
       }
     </div>
@@ -1679,7 +1523,7 @@ export function renderReportHtml(report: PublicReport): string {
       `<section class="rpt-sec">
       <div class="rpt-sec-label"><span>01</span><i></i><span>GOOGLE MAP PACK</span></div>
       <h2>${esc(packHeadline)}</h2>
-      <p class="rpt-lede">Searched “${esc(marketQuery)}” from ${esc(searchFrom)}, then from 24 more spots out to 5 miles. Three spots on the map decide who gets the call.</p>
+      <p class="rpt-lede">Searched “${esc(nearMeQuery)}” from ${esc(searchFrom)}, then from 24 more spots out to 5 miles. Three spots on the map decide who gets the call.</p>
       ${rankPills('PROFILE SCORE', rankGbp)}
 
       <div class="rpt-pack">
@@ -1926,52 +1770,6 @@ export function renderReportHtml(report: PublicReport): string {
     </section>`
     )}
 
-    ${wait(
-      'ads',
-      'Checking Local Services Ads and Search Ads',
-      `<section class="rpt-sec">
-      <div class="rpt-sec-label"><span>03</span><i></i><span>GOOGLE ADS</span></div>
-      <h2>${esc(adsHeadline)}</h2>
-      <p class="rpt-lede">${
-        afterHours
-          ? `This report ran outside 8am–6pm local time, so we used Ads history instead of the live SERP. Re-run between those hours to see only the Local Services Ads and Search Ads that show from ${esc(adsLocation)}.`
-          : fromLocation
-            ? `Only the ads Google showed from ${esc(adsLocation)}. A campaign aimed at another city will not appear here. Ads history is the national record, not this search.`
-            : locationSearchFailed
-              ? 'We could not pull the live local search this time. Ads history is Google’s national record, not ads from this location.'
-              : 'Before anyone scrolls to the map, this is the top of the page. Live ads can be off at night or on a schedule — Ads history is the cached record.'
-      }</p>
-      ${rankPills('ADS SCORE', rankAds)}
-      <div class="rpt-ads">
-        <div class="rpt-ad-serp">
-          <div class="rpt-search is-in"><span class="rpt-search-icon"></span><span>${esc(marketQuery)} ${esc(cityShort)}</span></div>
-          <div class="rpt-ad-kicker">Sponsored</div>
-          <div class="rpt-ad-sub">Local Services Ads · Google Guaranteed</div>
-          <div class="rpt-lsa">
-            ${lsaTiles
-              .map(
-                (t) => `<div class="rpt-lsa-tile" style="border:${t.borderStyle} 1px ${t.border};background:${t.bg}">
-                  <div class="rpt-lsa-badge" style="color:${t.badgeColor}"><span style="background:${t.badgeBg}">✓</span>${esc(t.badge)}</div>
-                  <div class="rpt-lsa-name" style="font-weight:${t.nameWeight}">${esc(t.name)}</div>
-                  <div class="rpt-meta is-small"><span>${esc(t.rating)}</span><span class="rpt-stars">★</span> ${esc(t.reviews)}</div>
-                  <div class="rpt-lsa-line">${esc(t.line)}</div>
-                </div>`
-              )
-              .join('')}
-          </div>
-          <div class="rpt-ad-kicker">Sponsored</div>
-          <div class="rpt-blue-site"><div class="rpt-fav">${esc(ad.initial)}</div><div><div>${esc(ad.site)}</div><div class="rpt-blue-url">https://${esc(ad.url)}</div></div></div>
-          <div class="rpt-blue-title">${esc(ad.title)}</div>
-          <div class="rpt-blue-desc">${esc(ad.desc)}</div>
-          <div class="rpt-ad-map">↓ Map Pack appears below this</div>
-        </div>
-        <div class="rpt-ad-board">
-          ${boardHtml('PAID', headsAds, adsRows, 'is-flush')}
-          <div class="rpt-ad-take"><div class="rpt-mini-kicker">WHAT THIS MEANS</div><div>${esc(adsTakeaway)}</div></div>
-        </div>
-      </div>
-    </section>`
-    )}
   </div>
 
   ${wait(
@@ -1979,7 +1777,7 @@ export function renderReportHtml(report: PublicReport): string {
     'Asking ChatGPT and Gemini each question a few times',
     `<section class="rpt-ai">
     <div class="rpt-ai-inner">
-      <div class="rpt-sec-label is-peach"><span>04</span><i></i><span>AI SEARCH · CHATGPT & GEMINI</span></div>
+      <div class="rpt-sec-label is-peach"><span>03</span><i></i><span>AI SEARCH · CHATGPT & GEMINI</span></div>
       <h2>${esc(aiHeadline)}</h2>
       <p class="rpt-lede is-dim">${esc(aiLede)}</p>
       ${rankPills('AI SCORE', rankAi, true)}
@@ -2070,7 +1868,7 @@ export function renderReportHtml(report: PublicReport): string {
       'all',
       'Scoring the gaps against the pack',
       `<section class="rpt-sec" id="gaps">
-      <div class="rpt-sec-label"><span>05</span><i></i><span>${esc(gapsHead.label)}</span></div>
+      <div class="rpt-sec-label"><span>04</span><i></i><span>${esc(gapsHead.label)}</span></div>
       <h2>${esc(gapsHead.headline)}</h2>
       <p class="rpt-lede">${esc(gapsHead.lede)}</p>
       <div class="rpt-gaps">
@@ -2117,6 +1915,6 @@ export function renderReportHtml(report: PublicReport): string {
       </div>
     </section>`
     )}
-    <p class="rpt-foot">Generated ${esc(generated)} · Data from Google Search, Google Maps, PageSpeed Insights, Google Ads Transparency, ChatGPT and Gemini.<br />This report currently works for US businesses only.</p>
+    <p class="rpt-foot">Generated ${esc(generated)} · Data from Google Search, Google Maps, PageSpeed Insights, ChatGPT and Gemini.<br />This report currently works for US businesses only.</p>
   </div>`;
 }

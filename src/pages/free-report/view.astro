@@ -6,7 +6,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { absoluteUrl, breadcrumbList, graph, webPageNode } from '../../data/schema';
 
 const title = 'Your free Google report | Local Service Rocket';
-const description = 'Your Google profile, website, ads, and AI search rankings compared with the Map Pack.';
+const description = 'Your Google profile, website, and AI search rankings compared with the Map Pack.';
 const pageUrl = absoluteUrl('/free-report/view/');
 const jsonLd = graph([
   webPageNode({ pageUrl, name: title, description }),
@@ -28,14 +28,13 @@ const apiUrl = (
       <div class="rpt-dock-bar"><i id="load-bar"></i></div>
       <div class="rpt-dock-row">
         <span id="load-now">Starting your report…</span>
-        <span id="load-eta">About 4 minutes left</span>
+        <span id="load-eta">About 3 minutes left</span>
         <span id="load-pct">0%</span>
       </div>
       <ol id="load-steps" class="rpt-dock-steps">
         <li data-step="profile">Profile</li>
         <li data-step="pack">Map Pack</li>
         <li data-step="website">Website</li>
-        <li data-step="ads">Ads</li>
         <li data-step="ai">AI search</li>
       </ol>
     </div>
@@ -57,7 +56,7 @@ const apiUrl = (
     type PublicReport,
   } from '../../lib/free-report-render';
 
-  const STAGES = ['profile', 'pack', 'website', 'ads', 'ai'] as const;
+  const STAGES = ['profile', 'pack', 'website', 'ai'] as const;
   const root = document.querySelector<HTMLElement>('.view');
   const apiUrl = root?.dataset.apiUrl || '';
   const id = new URLSearchParams(window.location.search).get('id');
@@ -70,7 +69,7 @@ const apiUrl = (
   const loadPct = document.getElementById('load-pct');
   const loadBar = document.getElementById('load-bar');
   let lastHtml = '';
-  const STAGE_SEC = { profile: 30, pack: 40, website: 90, ads: 25, ai: 55 } as const;
+  const STAGE_SEC = { profile: 30, pack: 40, website: 90, ai: 55 } as const;
 
   function etaLabel(report?: PublicReport): string {
     const left = STAGES.reduce((sum, key) => {
@@ -95,7 +94,7 @@ const apiUrl = (
     if (!ready) return report ? STAGES.length : 0;
     return STAGES.filter((key) => {
       if (key === 'profile') return ready.hero;
-      return Boolean(ready[key as 'pack' | 'website' | 'ads' | 'ai']);
+      return Boolean(ready[key as 'pack' | 'website' | 'ai']);
     }).length;
   }
 
@@ -116,7 +115,7 @@ const apiUrl = (
     dock.querySelectorAll<HTMLElement>('[data-step]').forEach((el) => {
       const step = el.dataset.step || '';
       const doneStep =
-        step === 'profile' ? Boolean(report?.ready?.hero) : Boolean(report?.ready?.[step as 'pack' | 'website' | 'ads' | 'ai']);
+        step === 'profile' ? Boolean(report?.ready?.hero) : Boolean(report?.ready?.[step as 'pack' | 'website' | 'ai']);
       el.classList.toggle('is-done', doneStep);
       el.classList.toggle('is-now', !doneStep && step === current);
     });
