@@ -11,6 +11,9 @@ export default defineConfig({
   // One URL per page: /services (never /services/). Paired with cleanUrls + trailingSlash:false
   // in vercel.json so the slash variant 308-redirects instead of serving a duplicate.
   trailingSlash: 'never',
+  redirects: {
+    '/get-started': '/growth-audit',
+  },
   // Plain URL list only: Google ignores changefreq/priority, and inaccurate lastmod
   // (e.g. build timestamps) can cause Google to distrust dates sitewide.
   integrations: [sitemap()],

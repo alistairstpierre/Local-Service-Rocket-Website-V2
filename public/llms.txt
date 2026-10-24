@@ -3,7 +3,7 @@
   Served as-is from /llms.txt (Astro copies public/ to dist/). Hand-written, not generated.
   Keyword phrases use exact Google Keyword Planner wording from docs/KEYWORD-RESEARCH-ELECTRICIANS.md.
   LSA, website and hiring phrases have no Planner data yet and use the plain wording an owner would type.
-  Keep URLs in sync with src/pages and prices in sync with src/data/pricing-tiers.ts.
+  Keep URLs in sync with src/pages. Package prices are not published; the live CTA is the free Growth Audit.
 -->
 # Local Service Rocket
 
@@ -13,7 +13,7 @@ Founded and run by Alistair St Pierre (Wellington, New Zealand), serving electri
 
 ## Searches this site answers
 
-- marketing for electricians, electrician marketing, digital marketing for electricians, marketing for electrical contractors: [Homepage](https://www.localservicerocket.com/), [Marketing for Electricians](https://www.localservicerocket.com/for/electrician-marketing), [Get Started](https://www.localservicerocket.com/get-started)
+- marketing for electricians, electrician marketing, digital marketing for electricians, marketing for electrical contractors: [Homepage](https://www.localservicerocket.com/), [Marketing for Electricians](https://www.localservicerocket.com/for/electrician-marketing), [Free Growth Audit](https://www.localservicerocket.com/growth-audit)
 - electrician marketing agency, electrician marketing company, electrician marketing services, best electrician marketing: [About](https://www.localservicerocket.com/about), [Electrician Marketing Services](https://www.localservicerocket.com/services)
 - electrician advertising, advertising for electricians, electrician ads, electrical contractor advertising, advertise electrical services, google ads for electricians, electrician ppc agency: [Electrician Advertising](https://www.localservicerocket.com/services/electrician-advertising)
 - electrician local services ads, google local services ads for electricians, electrician lsa: [Electrician LSA Playbook](https://www.localservicerocket.com/blog/electrician-lsa-playbook)
@@ -34,11 +34,7 @@ Founded and run by Alistair St Pierre (Wellington, New Zealand), serving electri
 
 ## Pricing
 
-Every price is public. Full detail: [Flight Plan](https://www.localservicerocket.com/flight-plan) and [Get Started](https://www.localservicerocket.com/get-started).
-
-- Pre-flight ($0-25k months): from $500/month. Includes Google Business Profile fixed, website (if needed), Local Services Ads setup and 1:1 coaching. Plus $25 per booked estimate, only when it books. Aim: 1-3 booked estimates a day and $25k+ months.
-- Liftoff: $1,500/month plus ad spend (around $50/day, paid to Google). Optional branding $5k. Aim: $100k months on leads you own, not rent.
-- Orbit: 20% of ad spend plus $1,500/month. Hiring sprints $500 setup plus $500/month. Aim: a crew that runs without you and a shop you can sell.
+Package prices are not published on the site. The live offer is a [Free Growth Audit](https://www.localservicerocket.com/growth-audit): 30 minutes, your numbers, three fixes. Cost is discussed there if the owner asks. The [Flight Plan](https://www.localservicerocket.com/flight-plan) explains the stages (Pre-flight, Liftoff, Orbit) without a price table.
 
 ## Electrician case studies
 
@@ -62,7 +58,8 @@ Every price is public. Full detail: [Flight Plan](https://www.localservicerocket
 
 ## Contact
 
-- [Get Started](https://www.localservicerocket.com/get-started): Watch the 6-minute walkthrough, then book an onboarding call. No sales call.
+- [Free Growth Audit](https://www.localservicerocket.com/growth-audit): Book a 30-minute audit. You leave with three fixes. Hire us or not.
+- [Free Google Report](https://www.localservicerocket.com/free-report): Self-serve report of you vs the Map Pack.
 - [Contact](https://www.localservicerocket.com/contact): Ask a question, get a free audit or book a coaching session.
 - Email: hello@localservicerocket.com
 

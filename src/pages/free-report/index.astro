@@ -5,7 +5,6 @@
    /free-report/view?id= to poll. Vendor keys stay on Railway. */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Picture from '../../components/Picture.astro';
-import { BOOKING_URL } from '../../lib/free-report-example';
 import { absoluteUrl, breadcrumbList, graph, webPageNode } from '../../data/schema';
 
 const title = 'Free Google Report for Electricians | Local Service Rocket';
@@ -319,9 +318,9 @@ const proofLogos: { href?: string; name: string; alt: string; h: number; radius?
       <div class="cta">
         <div>
           <div class="cta-title">Want the report first? <a href="#top" id="to-form">Scroll up ↑</a></div>
-          <p>Already know you want help closing the gaps? Skip the report. Our services start at <b>$500/month</b>.</p>
+          <p>Already know you want help closing the gaps? Skip the report and book a free audit.</p>
         </div>
-        <a class="book" href={BOOKING_URL}>Schedule onboarding</a>
+        <a class="book" href="/growth-audit">Book my free audit</a>
       </div>
       <div class="strip">
         <span>★★★★★ 5.0 on Google</span>

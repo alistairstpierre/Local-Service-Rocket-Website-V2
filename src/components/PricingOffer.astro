@@ -1,6 +1,7 @@
 ---
 /* Flight Plan pricing comparison table ("Every price, up front").
-   Used on `/` (below testimonials) and `/get-started`. Data: src/data/pricing-tiers.ts.
+   Hidden from live pages while the main CTA is the free Growth Audit.
+   Data: src/data/pricing-tiers.ts. Keep this file so we can turn it back on.
    Desktop: label column + 3 stage columns aligned with CSS subgrid.
    Mobile: stage tabs + one card at a time, switched by hidden radio inputs (no JS). */
 import { pricingTiers } from '../data/pricing-tiers';
@@ -17,8 +18,8 @@ const {
   eyebrow = 'THE NUMBERS',
   h2 = 'Every price, up front.',
   sub = 'Fair pricing that scales as you grow.',
-  ctaHref = '/get-started',
-  ctaLabel = 'Schedule my onboarding call',
+  ctaHref = '/growth-audit',
+  ctaLabel = 'Book my free audit',
 } = Astro.props;
 
 const rowLabels = ["IF YOU'RE AT", 'YOU PAY', 'WE GET YOU TO', 'INCLUDED', 'ON TOP'];

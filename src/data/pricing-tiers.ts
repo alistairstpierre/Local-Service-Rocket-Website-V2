@@ -1,5 +1,6 @@
-/* Shared Flight Plan pricing tiers for /get-started and the homepage offer (PricingOffer.astro).
-   "at" = revenue when the tier fits, not a promise. Keep in sync with /flight-plan stages. */
+/* Shared Flight Plan pricing tiers. Hidden from the live site while the
+   main CTA is the free Growth Audit. PricingOffer.astro still reads this
+   file if we turn the table back on. "at" = revenue when the tier fits. */
 
 /** One run of text in an "On top" line: bold price, plain text, or muted note. */
 export type PricingSegment = { t: string; kind?: 'strong' | 'muted'; href?: string };

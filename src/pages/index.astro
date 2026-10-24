@@ -7,7 +7,6 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import Picture from '../components/Picture.astro';
-import PricingOffer from '../components/PricingOffer.astro';
 import { absoluteUrl, faqPageNode, graph, webPageNode } from '../data/schema';
 
 /* Motha Electric is our weakest story. Always last in any client list.
@@ -64,12 +63,12 @@ const services = [
 
 const homeTitle = 'Marketing for Electricians Wired to Scale | Local Service Rocket';
 const homeDescription =
-  'Marketing for electricians from $500/mo. Fee climbs with your shop. No $5k setup. Book onboarding online.';
+  'Marketing for electricians. Google profile, Local Services Ads, websites and 1:1 coaching. Book a free audit.';
 
 const faqs = [
   {
     q: 'What do you actually do for my shop?',
-    a: 'First we build the structure: your website, your Google Business Profile, and Local Services Ads, plus the other lead profiles that matter. Once those are booking jobs, we add Google Search ads and more SEO. About $500 a month to start.',
+    a: 'First we build the structure: your website, your Google Business Profile, and Local Services Ads, plus the other lead profiles that matter. Once those are booking jobs, we add Google Search ads and more SEO.',
   },
   {
     q: 'Do you spend big on ads straight away?',
@@ -81,7 +80,7 @@ const faqs = [
   },
   {
     q: 'What does it cost to start?',
-    a: '$500 a month. The fee only goes up once your shop is bigger, not before. Most agencies quote it the other way around: a big setup fee and three months up front, before they have proved anything.',
+    a: 'We walk through that on the free audit once we know your shop. No giant setup fee, and the fee only goes up once you are bigger, not before.',
   },
 ];
 
@@ -210,8 +209,6 @@ const jsonLd = graph([
       </article>
     </div>
   </section>
-
-  <PricingOffer ctaHref="/get-started" />
 
   <!-- THE SYSTEM -->
   <section class="section container" id="system">
@@ -416,7 +413,7 @@ const jsonLd = graph([
           <div class="why-point">
             <div class="check">✓</div>
             <div>
-              <b>You start cheap.</b> $500 a month. The price only goes up once you are making more.
+              <b>We start small.</b> Prove booked work first. The fee only goes up once you are making more.
             </div>
           </div>
           <div class="why-point">
@@ -474,13 +471,12 @@ const jsonLd = graph([
   <!-- CTA -->
   <section class="cta-wrap container">
     <div class="cta-panel">
-      <h2>Skip the Pitch. Prices Start at $500/mo</h2>
-      <p>See how it works and what it costs before you talk to anyone. Then book yourself in.</p>
+      <h2>Skip the Pitch. Book a Free Audit</h2>
+      <p>We show you where you are losing customers and the three fixes that win them back first.</p>
       <div class="cta-btns">
-        <a href="/free-report" class="btn btn-primary btn-lg">Get your free Google report</a>
-        <a href="/get-started" class="btn btn-ghost-dark btn-lg">Schedule onboarding</a>
+        <a href="/growth-audit" class="btn btn-primary btn-lg">Book my free audit</a>
+        <a href="/free-report" class="btn btn-ghost-dark btn-lg">Get your free Google report</a>
       </div>
-      <p class="cta-price">$500/mo to start. The fee climbs only when you do.</p>
       <div class="cta-meta">
         <span>★★★★★ 5.0 on Google</span>
         <a href="/contact">Questions? Contact us</a>

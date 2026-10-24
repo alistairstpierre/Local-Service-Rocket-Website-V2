@@ -151,7 +151,7 @@ export function examplePublicReport(): PublicReport {
     pillars: { gbp: 0, reviews: 0, website: 0, ads: 0, ai: 0 },
     businesses: [],
     gaps: [],
-    cta: { href: '/get-started', label: 'See how we close these gaps' },
+    cta: { href: '/growth-audit', label: 'See how we close these gaps' },
     generatedAt: new Date().toISOString(),
     mapImageUrl: '/free-report/map.jpg',
     gridSize: 5,
@@ -170,7 +170,7 @@ export function loadingPublicReport(subjectName: string, city: string): PublicRe
     pillars: { gbp: 0, reviews: 0, website: 0, ads: 0, ai: 0 },
     businesses: [],
     gaps: [],
-    cta: { href: '/get-started', label: 'See how we close these gaps' },
+    cta: { href: '/growth-audit', label: 'See how we close these gaps' },
     generatedAt: new Date().toISOString(),
     stage: 'queued',
     ready: { hero: false, pack: false, website: false, ads: false, ai: false },
@@ -1416,9 +1416,9 @@ export function renderReportHtml(report: PublicReport): string {
     phase: `FIXED IN ${(PH[(wins[i]?.[1] ?? 1) - 1] ?? 'Pre-flight').toUpperCase()}`,
   }));
   const phases = [
-    { n: 1, name: 'Pre-flight', price: 'from $500/mo', goal: '1–3 booked jobs a day and $25k+ months.', includes: 'Google profile fixed · Website (if needed) · 1:1 coaching · LSAs set up · $25 per booked job', featured: true },
-    { n: 2, name: 'Liftoff', price: '$1.5k/mo', goal: '$25–100k months on traffic you own.', includes: 'Everything in Pre-flight · Deeper SEO · Managed Google Ads', featured: false },
-    { n: 3, name: 'Orbit', price: 'when you’re ready', goal: 'Scale past $100k months without it breaking.', includes: 'Everything in Liftoff · Scaling spend, managed · Risk cover built in', featured: false },
+    { n: 1, name: 'Pre-flight', goal: '1–3 booked jobs a day and $25k+ months.', includes: 'Google profile fixed · Website (if needed) · 1:1 coaching · LSAs set up', featured: true },
+    { n: 2, name: 'Liftoff', goal: '$25–100k months on traffic you own.', includes: 'Everything in Pre-flight · Deeper SEO · Managed Google Ads', featured: false },
+    { n: 3, name: 'Orbit', goal: 'Scale past $100k months without it breaking.', includes: 'Everything in Liftoff · Scaling spend, managed · Risk cover built in', featured: false },
   ];
 
   const namedOnSite = Boolean(you.h1Kw || you.titleKw === 'yes');
@@ -1432,7 +1432,7 @@ export function renderReportHtml(report: PublicReport): string {
   });
   const gapsHead = gapsHeadingCopy({ pack: packLevel, count: gaps.length });
   const close = closerCopy(packLevel, gaps.length);
-  const ctaHref = report.cta?.href || '/get-started';
+  const ctaHref = report.cta?.href || '/growth-audit';
   const rankingsReady =
     !ready || Boolean(ready.hero && ready.pack && ready.website && ready.ai);
   const profileReady = profileBoardReady(report);
@@ -1881,7 +1881,7 @@ export function renderReportHtml(report: PublicReport): string {
             <a class="rpt-btn" href="${BOOKING_URL}">Book a free call</a>
             <a class="rpt-btn is-ghost" href="${esc(ctaHref.startsWith('http') ? ctaHref : '/flight-plan')}">See the full flight plan</a>
           </div>
-          <div class="rpt-fine">20 minutes. We walk through your report, what we'd fix first and what it costs.</div>
+          <div class="rpt-fine">30 minutes. We walk through your report and the three fixes first.</div>
         </div>
         <div class="rpt-phases">
           ${phases
@@ -1889,7 +1889,7 @@ export function renderReportHtml(report: PublicReport): string {
               (ph) => `<div class="rpt-phase ${ph.featured ? 'is-featured' : ''}">
                 <div class="rpt-phase-n">${ph.n}</div>
                 <div>
-                  <div class="rpt-phase-top"><b>${esc(ph.name)}</b><span>${esc(ph.price)}</span></div>
+                  <div class="rpt-phase-top"><b>${esc(ph.name)}</b></div>
                   <div class="rpt-phase-goal">${esc(ph.goal)}</div>
                   <div class="rpt-phase-inc">${esc(ph.includes)}</div>
                 </div>

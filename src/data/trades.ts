@@ -52,10 +52,10 @@ export const trades: TradeLanding[] = [
     keyword: 'marketing for electricians',
     title: t('Marketing for Electricians That Books Jobs'),
     description:
-      'Marketing for electricians on Google: profile, Local SEO, LSAs, converting sites. Start around $500/month. Book onboarding online.',
+      'Marketing for electricians on Google: profile, Local SEO, LSAs, converting sites. Book a free audit.',
     h1: 'Marketing for Electricians That Books Jobs',
     heroSub:
-      'No $5k setup. No pitch call. $500 a month, and the fee only climbs when your shop does.',
+      'No giant setup fee. No pitch call. Book a free audit and we show you the three fixes first.',
     problemH2: 'Why Most Electrician Ads Waste Money',
     problemBody: [
       'Wrong Google category, a brochure site, or Search before the basics burns money.',
@@ -63,7 +63,7 @@ export const trades: TradeLanding[] = [
     ],
     solutionH2: 'Google Systems Built for Electrical Shops',
     solutionBody: [
-      'A flight plan, not a retainer dump: profile, website, Local Services Ads first, Search later. About $500/mo to start.',
+      'A flight plan, not a retainer dump: profile, website, Local Services Ads first, Search later.',
       'Same path Rewired and Honest Hank\'s used: prove booked work before big ad spend.',
     ],
     proofAngle: 'Electrical shops we still work with years later.',
@@ -75,7 +75,7 @@ export const trades: TradeLanding[] = [
       },
       {
         q: 'How is this different from the homepage?',
-        a: 'Same offer: $500/mo start, fee climbs with the shop. This page is the ads landing to book.',
+        a: 'Same offer as the homepage: Google profile, site, Local Services Ads, then Search when ready. This page is the ads landing to book.',
       },
       {
         q: 'Do you only work with residential electricians?',
@@ -83,12 +83,12 @@ export const trades: TradeLanding[] = [
       },
       {
         q: 'What does an electrician marketing agency cost?',
-        a: 'About $500/mo to start. Fee steps up only as you grow. Most shops only ever get quoted the other way around.',
+        a: 'We walk through cost on the free audit once we know your shop. Fee steps up only as you grow. Most shops only ever get quoted the other way around.',
       },
     ],
     faqH2: 'Before You Hire Marketing for Electricians',
-    ctaH2: 'Skip the Pitch. Prices Start at $500/mo',
-    ctaLine: 'See the model and the fee first. Then book yourself. No sales call.',
+    ctaH2: 'Skip the Pitch. Book a Free Audit',
+    ctaLine: 'We show you the three fixes first. Then you decide. No sales call.',
   },
   {
     slug: 'plumber-marketing',
@@ -314,7 +314,7 @@ export const trades: TradeLanding[] = [
       },
       {
         q: 'What’s the starting price?',
-        a: 'Many shops begin around $500/month for a focused lane. We expand when results and capacity justify it.',
+        a: 'We walk through cost on the free audit once we know your shop. We expand when results and capacity justify it.',
       },
     ],
     ctaH2: 'Want More Garage Door Jobs From Google?',
@@ -406,7 +406,7 @@ export const trades: TradeLanding[] = [
       },
       {
         q: 'What does it cost to start?',
-        a: 'Starter lanes often begin near $500/month. We scale with results and ad spend rather than a giant setup ransom.',
+        a: 'We walk through cost on the free audit once we know your shop. We scale with results and ad spend rather than a giant setup ransom.',
       },
     ],
     ctaH2: 'Want Locksmith Marketing Homeowners Trust?',
@@ -452,7 +452,7 @@ export const trades: TradeLanding[] = [
       },
       {
         q: 'How do engagements usually start?',
-        a: 'Around $500/month for a focused lane is common. We expand after the foundation is printing work.',
+        a: 'We walk through cost on the free audit once we know your shop. We expand after the foundation is printing work.',
       },
     ],
     ctaH2: 'Ready to Book More Appliance Repair Jobs?',
@@ -498,7 +498,7 @@ export const trades: TradeLanding[] = [
       },
       {
         q: 'What’s a typical starting budget for management fees?',
-        a: 'Starter management often begins near $500/month before larger ad spends. Media budget is separate and sized to market and capacity.',
+        a: 'We walk through management fees on the free audit. Media budget is separate and sized to market and capacity.',
       },
     ],
     ctaH2: 'Want Water Damage Calls You Can Actually Run?',
@@ -590,7 +590,7 @@ export const trades: TradeLanding[] = [
       },
       {
         q: 'What’s the usual starting fee?',
-        a: 'Focused lanes often start near $500/month. Larger creative and ads stacks scale with revenue.',
+        a: 'We walk through cost on the free audit once we know your shop. Larger creative and ads stacks scale with revenue.',
       },
     ],
     ctaH2: 'Want Landscaping Leads From Google Intent?',
@@ -682,7 +682,7 @@ export const trades: TradeLanding[] = [
       },
       {
         q: 'What’s the starting investment?',
-        a: 'Management often starts near $500/month for a lane, with ad spend separate.',
+        a: 'We walk through cost on the free audit once we know your shop. Ad spend is separate.',
       },
     ],
     ctaH2: 'Ready to Fill Junk Trucks From Google?',
@@ -720,7 +720,7 @@ export const trades: TradeLanding[] = [
       },
       {
         q: 'Is pressure washing too small for an agency?',
-        a: 'If you want to build a real company on Google, size is less important than commitment. Starter pricing exists for a reason.',
+        a: 'If you want to build a real company on Google, size is less important than commitment.',
       },
       {
         q: 'Can you help with commercial pressure washing?',
@@ -728,7 +728,7 @@ export const trades: TradeLanding[] = [
       },
       {
         q: 'How do pricing and retainers work?',
-        a: 'Start small, prove booked work, scale fees with growth and ad spend. Details on the Get Started page.',
+        a: 'Start small, prove booked work, scale fees with growth and ad spend. We walk through the numbers on the free audit.',
       },
     ],
     ctaH2: 'Want Pressure Washing Jobs Lined Up?',
@@ -820,7 +820,7 @@ export const trades: TradeLanding[] = [
       },
       {
         q: 'What’s a typical starting retainer?',
-        a: 'Around $500/month for a starter lane is common before larger multi-channel stacks.',
+        a: 'We walk through cost on the free audit once we know your shop, before larger multi-channel stacks.',
       },
     ],
     ctaH2: 'Want More Fence Estimates From Google?',

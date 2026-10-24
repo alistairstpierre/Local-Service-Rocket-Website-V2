@@ -8,7 +8,8 @@
     { "source": "/services/websites", "destination": "/services/electrician-websites", "permanent": true },
     { "source": "/services/hiring", "destination": "/services/hiring-electricians", "permanent": true },
     { "source": "/services/branding", "destination": "/services/electrician-branding", "permanent": true },
-    { "source": "/services/tracking", "destination": "/services/electrician-lead-tracking", "permanent": true }
+    { "source": "/services/tracking", "destination": "/services/electrician-lead-tracking", "permanent": true },
+    { "source": "/get-started", "destination": "/growth-audit", "permanent": true }
   ],
   "headers": [
     {

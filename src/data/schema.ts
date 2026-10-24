@@ -32,7 +32,7 @@ export function schemaImageObject(
     },
     copyrightNotice: `© ${YEAR} Local Service Rocket. All rights reserved.`,
     creditText: 'Local Service Rocket',
-    acquireLicensePage: `${SITE}/get-started`,
+    acquireLicensePage: `${SITE}/growth-audit`,
   };
 }
 

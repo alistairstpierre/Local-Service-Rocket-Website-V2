@@ -2,9 +2,9 @@
 /* Site header: sticky nav with brand, section links (incl. Contact), and booking CTA.
    Used by BaseLayout on marketing pages. Homepage uses full links; inner pages can simplify.
    Phone number lives only in the Footer (NAP); everything else routes to /contact.
-   Schedule onboarding always goes to /get-started (VSL funnel), not the calendar directly.
+   Book my free audit goes to /growth-audit (the live conversion path). /get-started 301s there.
    Mobile: links collapse into a no-JS <details> menu, and the CTA moves to a fixed
-   full-width bar at the bottom of the screen (hidden on /get-started itself). */
+   full-width bar at the bottom of the screen (hidden on /growth-audit itself). */
 import Logo from './Logo.astro';
 
 interface Props {
@@ -12,7 +12,7 @@ interface Props {
 }
 
 const { variant = 'full' } = Astro.props;
-const onGetStarted = Astro.url.pathname.replace(/\/$/, '') === '/get-started';
+const onAudit = Astro.url.pathname.replace(/\/$/, '') === '/growth-audit';
 
 const links = [
   { href: '/flight-plan', label: 'The System' },
@@ -42,7 +42,7 @@ const links = [
   }
 
   <div class="nav-actions">
-    <a href="/get-started" class="btn btn-primary btn-sm nav-cta">Schedule onboarding</a>
+    <a href="/growth-audit" class="btn btn-primary btn-sm nav-cta">Book my free audit</a>
 
     {
       variant === 'full' && (
@@ -66,9 +66,9 @@ const links = [
 </header>
 
 {
-  !onGetStarted && (
+  !onAudit && (
     <div class="nav-mobile-cta">
-      <a href="/get-started" class="btn btn-primary">Schedule onboarding</a>
+      <a href="/growth-audit" class="btn btn-primary">Book my free audit</a>
     </div>
   )
 }

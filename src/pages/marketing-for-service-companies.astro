@@ -85,11 +85,11 @@ const trades = [
 
 <BaseLayout
   title="Marketing for Home Service Companies Ready to Scale | Local Service Rocket"
-  description="Google marketing for home service companies: Local SEO, LSAs, Search ads, websites, and hiring. Starts around $500/month. No sales calls."
+  description="Google marketing for home service companies: Local SEO, LSAs, Search ads, websites, and hiring. Book a free audit. No sales calls."
 >
   <Hero
     h1="Marketing for Home Service Companies Ready to Scale"
-    sub="We build the website, Google profile and ads that keep your phone ringing, then grow with you. $500 a month to start. No $5,000 setup, no sales call."
+    sub="We build the website, Google profile and ads that keep your phone ringing, then grow with you. Book a free audit. No giant setup fee, no sales call."
     focus="all"
   />
 
@@ -385,7 +385,7 @@ const trades = [
       {
         trades.map(([file, label]) => {
           const slug = tradeLabelToSlug[label];
-          const href = slug ? `/for/${slug}` : '/get-started';
+          const href = slug ? `/for/${slug}` : '/growth-audit';
           return (
             <a href={href} class="trade-card">
               <img src={`/assets/${file}`} alt="" width="30" height="30" loading="lazy" decoding="async" />
@@ -429,7 +429,7 @@ const trades = [
           <div class="why-point">
             <div class="check">✓</div>
             <div>
-              <b>Fee climbs with you.</b> $500/mo to start. It only gets expensive when your shop
+              <b>Fee climbs with you.</b> We start small. It only gets expensive when your shop
               does.
             </div>
           </div>
@@ -456,14 +456,14 @@ const trades = [
     <div class="cta-panel">
       <h2>Ready to get off the truck?</h2>
       <p>
-        Watch a short video on exactly how it works and what it costs, then book your onboarding
-        call. No sales calls. Your first call with us is already about your business.
+        Book a free Growth Audit. We show you where you're losing customers and the three fixes
+        that win them back first.
       </p>
       <div class="cta-btns">
-        <a href="/get-started" class="btn btn-primary btn-lg">Schedule onboarding</a>
+        <a href="/growth-audit" class="btn btn-primary btn-lg">Book my free audit</a>
         <a href="#case-studies" class="btn btn-ghost-dark btn-lg">See client results</a>
       </div>
-      <p class="cta-price">Starts at $500/month. We grow when you grow.</p>
+      <p class="cta-price">We grow when you grow.</p>
       <div class="cta-meta">
         <span>★★★★★ 5.0 on Google</span>
         <a href="/contact">Questions? Contact us</a>

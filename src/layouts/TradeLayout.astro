@@ -109,7 +109,7 @@ const stakes = [
   'Big retainers burn cash before anything is proven.',
 ];
 
-const trustBadges = ['Starts ~$500/mo', 'No sales calls', 'Booked jobs focus', 'Fees scale with you'];
+const trustBadges = ['Free Growth Audit', 'No sales calls', 'Booked jobs focus', 'Fees scale with you'];
 
 const jsonLd = graph([
   {
@@ -155,7 +155,7 @@ const jsonLd = graph([
           <h1>{trade.h1}</h1>
           <p class="hero-sub">{trade.heroSub}</p>
           <div class="hero-ctas">
-            <a href="/get-started" class="btn btn-primary">Schedule onboarding</a>
+            <a href="/growth-audit" class="btn btn-primary">Book my free audit</a>
             <a href="/contact" class="btn btn-secondary">Ask a question</a>
           </div>
           <div class="badges">
@@ -167,7 +167,7 @@ const jsonLd = graph([
           <div class="hero-card-title">{trade.keyword}</div>
           <p>
             For {trade.companyPlural} that want Google to book jobs. Same flight plan we run with
-            electrical shops. Fee from $500/mo.
+            electrical shops. Book a free audit.
           </p>
           <a href="/flight-plan">See the Flight Plan →</a>
         </div>
@@ -300,7 +300,7 @@ const jsonLd = graph([
           <ul>
             {stakes.map((item) => <li>{item}</li>)}
           </ul>
-          <a href="/get-started" class="btn btn-primary">Schedule onboarding</a>
+          <a href="/growth-audit" class="btn btn-primary">Book my free audit</a>
         </div>
       </div>
     </section>
@@ -311,7 +311,7 @@ const jsonLd = graph([
       <h2>The Lanes Behind {trade.label} Growth</h2>
       <p class="lede">
         Not sure which lane to start with?
-        <a href="/get-started">Book onboarding</a> and we’ll recommend the right first move after a
+        <a href="/growth-audit">Book a free audit</a> and we’ll recommend the right first move after a
         fast Google audit.
       </p>
       <div class="related">
@@ -349,7 +349,7 @@ const jsonLd = graph([
         <h2>{trade.ctaH2}</h2>
         <p>{trade.ctaLine}</p>
         <div class="hero-ctas">
-          <a href="/get-started" class="btn btn-primary">Get started →</a>
+          <a href="/growth-audit" class="btn btn-primary">Book my free audit →</a>
           <a href="/case-studies" class="btn btn-ghost-dark">See client results</a>
         </div>
       </div>

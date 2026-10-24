@@ -1,0 +1,1474 @@
+---
+/* Growth Audit booking page. Replaces /get-started as the main conversion path.
+   Design: Growth Audit Page.html (Claude Design). Four-step form ends on the
+   LeadConnector calendar. /get-started 301s here. /free-report stays the
+   self-serve Google report. */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Picture from '../components/Picture.astro';
+import {
+  absoluteUrl,
+  breadcrumbList,
+  faqPageNode,
+  graph,
+  webPageNode,
+} from '../data/schema';
+
+const AUDIT_BOOKING = 'https://api.leadconnectorhq.com/widget/booking/XW2ajInOeQMAUDTg9d1R';
+
+const title = 'Free Growth Audit for Electricians | Local Service Rocket';
+const description =
+  'Get a free Growth Audit of your Google profile, website, ads and reviews next to your Map Pack. Book 30 minutes and leave with three fixes.';
+const pageUrl = absoluteUrl('/growth-audit/');
+
+const faqs = [
+  {
+    q: 'Is this a sales call?',
+    a: 'No. We show you what we found and what to fix first. If you ask what it costs for us to do it, we will tell you. If you do not ask, we will not pitch.',
+  },
+  {
+    q: 'Why free?',
+    a: 'It is how we pick clients. We only take on shops where we can see a clear path to more calls.',
+  },
+  {
+    q: 'What do I need to bring?',
+    a: 'Nothing. Everything is pulled from public sources before the call.',
+  },
+  {
+    q: 'I already have a marketing company.',
+    a: 'Bring the audit to them. You will know exactly what to ask for.',
+  },
+];
+
+const jsonLd = graph([
+  webPageNode({ pageUrl, name: title, description }),
+  faqPageNode(pageUrl, faqs),
+  breadcrumbList(pageUrl, [
+    { name: 'Home', path: '/' },
+    { name: 'Free Growth Audit', path: '/growth-audit' },
+  ]),
+]);
+
+const truckOpts = ['Just me', '2-3', '4-6', '7+'];
+const revOpts = ['Under $25k', '$25-50k', '$50-100k', '$100k+'];
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <main class="audit">
+    <section class="hero container">
+      <div class="copy">
+        <div class="pill">FREE · 30 MINUTES · FOR ELECTRICAL CONTRACTORS</div>
+        <h1>Free Growth Audit: find out how you can get more customers than your competition.</h1>
+        <p class="lede">
+          We pull your Google profile, website, ads and reviews, put them next to the three
+          electricians in your Map Pack, and show you exactly where you're losing customers and the
+          three fixes that win them back first.
+        </p>
+        <ol class="steps">
+          <li>
+            <span class="n" aria-hidden="true">1</span>
+            <span>You pick a time. We do the homework.</span>
+          </li>
+          <li>
+            <span class="n" aria-hidden="true">2</span>
+            <span>30 minutes on a screen-share, your numbers.</span>
+          </li>
+          <li>
+            <span class="n" aria-hidden="true">3</span>
+            <span>You leave with the three fixes that get you more customers. Hire us or not.</span>
+          </li>
+        </ol>
+        <div class="faces">
+          <div class="stack">
+            <Picture name="lewis-carter" alt="" width={34} height={34} loading="eager" />
+            <Picture name="jason-hooked-up" alt="" width={34} height={34} loading="eager" />
+            <Picture name="john-headshot" alt="" width={34} height={34} loading="eager" />
+          </div>
+          <div class="faces-copy">
+            <b>The same review we run for Rewired, Honest Hank's and Hooked Up Electric.</b>
+            <br />Seven electrical shops. $10M+ in revenue added.
+          </div>
+        </div>
+      </div>
+
+      <form id="audit-form" class="card" novalidate data-booking={AUDIT_BOOKING}>
+        <div class="card-head">
+          <div class="card-head-row">
+            <div class="card-title" id="step-title">Is your area still open?</div>
+            <div class="card-step" id="step-count">STEP 1 OF 4</div>
+          </div>
+          <div class="card-sub" id="step-sub">Two fields. Takes 10 seconds.</div>
+          <div class="bars" aria-hidden="true">
+            <div class="bar on" data-bar="1"></div>
+            <div class="bar" data-bar="2"></div>
+            <div class="bar" data-bar="3"></div>
+            <div class="bar" data-bar="4"></div>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="panel" data-step="1">
+            <label>
+              Business name
+              <input
+                name="business"
+                type="text"
+                autocomplete="organization"
+                maxlength="120"
+                placeholder="e.g. Bayshore Electric"
+              />
+            </label>
+            <label>
+              City and state
+              <input
+                name="city"
+                type="text"
+                autocomplete="address-level2"
+                maxlength="80"
+                placeholder="Tampa, FL"
+              />
+            </label>
+            <p class="hint">We only work with one electrician per area. This checks yours is open.</p>
+          </div>
+
+          <div class="panel" data-step="2" hidden>
+            <label>
+              First name
+              <input name="name" type="text" autocomplete="given-name" maxlength="80" placeholder="Mike" />
+            </label>
+            <label>
+              Mobile number
+              <input name="phone" type="tel" autocomplete="tel" maxlength="24" placeholder="(813) 555-0100" />
+            </label>
+            <label class="consent">
+              <input name="sms" type="checkbox" />
+              <span>
+                I agree to receive text messages from Local Service Rocket about my Growth Audit
+                (confirmation, reminders and follow-up). Msg &amp; data rates may apply. Msg
+                frequency varies. Reply STOP to opt out, HELP for help. See our
+                <a href="/privacy">Privacy Policy</a> and <a href="/terms">Terms</a>.
+              </span>
+            </label>
+          </div>
+
+          <div class="panel" data-step="3" hidden>
+            <div class="field">
+              <span class="field-label">Electricians on the road</span>
+              <div class="opts" data-name="trucks">
+                {truckOpts.map((label) => (
+                  <button type="button" data-value={label}>
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div class="field">
+              <span class="field-label">Monthly revenue, roughly</span>
+              <div class="opts" data-name="rev">
+                {revOpts.map((label) => (
+                  <button type="button" data-value={label}>
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div class="panel" data-step="4" hidden>
+            <div class="cal">
+              <iframe id="cal-frame" title="Pick a time" src="about:blank"></iframe>
+            </div>
+            <p class="hint center">Your details are already filled in. Just pick a time.</p>
+          </div>
+
+          <p class="error" id="form-error" hidden></p>
+
+          <div class="actions">
+            <button type="submit" class="submit" id="submit-btn">
+              <span id="submit-label">Check my area</span>
+              <span aria-hidden="true">→</span>
+            </button>
+            <button type="button" class="back" id="back-btn" hidden>← Back</button>
+          </div>
+          <p class="foot" id="foot-note">
+            No contract, no card. If we can't find three things worth fixing, we'll tell you that too.
+          </p>
+        </div>
+      </form>
+    </section>
+
+    <section class="look container">
+      <div class="eyebrow">WHAT WE GO THROUGH ON THE CALL</div>
+      <h2>The five places you win or lose a customer.</h2>
+      <div class="look-grid">
+        <article>
+          <div class="mock mock-pack">
+            <div class="pack-row"><span class="pin"></span><span class="bar-line" style="width:62%"></span></div>
+            <div class="pack-row"><span class="pin"></span><span class="bar-line" style="width:48%"></span></div>
+            <div class="pack-row"><span class="pin"></span><span class="bar-line" style="width:55%"></span></div>
+            <div class="you-chip">YOU · not in the top 3</div>
+          </div>
+          <div class="look-copy">
+            <h3>Map Pack: your spot, and why</h3>
+            <p>Are you in the top 3 a mile from your shop?</p>
+          </div>
+        </article>
+        <article>
+          <div class="mock mock-reviews">
+            <div class="rev-legend">
+              <span>#1 · 11 / wk</span>
+              <span class="bad">You · 0.4 / wk</span>
+            </div>
+            <div class="rev-bars">
+              <div class="rev-col">
+                <span style="height:70%"></span><span style="height:90%"></span><span style="height:80%"></span>
+                <span style="height:75%"></span><span style="height:95%"></span><span style="height:85%"></span>
+                <span style="height:100%"></span><span style="height:80%"></span>
+              </div>
+              <div class="rev-col you">
+                <span class="hot" style="height:14%"></span><span class="dim"></span><span class="dim"></span>
+                <span class="dim"></span><span class="dim"></span><span class="hot" style="height:14%"></span>
+                <span class="dim"></span><span class="dim"></span>
+              </div>
+            </div>
+          </div>
+          <div class="look-copy">
+            <h3>Who's winning the review war</h3>
+            <p>How many weeks went by without a review?</p>
+          </div>
+        </article>
+        <article>
+          <div class="mock mock-web">
+            <div class="gauges">
+              <div class="gauge orange"><div>57</div></div>
+              <div class="gauge-label">THEIR SPEED</div>
+              <div class="gauge green"><div>98</div></div>
+            </div>
+            <div class="fail-chip"><span>✗</span>Page title says "electrician"</div>
+          </div>
+          <div class="look-copy">
+            <h3>Whose website Google can read</h3>
+            <p>Does your homepage say "electrician" anywhere?</p>
+          </div>
+        </article>
+        <article>
+          <div class="mock mock-ads">
+            <div class="ads-kicker">Sponsored</div>
+            <div class="ads-grid">
+              <div class="ad">
+                <div class="guaranteed"><i></i>GUARANTEED</div>
+                <span class="ad-bar wide"></span>
+                <span class="ad-bar mid"></span>
+              </div>
+              <div class="ad">
+                <div class="guaranteed"><i></i>GUARANTEED</div>
+                <span class="ad-bar wide"></span>
+                <span class="ad-bar mid"></span>
+              </div>
+              <div class="ad you-ad">YOU<br />not here</div>
+            </div>
+          </div>
+          <div class="look-copy">
+            <h3>Who's paying for the top of the page</h3>
+            <p>Is a competitor buying your name?</p>
+          </div>
+        </article>
+        <article>
+          <div class="mock mock-ai">
+            <div class="bubble">best electrician in Tampa</div>
+            <div class="ai-names">
+              <span class="n">1.</span> <em>Competitor A</em>
+              <span class="n">2.</span> <em>Competitor B</em>
+              <span class="n">3.</span> <em>Competitor C</em>
+            </div>
+            <div class="fail-chip"><span>✗</span>You're not mentioned</div>
+          </div>
+          <div class="look-copy">
+            <h3>Who AI recommends</h3>
+            <p>Does AI know you exist?</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="fit container">
+      <div class="fit-panel">
+        <div>
+          <div class="eyebrow on-dark">WHO THIS IS FOR</div>
+          <h2>Electrical shops with trucks on the road and room for more.</h2>
+          <p>
+            Most clients came to us doing $40k to $100k a month with 2 to 6 electricians, tired of
+            agencies that send a report and never pick up the phone.
+          </p>
+        </div>
+        <ul>
+          <li>
+            <span class="yes" aria-hidden="true">✓</span>You're licensed and have been in business at
+            least a year
+          </li>
+          <li>
+            <span class="yes" aria-hidden="true">✓</span>You answer the phone, or someone does, during
+            business hours
+          </li>
+          <li>
+            <span class="yes" aria-hidden="true">✓</span>You could take on more jobs this month if the
+            calls came in
+          </li>
+          <li class="no">
+            <span class="no-mark" aria-hidden="true">✗</span>Not yet: brand-new shops with no reviews
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="proof container">
+      <div class="proof-kicker">WHAT HAPPENED AFTER THE AUDIT</div>
+      <div class="quotes">
+        <article>
+          <div class="stat">$60k → $220k+</div>
+          <div class="stat-sub">monthly revenue added · 5 → 12 crew</div>
+          <p>"My company went through upwards of a dozen other marketing companies prior to landing here."</p>
+          <div class="who">
+            <Picture name="john-headshot" alt="John Senn" width={28} height={28} />
+            <div>
+              <div class="who-name">John Senn, owner</div>
+              <div class="who-meta">Rewired · Des Moines, IA</div>
+            </div>
+          </div>
+        </article>
+        <article>
+          <div class="stat">600%</div>
+          <div class="stat-sub">growth in 2024</div>
+          <p>"Your response time, your availability, your honesty and the highest integrity."</p>
+          <div class="who">
+            <Picture name="jason-hooked-up" alt="Jason" width={28} height={28} />
+            <div>
+              <div class="who-name">Jason, owner</div>
+              <div class="who-meta">Hooked Up Electric · Merkel, TX</div>
+            </div>
+          </div>
+        </article>
+        <article>
+          <div class="stat">3rd van</div>
+          <div class="stat-sub">wrapped · hiring another electrician</div>
+          <p>"We just purchased our third van and got it wrapped. These guys have been with me every step."</p>
+          <div class="who">
+            <Picture name="lewis-carter" alt="Lewis Carter" width={28} height={28} />
+            <div>
+              <div class="who-name">Lewis Carter, owner</div>
+              <div class="who-meta">Honest Hank's · Tampa, FL</div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="faq container">
+      <h2>Straight answers</h2>
+      <div class="faq-grid">
+        {
+          faqs.map((item) => (
+            <article>
+              <h3>{item.q}</h3>
+              <p>{item.a}</p>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="bottom container">
+      <div class="cta">
+        <div>
+          <div class="cta-title">30 minutes. Your numbers, three fixes, more customers.</div>
+          <p>
+            Not ready to talk? <a href="/free-report">Run the free report</a> and see the numbers
+            first.
+          </p>
+        </div>
+        <a class="book" href="#audit-form">Book my free audit</a>
+      </div>
+      <div class="strip">
+        <span>★★★★★ 5.0 on Google</span>
+        <span>Google Partner</span>
+        <span>7 electrical shops scaled</span>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<script>
+  const form = document.getElementById('audit-form') as HTMLFormElement | null;
+  if (form) {
+    const booking = form.dataset.booking || '';
+    const titleEl = document.getElementById('step-title');
+    const countEl = document.getElementById('step-count');
+    const subEl = document.getElementById('step-sub');
+    const footEl = document.getElementById('foot-note');
+    const errorEl = document.getElementById('form-error');
+    const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement | null;
+    const submitLabel = document.getElementById('submit-label');
+    const backBtn = document.getElementById('back-btn') as HTMLButtonElement | null;
+    const frame = document.getElementById('cal-frame') as HTMLIFrameElement | null;
+    const bars = Array.from(form.querySelectorAll<HTMLElement>('[data-bar]'));
+    const panels = Array.from(form.querySelectorAll<HTMLElement>('.panel'));
+
+    const titles = [
+      'Is your area still open?',
+      'Good news: {{city}} is open.',
+      'Tell us about the shop',
+      'Pick a time',
+    ];
+    const subs = [
+      'Two fields. Takes 10 seconds.',
+      'Your details so we can get started.',
+      'So we know what to pull before the call.',
+      'Live availability. You get a text and email confirmation.',
+    ];
+    const btns = ['Check my area', 'Continue', 'Continue', 'Book my free audit'];
+    const notes = [
+      "No contract, no card. If we can't find three things worth fixing, we'll tell you that too.",
+      'We never sell your info.',
+      'Everything else is pulled from public sources.',
+      "Nothing that works? Text (888) 371-6365 and we'll find a time.",
+    ];
+
+    let step = 1;
+    const picked: Record<string, string> = { trucks: '', rev: '' };
+
+    const cityShort = () => {
+      const raw = (form.elements.namedItem('city') as HTMLInputElement | null)?.value || '';
+      return raw.split(',')[0].trim() || 'Your area';
+    };
+
+    const showError = (msg: string) => {
+      if (!errorEl) return;
+      errorEl.hidden = !msg;
+      errorEl.textContent = msg;
+    };
+
+    const render = () => {
+      panels.forEach((panel) => {
+        panel.hidden = Number(panel.dataset.step) !== step;
+      });
+      bars.forEach((bar) => {
+        bar.classList.toggle('on', Number(bar.dataset.bar) <= step);
+      });
+      if (titleEl) titleEl.textContent = titles[step - 1].replace('{{city}}', cityShort());
+      if (countEl) countEl.textContent = `STEP ${step} OF 4`;
+      if (subEl) subEl.textContent = subs[step - 1];
+      if (footEl) footEl.textContent = notes[step - 1];
+      if (submitLabel) submitLabel.textContent = btns[step - 1];
+      if (submitBtn) submitBtn.hidden = step === 4;
+      if (backBtn) backBtn.hidden = step === 1;
+      showError('');
+
+      if (step === 4 && frame && booking) {
+        const business = (form.elements.namedItem('business') as HTMLInputElement).value.trim();
+        const city = (form.elements.namedItem('city') as HTMLInputElement).value.trim();
+        const name = (form.elements.namedItem('name') as HTMLInputElement).value.trim();
+        const phone = (form.elements.namedItem('phone') as HTMLInputElement).value.trim();
+        const sms = (form.elements.namedItem('sms') as HTMLInputElement).checked;
+        const params = new URLSearchParams({
+          first_name: name,
+          phone,
+          business,
+          city,
+          trucks: picked.trucks,
+          revenue: picked.rev,
+          sms_consent: sms ? 'yes' : 'no',
+        });
+        frame.src = `${booking}?${params.toString()}`;
+      }
+    };
+
+    form.querySelectorAll<HTMLElement>('.opts').forEach((group) => {
+      const key = group.dataset.name || '';
+      group.querySelectorAll<HTMLButtonElement>('button').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          picked[key] = btn.dataset.value || '';
+          group.querySelectorAll('button').forEach((b) => b.classList.toggle('on', b === btn));
+          showError('');
+        });
+      });
+    });
+
+    backBtn?.addEventListener('click', () => {
+      if (step > 1) {
+        step -= 1;
+        render();
+      }
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const business = (form.elements.namedItem('business') as HTMLInputElement).value.trim();
+      const city = (form.elements.namedItem('city') as HTMLInputElement).value.trim();
+      const name = (form.elements.namedItem('name') as HTMLInputElement).value.trim();
+      const phone = (form.elements.namedItem('phone') as HTMLInputElement).value.trim();
+      const sms = (form.elements.namedItem('sms') as HTMLInputElement).checked;
+
+      if (step === 1) {
+        if (!business) return showError('Add your business name.');
+        if (!city) return showError('Add your city and state so we can check the area.');
+        step = 2;
+        render();
+        return;
+      }
+      if (step === 2) {
+        if (!name) return showError('Add your first name.');
+        if (phone.replace(/\D/g, '').length < 10) return showError('Add a mobile number we can text.');
+        if (!sms) return showError('Tick the box so we can text you the audit link.');
+        step = 3;
+        render();
+        return;
+      }
+      if (step === 3) {
+        if (!picked.trucks || !picked.rev) return showError('Pick a crew size and a revenue range.');
+        step = 4;
+        render();
+      }
+    });
+
+    render();
+  }
+</script>
+
+<style>
+  .hero {
+    padding-top: 56px;
+    padding-bottom: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px 56px;
+    align-items: flex-start;
+  }
+
+  .copy {
+    flex: 1 1 380px;
+    min-width: 0;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border);
+    background: #fafafa;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--orange);
+    letter-spacing: 0.06em;
+  }
+
+  h1 {
+    margin-top: 18px;
+    font-size: clamp(34px, 5vw, 54px);
+    line-height: 1.02;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+
+  .lede {
+    margin-top: 18px;
+    font-size: 16.5px;
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 540px;
+    text-wrap: pretty;
+  }
+
+  .steps {
+    list-style: none;
+    padding: 0;
+    margin: 26px 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .steps li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1.3;
+  }
+
+  .n {
+    width: 26px;
+    height: 26px;
+    border-radius: var(--radius-pill);
+    background: var(--ink);
+    color: #fff;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+
+  .faces {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+
+  .stack {
+    display: flex;
+  }
+
+  .stack :global(img) {
+    width: 34px;
+    height: 34px;
+    border-radius: 99px;
+    object-fit: cover;
+    border: 2px solid #fff;
+  }
+
+  .stack :global(img + img) {
+    margin-left: -10px;
+  }
+
+  .faces-copy {
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  .faces-copy b {
+    color: var(--ink);
+  }
+
+  .card {
+    flex: 0 1 420px;
+    min-width: 0;
+    width: 100%;
+    border: 1px solid #e7e7e7;
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 18px 50px -30px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    scroll-margin-top: 96px;
+  }
+
+  .card-head {
+    padding: 22px 26px 16px;
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .card-head-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+  }
+
+  .card-title {
+    font-weight: 800;
+    font-size: 19px;
+    letter-spacing: -0.02em;
+  }
+
+  .card-step {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: #8a8a8a;
+    white-space: nowrap;
+  }
+
+  .card-sub {
+    font-size: 12.5px;
+    color: #8a8a8a;
+    margin-top: 3px;
+  }
+
+  .bars {
+    display: flex;
+    gap: 5px;
+    margin-top: 14px;
+  }
+
+  .bar {
+    flex: 1;
+    height: 4px;
+    border-radius: 99px;
+    background: #ececec;
+  }
+
+  .bar.on {
+    background: var(--orange);
+  }
+
+  .card-body {
+    padding: 22px 26px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .panel {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .panel[hidden],
+  .submit[hidden],
+  .back[hidden] {
+    display: none;
+  }
+
+  label,
+  .field-label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #4a4a4a;
+  }
+
+  input[type='text'],
+  input[type='tel'] {
+    font-family: inherit;
+    font-size: 15px;
+    padding: 13px 14px;
+    border: 1.5px solid #e3e3e3;
+    border-radius: 12px;
+    outline: none;
+    color: var(--ink);
+    background: #fff;
+    width: 100%;
+  }
+
+  input:focus {
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px rgba(232, 89, 12, 0.14);
+  }
+
+  .hint {
+    font-size: 11.5px;
+    color: #8a8a8a;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .hint.center {
+    text-align: center;
+  }
+
+  .consent {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--muted);
+    line-height: 1.5;
+    cursor: pointer;
+  }
+
+  .consent input {
+    margin: 2px 0 0;
+    width: 16px;
+    height: 16px;
+    flex: none;
+    accent-color: var(--orange);
+  }
+
+  .consent a {
+    color: var(--muted);
+    text-decoration: underline;
+  }
+
+  .opts {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .opts[data-name='trucks'] {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .opts button {
+    font-family: inherit;
+    border: 1.5px solid #e3e3e3;
+    background: #fff;
+    border-radius: 10px;
+    padding: 11px 6px;
+    cursor: pointer;
+    font-size: 13.5px;
+    font-weight: 800;
+    color: var(--ink);
+  }
+
+  .opts button:hover,
+  .opts button.on {
+    border-color: var(--orange);
+  }
+
+  .opts button.on {
+    background: var(--orange-tint);
+  }
+
+  .cal {
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fafafa;
+    min-height: 560px;
+  }
+
+  .cal iframe {
+    width: 100%;
+    height: 620px;
+    border: 0;
+    display: block;
+  }
+
+  .error {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #d1402f;
+    margin: 0;
+  }
+
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .submit {
+    font-family: inherit;
+    padding: 15px 20px;
+    border-radius: var(--radius-pill);
+    border: 0;
+    background: var(--orange);
+    color: #fff;
+    font-weight: 800;
+    font-size: 15.5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .submit:hover {
+    background: var(--orange-hover);
+  }
+
+  .back {
+    font-family: inherit;
+    background: none;
+    border: 0;
+    color: #8a8a8a;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 4px;
+  }
+
+  .foot {
+    font-size: 11.5px;
+    color: #8a8a8a;
+    line-height: 1.55;
+    text-align: center;
+    margin: 0;
+  }
+
+  .look,
+  .fit,
+  .proof,
+  .faq {
+    margin-top: 72px;
+  }
+
+  .look h2 {
+    margin-top: 10px;
+    font-size: clamp(26px, 3.2vw, 34px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.12;
+    text-wrap: balance;
+  }
+
+  .look-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin-top: 28px;
+  }
+
+  .look-grid article {
+    border: 1px solid #e7e7e7;
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .mock {
+    background: #fafafa;
+    padding: 14px;
+    height: 122px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mock-pack {
+    justify-content: center;
+    gap: 6px;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  .pack-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .pin {
+    width: 16px;
+    height: 16px;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    background: #ea4335;
+    flex: none;
+  }
+
+  .bar-line {
+    height: 7px;
+    border-radius: 99px;
+    background: #cfcfcf;
+  }
+
+  .you-chip {
+    margin-top: 4px;
+    border: 1.5px dashed var(--orange);
+    border-radius: 8px;
+    padding: 5px 8px;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 800;
+    color: #d1402f;
+    background: #fff7f1;
+  }
+
+  .look-copy {
+    padding: 16px 18px;
+  }
+
+  .look-copy h3 {
+    font-weight: 800;
+    font-size: 15px;
+    line-height: 1.3;
+  }
+
+  .look-copy p {
+    font-size: 12.5px;
+    color: var(--orange);
+    font-weight: 800;
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+
+  .mock-reviews {
+    justify-content: flex-end;
+  }
+
+  .rev-legend {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    font-weight: 800;
+  }
+
+  .rev-legend .bad {
+    color: #d1402f;
+  }
+
+  .rev-bars {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    margin-top: 8px;
+    height: 58px;
+  }
+
+  .rev-col {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 100%;
+  }
+
+  .rev-col span {
+    flex: 1;
+    background: var(--ink);
+    border-radius: 2px 2px 0 0;
+  }
+
+  .rev-col.you .hot {
+    background: var(--orange);
+  }
+
+  .rev-col.you .dim {
+    background: #e3e3e3;
+    height: 4%;
+    border-radius: 0;
+  }
+
+  .mock-web {
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .gauges {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .gauge {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+
+  .gauge div {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #fafafa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 800;
+  }
+
+  .gauge.orange {
+    background: conic-gradient(#ffa400 0 205deg, #fff0d6 0);
+  }
+
+  .gauge.orange div {
+    color: #ffa400;
+  }
+
+  .gauge.green {
+    background: conic-gradient(#0cce6b 0 353deg, #dcf6e7 0);
+    margin-left: auto;
+  }
+
+  .gauge.green div {
+    color: #0cce6b;
+  }
+
+  .gauge-label {
+    font-size: 11px;
+    font-weight: 800;
+    color: #8a8a8a;
+  }
+
+  .fail-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11.5px;
+    font-weight: 700;
+    background: #fff;
+    border: 1px solid var(--hairline);
+    border-radius: 8px;
+    padding: 6px 9px;
+  }
+
+  .fail-chip span {
+    width: 16px;
+    height: 16px;
+    border-radius: 99px;
+    background: #d1402f;
+    color: #fff;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+
+  .mock-ads {
+    justify-content: center;
+    gap: 6px;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  .ads-kicker {
+    font-size: 10px;
+    font-weight: 700;
+    color: #202124;
+  }
+
+  .ads-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+  }
+
+  .ad {
+    background: #fff;
+    border: 1px solid #dadce0;
+    border-radius: 7px;
+    padding: 7px;
+  }
+
+  .guaranteed {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 7px;
+    font-weight: 700;
+    color: #188038;
+  }
+
+  .guaranteed i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #188038;
+    flex: none;
+  }
+
+  .ad-bar {
+    display: block;
+    height: 5px;
+    border-radius: 99px;
+    margin-top: 4px;
+    background: #e3e3e3;
+  }
+
+  .ad-bar.wide {
+    width: 80%;
+    background: #cfcfcf;
+    margin-top: 7px;
+  }
+
+  .ad-bar.mid {
+    width: 55%;
+  }
+
+  .you-ad {
+    background: #fff7f1;
+    border: 1.5px dashed var(--orange);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-family: inherit;
+    font-size: 9.5px;
+    font-weight: 800;
+    color: #d1402f;
+    line-height: 1.3;
+  }
+
+  .mock-ai {
+    justify-content: center;
+    gap: 7px;
+  }
+
+  .bubble {
+    align-self: flex-end;
+    background: #ececef;
+    border-radius: 12px 12px 3px 12px;
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .ai-names {
+    font-size: 11px;
+    line-height: 1.5;
+    color: #4a4a4a;
+  }
+
+  .ai-names .n {
+    width: auto;
+    height: auto;
+    background: none;
+    color: #8a8a8a;
+    font-weight: 800;
+    font-size: 11px;
+    display: inline;
+  }
+
+  .ai-names em {
+    background: #fff1e8;
+    border-radius: 3px;
+    padding: 0 3px;
+    font-style: normal;
+    font-weight: 700;
+  }
+
+  .fit-panel {
+    background: var(--dark);
+    color: var(--dark-text);
+    border-radius: var(--radius-large);
+    padding: clamp(24px, 4vw, 44px);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px 48px;
+  }
+
+  .fit-panel > div {
+    flex: 1 1 300px;
+    min-width: 0;
+  }
+
+  .eyebrow.on-dark {
+    color: var(--orange-on-dark);
+  }
+
+  .fit-panel h2 {
+    margin-top: 12px;
+    font-size: clamp(24px, 3vw, 32px);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    text-wrap: balance;
+  }
+
+  .fit-panel p {
+    margin-top: 14px;
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--dark-muted);
+    text-wrap: pretty;
+  }
+
+  .fit-panel ul {
+    flex: 1 1 300px;
+    min-width: 0;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .fit-panel li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .fit-panel li.no {
+    color: var(--dark-muted);
+  }
+
+  .yes,
+  .no-mark {
+    width: 20px;
+    height: 20px;
+    border-radius: 99px;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    margin-top: 1px;
+  }
+
+  .yes {
+    background: #1b8a4b;
+  }
+
+  .no-mark {
+    background: #3a3d46;
+  }
+
+  .proof-kicker {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #8a8a8a;
+  }
+
+  .quotes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px;
+    margin-top: 24px;
+  }
+
+  .quotes article {
+    border: 1px solid #e7e7e7;
+    border-radius: 14px;
+    padding: 20px 22px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stat {
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--orange);
+    line-height: 1;
+  }
+
+  .stat-sub {
+    font-size: 11.5px;
+    color: #8a8a8a;
+    margin-top: 4px;
+  }
+
+  .quotes p {
+    margin: 14px 0 0;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: #4a4a4a;
+    flex: 1;
+  }
+
+  .who {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: 14px;
+  }
+
+  .who :global(img) {
+    width: 28px;
+    height: 28px;
+    border-radius: 99px;
+    object-fit: cover;
+  }
+
+  .who-name {
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .who-meta {
+    font-size: 10.5px;
+    color: #999;
+  }
+
+  .faq h2 {
+    margin: 0;
+    font-size: clamp(22px, 2.8vw, 28px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .faq-grid {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 14px;
+  }
+
+  .faq-grid article {
+    border: 1px solid #e7e7e7;
+    border-radius: 14px;
+    padding: 20px 22px;
+  }
+
+  .faq-grid h3 {
+    font-weight: 800;
+    font-size: 15.5px;
+    line-height: 1.35;
+  }
+
+  .faq-grid p {
+    font-size: 13.5px;
+    color: var(--muted);
+    margin-top: 8px;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .bottom {
+    margin-top: 64px;
+    padding-bottom: 64px;
+  }
+
+  .cta {
+    border: 1px solid #e7e7e7;
+    border-radius: 18px;
+    padding: 26px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .cta-title {
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: -0.01em;
+  }
+
+  .cta p {
+    font-size: 13.5px;
+    color: var(--muted);
+    margin-top: 5px;
+    line-height: 1.5;
+  }
+
+  .book {
+    padding: 13px 26px;
+    border-radius: var(--radius-pill);
+    background: var(--orange);
+    color: #fff;
+    font-weight: 800;
+    font-size: 14.5px;
+    white-space: nowrap;
+  }
+
+  .book:hover {
+    background: var(--orange-hover);
+    color: #fff;
+  }
+
+  .strip {
+    display: flex;
+    gap: 22px;
+    justify-content: center;
+    margin-top: 22px;
+    font-size: 12px;
+    color: #8a8a8a;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 720px) {
+    .hero {
+      padding-top: 32px;
+    }
+
+    .opts[data-name='trucks'] {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>

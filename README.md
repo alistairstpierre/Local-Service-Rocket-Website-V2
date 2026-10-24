@@ -94,7 +94,8 @@ Railway.
 | `/marketing-for-service-companies` | Broader all-trades offer (former homepage) |
 | `/about` | Alistair + company story (`electrician marketing company`) |
 | `/flight-plan` | The System: Pre-flight / Liftoff / Orbit stages |
-| `/get-started` | Get Started funnel (`marketing for electrical contractors`) |
+| `/growth-audit` | Free Growth Audit booking (`Growth Audit Page.html`). Main CTA. 4-step form → LeadConnector calendar |
+| `/get-started` | Hidden. 301 to `/growth-audit`. Old page kept at `src/archived/get-started.astro` |
 | `/contact` | Contact form: question, free audit, or coaching (EmailJS + screenshots) |
 | `/free-report` | Electrician-only landing (`Free Report - Landing.dc.html`): email, business city and state, then GBP picker, phone, SMS consent → Railway analysis API |
 | `/free-report/view` | After the form, opens immediately and polls `GET /api/reports/:id`. Sections fill in as snapshots land. Overall shop rankings stay hidden until the last check finishes, with an estimated time remaining in the dock. No `id` shows the example. |
@@ -157,7 +158,7 @@ Old service URLs (`/services/paid-ads`, `/local-seo`, `/websites`, `/hiring`, `/
 │   └── generate-trade-queue-posts.mjs  # Seeds trade-specific drafts into blog-queue/
 ├── public/
 │   ├── robots.txt                # Allow all + Sitemap URL for GSC / crawlers
-│   ├── llms.txt                  # Hand-written site summary for AI assistants; electrician search phrases → pages, pricing, case studies
+│   ├── llms.txt                  # Hand-written site summary for AI assistants; electrician search phrases → pages, audit, case studies
 │   ├── assets/                   # GENERATED images + trade/service SVGs (do not hand-edit)
 │   ├── fonts/                    # Self-hosted Manrope variable woff2
 │   └── free-report/              # Example report GBP thumbs + one reused Tampa map snapshot
@@ -167,9 +168,9 @@ Old service URLs (`/services/paid-ads`, `/local-seo`, `/websites`, `/hiring`, `/
 │   │   ├── GooglePartnerBadge.astro  # Official 2026 Partner snippet (Hero + PricingOffer)
 │   │   ├── Hero.astro
 │   │   ├── Logo.astro
-│   │   ├── Nav.astro             # Sticky header; mobile menu + fixed full-width onboarding CTA bar
+│   │   ├── Nav.astro             # Sticky header; mobile menu + fixed full-width Growth Audit CTA bar
 │   │   ├── Picture.astro         # <picture> AVIF/WebP wrapper used for every raster
-│   │   └── PricingOffer.astro    # Flight Plan pricing tiers (/ and /get-started)
+│   │   └── PricingOffer.astro    # Flight Plan pricing tiers (hidden; audit is the CTA)
 │   ├── lib/
 │   │   ├── free-report-copy.ts     # Headlines from overall score (not Map Pack alone); why / how-to-improve notes for Map Pack, website, and AI; US-only note lives in the report footer
 │   │   ├── free-report-example.ts  # Fallback dataset for photo counts, posts, extra AI platforms
@@ -178,7 +179,7 @@ Old service URLs (`/services/paid-ads`, `/local-seo`, `/websites`, `/hiring`, `/
 │   │   ├── blog-posts.js         # Blog hub cards (cron prepends here on publish)
 │   │   ├── images.js             # Image manifest (widths, formats) shared by script + Picture
 │   │   ├── image-sizes.json      # GENERATED intrinsic sizes, prevents layout shift
-│   │   ├── pricing-tiers.ts      # Shared Pre-flight / Liftoff / Orbit fee cards
+│   │   ├── pricing-tiers.ts      # Hidden fee cards (PricingOffer unused while audit is the CTA)
 │   │   ├── schema.ts             # Shared JSON-LD helpers (Part 5 of SEO guide)
 │   │   └── trades.ts             # Who We Help trade landing copy + slugs
 │   ├── layouts/
@@ -188,12 +189,14 @@ Old service URLs (`/services/paid-ads`, `/local-seo`, `/websites`, `/hiring`, `/
 │   │   ├── LegalLayout.astro
 │   │   ├── ServiceLayout.astro   # Shared service detail template
 │   │   └── TradeLayout.astro     # /for/[slug] SEO/ad landings (guide service order)
+│   ├── archived/
+│   │   └── get-started.astro     # Hidden VSL/onboarding page; /get-started 301s to /growth-audit
 │   ├── pages/
 │   │   ├── index.astro           # Electrician-led homepage
 │   │   ├── marketing-for-service-companies.astro  # All-trades offer (former homepage)
 │   │   ├── about.astro
 │   │   ├── flight-plan.astro     # Stage layout w/ tilted photo cards (design: The Flight Plan.dc.html)
-│   │   ├── get-started.astro
+│   │   ├── growth-audit.astro    # Free Growth Audit booking (main CTA)
 │   │   ├── contact.astro         # Free audit form → EmailJS (PUBLIC_EMAILJS_*)
 │   │   ├── free-report/
 │   │   │   ├── index.astro       # Lead magnet form → Railway POST /api/reports
@@ -230,7 +233,7 @@ Old service URLs (`/services/paid-ads`, `/local-seo`, `/websites`, `/hiring`, `/
 │   └── styles/
 │       └── global.css
 ├── astro.config.mjs              # static + sitemap + prefetch + inlined CSS
-├── vercel.json                   # Cache-Control for /fonts, /_astro, /assets
+├── vercel.json                   # Cache-Control + 301s (old service slugs, /get-started → /growth-audit)
 ├── package.json
 └── tsconfig.json
 ```
