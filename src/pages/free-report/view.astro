@@ -263,6 +263,20 @@ const apiUrl = (
     text-wrap: pretty;
   }
   .view :global(.rpt-sec .rpt-lede) { font-size: 15px; margin-top: 10px; }
+  .view :global(.rpt-why) {
+    margin: 14px 0 0;
+    padding: 12px 14px;
+    background: #fff7f1;
+    border: 1px solid #f3c7ad;
+    border-radius: 14px;
+    max-width: 720px;
+  }
+  .view :global(.rpt-why p) { margin: 0; font-size: 14px; line-height: 1.5; color: #4a4a4a; }
+  .view :global(.rpt-why p + p) { margin-top: 6px; }
+  .view :global(.rpt-why b) { color: #1a1a1a; }
+  .view :global(.rpt-ai .rpt-why) { background: #2a2d33; border-color: #3d4148; }
+  .view :global(.rpt-ai .rpt-why p) { color: #c8c8cc; }
+  .view :global(.rpt-ai .rpt-why b) { color: #f5f5f7; }
   .state { padding: 48px clamp(20px, 5vw, 48px) 80px; max-width: 1160px; margin: 0 auto; }
   .state .rpt-btn { display: inline-flex; margin-top: 20px; }
 

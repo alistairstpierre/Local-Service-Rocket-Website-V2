@@ -196,6 +196,30 @@ export function gapsHeadingCopy(input: { pack: CopyTier; count: number }): { lab
   };
 }
 
+export function packWhyCopy(): { why: string; improve: string } {
+  return {
+    why: 'The more spots you show up, the more people find you.',
+    improve:
+      'Keep your Google profile complete and fresh, ask for reviews every week, and make your website easier to use.',
+  };
+}
+
+export function webWhyCopy(): { why: string; improve: string } {
+  return {
+    why: 'People open a few tabs and call the shop that looks easiest to work with.',
+    improve:
+      'Make the site fast, clear, and easy to call. Write pages for the jobs you do — that helps Google and AI too. Links from other sites still help, especially with AI.',
+  };
+}
+
+export function aiWhyCopy(): { why: string; improve: string } {
+  return {
+    why: 'Homeowners ask ChatGPT who to call, then they pick from that list.',
+    improve:
+      'Write website pages and publish articles containing the exact phrase you want to target. A big review count helps a lot too.',
+  };
+}
+
 export function mapCtaCopy(tier: CopyTier, city: string): string {
   if (tier === 'well') return `Want to stay #1 across ${city}, not just your own street?`;
   return `Want to rank across ${city}, not just your own street?`;

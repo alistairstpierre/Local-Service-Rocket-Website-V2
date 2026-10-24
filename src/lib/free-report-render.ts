@@ -8,6 +8,7 @@
 import {
   aiHeadlineCopy,
   aiTier,
+  aiWhyCopy,
   closerCopy,
   coverageTier,
   gapsHeadingCopy,
@@ -15,8 +16,10 @@ import {
   mapCtaCopy,
   packHeadlineCopy,
   packTier,
+  packWhyCopy,
   siteTier,
   webHeadlineCopy,
+  webWhyCopy,
 } from './free-report-copy';
 import {
   BOOKING_URL,
@@ -891,6 +894,13 @@ function boardHtml(
   </div>`;
 }
 
+function whyNote(copy: { why: string; improve: string }): string {
+  return `<aside class="rpt-why">
+    <p><b>Why it matters.</b> ${esc(copy.why)}</p>
+    <p><b>How to improve.</b> ${esc(copy.improve)}</p>
+  </aside>`;
+}
+
 function ctaBand(kicker: string, head: string, sub = '', href = BOOKING_URL, label = 'Book a free call'): string {
   return `<div class="rpt-cta-band">
     <div>
@@ -1328,7 +1338,6 @@ export function renderReportHtml(report: PublicReport): string {
     rivalCount: mentionsOf(topRival),
   });
   const aiHeadline = aiCopy.headline;
-  const aiWhy = aiCopy.why;
 
   const defaultGaps: { head: string; sub: string }[] = [];
   if (coverLevel !== 'well' || !inPack) {
@@ -1502,6 +1511,7 @@ export function renderReportHtml(report: PublicReport): string {
       <div class="rpt-sec-label"><span>01</span><i></i><span>GOOGLE MAP PACK</span></div>
       <h2>${esc(packHeadline)}</h2>
       <p class="rpt-lede">Searched “${esc(cityQuery)}” from ${esc(searchFrom)}, then from 24 more spots out to ${outerMi} miles. Three spots on the map decide who gets the call.</p>
+      ${whyNote(packWhyCopy())}
       ${rankPills('PROFILE SCORE', rankGbp)}
 
       <div class="rpt-pack">
@@ -1636,6 +1646,7 @@ export function renderReportHtml(report: PublicReport): string {
       <div class="rpt-sec-label"><span>02</span><i></i><span>WEBSITE</span></div>
       <h2>${esc(webHeadline)}</h2>
       <p class="rpt-lede">How fast the homepage loads on a phone, and whether the site says what you do and lets a visitor call you. The board below covers that line by line.</p>
+      ${whyNote(webWhyCopy())}
       ${rankPills('WEBSITE SCORE', rankWeb)}
 
       <div class="rpt-web-head">
@@ -1758,6 +1769,7 @@ export function renderReportHtml(report: PublicReport): string {
       <div class="rpt-sec-label is-peach"><span>03</span><i></i><span>AI SEARCH · CHATGPT & GEMINI</span></div>
       <h2>${esc(aiHeadline)}</h2>
       <p class="rpt-lede is-dim">${esc(aiLede)}</p>
+      ${whyNote(aiWhyCopy())}
       ${rankPills('AI SCORE', rankAi, true)}
       <div class="rpt-ai-top">
         <div class="rpt-ai-board">
@@ -1771,11 +1783,6 @@ export function renderReportHtml(report: PublicReport): string {
               </div>`
             )
             .join('')}
-        </div>
-        <div class="rpt-callout">
-          <div class="rpt-mini-kicker">WHY THIS MATTERS</div>
-          <div class="rpt-callout-head">Homeowners are asking AI first, and calling from its shortlist.</div>
-          <div class="rpt-callout-body">${esc(aiWhy)}</div>
         </div>
       </div>
       <div class="rpt-ai-matrix" style="--ai-cols:${aiCols}">
