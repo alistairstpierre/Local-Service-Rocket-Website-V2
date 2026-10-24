@@ -10,7 +10,7 @@ import { absoluteUrl, breadcrumbList, graph, webPageNode } from '../../data/sche
 
 const title = 'Free Google Report for Electricians | Local Service Rocket';
 const description =
-  'See who ranks highest for electricians in your city, and why. We put your Google Business Profile, website, ads, and AI search next to the Map Pack.';
+  'See who ranks highest for electricians in your city, and why. We put your Google Business Profile, website, and AI search next to the Map Pack.';
 const pageUrl = absoluteUrl('/free-report/');
 const jsonLd = graph([
   webPageNode({ pageUrl, name: title, description }),
@@ -45,14 +45,14 @@ const proofLogos: { href?: string; name: string; alt: string; h: number; radius?
         </div>
         <h1>See who ranks highest for electricians in your city, and why.</h1>
         <p class="lede">
-          We pull your Google Business Profile, website, ads and AI search results and put
+          We pull your Google Business Profile, website, and AI search results and put
           them next to the three electricians in your Map Pack. Not just the order. What's
           behind it, line by line.
         </p>
         <ul class="checks">
           <li><span class="tick" aria-hidden="true">✓</span>Where you rank, and the reasons why.</li>
           <li><span class="tick" aria-hidden="true">✓</span>Who's winning the review war.</li>
-          <li><span class="tick" aria-hidden="true">✓</span>Who's buying the ads. Who AI recommends.</li>
+          <li><span class="tick" aria-hidden="true">✓</span>Who AI recommends.</li>
         </ul>
         <div class="faces">
           <div class="stack">
@@ -135,7 +135,7 @@ const proofLogos: { href?: string; name: string; alt: string; h: number; radius?
       <div class="covers-head">
         <div>
           <div class="kicker">WHAT THE REPORT COVERS</div>
-          <h2>Where you stand in five places, and the reason why, every time.</h2>
+          <h2>Where you stand in four places, and the reason why, every time.</h2>
         </div>
         <a class="sample-link" href="/free-report/view">Open a sample report →</a>
       </div>
@@ -191,21 +191,6 @@ const proofLogos: { href?: string; name: string; alt: string; h: number; radius?
         </article>
 
         <article class="cover">
-          <div class="mock mock-ads">
-            <div class="sponsored">Sponsored</div>
-            <div class="ads">
-              <div class="ad"><div class="g">GUARANTEED</div><span class="bar"></span><span class="bar short"></span></div>
-              <div class="ad"><div class="g">GUARANTEED</div><span class="bar"></span><span class="bar short"></span></div>
-              <div class="ad missing">YOU<br />not here</div>
-            </div>
-          </div>
-          <div class="cover-copy">
-            <h3>Who's paying for the top of the page</h3>
-            <p>Local Services Ads and Search Ads above the map. Who has the Google Guaranteed badge.</p>
-          </div>
-        </article>
-
-        <article class="cover">
           <div class="mock mock-ai">
             <div class="bubble">best electrician in Tampa</div>
             <div class="ai-names">
@@ -230,9 +215,8 @@ const proofLogos: { href?: string; name: string; alt: string; h: number; radius?
           <h2>This is what a Tampa electrician sees when they search for themselves.</h2>
           <p>
             Three shops in the pack, and the report shows why: all three have "Electric" in the
-            name, a street address on the pin and 20+ new reviews a month. Two run Google
-            Guaranteed ads. The shop that ran the report had none of that, and didn't rank, even
-            from its own address.
+            name, a street address on the pin and 20+ new reviews a month. The shop that ran the
+            report had none of that, and didn't rank, even from its own address.
           </p>
           <a class="ghost" href="/free-report/view">Open the sample report →</a>
         </div>
@@ -255,14 +239,14 @@ const proofLogos: { href?: string; name: string; alt: string; h: number; radius?
               <div class="serp-name">Mr. Electric of Tampa Bay</div>
               <div class="serp-meta"><b>4.9</b> <span class="stars">★★★★★</span> (1,099) · Electrician</div>
             </div>
-            <div class="badge good">✓ GOOGLE GUARANTEED</div>
+            <div class="badge muted">20+ YEARS</div>
           </div>
           <div class="serp-row">
             <div>
               <div class="serp-name">Brandon Electric</div>
               <div class="serp-meta"><b>4.8</b> <span class="stars">★★★★★</span> (1,480) · Electrician</div>
             </div>
-            <div class="badge good">✓ GOOGLE GUARANTEED</div>
+            <div class="badge muted">18+ YEARS</div>
           </div>
           <div class="you-row">
             <div>
@@ -1151,27 +1135,6 @@ const proofLogos: { href?: string; name: string; alt: string; h: number; radius?
     align-items: center;
     justify-content: center;
     flex: none;
-  }
-  .mock-ads { justify-content: center; gap: 6px; font-family: Arial, Helvetica, sans-serif; }
-  .sponsored { font-size: 10px; font-weight: 700; color: #202124; }
-  .ads { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
-  .ad { background: #fff; border: 1px solid #dadce0; border-radius: 7px; padding: 7px; }
-  .ad .g { display: flex; align-items: center; gap: 3px; font-size: 7px; font-weight: 700; color: #188038; }
-  .ad .g::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #188038; }
-  .ad .bar { height: 5px; border-radius: 99px; background: #cfcfcf; width: 80%; margin-top: 7px; }
-  .ad .bar.short { width: 55%; margin-top: 4px; background: #e3e3e3; }
-  .ad.missing {
-    background: #fff7f1;
-    border: 1.5px dashed var(--orange);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    font-family: inherit;
-    font-size: 9.5px;
-    font-weight: 800;
-    color: var(--fail);
-    line-height: 1.3;
   }
   .mock-ai { justify-content: center; gap: 7px; }
   .bubble { align-self: flex-end; background: #ececef; border-radius: 12px 12px 3px 12px; padding: 5px 10px; font-size: 11px; font-weight: 600; }

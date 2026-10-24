@@ -1,6 +1,6 @@
 /* Builds well / okay / poorly headlines for the Free Google Report.
    Used by free-report-render.ts so a #1 shop never gets losing copy.
-   Every line is filled from live ranks, coverage, speed, ads, and AI counts. */
+   Every line is filled from live ranks, coverage, speed, and AI counts. */
 
 export type CopyTier = 'well' | 'okay' | 'poor';
 
@@ -230,11 +230,11 @@ export function closerCopy(pack: CopyTier, _count: number): { head: string; body
   if (pack === 'well') {
     return {
       head,
-      body: 'We keep the profile, site and ads tight — and coach you 1:1 every week so the #1 spot doesn’t slide.',
+      body: 'We keep the profile and site tight — and coach you 1:1 every week so the #1 spot doesn’t slide.',
     };
   }
   return {
     head,
-    body: 'We do the marketing (profile, site, ads) and coach you 1:1 every week so you understand every move and own the results. One team instead of eight vendors.',
+    body: 'We do the marketing (profile and site) and coach you 1:1 every week so you understand every move and own the results. One team instead of eight vendors.',
   };
 }

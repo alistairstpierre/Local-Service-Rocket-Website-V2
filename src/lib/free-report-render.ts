@@ -987,22 +987,22 @@ export function renderReportHtml(report: PublicReport): string {
   const coverLevel = coverageTier(youCov, covOf(leader));
   const overallPlace =
     [...B].sort((a, b) => exactScore(b.scores) - exactScore(a.scores)).findIndex((b) => b.you) + 1;
-  const cityQuery = [marketQuery, city].filter(Boolean).join(' ');
+  const packQuery = `${marketQuery} near me`.trim();
   const hero = heroCopy({
     overall: overallPlace,
     pack: you.pack,
     rivals: rivals.length,
     kwPlural,
     city: cityName,
-    query: cityQuery,
+    query: packQuery,
   });
   const heroHeadline = hero.headline;
   const heroSub = hero.sub;
   const packHeadline = packHeadlineCopy({ tier: packLevel, pack: you.pack, address: you.address });
   const searchFrom = you.address ? 'your address' : 'the middle of your service area — your address is hidden';
   const searchFromLabel = you.address
-    ? `Searched “${cityQuery}” from your address`
-    : `Searched “${cityQuery}” from the center of ${city} — your address is hidden`;
+    ? `Searched “${packQuery}” from your address`
+    : `Searched “${packQuery}” from the center of ${city} — your address is hidden`;
 
   const avgOf = (b: ExampleBiz) => b.weeks.slice(-weeksN).reduce((a, c) => a + c, 0) / weeksN;
   const activeOf = (b: ExampleBiz) => b.weeks.slice(-weeksN).filter((w) => w > 0).length;
@@ -1383,7 +1383,7 @@ export function renderReportHtml(report: PublicReport): string {
   if (!defaultGaps.length) {
     defaultGaps.push({
       head: 'The remaining gaps are small execution details.',
-      sub: 'Keep reviews coming, keep the profile complete, and don’t let a rival buy the top of the page unchallenged.',
+      sub: 'Keep reviews coming and keep the profile complete so the pack cannot take the calls back.',
     });
   }
   const usableLiveGaps = liveGaps.filter(
@@ -1495,11 +1495,11 @@ export function renderReportHtml(report: PublicReport): string {
         rankingsReady
           ? `<h1>${esc(heroHeadline)}</h1>
       <p class="rpt-lede">${esc(heroSub)}</p>
-      <div class="rpt-search"><span class="rpt-search-icon" aria-hidden="true"></span><span>${esc(cityQuery)}</span></div>
+      <div class="rpt-search"><span class="rpt-search-icon" aria-hidden="true"></span><span>${esc(packQuery)}</span></div>
       ${shopRanking}`
           : `<h1>We’re building your Google report.</h1>
       <p class="rpt-lede">Check back for the full rankings when loading completes. The sections below fill in as each check finishes.</p>
-      ${city ? `<div class="rpt-search"><span class="rpt-search-icon" aria-hidden="true"></span><span>${esc(cityQuery)}</span></div>` : ''}
+      ${city ? `<div class="rpt-search"><span class="rpt-search-icon" aria-hidden="true"></span><span>${esc(packQuery)}</span></div>` : ''}
       ${heroHold}`
       }
     </div>
@@ -1510,7 +1510,7 @@ export function renderReportHtml(report: PublicReport): string {
       `<section class="rpt-sec">
       <div class="rpt-sec-label"><span>01</span><i></i><span>GOOGLE MAP PACK</span></div>
       <h2>${esc(packHeadline)}</h2>
-      <p class="rpt-lede">Searched “${esc(cityQuery)}” from ${esc(searchFrom)}, then from 24 more spots out to ${outerMi} miles. Three spots on the map decide who gets the call.</p>
+      <p class="rpt-lede">Searched “${esc(packQuery)}” from ${esc(searchFrom)}, then from 24 more spots out to ${outerMi} miles. Three spots on the map decide who gets the call.</p>
       ${whyNote(packWhyCopy())}
       ${rankPills('PROFILE SCORE', rankGbp)}
 
