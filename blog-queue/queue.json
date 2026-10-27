@@ -74,8 +74,9 @@
       "dek": "Roofing marketing on Google — same spine as Honest Hank's. GBP, LSA, Search, booked jobs.",
       "date": "October 27, 2026",
       "publishAfter": "2026-10-27",
-      "status": "ready",
-      "seo": "roofing marketing"
+      "status": "published",
+      "seo": "roofing marketing",
+      "publishedOn": "2026-10-27"
     },
     {
       "slug": "waterproofing-google-marketing",
