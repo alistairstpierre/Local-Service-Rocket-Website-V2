@@ -706,6 +706,9 @@ function siteScoreOf(b: ExampleBiz): number {
   if (b.ux.phoneHeader) score += 3;
   if (b.ux.clickCall) score += 3;
   if (b.ux.ctaFold) score += 3;
+  const book = bookKind(b.book);
+  if (book === 'google') score += 3;
+  else if (book === 'external') score += 1.5;
   if (b.ux.form) score += 3;
   if (b.ux.reviewsHome) score += 3;
   if (b.ux.map) score += 2;
@@ -796,14 +799,11 @@ function bookKind(book: ExampleBiz['book']): false | 'external' | 'google' {
   return false;
 }
 
-function hoursBookCell(hours: boolean, book: ExampleBiz['book']) {
+function bookOnlineCell(book: ExampleBiz['book']) {
   const kind = bookKind(book);
-  if (hours && kind === 'google') return yes('hours · book on Google');
-  if (hours && kind === 'external') return part('hours · book on website');
-  if (hours) return part('hours only');
-  if (kind === 'google') return part('book on Google');
-  if (kind === 'external') return part('book on website');
-  return no('neither');
+  if (kind === 'google') return yes('on Google');
+  if (kind === 'external') return part('links to the website');
+  return no('none');
 }
 function num(t: string | number, sub = '', color = INK, size = '22px') {
   return { t: String(t), color, pill: 'transparent', sub, size };
@@ -1247,7 +1247,7 @@ export function renderReportHtml(report: PublicReport): string {
     row('Photos on profile', 'Images on the listing', orderGbp, (b) =>
       b.photos ? num(fmt(b.photos), 'photos') : b.descUnknown ? part('checking…') : no('none listed')
     ),
-    row('Hours · Book online', 'Actions on the profile', orderGbp, (b) => hoursBookCell(b.hours, b.book)),
+    row('Hours listed', 'Opening hours on the listing', orderGbp, (b) => (b.hours ? yes('listed') : no('missing'))),
     row('Phone on profile', 'Call button on the listing', orderGbp, (b) => (b.phone ? yes('listed') : no('missing'))),
   ];
 
@@ -1358,6 +1358,7 @@ export function renderReportHtml(report: PublicReport): string {
     row('Phone number in header', 'Visible without scrolling', orderWeb, (b) => (b.ux.phoneHeader ? yes('') : no(''))),
     row('Tap-to-call on mobile', 'Number is a link', orderWeb, (b) => (b.ux.clickCall ? yes('') : no(''))),
     row('Call-to-action above the fold', 'A button at the top of the page', orderWeb, (b) => (b.ux.ctaFold ? yes('') : no(''))),
+    row('Book online', 'A booking button, not just a contact form', orderWeb, (b) => bookOnlineCell(b.book)),
     row('Contact form', 'Any page', orderWeb, (b) => (b.ux.form ? yes('') : no(''))),
     row('Reviews shown on homepage', 'Stars a visitor can see', orderWeb, (b) => (b.ux.reviewsHome ? yes('') : no(''))),
     row('Map of service area', 'Embedded Google Map', orderWeb, (b) => (b.ux.map ? yes('') : no(''))),
