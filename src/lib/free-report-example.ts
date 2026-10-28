@@ -55,7 +55,8 @@ export type ExampleBiz = {
   descLocations?: boolean;
   photos?: number;
   hours: boolean;
-  book: boolean;
+  /** true / google = Reserve on Google. external = Book button that leaves Google. */
+  book: boolean | 'external' | 'google';
   phone: boolean;
   closes: string;
   url: string;
@@ -65,6 +66,9 @@ export type ExampleBiz = {
   h1: string;
   h1Kw: boolean;
   metaDesc: string | null;
+  searchAtlas?: boolean;
+  seoOverlay?: string;
+  metaFromAtlas?: boolean;
   h2Kw: number;
   altKw: number;
   schema: boolean;

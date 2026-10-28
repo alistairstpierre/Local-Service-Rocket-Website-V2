@@ -3,8 +3,8 @@
    poll succeeds. Overall shop rankings stay hidden until every section is
    ready. The Profile line-by-line board stays hidden until About and photo
    counts are loaded for every shop. Layout matches
-   the Map Pack redesign (3 phone searches) plus the rest of
-   Claude Design Files/Free Google Report.dc.html. */
+   the Map Pack redesign (3 phone searches, score = average of those 3)
+   plus the rest of Claude Design Files/Free Google Report.dc.html. */
 
 import {
   aiHeadlineCopy,
@@ -65,6 +65,8 @@ export type PublicReportBusiness = {
     hasWebsite: boolean;
     hasHours: boolean;
     hasBookOnline: boolean;
+    /** Google Reserve = full. Book button → the shop’s site = half / yellow. */
+    bookOnline?: 'google' | 'external' | 'none';
     hasAddressListed?: boolean;
     address?: string;
     yearsInBusiness?: number;
@@ -83,6 +85,9 @@ export type PublicReportBusiness = {
     rootUrl: string;
     metaTitle?: string;
     metaDescription?: string;
+    metaDescriptionSource?: 'html' | 'search-atlas';
+    searchAtlas?: boolean;
+    seoOverlay?: string;
     h1?: string;
     h1ContainsKeyword?: boolean;
     h2KeywordCount?: number;
@@ -465,7 +470,7 @@ function overlayBiz(
     descLocations: fit?.locations,
     photos: live.gbp.photoCount ?? (heroOn && !ready ? example.photos : 0),
     hours: live.gbp.hasHours,
-    book: live.gbp.hasBookOnline,
+    book: live.gbp.bookOnline ?? (live.gbp.hasBookOnline ? 'external' : false),
     phone: live.gbp.hasPhone,
     years: live.gbp.yearsInBusiness ?? (heroOn && !ready ? example.years : 0),
     photo: live.gbp.photoUrl || (heroOn && !ready ? example.photo : ''),
@@ -477,6 +482,9 @@ function overlayBiz(
     h1: live.website?.h1 ?? (siteOn ? example.h1 : '…'),
     h1Kw: live.website?.h1ContainsKeyword ?? (siteOn ? example.h1Kw : false),
     metaDesc: live.website?.metaDescription ?? (siteOn ? example.metaDesc : null),
+    searchAtlas: live.website?.searchAtlas ?? false,
+    seoOverlay: live.website?.seoOverlay,
+    metaFromAtlas: live.website?.metaDescriptionSource === 'search-atlas',
     h2Kw: live.website ? (live.website.h2KeywordCount ?? 0) : siteOn ? example.h2Kw : 0,
     altKw: live.website ? (live.website.altKeywordPercent ?? 0) : siteOn ? example.altKw : 0,
     ssl: live.website ? (live.website.ssl ?? live.website.rootUrl.startsWith('https')) : siteOn ? example.ssl : true,
@@ -781,6 +789,22 @@ function no(sub = '') {
 function part(sub = '') {
   return { t: '~', color: '#fff', pill: A, sub, size: '15px' };
 }
+
+function bookKind(book: ExampleBiz['book']): false | 'external' | 'google' {
+  if (book === 'external' || book === 'google') return book;
+  if (book) return 'google';
+  return false;
+}
+
+function hoursBookCell(hours: boolean, book: ExampleBiz['book']) {
+  const kind = bookKind(book);
+  if (hours && kind === 'google') return yes('hours · book on Google');
+  if (hours && kind === 'external') return part('hours · book on website');
+  if (hours) return part('hours only');
+  if (kind === 'google') return part('book on Google');
+  if (kind === 'external') return part('book on website');
+  return no('neither');
+}
 function num(t: string | number, sub = '', color = INK, size = '22px') {
   return { t: String(t), color, pill: 'transparent', sub, size };
 }
@@ -923,6 +947,16 @@ function whyNote(copy: { why: string; improve: string }): string {
     <p><b>Why it matters.</b> ${esc(copy.why)}</p>
     <p><b>How to improve.</b> ${esc(copy.improve)}</p>
   </aside>`;
+}
+
+/** One search: #1 = 100, #2 = 80, … #6+ or missing = 0. Average of the three phones. */
+function packSearchScore(ranks?: (number | null)[]): number {
+  const three = [0, 1, 2].map((i) => ranks?.[i] ?? null);
+  const one = (rank: number | null) => {
+    if (rank == null || rank < 1) return 0;
+    return Math.max(0, 100 - (rank - 1) * 20);
+  };
+  return Math.round(three.reduce((sum, rank) => sum + one(rank), 0) / 3);
 }
 
 function mapsOf(b: ExampleBiz): number {
@@ -1139,6 +1173,7 @@ export function renderReportHtml(report: PublicReport): string {
   const avgOf = (b: ExampleBiz) => b.weeks.slice(-weeksN).reduce((a, c) => a + c, 0) / weeksN;
   const activeOf = (b: ExampleBiz) => b.weeks.slice(-weeksN).filter((w) => w > 0).length;
   const maxW = Math.max(1, ...B.flatMap((b) => b.weeks.slice(-weeksN)));
+  const rankPack = rankBy(B, (b) => packSearchScore(b.packRanks));
   const rankGbp = rankBy(B, (b) => b.scores.gbp);
   const rankRev = rankBy(B, (b) => b.scores.rev ?? 0);
   const rankWeb = rankBy(B, (b) => b.scores.web);
@@ -1212,9 +1247,7 @@ export function renderReportHtml(report: PublicReport): string {
     row('Photos on profile', 'Images on the listing', orderGbp, (b) =>
       b.photos ? num(fmt(b.photos), 'photos') : b.descUnknown ? part('checking…') : no('none listed')
     ),
-    row('Hours · Book online', 'Actions on the profile', orderGbp, (b) =>
-      b.hours && b.book ? yes('both') : b.hours || b.book ? part(b.hours ? 'hours only' : 'booking only') : no('neither')
-    ),
+    row('Hours · Book online', 'Actions on the profile', orderGbp, (b) => hoursBookCell(b.hours, b.book)),
     row('Phone on profile', 'Call button on the listing', orderGbp, (b) => (b.phone ? yes('listed') : no('missing'))),
   ];
 
@@ -1277,15 +1310,23 @@ export function renderReportHtml(report: PublicReport): string {
       hlLine: s.match ? (b.titleKw === 'yes' ? Y : A) : 'transparent',
       desc:
         b.metaDesc ||
-        'No meta description. Google picks random text from the page instead, “Welcome to our website. We are a family owned and operated business serving…”',
+        (b.searchAtlas
+          ? `${b.seoOverlay || 'An SEO overlay'} is on the page. Google can see an injected description; it is not in the HTML.`
+          : 'No meta description. Google picks random text from the page instead, “Welcome to our website. We are a family owned and operated business serving…”'),
       descStyle: b.metaDesc ? 'normal' : 'italic',
-      descPill: b.metaDesc ? (descKw === 'yes' ? Y : A) : N,
-      descMark: b.metaDesc ? (descKw === 'yes' ? '✓' : '~') : '✗',
-      descStatus: b.metaDesc
+      descPill: b.metaDesc ? (descKw === 'yes' ? Y : A) : b.searchAtlas ? A : N,
+      descMark: b.metaDesc ? (descKw === 'yes' ? '✓' : '~') : b.searchAtlas ? '~' : '✗',
+      descStatus: b.metaFromAtlas
         ? descKw === 'yes'
-          ? 'Written, says what you do'
-          : 'Written, no service keyword'
-        : 'Missing. Google picks random text',
+          ? `${b.seoOverlay || 'Search Atlas'} injected this · says what you do`
+          : `${b.seoOverlay || 'Search Atlas'} injected this`
+        : b.metaDesc
+          ? descKw === 'yes'
+            ? 'Written, says what you do'
+            : 'Written, no service keyword'
+          : b.searchAtlas
+            ? `${b.seoOverlay || 'SEO overlay'} on the page. Google can see an injected description`
+            : 'Missing. Google picks random text',
       ...st,
       bg: b.you ? TINT : '#fff',
       border: b.you ? '#f3c7ad' : '#e7e7e7',
@@ -1298,6 +1339,13 @@ export function renderReportHtml(report: PublicReport): string {
     row('H2 has keyword', 'At least one section heading on the homepage', orderWeb, (b) => (b.h2Kw > 0 ? yes('') : no(''))),
     row('Image alt text w/ keyword', 'Share of images described', orderWeb, (b) => num(`${b.altKw}%`, 'of images', b.altKw === 0 ? N : INK)),
     row('Schema markup', 'The business type Google can read', orderWeb, (b) => schemaCell(b.schemaTypes, b.schema)),
+    row('SEO overlay', 'A script can inject title and meta for Google', orderWeb, (b) =>
+      b.metaFromAtlas
+        ? yes(`${b.seoOverlay || 'Search Atlas'} injecting`)
+        : b.searchAtlas
+          ? part(`${b.seoOverlay || 'overlay'} on the page`)
+          : no('not found')
+    ),
     row('Service pages', 'One page per service', orderWeb, (b) => num(b.servicePages, 'pages', b.servicePages < 3 ? N : INK)),
     row('Location pages', 'One page per city served', orderWeb, (b) => num(b.locationPages, 'pages')),
     row('SSL (https)', 'Padlock in the browser', orderWeb, (b) => (b.ssl ? yes('secure') : no('not secure'))),
@@ -1534,7 +1582,7 @@ export function renderReportHtml(report: PublicReport): string {
   if (!(you.h1Kw && you.titleKw === 'yes')) {
     defaultGaps.push({
       head: `Your site title and H1 never say “${keyword}”.`,
-      sub: `“${you.title}” ${you.metaDesc ? 'has a meta description.' : 'has no meta description.'} ${you.schema ? 'Schema is present.' : 'No schema.'}`,
+      sub: `“${you.title}” ${you.metaDesc ? 'has a meta description.' : you.searchAtlas ? `has ${you.seoOverlay || 'an SEO overlay'} injecting a description.` : 'has no meta description.'} ${you.schema ? 'Schema is present.' : 'No schema.'}`,
     });
   }
   if (youM < mentionsOf(topRival)) {
@@ -1682,7 +1730,7 @@ export function renderReportHtml(report: PublicReport): string {
       <h2>${esc(packHeadline)}</h2>
       <p class="rpt-lede">This is the first screen a ${esc(cityName)} homeowner sees for each search. The map shows three businesses. Everyone else is a tap away that most people never make.</p>
       ${whyNote(packWhyCopy())}
-      ${rankPills('PROFILE SCORE', rankGbp)}
+      ${rankPills('MAP PACK SCORE', rankPack)}
 
       <div class="rpt-phones">
         ${phoneOrder
