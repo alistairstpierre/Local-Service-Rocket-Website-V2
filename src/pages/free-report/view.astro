@@ -518,6 +518,99 @@ const apiUrl = (
   .view :global(.rpt-sec-label.is-peach i) { color: #ff8f52; background: transparent; }
   .view :global(.rpt-sec-label.is-peach i) { background: #ff8f52; }
 
+  .view :global(.rpt-phones) {
+    display: grid;
+    grid-template-columns: 1fr 1.25fr 1fr;
+    gap: 24px;
+    margin-top: 34px;
+    align-items: end;
+  }
+  .view :global(.rpt-phone-kicker) {
+    font-size: 11px; font-weight: 800; letter-spacing: 0.1em; color: #8a8a8a; text-align: center; margin-bottom: 10px;
+  }
+  .view :global(.rpt-phone-kicker.is-best),
+  .view :global(.rpt-mini-kicker.is-best) { color: var(--orange); }
+  .view :global(.rpt-phone-body) {
+    border: 6px solid #1a1a1a; border-radius: 30px; overflow: hidden; background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .view :global(.rpt-phone.is-best .rpt-phone-body) {
+    border-width: 8px; border-radius: 38px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.14);
+  }
+  .view :global(.rpt-phone:not(.is-best) .rpt-phone-body) { opacity: 0.92; }
+  .view :global(.rpt-phone-bar) {
+    padding: 14px 12px 8px; display: flex; justify-content: space-between;
+    font-size: 10px; color: #1a1a1a; font-weight: 700;
+  }
+  .view :global(.rpt-phone.is-best .rpt-phone-bar) { padding: 16px 16px 10px; font-size: 11px; }
+  .view :global(.rpt-phone-q) {
+    margin: 0 10px; border: 1px solid #dfe1e5; border-radius: 99px; padding: 7px 11px;
+    font-size: 11.5px; color: #202124; display: flex; gap: 7px; align-items: center;
+  }
+  .view :global(.rpt-phone.is-best .rpt-phone-q) {
+    margin: 0 14px; padding: 10px 14px; font-size: 14px; gap: 9px;
+    box-shadow: 0 1px 6px rgba(32, 33, 36, 0.16);
+  }
+  .view :global(.rpt-phone-q i) {
+    width: 10px; height: 10px; border: 2px solid #9aa0a6; border-radius: 50%; flex: none;
+  }
+  .view :global(.rpt-phone.is-best .rpt-phone-q i) { width: 13px; height: 13px; }
+  .view :global(.rpt-phone-q span) { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .view :global(.rpt-phone-map) {
+    height: 74px; margin: 10px 10px 0; border-radius: 8px; background: #e9eef2; position: relative; overflow: hidden;
+    background-image: linear-gradient(#d9e1e8 1px, transparent 1px), linear-gradient(90deg, #d9e1e8 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  .view :global(.rpt-phone.is-best .rpt-phone-map) { height: 118px; margin: 12px 14px 0; border-radius: 10px; background-size: 28px 28px; }
+  .view :global(.rpt-phone-map.has-map) { background-image: none; }
+  .view :global(.rpt-phone-map .rpt-map-bg) {
+    z-index: 0;
+    filter: contrast(2) saturate(0.65) brightness(0.92);
+    object-position: 50% 55%;
+  }
+  .view :global(.rpt-phone-map .rpt-here) { width: 12px; height: 12px; border-width: 2px; box-shadow: 0 0 0 1.5px #1a1a1a; }
+  .view :global(.rpt-phone.is-best .rpt-phone-map .rpt-here) { width: 16px; height: 16px; border-width: 3px; box-shadow: 0 0 0 2px #1a1a1a; }
+  .view :global(.rpt-phone-row) {
+    padding: 9px 12px; border-bottom: 1px solid #eee; font-size: 11.5px; color: #1f1f1f;
+    display: flex; justify-content: space-between; align-items: center; gap: 8px;
+  }
+  .view :global(.rpt-phone.is-best .rpt-phone-row) { padding: 12px 16px; font-size: 14px; }
+  .view :global(.rpt-phone-row span) { font-family: Manrope, sans-serif; font-weight: 800; flex: none; }
+  .view :global(.rpt-phone-name) { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .view :global(.rpt-phone-meta) { font-size: 10px; color: #70757a; margin-top: 2px; }
+  .view :global(.rpt-phone.is-best .rpt-phone-meta) { font-size: 12px; }
+  .view :global(.rpt-phone-more) { padding: 8px 12px; font-size: 11px; color: #1a73e8; }
+  .view :global(.rpt-phone.is-best .rpt-phone-more) { padding: 10px 16px; font-size: 13px; border-bottom: 1px solid #eee; }
+  .view :global(.rpt-phone-miss) {
+    margin: 0 10px 12px; border-top: 1.5px dashed #d1402f; padding-top: 8px;
+    font-family: Manrope, sans-serif; font-size: 10.5px; color: #d1402f; font-weight: 700; text-align: center;
+  }
+  .view :global(.rpt-phone-miss.is-warn) { border-top-color: var(--orange); color: var(--orange); }
+  .view :global(.rpt-phone-you-row) {
+    padding: 12px 16px 16px; background: #fff7f1; font-size: 14px; color: #1f1f1f;
+    display: flex; justify-content: space-between; align-items: center; gap: 8px;
+    font-family: Manrope, sans-serif;
+  }
+  .view :global(.rpt-phone-you-row span) { font-weight: 800; color: var(--orange); font-size: 22px; }
+  .view :global(.rpt-phone-you-name) { font-weight: 800; margin-top: 2px; }
+  .view :global(.rpt-phone-score) { text-align: center; margin-top: 14px; }
+  .view :global(.rpt-phone.is-best .rpt-phone-score) { margin-top: 16px; }
+  .view :global(.rpt-phone-rank) { font-size: 30px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; padding-top: 4px; }
+  .view :global(.rpt-phone.is-best .rpt-phone-rank) { font-size: 64px; letter-spacing: -0.04em; line-height: 1; padding-top: 0; }
+  .view :global(.rpt-phone-sub) { font-size: 13px; color: #6b6b6b; font-weight: 600; margin-top: 4px; }
+  .view :global(.rpt-made) { margin-top: 36px; }
+  .view :global(.rpt-made-grid) { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 10px; }
+  .view :global(.rpt-made-card) { border: 1px solid #e7e7e7; border-radius: 14px; padding: 16px 18px; }
+  .view :global(.rpt-made-card.is-you) { border-color: #f3c7ad; background: #fff7f1; }
+  .view :global(.rpt-made-name) { font-weight: 800; font-size: 14px; margin-top: 3px; }
+  .view :global(.rpt-made-card.is-you .rpt-made-name) { color: var(--orange); }
+  .view :global(.rpt-made-chips) { display: flex; gap: 6px; margin-top: 12px; }
+  .view :global(.rpt-made-chip) {
+    flex: 1; height: 26px; border-radius: 7px; border: 1.5px solid transparent;
+    font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center;
+  }
+  .view :global(.rpt-made-count) { font-size: 24px; font-weight: 800; letter-spacing: -0.03em; margin-top: 10px; }
+  .view :global(.rpt-made-count span) { font-size: 12px; color: #8a8a8a; font-weight: 600; }
   .view :global(.rpt-pack) {
     display: flex;
     flex-wrap: wrap;
@@ -539,11 +632,11 @@ const apiUrl = (
   .view :global(.rpt-serp-head) { padding: 14px 16px 10px; font-family: Manrope, sans-serif; }
   .view :global(.rpt-serp-from) { font-weight: 800; font-size: 14px; margin-top: 3px; line-height: 1.3; }
   .view :global(.rpt-fake-map) {
-    height: 104px; background: #e9eef2; position: relative; overflow: hidden; margin: 0 12px; border-radius: 10px;
-    background-image: linear-gradient(#d9e1e8 1px, transparent 1px), linear-gradient(90deg, #d9e1e8 1px, transparent 1px);
+    height: 104px; background: #d5dbe1; position: relative; overflow: hidden; margin: 0 12px; border-radius: 10px;
+    background-image: linear-gradient(#c5ccd3 1px, transparent 1px), linear-gradient(90deg, #c5ccd3 1px, transparent 1px);
     background-size: 30px 30px;
   }
-  .view :global(.rpt-fake-map.is-tall) { height: 168px; }
+  .view :global(.rpt-fake-map.is-tall) { height: 220px; }
   .view :global(.rpt-here) {
     position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
     width: 16px; height: 16px; border-radius: 50%; background: #1a1a1a; border: 3px solid #fff;
@@ -556,8 +649,15 @@ const apiUrl = (
     white-space: nowrap; letter-spacing: 0.04em; pointer-events: none; z-index: 2;
   }
   .view :global(.rpt-map-bg) {
-    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; z-index: 0;
-    filter: grayscale(1) contrast(1.12) brightness(1.02);
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 62%;
+    display: block; z-index: 0;
+    filter: contrast(1.85) saturate(0.55) brightness(0.86);
+  }
+  .view :global(.rpt-map-place) {
+    position: absolute; left: 8px; top: 8px; z-index: 2; pointer-events: none;
+    background: rgba(255, 255, 255, 0.92); color: #1a1a1a; border: 1px solid #d8dde2;
+    padding: 3px 8px; border-radius: 6px; font-size: 10.5px; font-weight: 800;
+    font-family: Manrope, sans-serif; letter-spacing: 0.02em; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
   }
   .view :global(.rpt-cells),
   .view :global(.rpt-rings) { z-index: 1; }
@@ -607,10 +707,13 @@ const apiUrl = (
   .view :global(.rpt-from-grid) { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
   .view :global(.rpt-from) { border: 1.5px solid #ececec; border-radius: 10px; padding: 6px; min-width: 0; }
   .view :global(.rpt-from-map) {
-    position: relative; overflow: hidden; height: 60px; border-radius: 8px; background: #e9eef2;
+    position: relative; overflow: hidden; height: 72px; border-radius: 8px; background: #e9eef2;
     background-image: linear-gradient(#d9e1e8 1px, transparent 1px), linear-gradient(90deg, #d9e1e8 1px, transparent 1px);
     background-size: 15px 15px;
   }
+  .view :global(.rpt-from-map.has-map) { background-image: none; }
+  .view :global(.rpt-from-map .rpt-map-bg) { z-index: 0; }
+  .view :global(.rpt-geo-map .rpt-map-bg) { z-index: 0; }
   .view :global(.rpt-from-blob) {
     position: absolute; left: 12%; top: 10%; width: 76%; height: 80%;
     border-radius: 46% 54% 50% 50%; background: #f3c7ad; opacity: 0.8;
@@ -638,10 +741,11 @@ const apiUrl = (
     border: 1px solid #ececec; border-radius: 12px; background: #fafafa; flex-wrap: wrap;
   }
   .view :global(.rpt-how-map) { position: relative; flex: none; width: 92px; height: 92px; border-radius: 10px; overflow: hidden; }
+  .view :global(.rpt-how-map .rpt-map-bg) { z-index: 1; }
   .view :global(.rpt-how-map::before) {
     content: ""; position: absolute; inset: 0; border-radius: 10px; background: #e9eef2; overflow: hidden;
     background-image: linear-gradient(#d9e1e8 1px, transparent 1px), linear-gradient(90deg, #d9e1e8 1px, transparent 1px);
-    background-size: 18px 18px;
+    background-size: 18px 18px; z-index: 0;
   }
   .view :global(.rpt-how-map::after) {
     content: ""; position: absolute; left: -10%; right: -10%; top: 52%; height: 5px; background: #fff; transform: rotate(-7deg);
@@ -1005,5 +1109,16 @@ const apiUrl = (
   @media (max-width: 800px) {
     .view :global(.rpt-lsa) { grid-template-columns: 1fr; }
     .view :global(.rpt-from-grid) { grid-template-columns: 1fr; }
+    .view :global(.rpt-phones) { grid-template-columns: 1fr 1fr; gap: 12px 12px; }
+    .view :global(.rpt-phone.is-best) { grid-column: 1 / -1; order: -1; }
+    .view :global(.rpt-made-grid) { grid-template-columns: 1fr; }
+    .view :global(.rpt-made-card) {
+      display: flex; align-items: center; gap: 10px; padding: 12px 14px;
+    }
+    .view :global(.rpt-made-card .rpt-mini-kicker) { display: none; }
+    .view :global(.rpt-made-name) { flex: 1; margin-top: 0; font-size: 13px; }
+    .view :global(.rpt-made-chips) { margin-top: 0; flex: none; }
+    .view :global(.rpt-made-chip) { width: 30px; flex: none; height: 24px; font-size: 11px; }
+    .view :global(.rpt-made-count) { width: 44px; text-align: right; margin-top: 0; font-size: 20px; }
   }
 </style>

@@ -3,6 +3,7 @@
    poll succeeds. Overall shop rankings stay hidden until every section is
    ready. The Profile line-by-line board stays hidden until About and photo
    counts are loaded for every shop. Layout matches
+   the Map Pack redesign (3 phone searches) plus the rest of
    Claude Design Files/Free Google Report.dc.html. */
 
 import {
@@ -10,7 +11,6 @@ import {
   aiTier,
   aiWhyCopy,
   closerCopy,
-  coverageTier,
   gapsHeadingCopy,
   heroCopy,
   mapCtaCopy,
@@ -29,6 +29,7 @@ import {
   EXAMPLE_BIZ,
   EXAMPLE_BLURB,
   EXAMPLE_META,
+  EXAMPLE_PACK_SEARCHES,
   type ExampleAuth,
   type ExampleBiz,
 } from './free-report-example';
@@ -37,6 +38,7 @@ export type PublicReportBusiness = {
   name: string;
   isSubject: boolean;
   packPosition?: number;
+  packRanks?: (number | null)[];
   scores: {
     gbp: number;
     reviews?: number;
@@ -74,6 +76,7 @@ export type PublicReportBusiness = {
     photoUrl?: string;
     photoCount?: number;
     reviewWeeks?: number[];
+    packRanks?: (number | null)[];
     packGrid?: (number | null)[];
   };
   website?: {
@@ -132,6 +135,22 @@ export type PublicReportBusiness = {
   };
 };
 
+export type PublicPackResult = {
+  name: string;
+  placeId?: string;
+  position: number;
+  rating?: number;
+  reviewCount?: number;
+  yearsInBusiness?: number;
+  address?: string;
+};
+
+export type PublicPackSearch = {
+  kind: 'near-me' | 'city' | 'emergency';
+  query: string;
+  results: PublicPackResult[];
+};
+
 export type PublicAiSearch = {
   questions: string[];
   platforms: ('chatgpt' | 'gemini')[];
@@ -154,8 +173,7 @@ export function examplePublicReport(): PublicReport {
     cta: { href: '/growth-audit', label: 'See how we close these gaps' },
     generatedAt: new Date().toISOString(),
     mapImageUrl: '/free-report/map.jpg',
-    gridSize: 5,
-    gridRingMiles: [0, 1, 3],
+    packSearches: EXAMPLE_PACK_SEARCHES,
   };
 }
 
@@ -190,13 +208,15 @@ export type PublicReport = {
   gaps: string[];
   cta: { href: string; label: string };
   generatedAt?: string;
-  /** One static map of the shop pin, reused on the Map Pack SERP, grids, and search-from cards. */
+  /** One static map of the shop pin, reused on the Map Pack phones. */
   mapImageUrl?: string;
-  /** Miles from the shop pin to each edge of that square map. Used to place the 1 / 3 mile dots. */
+  /** Miles from the shop pin to each edge of that square map. */
   mapHalfMiles?: number;
-  /** Edge length of packGrid (5 = 0 / 1 / 3 mile rings). */
+  /** The three Map Pack searches shown as phones. */
+  packSearches?: PublicPackSearch[];
+  /** Edge length of packGrid (5 = 0 / 1 / 3 mile rings). Old reports only. */
   gridSize?: number;
-  /** Miles for each Chebyshev ring, index 0 = the shop pin. */
+  /** Miles for each Chebyshev ring, index 0 = the shop pin. Old reports only. */
   gridRingMiles?: number[];
   stage?: 'queued' | 'profile' | 'pack' | 'website' | 'ads' | 'ai' | 'complete';
   ready?: {
@@ -414,6 +434,7 @@ function overlayBiz(
     name: live.name,
     short: shortName(live.name),
     pack: live.packPosition ?? null,
+    packRanks: live.packRanks?.length === 3 ? live.packRanks : live.gbp.packRanks,
     you: live.isSubject,
     scores: {
       gbp: live.scores.gbp,
@@ -437,7 +458,7 @@ function overlayBiz(
       (!live.gbp.hasDescription &&
         live.gbp.gbpInfoLoaded !== true &&
         Boolean(ready) &&
-        !(ready.pack && ready.website && ready.ai)),
+        !(ready && ready.pack && ready.website && ready.ai)),
     description: live.gbp.description,
     descKeyword: fit?.keyword,
     descServices: fit?.services,
@@ -494,6 +515,7 @@ function ghostBiz(name: string, pack: number | null, you = false): ExampleBiz {
     name,
     short: shortName(name),
     pack,
+    packRanks: [null, null, null],
     you,
     scores: { gbp: 0, rev: 0, web: 0, spd: 0, site: 0, ads: 0, ai: 0 },
     rating: 0,
@@ -576,6 +598,7 @@ function mergeReport(report: PublicReport): {
   liveGaps: string[];
   mapImageUrl?: string;
   mapHalfMiles?: number;
+  packSearches?: PublicPackSearch[];
   ready?: ReportReady;
 } {
   const marketQuery = report.keyword || EXAMPLE_META.keyword;
@@ -619,6 +642,7 @@ function mergeReport(report: PublicReport): {
     liveGaps: report.gaps,
     mapImageUrl: report.mapImageUrl,
     mapHalfMiles: report.mapHalfMiles,
+    packSearches: report.packSearches?.length ? report.packSearches : undefined,
     ready,
   };
 }
@@ -901,6 +925,109 @@ function whyNote(copy: { why: string; improve: string }): string {
   </aside>`;
 }
 
+function mapsOf(b: ExampleBiz): number {
+  if (b.packRanks?.length) return b.packRanks.filter((rank) => rank != null && rank <= 3).length;
+  return typeof b.pack === 'number' && b.pack <= 3 ? 1 : 0;
+}
+
+function youRankInSearch(search: PublicPackSearch, youName: string): number | null {
+  return search.results.find((row) => namesRoughlyMatch(row.name, youName))?.position ?? null;
+}
+
+function packRankTone(rank: number | null, you: boolean): { color: string; bg: string; border: string } {
+  if (rank == null) return { color: '#fff', bg: N, border: N };
+  if (rank <= 3) return { color: '#fff', bg: Y, border: Y };
+  if (you) return { color: OR, bg: '#fff', border: OR };
+  return { color: A, bg: '#fff', border: A };
+}
+
+function phoneYouLine(rank: number | null, featured: boolean): { foot: string; rank: string; sub: string; color: string } {
+  if (rank == null) {
+    return {
+      foot: featured
+        ? ''
+        : `<div class="rpt-phone-miss">you don’t appear at all</div>`,
+      rank: 'Not found',
+      sub: '',
+      color: N,
+    };
+  }
+  if (rank <= 3) {
+    return { foot: '', rank: `#${rank}`, sub: 'On the map', color: Y };
+  }
+  const taps = rank - 3;
+  return {
+    foot: featured
+      ? ''
+      : `<div class="rpt-phone-miss is-warn">you’re ${taps} tap${taps === 1 ? '' : 's'} below this line</div>`,
+    rank: `#${rank}`,
+    sub: rank === 4 ? 'One spot from the map' : `${taps} tap${taps === 1 ? '' : 's'} below the map`,
+    color: rank <= 10 ? (featured ? OR : A) : N,
+  };
+}
+
+function phoneHtml(
+  search: PublicPackSearch,
+  index: number,
+  featured: boolean,
+  youName: string,
+  mapBg: string
+): string {
+  const youRank = youRankInSearch(search, youName);
+  const you = phoneYouLine(youRank, featured);
+  const top = search.results.filter((row) => row.position <= 3).slice(0, 3);
+  const hidden = featured && youRank != null && youRank > 3
+    ? search.results.find((row) => namesRoughlyMatch(row.name, youName))
+    : undefined;
+  const label = featured
+    ? `SEARCH ${index + 1} · YOUR BEST`
+    : `SEARCH ${index + 1}`;
+  const rows = top
+    .map((row) => {
+      const meta = [
+        row.rating != null ? `${row.rating.toFixed(1)}` : '',
+        row.reviewCount != null ? `(${fmt(row.reviewCount)})` : '',
+        row.yearsInBusiness ? `${row.yearsInBusiness}+ yrs` : '',
+      ]
+        .filter(Boolean)
+        .join(' · ');
+      return `<div class="rpt-phone-row">
+        <div>
+          <div class="rpt-phone-name">${esc(row.name)}</div>
+          ${meta ? `<div class="rpt-phone-meta">${esc(meta.replace(/^([\d.]+)/, '$1 ★'))}</div>` : ''}
+        </div>
+        <span>#${row.position}</span>
+      </div>`;
+    })
+    .join('');
+  const youBlock = hidden
+    ? `<div class="rpt-phone-you-row">
+        <div>
+          <div class="rpt-mini-kicker">HIDDEN BEHIND THE TAP</div>
+          <div class="rpt-phone-you-name">${esc(hidden.name)}</div>
+          ${hidden.rating != null ? `<div class="rpt-phone-meta">${hidden.rating.toFixed(1)} ★ (${fmt(hidden.reviewCount ?? 0)})</div>` : ''}
+        </div>
+        <span>#${hidden.position}</span>
+      </div>`
+    : you.foot;
+  return `<div class="rpt-phone${featured ? ' is-best' : ''}">
+    <div class="rpt-phone-kicker${featured ? ' is-best' : ''}">${esc(label)}</div>
+    <div class="rpt-phone-body">
+      <div class="rpt-phone-bar"><span>9:41</span><span>●●● ▲ ▮</span></div>
+      <div class="rpt-phone-q"><i></i><span>${esc(search.query)}</span></div>
+      <div class="rpt-phone-map${mapBg ? ' has-map' : ''}">${mapBg}<div class="rpt-here"></div></div>
+      ${rows}
+      <div class="rpt-phone-more">More businesses →</div>
+      ${youBlock}
+    </div>
+    <div class="rpt-phone-score">
+      <div class="rpt-mini-kicker${featured ? ' is-best' : ''}">YOU</div>
+      <div class="rpt-phone-rank" style="color:${you.color}">${esc(you.rank)}</div>
+      ${you.sub ? `<div class="rpt-phone-sub">${esc(you.sub)}</div>` : ''}
+    </div>
+  </div>`;
+}
+
 function ctaBand(kicker: string, head: string, sub = '', href = BOOKING_URL, label = 'Book a free call'): string {
   return `<div class="rpt-cta-band">
     <div>
@@ -913,13 +1040,17 @@ function ctaBand(kicker: string, head: string, sub = '', href = BOOKING_URL, lab
 }
 
 export function renderReportHtml(report: PublicReport): string {
-  const { biz: B, keyword, marketQuery, city, generated, liveGaps, mapImageUrl, ready } =
+  const { biz: B, keyword, marketQuery, city, generated, liveGaps, mapImageUrl, packSearches: livePackSearches, ready } =
     mergeReport(report);
   const [, innerMi, outerMi] = ringMilesOf(report);
   applyReviewScores(B);
   applyWebsiteScores(B);
+  const cityName = city.split(',')[0] ?? city;
   const mapBg = mapImageUrl
-    ? `<img class="rpt-map-bg" src="${esc(mapImageUrl)}" alt="" width="640" height="640" />`
+    ? `<img class="rpt-map-bg" src="${esc(mapImageUrl)}" alt="Map of the area we searched from" width="640" height="640" />`
+    : '';
+  const mapPlace = cityName
+    ? `<div class="rpt-map-place">${esc(cityName)}</div>`
     : '';
   const wait = (key: keyof ReportReady | 'all', label: string, inner: string) => {
     const on =
@@ -931,7 +1062,6 @@ export function renderReportHtml(report: PublicReport): string {
   const you = B.find((b) => b.you) ?? B[B.length - 1]!;
   const rivals = B.filter((b) => !b.you);
   const leader = rivals[0] ?? you;
-  const cityName = city.split(',')[0] ?? city;
   const kwPlural = keyword.endsWith('s') ? keyword : `${keyword}s`;
   const inPack = typeof you.pack === 'number' && you.pack <= 3;
   const youCenter = you.grid[12];
@@ -970,21 +1100,13 @@ export function renderReportHtml(report: PublicReport): string {
     }));
   const shopPairs = [shopCards.slice(0, 2), shopCards.slice(2, 4)].filter((pair) => pair.length);
 
-  const packRows = [...B].sort((a, b) => (a.pack ?? 99) - (b.pack ?? 99));
-  const packRowHtml = (r: ExampleBiz) => {
-    const missing = Boolean(r.you) && !(typeof r.pack === 'number' && r.pack >= 1);
-    const rank = missing ? 'Not in the top 3' : `#${r.pack}`;
-    const rankColor = missing ? N : r.you ? Y : '#70757a';
-    return `<div class="rpt-serp-row${r.you ? ' is-you' : ''}${missing ? ' is-missing' : ''}">
-      ${r.you ? '<div class="rpt-mini-kicker">YOU</div>' : ''}
-      <div class="rpt-serp-name"><span>${esc(r.name)}</span><span style="color:${rankColor}">${esc(rank)}</span></div>
-      <div class="rpt-meta is-small"><span>${r.rating.toFixed(1)}</span>${stars()}<span>(${fmt(r.reviews)})</span></div>
-      <div class="rpt-serp-line">${esc(r.addrShort || 'Address hidden')} · <span class="is-open">Open</span></div>
-    </div>`;
-  };
-
-  const packLevel = packTier(you.pack);
-  const coverLevel = coverageTier(youCov, covOf(leader));
+  const packSearches: PublicPackSearch[] = livePackSearches?.length
+    ? livePackSearches
+    : !ready || ready.pack
+      ? EXAMPLE_PACK_SEARCHES
+      : [];
+  const youMaps = mapsOf(you);
+  const packLevel = packTier(you.pack, youMaps);
   const overallPlace =
     [...B].sort((a, b) => exactScore(b.scores) - exactScore(a.scores)).findIndex((b) => b.you) + 1;
   const packQuery = `${marketQuery} near me`.trim();
@@ -998,7 +1120,12 @@ export function renderReportHtml(report: PublicReport): string {
   });
   const heroHeadline = hero.headline;
   const heroSub = hero.sub;
-  const packHeadline = packHeadlineCopy({ tier: packLevel, pack: you.pack, address: you.address });
+  const packHeadline = packHeadlineCopy({
+    tier: packLevel,
+    pack: you.pack,
+    maps: youMaps,
+    address: you.address,
+  });
   const searchFrom = you.address ? 'your address' : 'the middle of your service area — your address is hidden';
   const searchFromLabel = you.address
     ? `Searched “${packQuery}” from your address`
@@ -1339,14 +1466,49 @@ export function renderReportHtml(report: PublicReport): string {
   });
   const aiHeadline = aiCopy.headline;
 
+  const rankedSearches = packSearches
+    .map((search, index) => ({ search, index, youRank: youRankInSearch(search, you.name) }))
+    .sort((a, b) => (a.youRank ?? 99) - (b.youRank ?? 99));
+  const featuredSearch = rankedSearches[0];
+  const otherSearches = rankedSearches.slice(1);
+  const phoneOrder = featuredSearch
+    ? [otherSearches[0], featuredSearch, otherSearches[1]].filter(
+        (item): item is NonNullable<typeof featuredSearch> => Boolean(item)
+      )
+    : [];
+
+  const madeMapRows = (() => {
+    const rows = new Map<string, { name: string; you: boolean; ranks: (number | null)[] }>();
+    for (const search of packSearches) {
+      for (const result of search.results) {
+        const key = [...rows.keys()].find((name) => namesRoughlyMatch(name, result.name)) ?? result.name;
+        const row = rows.get(key) ?? {
+          name: result.name,
+          you: namesRoughlyMatch(result.name, you.name),
+          ranks: packSearches.map(() => null as number | null),
+        };
+        row.ranks[packSearches.indexOf(search)] = result.position;
+        rows.set(key, row);
+      }
+    }
+    if (![...rows.values()].some((row) => row.you)) {
+      rows.set(you.name, { name: you.name, you: true, ranks: you.packRanks ?? packSearches.map(() => null) });
+    }
+    return [...rows.values()].sort((a, b) => {
+      const am = a.ranks.filter((rank) => rank != null && rank <= 3).length;
+      const bm = b.ranks.filter((rank) => rank != null && rank <= 3).length;
+      if (bm !== am) return bm - am;
+      const ab = Math.min(...a.ranks.filter((rank): rank is number => rank != null), 99);
+      const bb = Math.min(...b.ranks.filter((rank): rank is number => rank != null), 99);
+      return ab - bb;
+    });
+  })();
+
   const defaultGaps: { head: string; sub: string }[] = [];
-  if (coverLevel !== 'well' || !inPack) {
+  if (youMaps < 3) {
     defaultGaps.push({
-      head:
-        packLevel === 'poor'
-          ? 'You’re not in the Map Pack — not even at your own address.'
-          : 'You’re in the pack at your address — and thin a mile out.',
-      sub: `${youCenter ? `#${youCenter} at your front door. ` : ''}${leader.short} is top 3 at ${covOf(leader)} of 25 spots within ${outerMi} miles of you. You: ${youCov}.`,
+      head: youMaps === 0 ? 'You’re not on any of the 3 maps.' : `You’re only on ${youMaps} of the 3 maps.`,
+      sub: `${leader.short} made ${mapsOf(leader)} of 3. You: ${youMaps}.`,
     });
   }
   if (!you.address) {
@@ -1506,82 +1668,41 @@ export function renderReportHtml(report: PublicReport): string {
 
     ${wait(
       'pack',
-      'Searching 25 spots around the shop',
+      'Running 3 Map Pack searches',
       `<section class="rpt-sec">
       <div class="rpt-sec-label"><span>01</span><i></i><span>GOOGLE MAP PACK</span></div>
       <h2>${esc(packHeadline)}</h2>
-      <p class="rpt-lede">Searched “${esc(packQuery)}” from ${esc(searchFrom)}, then from 24 more spots out to ${outerMi} miles. Three spots on the map decide who gets the call.</p>
+      <p class="rpt-lede">This is the first screen a ${esc(cityName)} homeowner sees for each search. The map shows three businesses. Everyone else is a tap away that most people never make.</p>
       ${whyNote(packWhyCopy())}
       ${rankPills('PROFILE SCORE', rankGbp)}
 
-      <div class="rpt-pack">
-        <div class="rpt-serp">
-          <div class="rpt-serp-head"><div class="rpt-mini-kicker is-muted">STEP 1 · WHAT GOOGLE SHOWS</div><div class="rpt-serp-from">${esc(searchFromLabel)}</div></div>
-          <div class="rpt-fake-map is-tall${mapImageUrl ? ' has-map' : ''}">
-            ${mapBg}
-            <div class="rpt-here"></div>
-            <div class="rpt-here-tag">${esc(hereTag)}</div>
-          </div>
-          ${packRows.map(packRowHtml).join('')}
-          <div class="rpt-starts">
-            <div class="rpt-mini-kicker is-muted">WHERE THE SEARCH STARTS</div>
-            <div class="rpt-from-grid">
-              <div class="rpt-from" style="border-color:${shownBorder};background:${shownBg}">
-                <div class="rpt-from-map is-shown"><div class="rpt-from-pin is-red"></div></div>
-                <div class="rpt-from-title">Address shown</div>
-                <div class="rpt-from-sub">From the pin on your profile</div>
-                ${shownTag ? `<div class="rpt-from-tag">${shownTag}</div>` : '<div class="rpt-from-tag is-empty"></div>'}
-              </div>
-              <div class="rpt-from" style="border-color:${hiddenBorder};background:${hiddenBg}">
-                <div class="rpt-from-map is-hidden"><div class="rpt-from-blob"></div><div class="rpt-from-pin is-ink"></div></div>
-                <div class="rpt-from-title">Address hidden</div>
-                <div class="rpt-from-sub">From the middle of your service area</div>
-                ${hiddenTag ? `<div class="rpt-from-tag">${hiddenTag}</div>` : '<div class="rpt-from-tag is-empty"></div>'}
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="rpt-phones">
+        ${phoneOrder
+          .map((item) =>
+            phoneHtml(item.search, item.index, item === featuredSearch, you.name, mapBg)
+          )
+          .join('')}
+      </div>
 
-        <div class="rpt-town">
-          <div class="rpt-town-head">
-            <div class="rpt-mini-kicker is-muted">STEP 2 · DOES IT HOLD UP ACROSS TOWN?</div>
-            <div class="rpt-town-title">Google shows a different top 3 depending on where the customer is standing. So we ran the same search from 25 spots at 0, ${innerMi}, and ${outerMi} miles.</div>
-            <div class="rpt-how">
-              <div class="rpt-how-map${mapImageUrl ? ' has-map' : ''}">
-                ${mapBg}
-                <div class="rpt-how-circle"></div>
-                <div class="rpt-how-dots">${howDots.map((d) => `<div><i style="background:${d.bg};box-shadow:${d.ring}"></i></div>`).join('')}</div>
-                <div class="rpt-how-mi">${outerMi} mi</div>
-              </div>
-              <div class="rpt-how-copy">
-                <div><b>How to read the dots.</b> Each dot is one spot we searched from. The ringed dot is ${esc(hereLower)}; the inner square is ${innerMi} mile${innerMi === 1 ? '' : 's'} out and the outer square is ${outerMi} miles out.</div>
-                <div class="rpt-how-legend">
-                  <span><i class="dot is-green"></i>In the top 3 there</span>
-                  <span><i class="dot is-yellow"></i>#4–10</span>
-                  <span><i class="dot is-red"></i>#11–20</span>
-                  <span><i class="dot is-grey"></i>Not found</span>
-                </div>
-                <div class="rpt-how-note">More green = more of ${esc(cityName)} sees you in the top 3.</div>
-              </div>
-            </div>
-            <div class="rpt-mini-kicker is-muted rpt-town-rank-kicker">RANKED BY SPOTS IN THE TOP 3</div>
-          </div>
-          ${geoRows
-            .map(
-              (g) => `<div class="rpt-geo-row" style="background:${g.bg}">
-                <div class="rpt-geo-map${mapImageUrl ? ' has-map' : ''}">${mapBg}<div class="rpt-geo-dots">${g.dots.map((d) => `<i style="background:${d.bg};box-shadow:${d.ring}"></i>`).join('')}</div></div>
-                <div class="rpt-geo-who">
-                  <div class="rpt-geo-who-top"><span style="color:${g.placeColor}">${esc(g.place)}</span><span style="color:${g.nameColor}">${esc(g.name)}</span></div>
-                  <div class="rpt-geo-read">${esc(g.reading)}</div>
-                </div>
-                <div class="rpt-geo-rings">
-                  <div><div class="rpt-mini-kicker is-muted">${esc(centerLabel)}</div><div style="color:${g.c0Color}">${esc(g.c0)}</div></div>
-                  <div><div class="rpt-mini-kicker is-muted">${esc(mileLabel(innerMi))}</div><div style="color:${g.c1Color}">${esc(g.c1)}</div></div>
-                  <div><div class="rpt-mini-kicker is-muted">${esc(mileLabel(outerMi))}</div><div style="color:${g.c2Color}">${esc(g.c2)}</div></div>
-                </div>
-                <div class="rpt-geo-count"><div style="color:${g.covColor}">${g.cov}</div><span>of 25 spots</span></div>
-              </div>`
-            )
+      <div class="rpt-made">
+        <div class="rpt-mini-kicker is-muted">WHO MADE THE MAP · OUT OF 3 SEARCHES</div>
+        <div class="rpt-made-grid">
+          ${madeMapRows
+            .map((row, i) => {
+              const maps = row.ranks.filter((rank) => rank != null && rank <= 3).length;
+              const chips = row.ranks
+                .map((rank) => {
+                  const tone = packRankTone(rank, row.you);
+                  return `<span class="rpt-made-chip" style="background:${tone.bg};color:${tone.color};border-color:${tone.border}">${rank == null ? '—' : `#${rank}`}</span>`;
+                })
+                .join('');
+              return `<article class="rpt-made-card${row.you ? ' is-you' : ''}">
+                <div class="rpt-mini-kicker${row.you ? ' is-best' : ' is-muted'}">${placeShort(i + 1)}${row.you ? ' · YOU' : ''}</div>
+                <div class="rpt-made-name">${esc(row.name)}</div>
+                <div class="rpt-made-chips">${chips}</div>
+                <div class="rpt-made-count" style="color:${maps ? Y : N}">${maps}<span> of 3 maps</span></div>
+              </article>`;
+            })
             .join('')}
         </div>
       </div>

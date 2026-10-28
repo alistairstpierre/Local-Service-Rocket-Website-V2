@@ -1,7 +1,7 @@
 /* Example businesses and AI answers from Claude Design Files/Free Google Report.dc.html.
    Used by free-report-render.ts as the no-id demo and as fallbacks while a live
    report is still loading. Press/industry mention counts stay example-only.
-   Live reports overlay geo grid, weekly review bars, H2/alt, SSL, usability,
+   Live reports overlay the 3 Map Pack searches, weekly review bars, H2/alt, SSL, usability,
    directory ticks, and a 2×3 ChatGPT/Gemini matrix. Not used at build time. */
 
 export type ExampleAuth = {
@@ -36,6 +36,7 @@ export type ExampleBiz = {
   name: string;
   short: string;
   pack: number | null;
+  packRanks?: (number | null)[];
   you: boolean;
   scores: { gbp: number; rev?: number; web: number; spd?: number; site?: number; ads: number; ai: number };
   rating: number;
@@ -96,6 +97,7 @@ export const EXAMPLE_BIZ: ExampleBiz[] = [
     name: 'Small Jobs Electric, Inc.',
     short: 'Small Jobs Electric',
     pack: 1,
+    packRanks: [1, 1, 2],
     you: false,
     scores: { gbp: 91, web: 83, ads: 55, ai: 12 },
     rating: 4.8,
@@ -163,6 +165,7 @@ export const EXAMPLE_BIZ: ExampleBiz[] = [
     name: 'Mr. Electric of Tampa Bay',
     short: 'Mr. Electric',
     pack: 2,
+    packRanks: [2, 3, 1],
     you: false,
     scores: { gbp: 87, web: 83, ads: 95, ai: 52 },
     rating: 4.9,
@@ -233,6 +236,7 @@ export const EXAMPLE_BIZ: ExampleBiz[] = [
     name: 'Brandon Electric',
     short: 'Brandon Electric',
     pack: 3,
+    packRanks: [3, 2, 3],
     you: false,
     scores: { gbp: 81, web: 97, ads: 62, ai: 84 },
     rating: 4.8,
@@ -302,7 +306,8 @@ export const EXAMPLE_BIZ: ExampleBiz[] = [
   {
     name: 'Bayshore Home Services',
     short: 'Bayshore Home Services',
-    pack: null,
+    pack: 4,
+    packRanks: [4, 7, null],
     you: true,
     scores: { gbp: 52, web: 67, ads: 10, ai: 12 },
     rating: 5.0,
@@ -373,6 +378,39 @@ export const EXAMPLE_META = {
   city: 'Tampa, FL',
   generated: 'Oct 21, 2026',
 };
+
+/** The three phones on the example Map Pack section (matches the redesign). */
+export const EXAMPLE_PACK_SEARCHES = [
+  {
+    kind: 'near-me' as const,
+    query: 'electrician near me',
+    results: [
+      { name: 'Small Jobs Electric, Inc.', position: 1, rating: 4.8, reviewCount: 2382, yearsInBusiness: 15 },
+      { name: 'Mr. Electric of Tampa Bay', position: 2, rating: 4.9, reviewCount: 1099, yearsInBusiness: 20 },
+      { name: 'Brandon Electric', position: 3, rating: 4.8, reviewCount: 1480, yearsInBusiness: 30 },
+      { name: 'Bayshore Home Services', position: 4, rating: 5.0, reviewCount: 132 },
+    ],
+  },
+  {
+    kind: 'city' as const,
+    query: 'electrician tampa fl',
+    results: [
+      { name: 'Small Jobs Electric, Inc.', position: 1, rating: 4.8, reviewCount: 2382 },
+      { name: 'Brandon Electric', position: 2, rating: 4.8, reviewCount: 1480 },
+      { name: 'Mr. Electric of Tampa Bay', position: 3, rating: 4.9, reviewCount: 1099 },
+      { name: 'Bayshore Home Services', position: 7, rating: 5.0, reviewCount: 132 },
+    ],
+  },
+  {
+    kind: 'emergency' as const,
+    query: 'emergency electrician tampa',
+    results: [
+      { name: 'Mr. Electric of Tampa Bay', position: 1, rating: 4.9, reviewCount: 1099 },
+      { name: 'Small Jobs Electric, Inc.', position: 2, rating: 4.8, reviewCount: 2382 },
+      { name: 'Brandon Electric', position: 3, rating: 4.8, reviewCount: 1480 },
+    ],
+  },
+];
 
 export const EXAMPLE_AI_QUESTIONS = [
   'best electrician in Tampa, FL',

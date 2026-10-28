@@ -4,7 +4,12 @@
 
 export type CopyTier = 'well' | 'okay' | 'poor';
 
-export function packTier(pack: number | null | undefined): CopyTier {
+export function packTier(pack: number | null | undefined, maps?: number): CopyTier {
+  if (typeof maps === 'number') {
+    if (maps >= 3) return 'well';
+    if (maps >= 1) return 'okay';
+    return 'poor';
+  }
   if (pack === 1) return 'well';
   if (pack === 2 || pack === 3) return 'okay';
   return 'poor';
@@ -73,8 +78,19 @@ export function heroCopy(input: {
 export function packHeadlineCopy(input: {
   tier: CopyTier;
   pack?: number | null;
+  maps?: number;
   address: boolean;
 }): string {
+  if (typeof input.maps === 'number') {
+    if (input.maps >= 3) {
+      return input.pack === 1
+        ? 'Three searches. You’re on every map.'
+        : 'Three searches. You’re on all 3 maps.';
+    }
+    if (input.maps === 2) return 'Three searches. You’re on 2 of them.';
+    if (input.maps === 1) return 'Three searches. You’re on 1 of them.';
+    return 'Three searches. Three phones. You’re on none of them.';
+  }
   if (input.tier === 'well') return 'You’re #1 in the pack. Here’s who you’re beating — and where they still show up.';
   if (input.tier === 'okay') return `You’re #${input.pack} in the pack. Here’s who’s above you.`;
   return input.address
@@ -198,7 +214,7 @@ export function gapsHeadingCopy(input: { pack: CopyTier; count: number }): { lab
 
 export function packWhyCopy(): { why: string; improve: string } {
   return {
-    why: 'The more spots you show up, the more people find you.',
+    why: 'The map on the phone only shows three shops. If you’re not one of them, most people never tap further.',
     improve:
       'Keep your Google profile complete and fresh, ask for reviews every week, and make your website easier to use.',
   };
@@ -221,8 +237,8 @@ export function aiWhyCopy(): { why: string; improve: string } {
 }
 
 export function mapCtaCopy(tier: CopyTier, city: string): string {
-  if (tier === 'well') return `Want to stay #1 across ${city}, not just your own street?`;
-  return `Want to rank across ${city}, not just your own street?`;
+  if (tier === 'well') return `Want to stay on every map a ${city} homeowner sees?`;
+  return `Want to show up on all 3 searches in ${city}, not just one?`;
 }
 
 export function closerCopy(pack: CopyTier, _count: number): { head: string; body: string } {
