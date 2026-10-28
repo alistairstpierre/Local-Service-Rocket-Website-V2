@@ -71,11 +71,15 @@ const apiUrl = (
   let lastHtml = '';
   const STAGE_SEC = { profile: 30, pack: 40, website: 90, ai: 55 } as const;
 
+  function stageDone(report: PublicReport | undefined, key: (typeof STAGES)[number]): boolean {
+    if (key === 'profile') return Boolean(report?.ready?.hero);
+    if (key === 'pack') return Boolean(report?.ready?.pack && report.mapImageUrl);
+    return Boolean(report?.ready?.[key]);
+  }
+
   function etaLabel(report?: PublicReport): string {
     const left = STAGES.reduce((sum, key) => {
-      const done =
-        key === 'profile' ? Boolean(report?.ready?.hero) : Boolean(report?.ready?.[key]);
-      return done ? sum : sum + STAGE_SEC[key];
+      return stageDone(report, key) ? sum : sum + STAGE_SEC[key];
     }, 0);
     if (left <= 25) return 'Less than a minute left';
     if (left <= 90) return 'About a minute left';
@@ -92,10 +96,7 @@ const apiUrl = (
   function readyCount(report?: PublicReport): number {
     const ready = report?.ready;
     if (!ready) return report ? STAGES.length : 0;
-    return STAGES.filter((key) => {
-      if (key === 'profile') return ready.hero;
-      return Boolean(ready[key as 'pack' | 'website' | 'ai']);
-    }).length;
+    return STAGES.filter((key) => stageDone(report, key)).length;
   }
 
   function updateDock(progress: string, report?: PublicReport, done = false) {
@@ -114,8 +115,9 @@ const apiUrl = (
     const current = report?.stage && report.stage !== 'complete' && report.stage !== 'queued' ? report.stage : STAGES[n] || 'profile';
     dock.querySelectorAll<HTMLElement>('[data-step]').forEach((el) => {
       const step = el.dataset.step || '';
-      const doneStep =
-        step === 'profile' ? Boolean(report?.ready?.hero) : Boolean(report?.ready?.[step as 'pack' | 'website' | 'ai']);
+      const doneStep = STAGES.includes(step as (typeof STAGES)[number])
+        ? stageDone(report, step as (typeof STAGES)[number])
+        : false;
       el.classList.toggle('is-done', doneStep);
       el.classList.toggle('is-now', !doneStep && step === current);
     });

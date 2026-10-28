@@ -1052,10 +1052,15 @@ export function renderReportHtml(report: PublicReport): string {
   const mapPlace = cityName
     ? `<div class="rpt-map-place">${esc(cityName)}</div>`
     : '';
+  const packHasMap = Boolean(mapImageUrl);
   const wait = (key: keyof ReportReady | 'all', label: string, inner: string) => {
     const on =
       ready &&
-      (key === 'all' ? !(ready.hero && ready.pack && ready.website && ready.ai) : !ready[key]);
+      (key === 'all'
+        ? !(ready.hero && ready.pack && ready.website && ready.ai && packHasMap)
+        : key === 'pack'
+          ? !ready.pack || !packHasMap
+          : !ready[key]);
     if (!on) return inner;
     return `<div class="rpt-wait">${inner}<div class="rpt-wait-mask" role="status"><span class="rpt-spin" aria-hidden="true"></span><span>${esc(label)}</span></div></div>`;
   };
@@ -1494,7 +1499,7 @@ export function renderReportHtml(report: PublicReport): string {
     if (![...rows.values()].some((row) => row.you)) {
       rows.set(you.name, { name: you.name, you: true, ranks: you.packRanks ?? packSearches.map(() => null) });
     }
-    return [...rows.values()].sort((a, b) => {
+    const sorted = [...rows.values()].sort((a, b) => {
       const am = a.ranks.filter((rank) => rank != null && rank <= 3).length;
       const bm = b.ranks.filter((rank) => rank != null && rank <= 3).length;
       if (bm !== am) return bm - am;
@@ -1502,6 +1507,9 @@ export function renderReportHtml(report: PublicReport): string {
       const bb = Math.min(...b.ranks.filter((rank): rank is number => rank != null), 99);
       return ab - bb;
     });
+    const subject = sorted.find((row) => row.you);
+    const rivals = sorted.filter((row) => !row.you).slice(0, 3);
+    return (subject ? [...rivals, subject] : rivals).sort((a, b) => sorted.indexOf(a) - sorted.indexOf(b));
   })();
 
   const defaultGaps: { head: string; sub: string }[] = [];
@@ -1596,7 +1604,7 @@ export function renderReportHtml(report: PublicReport): string {
   const close = closerCopy(packLevel, gaps.length);
   const ctaHref = report.cta?.href || '/growth-audit';
   const rankingsReady =
-    !ready || Boolean(ready.hero && ready.pack && ready.website && ready.ai);
+    !ready || Boolean(ready.hero && ready.pack && ready.website && ready.ai && mapImageUrl);
   const profileReady = profileBoardReady(report);
   const shopRanking = `<div class="rpt-shop-grid">
         ${shopPairs
@@ -1668,7 +1676,7 @@ export function renderReportHtml(report: PublicReport): string {
 
     ${wait(
       'pack',
-      'Running 3 Map Pack searches',
+      mapImageUrl ? 'Running 3 Map Pack searches' : 'Loading the map of the area we searched',
       `<section class="rpt-sec">
       <div class="rpt-sec-label"><span>01</span><i></i><span>GOOGLE MAP PACK</span></div>
       <h2>${esc(packHeadline)}</h2>
