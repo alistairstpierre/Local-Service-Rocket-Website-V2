@@ -174,7 +174,7 @@ Old service URLs (`/services/paid-ads`, `/local-seo`, `/websites`, `/hiring`, `/
 │   ├── lib/
 │   │   ├── free-report-copy.ts     # Headlines from overall score (not Map Pack alone); why / how-to-improve notes for Map Pack (3 searches), website, and AI; US-only note lives in the report footer
 │   │   ├── free-report-example.ts  # Fallback dataset for photo counts, posts, extra AI platforms
-│   │   └── free-report-render.ts   # Maps PublicReport + examples into the report HTML (Map Pack = 3 phone searches, score = average of those 3, who-made-the-map cards, why/improve under the lede, Book online lives on the website board, SEO overlays noted on the site board, boards in score order, review 65/35, website = speed 30% + site 70% unpublished, About keyword/services/locations, fastest = lowest LCP)
+│   │   └── free-report-render.ts   # Maps PublicReport + examples into the report HTML (Map Pack = 3 phone searches, score = average of those 3, who-made-the-map cards, why/improve under the lede, GBP Book online on the profile board, off-site HCP form = orange on the website board, boards in score order, review 65/35, website = speed 30% + site 70% unpublished, About keyword/services/locations, fastest = lowest LCP)
 │   ├── data/
 │   │   ├── blog-posts.js         # Blog hub cards (cron prepends here on publish)
 │   │   ├── images.js             # Image manifest (widths, formats) shared by script + Picture
@@ -283,7 +283,7 @@ The site ships no third-party requests and ~2 kB of JavaScript. Keep it that way
 - Accent: `#e8590c` · Dark panels: `#1b1d23` · Page shell max width: **1280px** (`--max`, `.container`) — same on every page as the homepage
 - Long-form reading uses `.measure` (orange spine + hatch rail) so copy can stay narrower without shrinking the page shell; `--prose` / `--prose-wide` are only for that rail, never for whole-page containers
 - Soft section bands: `.band` / `.band-tight`
-- Booking CTA: `https://api.leadconnectorhq.com/widget/booking/Tp6doLoKjJfMEvnKPOn1`
+- Free audit calendar: `https://api.leadconnectorhq.com/widget/booking/RxERi6yLg9QORxQ2w9WA`
 
 ## Still placeholders / later
 

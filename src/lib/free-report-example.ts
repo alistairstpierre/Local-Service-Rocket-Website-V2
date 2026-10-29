@@ -443,4 +443,5 @@ export const EXAMPLE_BLURB: Record<string, string> = {
     'family-owned since 1993, known for panel upgrades and generator installs across Tampa.',
 };
 
-export const BOOKING_URL = 'https://api.leadconnectorhq.com/widget/booking/Tp6doLoKjJfMEvnKPOn1';
+/* Free Growth Audit calendar (same widget as /growth-audit step 4). */
+export const BOOKING_URL = 'https://api.leadconnectorhq.com/widget/booking/RxERi6yLg9QORxQ2w9WA';

@@ -65,7 +65,7 @@ export type PublicReportBusiness = {
     hasWebsite: boolean;
     hasHours: boolean;
     hasBookOnline: boolean;
-    /** Google Reserve = full. Book button → the shop’s site = half / yellow. */
+    /** Google Reserve = full. Book button that leaves Google = half / yellow. */
     bookOnline?: 'google' | 'external' | 'none';
     hasAddressListed?: boolean;
     address?: string;
@@ -706,10 +706,8 @@ function siteScoreOf(b: ExampleBiz): number {
   if (b.ux.phoneHeader) score += 3;
   if (b.ux.clickCall) score += 3;
   if (b.ux.ctaFold) score += 3;
-  const book = bookKind(b.book);
-  if (book === 'google') score += 3;
-  else if (book === 'external') score += 1.5;
   if (b.ux.form) score += 3;
+  else if (bookKind(b.book)) score += 1.5;
   if (b.ux.reviewsHome) score += 3;
   if (b.ux.map) score += 2;
   score += Math.round(Math.min(b.rd / 40, 1) * 6);
@@ -793,6 +791,10 @@ function part(sub = '') {
   return { t: '~', color: '#fff', pill: A, sub, size: '15px' };
 }
 
+function warn(sub = '') {
+  return { t: '~', color: '#fff', pill: OR, sub, size: '15px' };
+}
+
 function bookKind(book: ExampleBiz['book']): false | 'external' | 'google' {
   if (book === 'external' || book === 'google') return book;
   if (book) return 'google';
@@ -802,9 +804,16 @@ function bookKind(book: ExampleBiz['book']): false | 'external' | 'google' {
 function bookOnlineCell(book: ExampleBiz['book']) {
   const kind = bookKind(book);
   if (kind === 'google') return yes('on Google');
-  if (kind === 'external') return part('links to the website');
+  if (kind === 'external') return part('links off Google');
   return no('none');
 }
+
+function contactFormCell(b: ExampleBiz) {
+  if (b.ux.form) return yes('on the site');
+  if (bookKind(b.book)) return warn('off-site · HCP or similar');
+  return no('missing');
+}
+
 function num(t: string | number, sub = '', color = INK, size = '22px') {
   return { t: String(t), color, pill: 'transparent', sub, size };
 }
@@ -1248,6 +1257,7 @@ export function renderReportHtml(report: PublicReport): string {
       b.photos ? num(fmt(b.photos), 'photos') : b.descUnknown ? part('checking…') : no('none listed')
     ),
     row('Hours listed', 'Opening hours on the listing', orderGbp, (b) => (b.hours ? yes('listed') : no('missing'))),
+    row('Book online', 'The Book button on the Google listing', orderGbp, (b) => bookOnlineCell(b.book)),
     row('Phone on profile', 'Call button on the listing', orderGbp, (b) => (b.phone ? yes('listed') : no('missing'))),
   ];
 
@@ -1339,13 +1349,6 @@ export function renderReportHtml(report: PublicReport): string {
     row('H2 has keyword', 'At least one section heading on the homepage', orderWeb, (b) => (b.h2Kw > 0 ? yes('') : no(''))),
     row('Image alt text w/ keyword', 'Share of images described', orderWeb, (b) => num(`${b.altKw}%`, 'of images', b.altKw === 0 ? N : INK)),
     row('Schema markup', 'The business type Google can read', orderWeb, (b) => schemaCell(b.schemaTypes, b.schema)),
-    row('SEO overlay', 'A script can inject title and meta for Google', orderWeb, (b) =>
-      b.metaFromAtlas
-        ? yes(`${b.seoOverlay || 'Search Atlas'} injecting`)
-        : b.searchAtlas
-          ? part(`${b.seoOverlay || 'overlay'} on the page`)
-          : no('not found')
-    ),
     row('Service pages', 'One page per service', orderWeb, (b) => num(b.servicePages, 'pages', b.servicePages < 3 ? N : INK)),
     row('Location pages', 'One page per city served', orderWeb, (b) => num(b.locationPages, 'pages')),
     row('SSL (https)', 'Padlock in the browser', orderWeb, (b) => (b.ssl ? yes('secure') : no('not secure'))),
@@ -1358,8 +1361,7 @@ export function renderReportHtml(report: PublicReport): string {
     row('Phone number in header', 'Visible without scrolling', orderWeb, (b) => (b.ux.phoneHeader ? yes('') : no(''))),
     row('Tap-to-call on mobile', 'Number is a link', orderWeb, (b) => (b.ux.clickCall ? yes('') : no(''))),
     row('Call-to-action above the fold', 'A button at the top of the page', orderWeb, (b) => (b.ux.ctaFold ? yes('') : no(''))),
-    row('Book online', 'A booking button, not just a contact form', orderWeb, (b) => bookOnlineCell(b.book)),
-    row('Contact form', 'Any page', orderWeb, (b) => (b.ux.form ? yes('') : no(''))),
+    row('Contact form', 'On the site is better than sending people to HCP', orderWeb, (b) => contactFormCell(b)),
     row('Reviews shown on homepage', 'Stars a visitor can see', orderWeb, (b) => (b.ux.reviewsHome ? yes('') : no(''))),
     row('Map of service area', 'Embedded Google Map', orderWeb, (b) => (b.ux.map ? yes('') : no(''))),
   ];
