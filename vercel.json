@@ -4,6 +4,12 @@
   "trailingSlash": false,
   "redirects": [
     {
+      "source": "/",
+      "has": [{ "type": "host", "value": "book.localservicerocket.com" }],
+      "destination": "https://sites.leadconnectorhq.com/preview/RNp0SfnwJkz6V3wvPLeI?notrack=true",
+      "permanent": false
+    },
+    {
       "source": "/:path*",
       "has": [{ "type": "host", "value": "book.localservicerocket.com" }],
       "destination": "https://sites.leadconnectorhq.com/preview/RNp0SfnwJkz6V3wvPLeI?notrack=true",
