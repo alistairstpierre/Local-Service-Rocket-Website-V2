@@ -6,13 +6,13 @@
     {
       "source": "/",
       "has": [{ "type": "host", "value": "book.localservicerocket.com" }],
-      "destination": "https://sites.leadconnectorhq.com/preview/RNp0SfnwJkz6V3wvPLeI?notrack=true",
+      "destination": "https://sites.leadconnectorhq.com/preview/SVbGP7ImzBte2BSt3Xue?notrack=true",
       "permanent": false
     },
     {
       "source": "/:path*",
       "has": [{ "type": "host", "value": "book.localservicerocket.com" }],
-      "destination": "https://sites.leadconnectorhq.com/preview/RNp0SfnwJkz6V3wvPLeI?notrack=true",
+      "destination": "https://sites.leadconnectorhq.com/preview/SVbGP7ImzBte2BSt3Xue?notrack=true",
       "permanent": false
     },
     { "source": "/services/paid-ads", "destination": "/services/electrician-advertising", "permanent": true },
