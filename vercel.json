@@ -3,18 +3,6 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
-    {
-      "source": "/",
-      "has": [{ "type": "host", "value": "book.localservicerocket.com" }],
-      "destination": "https://sites.leadconnectorhq.com/preview/SVbGP7ImzBte2BSt3Xue?notrack=true",
-      "permanent": false
-    },
-    {
-      "source": "/:path*",
-      "has": [{ "type": "host", "value": "book.localservicerocket.com" }],
-      "destination": "https://sites.leadconnectorhq.com/preview/SVbGP7ImzBte2BSt3Xue?notrack=true",
-      "permanent": false
-    },
     { "source": "/services/paid-ads", "destination": "/services/electrician-advertising", "permanent": true },
     { "source": "/services/local-seo", "destination": "/services/electrician-seo", "permanent": true },
     { "source": "/services/websites", "destination": "/services/electrician-websites", "permanent": true },

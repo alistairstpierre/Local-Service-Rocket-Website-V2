@@ -233,7 +233,7 @@ Old service URLs (`/services/paid-ads`, `/local-seo`, `/websites`, `/hiring`, `/
 │   └── styles/
 │       └── global.css
 ├── astro.config.mjs              # static + sitemap + prefetch + inlined CSS
-├── vercel.json                   # Cache-Control + 301s (old service slugs, /get-started → /growth-audit); book.localservicerocket.com → LeadConnector preview
+├── vercel.json                   # Cache-Control + 301s (old service slugs, /get-started → /growth-audit)
 ├── package.json
 └── tsconfig.json
 ```
