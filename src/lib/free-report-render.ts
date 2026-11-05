@@ -1775,6 +1775,17 @@ export function renderReportHtml(report: PublicReport): string {
       ${whyNote(packWhyCopy())}
       ${rankPills('MAP PACK SCORE', rankPack)}
 
+      <div class="rpt-made" style="margin:0 0 16px">
+        <div class="rpt-mini-kicker is-muted">${esc(searchFromLabel)}</div>
+        <div class="rpt-made-name" style="font-size:15px;margin-top:4px">${
+          you.address && you.addrShort && you.addrShort !== 'Hidden' && you.addrShort !== '…'
+            ? `Pin on the map: ${esc(you.addrShort)}`
+            : you.address
+              ? 'We searched from your street address on the listing.'
+              : 'Your address is hidden on Google, so we searched from the city centre instead.'
+        }</div>
+      </div>
+
       <div class="rpt-phones">
         ${phoneOrder
           .map((item) =>
