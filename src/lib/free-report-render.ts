@@ -272,33 +272,54 @@ function hostOf(url?: string): string {
   }
 }
 
-const TRADE_STEMS: Record<string, string[]> = {
-  electrician: ['electric', 'electrical'],
-  plumber: ['plumb', 'plumbing'],
+/** Full forms that count as an exact keyword hit (same idea as API keyword.ts). */
+const TRADE_FULL: Record<string, string[]> = {
+  electrician: ['electrical', 'electricians'],
+  plumber: ['plumbing', 'plumbers'],
 };
 
-function keywordRoots(keyword: string): string[] {
+/** Truncated stems — partial title hit only. */
+const TRADE_WEAK: Record<string, string[]> = {
+  electrician: ['electric'],
+  plumber: ['plumb'],
+};
+
+function keywordFullAliases(keyword: string): string[] {
   const k = keyword.toLowerCase().trim();
-  const roots = new Set([k]);
+  const aliases = new Set<string>(TRADE_FULL[k] || []);
+  if (k && !k.endsWith('s')) aliases.add(`${k}s`);
+  return [...aliases].filter((r) => r.length >= 4);
+}
+
+function keywordWeakStems(keyword: string): string[] {
+  const k = keyword.toLowerCase().trim();
+  const roots = new Set<string>(TRADE_WEAK[k] || []);
   if (k.endsWith('ians')) roots.add(k.slice(0, -1));
   if (k.endsWith('ian')) roots.add(k.slice(0, -3));
   if (k.endsWith('ers')) roots.add(k.slice(0, -1));
   if (k.endsWith('er')) roots.add(k.slice(0, -2));
   if (k.endsWith('ing')) roots.add(k.slice(0, -3));
-  for (const stem of TRADE_STEMS[k] || []) roots.add(stem);
-  return [...roots].filter((r) => r.length >= 4);
+  const full = new Set([k, ...keywordFullAliases(k)]);
+  return [...roots].filter((r) => r.length >= 4 && !full.has(r));
+}
+
+function keywordRoots(keyword: string): string[] {
+  const k = keyword.toLowerCase().trim();
+  return [...new Set([k, ...keywordFullAliases(k), ...keywordWeakStems(k)])].filter((r) => r.length >= 4);
 }
 
 function weakNameStemLabel(keyword: string): string {
   const k = keyword.toLowerCase().trim();
-  return TRADE_STEMS[k]?.[0] || keywordRoots(k).find((r) => r !== k) || keyword;
+  return TRADE_FULL[k]?.[0] || TRADE_WEAK[k]?.[0] || keywordRoots(k).find((r) => r !== k) || keyword;
 }
 
 function titleKwOf(title: string, keyword: string): 'yes' | 'partial' | 'no' {
   const lower = title.toLowerCase();
-  const roots = keywordRoots(keyword);
-  if (lower.includes(keyword.toLowerCase())) return 'yes';
-  if (roots.some((r) => r !== keyword.toLowerCase() && lower.includes(r))) return 'partial';
+  const kw = keyword.toLowerCase().trim();
+  if (!kw) return 'no';
+  if (lower.includes(kw)) return 'yes';
+  if (keywordFullAliases(kw).some((alias) => lower.includes(alias))) return 'yes';
+  if (keywordWeakStems(kw).some((stem) => lower.includes(stem))) return 'partial';
   return 'no';
 }
 
@@ -306,9 +327,12 @@ function nameKeywordFit(name: string, keyword: string): 'yes' | 'weak' | 'no' {
   const text = name.toLowerCase();
   const kw = keyword.toLowerCase().trim();
   if (!kw) return 'no';
-  if (new RegExp(`\\b${escapeRegExp(kw)}s?\\b`).test(text)) return 'yes';
-  const stems = keywordRoots(kw).filter((r) => r !== kw && r !== `${kw}s`);
-  if (stems.some((r) => new RegExp(`\\b${escapeRegExp(r)}(?:al)?\\b`).test(text))) return 'weak';
+  if ([kw, ...keywordFullAliases(kw)].some((alias) => new RegExp(`\\b${escapeRegExp(alias)}s?\\b`).test(text))) {
+    return 'yes';
+  }
+  if (keywordWeakStems(kw).some((stem) => new RegExp(`\\b${escapeRegExp(stem)}(?:al)?\\b`).test(text))) {
+    return 'weak';
+  }
   return 'no';
 }
 
@@ -416,7 +440,9 @@ function gradeDescription(
   if (!text) return { keyword: false, services: false, locations: false };
   const t = text.toLowerCase();
   const kw = keyword.toLowerCase().trim();
-  const hasKeyword = Boolean(kw) && new RegExp(`\\b${escapeRegExp(kw)}s?\\b`).test(t);
+  const hasKeyword =
+    Boolean(kw) &&
+    [kw, ...keywordFullAliases(kw)].some((alias) => new RegExp(`\\b${escapeRegExp(alias)}s?\\b`).test(t));
   const hasServices = SERVICE_WORDS.some((word) => t.includes(word));
   const cityParts = city
     .toLowerCase()
@@ -876,7 +902,8 @@ function clipAnswer(text: string, max = AI_ANSWER_CHARS): string {
 }
 
 function splitTitle(title: string, keyword: string): { before: string; match: string; after: string } {
-  const roots = keywordRoots(keyword);
+  // Longest first so “Plumbing” wins over the truncated “plumb” stem.
+  const roots = [...keywordRoots(keyword)].sort((a, b) => b.length - a.length);
   const re = new RegExp(roots.map((r) => r.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'i');
   const m = title.match(re);
   if (!m || m.index == null) return { before: title, match: '', after: '' };
@@ -1344,7 +1371,9 @@ export function renderReportHtml(report: PublicReport): string {
         : b.metaDesc
           ? descKw === 'yes'
             ? 'Written, says what you do'
-            : 'Written, no service keyword'
+            : descKw === 'partial'
+              ? 'Written, close on the keyword'
+              : 'Written, no service keyword'
           : b.searchAtlas
             ? `${b.seoOverlay || 'SEO overlay'} on the page. Google can see an injected description`
             : 'Missing. Google picks random text',
