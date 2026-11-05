@@ -272,6 +272,11 @@ function hostOf(url?: string): string {
   }
 }
 
+const TRADE_STEMS: Record<string, string[]> = {
+  electrician: ['electric', 'electrical'],
+  plumber: ['plumb', 'plumbing'],
+};
+
 function keywordRoots(keyword: string): string[] {
   const k = keyword.toLowerCase().trim();
   const roots = new Set([k]);
@@ -280,7 +285,13 @@ function keywordRoots(keyword: string): string[] {
   if (k.endsWith('ers')) roots.add(k.slice(0, -1));
   if (k.endsWith('er')) roots.add(k.slice(0, -2));
   if (k.endsWith('ing')) roots.add(k.slice(0, -3));
+  for (const stem of TRADE_STEMS[k] || []) roots.add(stem);
   return [...roots].filter((r) => r.length >= 4);
+}
+
+function weakNameStemLabel(keyword: string): string {
+  const k = keyword.toLowerCase().trim();
+  return TRADE_STEMS[k]?.[0] || keywordRoots(k).find((r) => r !== k) || keyword;
 }
 
 function titleKwOf(title: string, keyword: string): 'yes' | 'partial' | 'no' {
@@ -1231,7 +1242,7 @@ export function renderReportHtml(report: PublicReport): string {
     row('Keyword in business name', `More relevant for people searching “${marketQuery}”`, orderGbp, (b) => {
       const fit = nameKeywordFit(b.name, keyword);
       if (fit === 'yes') return yes(`“${marketQuery}”`);
-      if (fit === 'weak') return part('says “electric”');
+      if (fit === 'weak') return part(`says “${weakNameStemLabel(keyword)}”`);
       return no('not in name');
     }),
     row('Primary category', 'The primary category you selected', orderGbp, (b) =>
@@ -1454,9 +1465,9 @@ export function renderReportHtml(report: PublicReport): string {
     ? liveAi.questions
     : streaming
       ? [
-          `best electrician in ${cityName}`,
-          `electrician near me in ${cityName}`,
-          `emergency electrician in ${cityName}`,
+          `best ${marketQuery} in ${cityName}`,
+          `${marketQuery} near me in ${cityName}`,
+          `emergency ${marketQuery} in ${cityName}`,
         ]
       : EXAMPLE_AI_QUESTIONS;
   const AIP = liveAi

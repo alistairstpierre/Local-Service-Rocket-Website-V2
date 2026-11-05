@@ -97,7 +97,7 @@ Railway.
 | `/growth-audit` | Free Growth Audit booking (`Growth Audit Page.html`). Main CTA. 4-step form → LeadConnector calendar |
 | `/get-started` | Hidden. 301 to `/growth-audit`. Old page kept at `src/archived/get-started.astro` |
 | `/contact` | Contact form: question, free audit, or coaching (EmailJS + screenshots) |
-| `/free-report` | Electrician-only landing (`Free Report - Landing.dc.html`): email, business city and state, then GBP picker, phone, SMS consent → Railway analysis API |
+| `/free-report` | Trade landing (`Free Report - Landing.dc.html`): trade (electrician | plumber), email, business city and state, then GBP picker, phone, SMS consent → Railway analysis API |
 | `/free-report/view` | After the form, opens immediately and polls `GET /api/reports/:id`. Sections fill in as snapshots land. Overall shop rankings stay hidden until the last check finishes, with an estimated time remaining in the dock. No `id` shows the example. |
 | `/services` | Services hub (`electrician marketing services`) |
 | `/services/electrician-seo` | Electrician SEO & reviews (`electrician seo agency`) |
