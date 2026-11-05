@@ -910,6 +910,18 @@ function splitTitle(title: string, keyword: string): { before: string; match: st
   return { before: title.slice(0, m.index), match: m[0], after: title.slice(m.index + m[0].length) };
 }
 
+function highlightKeywordHtml(
+  text: string,
+  keyword: string,
+  fit: 'yes' | 'partial' | 'no'
+): string {
+  const s = splitTitle(text, keyword);
+  if (!s.match) return esc(text);
+  const bg = fit === 'yes' ? '#e4f4ea' : fit === 'partial' ? '#fff3dc' : 'transparent';
+  const line = fit === 'yes' ? Y : fit === 'partial' ? A : 'transparent';
+  return `${esc(s.before)}<span style="background:${bg};border-bottom:2px solid ${line}">${esc(s.match)}</span>${esc(s.after)}`;
+}
+
 function ringOf(i: number): number {
   return Math.max(Math.abs(Math.floor(i / 5) - 2), Math.abs((i % 5) - 2));
 }
@@ -1346,6 +1358,11 @@ export function renderReportHtml(report: PublicReport): string {
           ? { titlePill: A, titleMark: '~', titleStatus: `“${s.match.toLowerCase()}” — close, not exact` }
           : { titlePill: N, titleMark: '✗', titleStatus: 'No service keyword' };
     const descKw = b.metaDesc ? titleKwOf(b.metaDesc, keyword) : 'no';
+    const descRaw =
+      b.metaDesc ||
+      (b.searchAtlas
+        ? `${b.seoOverlay || 'An SEO overlay'} is on the page. Google can see an injected description; it is not in the HTML.`
+        : 'No meta description. Google picks random text from the page instead, “Welcome to our website. We are a family owned and operated business serving…”');
     return {
       site: b.site,
       url: b.url,
@@ -1356,11 +1373,10 @@ export function renderReportHtml(report: PublicReport): string {
       after: s.after,
       hlBg: s.match ? (b.titleKw === 'yes' ? '#e4f4ea' : '#fff3dc') : 'transparent',
       hlLine: s.match ? (b.titleKw === 'yes' ? Y : A) : 'transparent',
-      desc:
-        b.metaDesc ||
-        (b.searchAtlas
-          ? `${b.seoOverlay || 'An SEO overlay'} is on the page. Google can see an injected description; it is not in the HTML.`
-          : 'No meta description. Google picks random text from the page instead, “Welcome to our website. We are a family owned and operated business serving…”'),
+      titleHtml: highlightKeywordHtml(b.title, keyword, b.titleKw),
+      descHtml: b.metaDesc
+        ? highlightKeywordHtml(descRaw, keyword, descKw)
+        : esc(descRaw),
       descStyle: b.metaDesc ? 'normal' : 'italic',
       descPill: b.metaDesc ? (descKw === 'yes' ? Y : A) : b.searchAtlas ? A : N,
       descMark: b.metaDesc ? (descKw === 'yes' ? '✓' : '~') : b.searchAtlas ? '~' : '✗',
@@ -1923,11 +1939,11 @@ export function renderReportHtml(report: PublicReport): string {
                 <div class="rpt-blue-site"><div class="rpt-fav">${esc(s.initial)}</div><div><div>${esc(s.site)}</div><div class="rpt-blue-url">https://${esc(s.url)}</div></div></div>
                 <div class="rpt-blue-block is-title">
                   <div class="rpt-blue-kicker">PAGE TITLE</div>
-                  <div class="rpt-blue-title">${esc(s.before)}<span style="background:${s.hlBg};border-bottom:2px solid ${s.hlLine}">${esc(s.match)}</span>${esc(s.after)}</div>
+                  <div class="rpt-blue-title">${s.titleHtml}</div>
                 </div>
                 <div class="rpt-blue-block is-desc">
                   <div class="rpt-blue-kicker is-muted">META DESCRIPTION</div>
-                  <div class="rpt-blue-desc" style="font-style:${s.descStyle}">${esc(s.desc)}</div>
+                  <div class="rpt-blue-desc" style="font-style:${s.descStyle}">${s.descHtml}</div>
                 </div>
               </div>
               <div class="rpt-blue-checks">
