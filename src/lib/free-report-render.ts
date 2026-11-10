@@ -2106,11 +2106,15 @@ export function renderReportHtml(report: PublicReport): string {
           .join('')}
       </div>
 
-      <div class="rpt-mini-kicker is-muted rpt-block-kicker">NAP CONSISTENCY</div>
-      <p class="rpt-lede" style="margin-top:4px">Name, address, phone, and hours should match the Google listing on the GBP-linked page.</p>
+      <div class="rpt-web-head">
+        <div class="rpt-web-head-title">NAP + HOURS</div>
+        <div class="rpt-web-head-note">Address, phone, and hours should match the Google listing on the GBP-linked page</div>
+      </div>
       ${boardHtml('GBP ↔ WEBSITE', headsWeb, napRows)}
       ${boardHtml('SEO & SETTINGS', headsWeb, seoRows)}
-      <div class="rpt-mini-kicker is-muted rpt-block-kicker">CAN A VISITOR ACTUALLY CALL YOU?</div>
+      <div class="rpt-web-head">
+        <div class="rpt-web-head-title">CAN A VISITOR ACTUALLY CALL YOU?</div>
+      </div>
       ${boardHtml('USABILITY', headsWeb, uxRows)}
 
       <h3 class="rpt-after">The backlinks that matter.</h3>
