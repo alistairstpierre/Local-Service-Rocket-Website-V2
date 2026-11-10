@@ -100,6 +100,14 @@ export type ExampleBiz = {
   metaFromAtlas?: boolean;
   h2Kw: number;
   altKw: number;
+  /** Homepage image alts with trade + city (ranked in the SEO board). */
+  altBoth: number;
+  altService: number;
+  altCity: number;
+  /** Homepage trade + city mention totals (ranked in the SEO board). */
+  kwMentions: number;
+  kwService: number;
+  kwCity: number;
   schema: boolean;
   schemaTypes?: string[];
   sitemap: number;
@@ -171,6 +179,12 @@ export const EXAMPLE_BIZ: ExampleBiz[] = [
       'Licensed Tampa Bay electrical contractor for repairs, panel upgrades, lighting & EV chargers. Same-day service. Call (813) 555-0142.',
     h2Kw: 4,
     altKw: 62,
+    altBoth: 4,
+    altService: 9,
+    altCity: 6,
+    kwMentions: 28,
+    kwService: 18,
+    kwCity: 10,
     schema: true,
     sitemap: 200,
     servicePages: 6,
@@ -257,6 +271,12 @@ export const EXAMPLE_BIZ: ExampleBiz[] = [
       'Mr. Electric of Tampa Bay provides licensed electricians for residential & commercial electrical repair, installation and upgrades. Call 24/7.',
     h2Kw: 6,
     altKw: 48,
+    altBoth: 2,
+    altService: 7,
+    altCity: 3,
+    kwMentions: 19,
+    kwService: 14,
+    kwCity: 5,
     schema: true,
     sitemap: 200,
     servicePages: 0,
@@ -343,6 +363,12 @@ export const EXAMPLE_BIZ: ExampleBiz[] = [
       'Brandon Electric: Tampa electricians since 1993. Residential & commercial wiring, panel upgrades, generators. Free estimates.',
     h2Kw: 5,
     altKw: 71,
+    altBoth: 6,
+    altService: 11,
+    altCity: 8,
+    kwMentions: 41,
+    kwService: 26,
+    kwCity: 15,
     schema: true,
     sitemap: 200,
     servicePages: 6,
@@ -425,6 +451,12 @@ export const EXAMPLE_BIZ: ExampleBiz[] = [
     metaDesc: null,
     h2Kw: 0,
     altKw: 0,
+    altBoth: 0,
+    altService: 0,
+    altCity: 0,
+    kwMentions: 0,
+    kwService: 0,
+    kwCity: 0,
     schema: false,
     sitemap: 81,
     servicePages: 2,

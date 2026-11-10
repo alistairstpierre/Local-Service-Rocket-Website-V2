@@ -92,6 +92,22 @@ export type PublicReportBusiness = {
     h1ContainsKeyword?: boolean;
     h2KeywordCount?: number;
     altKeywordPercent?: number;
+    /** Homepage image alts with trade + one report city. */
+    altLocalKeywords?: {
+      withBoth: number;
+      service: number;
+      city: number;
+      total: number;
+      imageCount: number;
+      cityLabel?: string;
+    };
+    /** Homepage trade + one-city mention totals. */
+    keywordMentions?: {
+      service: number;
+      city: number;
+      total: number;
+      cityLabel?: string;
+    };
     ssl?: boolean;
     phoneFound: boolean;
     schemaTypes: string[];
@@ -539,7 +555,10 @@ function overlayBiz(
     descLocations: fit?.locations,
     photos: live.gbp.photoCount ?? (heroOn && !ready ? example.photos : 0),
     hours: live.gbp.hasHours,
-    book: live.gbp.bookOnline ?? (live.gbp.hasBookOnline ? 'external' : false),
+    book: (() => {
+      const raw = live.gbp.bookOnline ?? (live.gbp.hasBookOnline ? 'external' : false);
+      return raw === 'none' ? false : raw;
+    })(),
     phone: live.gbp.hasPhone,
     years: live.gbp.yearsInBusiness ?? (heroOn && !ready ? example.years : 0),
     photo: live.gbp.photoUrl || (heroOn && !ready ? example.photo : ''),
@@ -559,6 +578,12 @@ function overlayBiz(
     metaFromAtlas: live.website?.metaDescriptionSource === 'search-atlas',
     h2Kw: live.website ? (live.website.h2KeywordCount ?? 0) : siteOn ? example.h2Kw : 0,
     altKw: live.website ? (live.website.altKeywordPercent ?? 0) : siteOn ? example.altKw : 0,
+    altBoth: live.website?.altLocalKeywords?.withBoth ?? (siteOn ? example.altBoth : 0),
+    altService: live.website?.altLocalKeywords?.service ?? (siteOn ? example.altService : 0),
+    altCity: live.website?.altLocalKeywords?.city ?? (siteOn ? example.altCity : 0),
+    kwMentions: live.website?.keywordMentions?.total ?? (siteOn ? example.kwMentions : 0),
+    kwService: live.website?.keywordMentions?.service ?? (siteOn ? example.kwService : 0),
+    kwCity: live.website?.keywordMentions?.city ?? (siteOn ? example.kwCity : 0),
     ssl: live.website ? (live.website.ssl ?? live.website.rootUrl.startsWith('https')) : siteOn ? example.ssl : true,
     schema: (live.website?.schemaTypes.length ?? 0) > 0,
     schemaTypes: live.website?.schemaTypes ?? [],
@@ -621,6 +646,12 @@ function ghostBiz(name: string, pack: number | null, you = false): ExampleBiz {
     metaDesc: null,
     h2Kw: 0,
     altKw: 0,
+    altBoth: 0,
+    altService: 0,
+    altCity: 0,
+    kwMentions: 0,
+    kwService: 0,
+    kwCity: 0,
     schema: false,
     schemaTypes: [],
     sitemap: 0,
@@ -762,14 +793,18 @@ function speedScoreOf(b: ExampleBiz, bestLcp: number): number {
   return 0;
 }
 
-function siteScoreOf(b: ExampleBiz): number {
+function siteScoreOf(
+  b: ExampleBiz,
+  extras?: { altPlace: number; kwPlace: number }
+): number {
   let score = 10;
   if (b.titleKw === 'yes') score += 12;
   else if (b.titleKw === 'partial') score += 6;
   if (b.metaDesc) score += 8;
   if (b.h1Kw) score += 12;
   if (b.h2Kw > 0) score += 8;
-  score += Math.round((b.altKw / 100) * 6);
+  score += packRankPoints(extras?.altPlace ?? 0);
+  score += packRankPoints(extras?.kwPlace ?? 0);
   if (b.schema) score += 8;
   if (b.servicePages > 0) score += 8;
   if (b.locationPages > 0) score += 4;
@@ -789,9 +824,14 @@ function siteScoreOf(b: ExampleBiz): number {
 function applyWebsiteScores(biz: ExampleBiz[]): void {
   const measured = biz.map((b) => b.lcp).filter((n) => n > 0);
   const bestLcp = measured.length ? Math.min(...measured) : 0;
+  const altTotals = biz.map((b) => b.altBoth);
+  const kwTotals = biz.map((b) => b.kwMentions);
   for (const b of biz) {
     const speed = speedScoreOf(b, bestLcp);
-    const site = siteScoreOf(b);
+    const site = siteScoreOf(b, {
+      altPlace: packPlace(b.altBoth, altTotals),
+      kwPlace: packPlace(b.kwMentions, kwTotals),
+    });
     b.scores.spd = speed;
     b.scores.site = site;
     b.scores.web = clampScore(speed * 0.3 + site * 0.7);
@@ -876,8 +916,24 @@ function bookKind(book: ExampleBiz['book']): false | 'external' | 'google' {
 function bookOnlineCell(book: ExampleBiz['book']) {
   const kind = bookKind(book);
   if (kind === 'google') return yes('on Google');
-  if (kind === 'external') return part('links off Google');
+  // Any Book button counts — Reserve on Google or a link off Google.
+  if (kind === 'external') return yes('links off Google');
   return no('none');
+}
+
+function packPlace(value: number, values: number[]): number {
+  if (value <= 0) return 0;
+  const ranked = [...new Set(values.filter((n) => n > 0))].sort((a, b) => b - a);
+  const idx = ranked.indexOf(value);
+  return idx < 0 ? 0 : idx + 1;
+}
+
+function packRankPoints(place: number): number {
+  if (place === 1) return 8;
+  if (place === 2) return 5;
+  if (place === 3) return 3;
+  if (place > 0) return 1;
+  return 0;
 }
 
 function contactFormCell(b: ExampleBiz) {
@@ -1132,7 +1188,7 @@ function packSearchScore(ranks?: (number | null)[]): number {
     if (rank == null || rank < 1) return 0;
     return Math.max(0, 100 - (rank - 1) * 20);
   };
-  return Math.round(three.reduce((sum, rank) => sum + one(rank), 0) / 3);
+  return Math.round(three.reduce<number>((sum, rank) => sum + one(rank), 0) / 3);
 }
 
 function mapsOf(b: ExampleBiz): number {
@@ -1542,7 +1598,28 @@ export function renderReportHtml(report: PublicReport): string {
     ),
     row('H1 quality', 'Exactly one H1 with keyword and city', orderWeb, (b) => h1QualityCell(b)),
     row('H2 has keyword', 'At least one section heading on the homepage', orderWeb, (b) => (b.h2Kw > 0 ? yes('') : no(''))),
-    row('Image alt text w/ keyword', 'Share of images described', orderWeb, (b) => num(`${b.altKw}%`, 'of images', b.altKw === 0 ? N : INK)),
+    row(
+      'Image alt text w/ keyword + city',
+      `Alts that name “${marketQuery}” and “${cityName}” · ranked vs this pack`,
+      orderWeb,
+      (b) => {
+        const place = packPlace(b.altBoth, orderWeb.map((x) => x.altBoth));
+        const placeLabel = place ? `#${place}` : 'none';
+        const color = place === 1 ? INK : place === 2 ? OR : N;
+        return num(b.altBoth, `${placeLabel} · ${b.altService} service · ${b.altCity} city in alts`, color);
+      }
+    ),
+    row(
+      'Service + city keywords',
+      `“${marketQuery}” + “${cityName}” on the homepage · ranked vs this pack`,
+      orderWeb,
+      (b) => {
+        const place = packPlace(b.kwMentions, orderWeb.map((x) => x.kwMentions));
+        const placeLabel = place ? `#${place}` : 'none';
+        const color = place === 1 ? INK : place === 2 ? OR : N;
+        return num(b.kwMentions, `${placeLabel} · ${b.kwService} service · ${b.kwCity} city`, color);
+      }
+    ),
     row('LocalBusiness schema', 'Trade / LocalBusiness JSON-LD Google can read', orderWeb, (b) =>
       b.nap?.hasLocalBusinessSchema ? yes('LocalBusiness') : schemaCell(b.schemaTypes, b.schema)
     ),
