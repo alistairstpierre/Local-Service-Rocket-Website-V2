@@ -96,8 +96,9 @@
       "dek": "Garage door marketing on Google — same spine as Hooked Up Electric. GBP, LSA, Search, booked jobs.",
       "date": "November 10, 2026",
       "publishAfter": "2026-11-10",
-      "status": "ready",
-      "seo": "garage door marketing"
+      "status": "published",
+      "seo": "garage door marketing",
+      "publishedOn": "2026-11-10"
     },
     {
       "slug": "pest-control-google-marketing",

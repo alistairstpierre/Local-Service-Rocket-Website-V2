@@ -4,6 +4,12 @@
    sync with the live Astro file under src/pages/blog/. */
 export const blogPosts = [
   {
+    href: '/blog/garage-door-google-marketing',
+    title: "Garage door marketing that books jobs: GBP, LSA, then Search",
+    dek: "Garage door marketing on Google — same spine as Hooked Up Electric. GBP, LSA, Search, booked jobs.",
+    date: "November 10, 2026",
+  },
+  {
     href: '/blog/waterproofing-google-marketing',
     title: "Waterproofing marketing that books jobs: GBP, LSA, then Search",
     dek: "Waterproofing marketing on Google — same spine as Dry Duck. GBP, LSA, Search, booked jobs.",
