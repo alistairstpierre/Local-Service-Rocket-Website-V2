@@ -82,11 +82,13 @@ export type ExampleBiz = {
     fit: 'yes' | 'partial' | 'no';
   };
   nap?: {
+    name: 'yes' | 'partial' | 'no' | 'missing';
     phone: 'yes' | 'partial' | 'no' | 'missing';
     address: 'yes' | 'partial' | 'no' | 'missing';
     hours: 'yes' | 'partial' | 'no' | 'missing';
     siteHasHours: boolean;
     siteHasAddress: boolean;
+    siteHasName?: boolean;
     hasCanonical: boolean;
     hasOgImage: boolean;
     hasLocalBusinessSchema: boolean;
@@ -163,11 +165,13 @@ export const EXAMPLE_BIZ: ExampleBiz[] = [
     h1Kw: true,
     h1Quality: { count: 1, singleH1: true, length: 42, lengthOk: true, hasKeyword: true, hasCity: true, fit: 'yes' },
     nap: {
+      name: 'yes',
       phone: 'yes',
       address: 'yes',
       hours: 'missing',
       siteHasHours: false,
       siteHasAddress: true,
+      siteHasName: true,
       hasCanonical: true,
       hasOgImage: true,
       hasLocalBusinessSchema: false,
@@ -255,11 +259,13 @@ export const EXAMPLE_BIZ: ExampleBiz[] = [
     h1Kw: true,
     h1Quality: { count: 1, singleH1: true, length: 27, lengthOk: true, hasKeyword: true, hasCity: true, fit: 'yes' },
     nap: {
+      name: 'yes',
       phone: 'yes',
       address: 'yes',
       hours: 'yes',
       siteHasHours: true,
       siteHasAddress: true,
+      siteHasName: true,
       hasCanonical: true,
       hasOgImage: true,
       hasLocalBusinessSchema: true,
@@ -347,11 +353,13 @@ export const EXAMPLE_BIZ: ExampleBiz[] = [
     h1Kw: true,
     h1Quality: { count: 1, singleH1: true, length: 31, lengthOk: true, hasKeyword: true, hasCity: true, fit: 'yes' },
     nap: {
+      name: 'partial',
       phone: 'yes',
       address: 'yes',
       hours: 'partial',
       siteHasHours: true,
       siteHasAddress: true,
+      siteHasName: true,
       hasCanonical: true,
       hasOgImage: true,
       hasLocalBusinessSchema: true,
@@ -436,11 +444,13 @@ export const EXAMPLE_BIZ: ExampleBiz[] = [
     h1Kw: false,
     h1Quality: { count: 1, singleH1: true, length: 22, lengthOk: true, hasKeyword: false, hasCity: false, fit: 'no' },
     nap: {
+      name: 'missing',
       phone: 'missing',
       address: 'missing',
       hours: 'missing',
       siteHasHours: false,
       siteHasAddress: false,
+      siteHasName: false,
       hasCanonical: false,
       hasOgImage: false,
       hasLocalBusinessSchema: false,

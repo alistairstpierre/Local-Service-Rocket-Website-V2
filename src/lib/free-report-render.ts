@@ -150,11 +150,13 @@ export type PublicReportBusiness = {
     };
     /** GBP ↔ website NAP / hours consistency. */
     nap?: {
+      name: 'yes' | 'partial' | 'no' | 'missing';
       phone: 'yes' | 'partial' | 'no' | 'missing';
       address: 'yes' | 'partial' | 'no' | 'missing';
       hours: 'yes' | 'partial' | 'no' | 'missing';
       siteHasHours: boolean;
       siteHasAddress: boolean;
+      siteHasName?: boolean;
       hasCanonical: boolean;
       hasOgImage: boolean;
       hasLocalBusinessSchema: boolean;
@@ -958,6 +960,12 @@ function enrichGapCard(gap: string): { head: string; sub: string } {
   if (/opening hours are on the website but missing from the google/i.test(g)) {
     return { head: 'Hours are on the website, missing on Google.', sub: g };
   }
+  if (/business name on the website does not match/i.test(g)) {
+    return { head: 'Business name doesn’t match Google.', sub: g };
+  }
+  if (/google business name is missing from the website/i.test(g)) {
+    return { head: 'Google’s business name isn’t on the homepage.', sub: g };
+  }
   if (/phone number on the website does not match/i.test(g)) {
     return { head: 'Phone number doesn’t match Google.', sub: g };
   }
@@ -1588,6 +1596,9 @@ export function renderReportHtml(report: PublicReport): string {
   const serpPairs = [serp.slice(0, 2), serp.slice(2, 4)].filter((pair) => pair.length);
 
   const napRows = [
+    row('Name matches Google', 'Same business name on the GBP and the website', orderWeb, (b) =>
+      matchCell(b.nap?.name)
+    ),
     row('Phone matches Google', 'Same number on the GBP and the website', orderWeb, (b) => matchCell(b.nap?.phone)),
     row('Address matches Google', 'Street / city consistent with the listing', orderWeb, (b) => matchCell(b.nap?.address)),
     row('Hours match Google', 'Opening hours on the site vs the listing', orderWeb, (b) => matchCell(b.nap?.hours)),
@@ -2185,7 +2196,7 @@ export function renderReportHtml(report: PublicReport): string {
 
       <div class="rpt-web-head">
         <div class="rpt-web-head-title">NAP + HOURS</div>
-        <div class="rpt-web-head-note">Address, phone, and hours should match the Google listing on the GBP-linked page</div>
+        <div class="rpt-web-head-note">Name, address, phone, and hours should match the Google listing on the GBP-linked page</div>
       </div>
       ${boardHtml('GBP ↔ WEBSITE', headsWeb, napRows)}
       ${boardHtml('SEO & SETTINGS', headsWeb, seoRows)}

@@ -174,7 +174,7 @@ Old service URLs (`/services/paid-ads`, `/local-seo`, `/websites`, `/hiring`, `/
 │   ├── lib/
 │   │   ├── free-report-copy.ts     # Headlines from overall score (not Map Pack alone); why / how-to-improve notes for Map Pack (3 searches), website, and AI; US-only note lives in the report footer
 │   │   ├── free-report-example.ts  # Fallback dataset for photo counts, posts, extra AI platforms
-│   │   └── free-report-render.ts   # Maps PublicReport + examples into the report HTML (Map Pack = 3 phone searches, score = average of those 3, who-made-the-map cards, why/improve under the lede, GBP Book online on the profile board, GBP↔website NAP + hours board, ranked alt text + service/city keyword rows, title/H1 quality + LocalBusiness schema rows, off-site HCP form = orange on the website board, boards in score order, review 65/35, website = speed 30% + site 70% unpublished, About keyword/services/locations, fastest = lowest LCP)
+│   │   └── free-report-render.ts   # Maps PublicReport + examples into the report HTML (Map Pack = 3 phone searches, score = average of those 3, who-made-the-map cards, why/improve under the lede, GBP Book online on the profile board, GBP↔website NAP + hours board (name/phone/address/hours), ranked alt text + service/city keyword rows, title/H1 quality + LocalBusiness schema rows, off-site HCP form = orange on the website board, boards in score order, review 65/35, website = speed 30% + site 70% unpublished, About keyword/services/locations, fastest = lowest LCP)
 │   ├── data/
 │   │   ├── blog-posts.js         # Blog hub cards (cron prepends here on publish)
 │   │   ├── images.js             # Image manifest (widths, formats) shared by script + Picture
