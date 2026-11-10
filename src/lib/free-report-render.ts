@@ -114,6 +114,38 @@ export type PublicReportBusiness = {
       ctaAboveFold?: boolean;
       hasForm?: boolean;
     };
+    /** Title quality for the GBP-linked page (city expected). */
+    titleQuality?: {
+      length: number;
+      lengthOk: boolean;
+      hasKeyword: boolean;
+      hasCity: boolean;
+      fit: 'yes' | 'partial' | 'no';
+    };
+    /** H1 quality: one H1, keyword, city. */
+    h1Quality?: {
+      count: number;
+      singleH1: boolean;
+      length?: number;
+      lengthOk?: boolean;
+      hasKeyword: boolean;
+      hasCity: boolean;
+      fit: 'yes' | 'partial' | 'no';
+    };
+    /** GBP ↔ website NAP / hours consistency. */
+    nap?: {
+      phone: 'yes' | 'partial' | 'no' | 'missing';
+      address: 'yes' | 'partial' | 'no' | 'missing';
+      hours: 'yes' | 'partial' | 'no' | 'missing';
+      siteHasHours: boolean;
+      siteHasAddress: boolean;
+      hasCanonical: boolean;
+      hasOgImage: boolean;
+      hasLocalBusinessSchema: boolean;
+      hasFaqSchema: boolean;
+      hasAggregateRating: boolean;
+      hasCommerceHints: boolean;
+    };
   };
   ads?: {
     inLsa: boolean;
@@ -515,9 +547,12 @@ function overlayBiz(
     url,
     site: shortName(live.name),
     title,
-    titleKw: titleKwOf(title, keyword),
+    titleKw: live.website?.titleQuality?.fit ?? titleKwOf(title, keyword),
     h1: live.website?.h1 ?? (siteOn ? example.h1 : '…'),
-    h1Kw: live.website?.h1ContainsKeyword ?? (siteOn ? example.h1Kw : false),
+    h1Kw: live.website?.h1Quality?.hasKeyword ?? live.website?.h1ContainsKeyword ?? (siteOn ? example.h1Kw : false),
+    titleQuality: live.website?.titleQuality ?? (siteOn ? example.titleQuality : undefined),
+    h1Quality: live.website?.h1Quality ?? (siteOn ? example.h1Quality : undefined),
+    nap: live.website?.nap ?? (siteOn ? example.nap : undefined),
     metaDesc: live.website?.metaDescription ?? (siteOn ? example.metaDesc : null),
     searchAtlas: live.website?.searchAtlas ?? false,
     seoOverlay: live.website?.seoOverlay,
@@ -853,6 +888,88 @@ function contactFormCell(b: ExampleBiz) {
 
 function num(t: string | number, sub = '', color = INK, size = '22px') {
   return { t: String(t), color, pill: 'transparent', sub, size };
+}
+
+/** Turn API gap sentences into head/sub cards for the closing section. */
+function enrichGapCard(gap: string): { head: string; sub: string } {
+  const g = gap.trim();
+  if (/opening hours on the website do not match/i.test(g)) {
+    return { head: 'Hours on the site don’t match Google.', sub: g };
+  }
+  if (/opening hours are on google but missing from the website/i.test(g)) {
+    return { head: 'Hours are on Google, missing on the website.', sub: g };
+  }
+  if (/opening hours are on the website but missing from the google/i.test(g)) {
+    return { head: 'Hours are on the website, missing on Google.', sub: g };
+  }
+  if (/phone number on the website does not match/i.test(g)) {
+    return { head: 'Phone number doesn’t match Google.', sub: g };
+  }
+  if (/phone number is on google but missing from the website/i.test(g)) {
+    return { head: 'Phone is on Google, missing on the website.', sub: g };
+  }
+  if (/address on the website does not match/i.test(g)) {
+    return { head: 'Address doesn’t match Google.', sub: g };
+  }
+  if (/street address is on google but missing from the website/i.test(g)) {
+    return { head: 'Street address is missing from the website.', sub: g };
+  }
+  if (/page title does not include/i.test(g)) {
+    return { head: 'GBP-linked page title is missing the city.', sub: g };
+  }
+  if (/page title is \d+ characters/i.test(g)) {
+    return { head: 'Page title length is off.', sub: g };
+  }
+  if (/h1 does not include the main service keyword/i.test(g)) {
+    return { head: 'Homepage H1 is missing the service keyword.', sub: g };
+  }
+  if (/h1s — use exactly one/i.test(g)) {
+    return { head: 'Homepage has more than one H1.', sub: g };
+  }
+  if (/h1 does not include the city/i.test(g)) {
+    return { head: 'Homepage H1 is missing the city.', sub: g };
+  }
+  if (/missing localbusiness/i.test(g)) {
+    return { head: 'Missing LocalBusiness / trade schema.', sub: g };
+  }
+  if (/no embedded map/i.test(g)) {
+    return { head: 'Homepage has no service-area map.', sub: g };
+  }
+  return { head: g, sub: 'What this is costing you — and what closing it gets you.' };
+}
+
+function matchCell(
+  status: 'yes' | 'partial' | 'no' | 'missing' | undefined,
+  labels?: { yes?: string; partial?: string; no?: string; missing?: string }
+): ReturnType<typeof yes> {
+  if (status === 'yes') return yes(labels?.yes ?? 'match');
+  if (status === 'partial') return part(labels?.partial ?? 'partial');
+  if (status === 'no') return no(labels?.no ?? 'mismatch');
+  return no(labels?.missing ?? 'missing');
+}
+
+function titleQualityCell(b: ExampleBiz): ReturnType<typeof yes> {
+  const q = b.titleQuality;
+  if (!q) {
+    if (b.titleKw === 'yes') return yes('keyword');
+    if (b.titleKw === 'partial') return part('partial');
+    return no('no title');
+  }
+  if (q.fit === 'yes') return yes(`${q.length} chars · city`);
+  if (!q.hasCity) return no('missing city');
+  if (!q.lengthOk) return part(`${q.length} chars`);
+  if (q.hasKeyword) return part('keyword only');
+  return no('weak');
+}
+
+function h1QualityCell(b: ExampleBiz): ReturnType<typeof yes> {
+  const q = b.h1Quality;
+  if (!q) return b.h1Kw ? yes('keyword') : no('missing');
+  if (q.fit === 'yes') return yes('1 H1 · keyword · city');
+  if (!q.hasKeyword) return no('no keyword');
+  if (!q.singleH1) return part(`${q.count} H1s`);
+  if (!q.hasCity) return part('missing city');
+  return part('partial');
 }
 
 function schemaCell(types: string[] | undefined, present: boolean): ReturnType<typeof yes> {
@@ -1351,8 +1468,22 @@ export function renderReportHtml(report: PublicReport): string {
   const orderSite = rankSite.map((r) => r.biz);
   const serp = orderSite.map((b) => {
     const s = splitTitle(b.title, keyword);
-    const st =
-      b.titleKw === 'yes'
+    const tq = b.titleQuality;
+    const st = tq
+      ? tq.fit === 'yes'
+        ? { titlePill: Y, titleMark: '✓', titleStatus: `Keyword + city · ${tq.length} chars` }
+        : {
+            titlePill: tq.fit === 'partial' ? A : N,
+            titleMark: tq.fit === 'partial' ? '~' : '✗',
+            titleStatus: !tq.hasCity
+              ? 'Missing city on GBP-linked page'
+              : !tq.hasKeyword
+                ? 'No service keyword'
+                : !tq.lengthOk
+                  ? `Keyword + city · ${tq.length} chars (aim 50–90)`
+                  : 'Partial title',
+          }
+      : b.titleKw === 'yes'
         ? { titlePill: Y, titleMark: '✓', titleStatus: `Says “${s.match.toLowerCase() || keyword}”` }
         : b.titleKw === 'partial'
           ? { titlePill: A, titleMark: '~', titleStatus: `“${s.match.toLowerCase()}” — close, not exact` }
@@ -1400,11 +1531,31 @@ export function renderReportHtml(report: PublicReport): string {
   });
   const serpPairs = [serp.slice(0, 2), serp.slice(2, 4)].filter((pair) => pair.length);
 
+  const napRows = [
+    row('Phone matches Google', 'Same number on the GBP and the website', orderWeb, (b) => matchCell(b.nap?.phone)),
+    row('Address matches Google', 'Street / city consistent with the listing', orderWeb, (b) => matchCell(b.nap?.address)),
+    row('Hours match Google', 'Opening hours on the site vs the listing', orderWeb, (b) => matchCell(b.nap?.hours)),
+  ];
   const seoRows = [
-    row('H1 has keyword', 'The main headline on the homepage', orderWeb, (b) => (b.h1Kw ? yes('') : no(''))),
+    row('Title has city + length', 'GBP-linked page should name the city (50–90 chars)', orderWeb, (b) =>
+      titleQualityCell(b)
+    ),
+    row('H1 quality', 'Exactly one H1 with keyword and city', orderWeb, (b) => h1QualityCell(b)),
     row('H2 has keyword', 'At least one section heading on the homepage', orderWeb, (b) => (b.h2Kw > 0 ? yes('') : no(''))),
     row('Image alt text w/ keyword', 'Share of images described', orderWeb, (b) => num(`${b.altKw}%`, 'of images', b.altKw === 0 ? N : INK)),
-    row('Schema markup', 'The business type Google can read', orderWeb, (b) => schemaCell(b.schemaTypes, b.schema)),
+    row('LocalBusiness schema', 'Trade / LocalBusiness JSON-LD Google can read', orderWeb, (b) =>
+      b.nap?.hasLocalBusinessSchema ? yes('LocalBusiness') : schemaCell(b.schemaTypes, b.schema)
+    ),
+    row('Canonical + social image', 'Canonical URL and og:image on the page', orderWeb, (b) => {
+      const c = b.nap?.hasCanonical;
+      const og = b.nap?.hasOgImage;
+      if (c && og) return yes('canonical · og:image');
+      if (c || og) return part(c ? 'canonical only' : 'og:image only');
+      return no('missing');
+    }),
+    row('Commerce schema hints', 'priceRange / paymentAccepted / currenciesAccepted', orderWeb, (b) =>
+      b.nap?.hasCommerceHints ? yes('listed') : no('missing')
+    ),
     row('Service pages', 'One page per service', orderWeb, (b) => num(b.servicePages, 'pages', b.servicePages < 3 ? N : INK)),
     row('Location pages', 'One page per city served', orderWeb, (b) => num(b.locationPages, 'pages')),
     row('SSL (https)', 'Padlock in the browser', orderWeb, (b) => (b.ssl ? yes('secure') : no('not secure'))),
@@ -1668,10 +1819,7 @@ export function renderReportHtml(report: PublicReport): string {
   );
   const gapCards = (
     usableLiveGaps.length
-      ? usableLiveGaps.map((g) => ({
-          head: g,
-          sub: 'What this is costing you — and what closing it gets you.',
-        }))
+      ? usableLiveGaps.map((g) => enrichGapCard(g))
       : defaultGaps
   ).slice(0, 8);
   const wins = [
@@ -1958,6 +2106,9 @@ export function renderReportHtml(report: PublicReport): string {
           .join('')}
       </div>
 
+      <div class="rpt-mini-kicker is-muted rpt-block-kicker">NAP CONSISTENCY</div>
+      <p class="rpt-lede" style="margin-top:4px">Name, address, phone, and hours should match the Google listing on the GBP-linked page.</p>
+      ${boardHtml('GBP ↔ WEBSITE', headsWeb, napRows)}
       ${boardHtml('SEO & SETTINGS', headsWeb, seoRows)}
       <div class="rpt-mini-kicker is-muted rpt-block-kicker">CAN A VISITOR ACTUALLY CALL YOU?</div>
       ${boardHtml('USABILITY', headsWeb, uxRows)}

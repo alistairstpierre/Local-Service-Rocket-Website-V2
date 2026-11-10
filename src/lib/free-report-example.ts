@@ -65,6 +65,35 @@ export type ExampleBiz = {
   titleKw: 'yes' | 'partial' | 'no';
   h1: string;
   h1Kw: boolean;
+  titleQuality?: {
+    length: number;
+    lengthOk: boolean;
+    hasKeyword: boolean;
+    hasCity: boolean;
+    fit: 'yes' | 'partial' | 'no';
+  };
+  h1Quality?: {
+    count: number;
+    singleH1: boolean;
+    length?: number;
+    lengthOk?: boolean;
+    hasKeyword: boolean;
+    hasCity: boolean;
+    fit: 'yes' | 'partial' | 'no';
+  };
+  nap?: {
+    phone: 'yes' | 'partial' | 'no' | 'missing';
+    address: 'yes' | 'partial' | 'no' | 'missing';
+    hours: 'yes' | 'partial' | 'no' | 'missing';
+    siteHasHours: boolean;
+    siteHasAddress: boolean;
+    hasCanonical: boolean;
+    hasOgImage: boolean;
+    hasLocalBusinessSchema: boolean;
+    hasFaqSchema: boolean;
+    hasAggregateRating: boolean;
+    hasCommerceHints: boolean;
+  };
   metaDesc: string | null;
   searchAtlas?: boolean;
   seoOverlay?: string;
@@ -120,9 +149,24 @@ export const EXAMPLE_BIZ: ExampleBiz[] = [
     url: 'smalljobselectric.com',
     site: 'Small Jobs Electric',
     title: 'Home Electrical Repairs & Installations – Tampa Bay FL',
-    titleKw: 'partial',
+    titleKw: 'yes',
+    titleQuality: { length: 54, lengthOk: true, hasKeyword: true, hasCity: true, fit: 'yes' },
     h1: 'Tampa Bay’s Trusted Electrical Contractor',
-    h1Kw: false,
+    h1Kw: true,
+    h1Quality: { count: 1, singleH1: true, length: 42, lengthOk: true, hasKeyword: true, hasCity: true, fit: 'yes' },
+    nap: {
+      phone: 'yes',
+      address: 'yes',
+      hours: 'missing',
+      siteHasHours: false,
+      siteHasAddress: true,
+      hasCanonical: true,
+      hasOgImage: true,
+      hasLocalBusinessSchema: false,
+      hasFaqSchema: false,
+      hasAggregateRating: false,
+      hasCommerceHints: false,
+    },
     metaDesc:
       'Licensed Tampa Bay electrical contractor for repairs, panel upgrades, lighting & EV chargers. Same-day service. Call (813) 555-0142.',
     h2Kw: 4,
@@ -192,8 +236,23 @@ export const EXAMPLE_BIZ: ExampleBiz[] = [
     site: 'Mr. Electric',
     title: 'Local Electricians in Tampa Bay | Mr. Electric',
     titleKw: 'yes',
+    titleQuality: { length: 46, lengthOk: false, hasKeyword: true, hasCity: true, fit: 'partial' },
     h1: 'Your Tampa Bay Electricians',
     h1Kw: true,
+    h1Quality: { count: 1, singleH1: true, length: 27, lengthOk: true, hasKeyword: true, hasCity: true, fit: 'yes' },
+    nap: {
+      phone: 'yes',
+      address: 'yes',
+      hours: 'yes',
+      siteHasHours: true,
+      siteHasAddress: true,
+      hasCanonical: true,
+      hasOgImage: true,
+      hasLocalBusinessSchema: true,
+      hasFaqSchema: false,
+      hasAggregateRating: false,
+      hasCommerceHints: false,
+    },
     metaDesc:
       'Mr. Electric of Tampa Bay provides licensed electricians for residential & commercial electrical repair, installation and upgrades. Call 24/7.',
     h2Kw: 6,
@@ -263,8 +322,23 @@ export const EXAMPLE_BIZ: ExampleBiz[] = [
     site: 'Brandon Electric',
     title: 'Tampa Electricians | Residential & Commercial | Brandon Electric',
     titleKw: 'yes',
+    titleQuality: { length: 64, lengthOk: true, hasKeyword: true, hasCity: true, fit: 'yes' },
     h1: 'Tampa’s Electricians Since 1993',
     h1Kw: true,
+    h1Quality: { count: 1, singleH1: true, length: 31, lengthOk: true, hasKeyword: true, hasCity: true, fit: 'yes' },
+    nap: {
+      phone: 'yes',
+      address: 'yes',
+      hours: 'partial',
+      siteHasHours: true,
+      siteHasAddress: true,
+      hasCanonical: true,
+      hasOgImage: true,
+      hasLocalBusinessSchema: true,
+      hasFaqSchema: false,
+      hasAggregateRating: false,
+      hasCommerceHints: true,
+    },
     metaDesc:
       'Brandon Electric: Tampa electricians since 1993. Residential & commercial wiring, panel upgrades, generators. Free estimates.',
     h2Kw: 5,
@@ -331,8 +405,23 @@ export const EXAMPLE_BIZ: ExampleBiz[] = [
     site: 'Bayshore Home Services',
     title: 'Bayshore Home Services',
     titleKw: 'no',
+    titleQuality: { length: 22, lengthOk: false, hasKeyword: false, hasCity: false, fit: 'no' },
     h1: 'Welcome to Our Website',
     h1Kw: false,
+    h1Quality: { count: 1, singleH1: true, length: 22, lengthOk: true, hasKeyword: false, hasCity: false, fit: 'no' },
+    nap: {
+      phone: 'missing',
+      address: 'missing',
+      hours: 'missing',
+      siteHasHours: false,
+      siteHasAddress: false,
+      hasCanonical: false,
+      hasOgImage: false,
+      hasLocalBusinessSchema: false,
+      hasFaqSchema: false,
+      hasAggregateRating: false,
+      hasCommerceHints: false,
+    },
     metaDesc: null,
     h2Kw: 0,
     altKw: 0,
