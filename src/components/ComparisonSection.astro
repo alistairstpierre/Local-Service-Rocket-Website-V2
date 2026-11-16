@@ -1,0 +1,402 @@
+---
+/* "Why LSR is different" agency comparison table for the homepage.
+   Sits under Success Stories on index.astro. CTA points at /growth-audit.
+   Design source: Downloads/comparison-section.html (Manrope already self-hosted). */
+import Logo from './Logo.astro';
+
+interface Props {
+  ctaHref?: string;
+  ctaLabel?: string;
+}
+
+const {
+  ctaHref = '/growth-audit',
+  ctaLabel = 'Book a free audit',
+} = Astro.props;
+---
+
+<section class="lsr-compare" id="why-different" aria-labelledby="why-different-heading">
+  <div class="lsr-compare-inner">
+    <div class="lsr-head">
+      <div>
+        <div class="eyebrow">WHY LSR IS DIFFERENT</div>
+        <h2 id="why-different-heading">Most agencies hand you off. We never do.</h2>
+      </div>
+      <p>
+        We're small and lean on purpose. You get a CMO-style marketer who owns your growth: the
+        person you meet on day one does the work, makes the calls, and feels it when something isn't
+        working.
+      </p>
+    </div>
+
+    <div class="lsr-table" role="table" aria-label="Local Service Rocket vs typical agency">
+      <div class="lsr-thead" role="row">
+        <div role="columnheader"></div>
+        <div role="columnheader" class="lsr-us">
+          <Logo size={22} maskId="lsrCompareCut" />
+          Local Service Rocket
+        </div>
+        <div role="columnheader" class="lsr-them">Typical agency</div>
+      </div>
+
+      <div class="lsr-row" role="row">
+        <div class="lsr-row-title" role="rowheader">Who you deal with</div>
+        <div class="lsr-cell lsr-cell-us" role="cell">
+          <div class="lsr-icons">
+            <svg width="22" height="26" viewBox="0 0 22 26" fill="var(--orange)" aria-hidden="true"
+              ><circle cx="11" cy="6" r="5.5"></circle><path
+                d="M0 26c0-6.6 4.9-11 11-11s11 4.4 11 11z"></path
+              ></svg
+            >
+            <div class="lsr-support">
+              <div class="lsr-support-dots">
+                {
+                  [1, 2, 3, 4].map(() => (
+                    <svg
+                      width="10"
+                      height="12"
+                      viewBox="0 0 22 26"
+                      fill="#f3b48f"
+                      aria-hidden="true"
+                    >
+                      <circle cx="11" cy="6" r="5.5" />
+                      <path d="M0 26c0-6.6 4.9-11 11-11s11 4.4 11 11z" />
+                    </svg>
+                  ))
+                }
+              </div>
+              <span>coaching + network</span>
+            </div>
+          </div>
+          <p>
+            One proven expert, start to finish, backed by coaching and a network of marketers. They
+            can't make big promises and hand you off.
+          </p>
+        </div>
+        <div class="lsr-cell lsr-cell-them" role="cell">
+          <div class="lsr-icons lsr-icons-tight">
+            {
+              [1, 2, 3, 4, 5, 6, 7].map(() => (
+                <svg width="22" height="26" viewBox="0 0 22 26" fill="#c4c4c8" aria-hidden="true">
+                  <circle cx="11" cy="6" r="5.5" />
+                  <path d="M0 26c0-6.6 4.9-11 11-11s11 4.4 11 11z" />
+                </svg>
+              ))
+            }
+          </div>
+          <p>
+            A sales rep signs you, then you're passed through 7+ people you never meet. Everything
+            takes longer.
+          </p>
+        </div>
+      </div>
+
+      <div class="lsr-row" role="row">
+        <div class="lsr-row-title" role="rowheader">When something isn't working</div>
+        <div class="lsr-cell lsr-cell-us" role="cell">
+          <div class="lsr-icons">
+            <svg width="22" height="26" viewBox="0 0 22 26" fill="var(--orange)" aria-hidden="true"
+              ><path
+                d="M11 0a8.5 8.5 0 0 0-5 15.4V19a1.5 1.5 0 0 0 1.5 1.5h7A1.5 1.5 0 0 0 16 19v-3.6A8.5 8.5 0 0 0 11 0z"
+              ></path><rect x="7" y="22" width="8" height="2.5" rx="1.25"></rect></svg
+            >
+            <svg
+              width="12"
+              height="10"
+              viewBox="0 0 14 12"
+              fill="none"
+              stroke="var(--orange)"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              ><path d="M1 6h11M8 1l5 5-5 5"></path></svg
+            >
+            <svg width="22" height="26" viewBox="0 0 22 26" fill="var(--orange)" aria-hidden="true"
+              ><path
+                d="M11 0a8.5 8.5 0 0 0-5 15.4V19a1.5 1.5 0 0 0 1.5 1.5h7A1.5 1.5 0 0 0 16 19v-3.6A8.5 8.5 0 0 0 11 0z"
+              ></path><rect x="7" y="22" width="8" height="2.5" rx="1.25"></rect></svg
+            >
+            <svg
+              width="12"
+              height="10"
+              viewBox="0 0 14 12"
+              fill="none"
+              stroke="var(--orange)"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              ><path d="M1 6h11M8 1l5 5-5 5"></path></svg
+            >
+            <svg width="22" height="26" viewBox="0 0 22 26" fill="var(--orange)" aria-hidden="true"
+              ><path
+                d="M11 0a8.5 8.5 0 0 0-5 15.4V19a1.5 1.5 0 0 0 1.5 1.5h7A1.5 1.5 0 0 0 16 19v-3.6A8.5 8.5 0 0 0 11 0z"
+              ></path><rect x="7" y="22" width="8" height="2.5" rx="1.25"></rect></svg
+            >
+          </div>
+          <p>
+            We start with the most likely winner for your trade and area, and pivot until the
+            numbers move.
+          </p>
+        </div>
+        <div class="lsr-cell lsr-cell-them" role="cell">
+          <div class="lsr-icons lsr-icons-tight">
+            <svg width="22" height="26" viewBox="0 0 22 26" fill="#c4c4c8" aria-hidden="true"
+              ><path
+                d="M11 0a8.5 8.5 0 0 0-5 15.4V19a1.5 1.5 0 0 0 1.5 1.5h7A1.5 1.5 0 0 0 16 19v-3.6A8.5 8.5 0 0 0 11 0z"
+              ></path><rect x="7" y="22" width="8" height="2.5" rx="1.25"></rect></svg
+            >
+          </div>
+          <p>One plan sold to everyone. You hear "give it time" until you cancel.</p>
+        </div>
+      </div>
+
+      <div class="lsr-row" role="row">
+        <div class="lsr-row-title" role="rowheader">How fast you get a reply</div>
+        <div class="lsr-cell lsr-cell-us" role="cell">
+          <div class="lsr-icons">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="var(--orange)"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              aria-hidden="true"
+              ><circle cx="12" cy="12" r="10" fill="#fff"></circle><path d="M12 7v5l3 2"></path
+              ></svg
+            >
+          </div>
+          <p>
+            Text or call the expert directly. Usually under an hour, and most problems fixed on the
+            spot.
+          </p>
+        </div>
+        <div class="lsr-cell lsr-cell-them" role="cell">
+          <div class="lsr-icons lsr-icons-tight">
+            {
+              [1, 2, 3, 4, 5].map(() => (
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#c4c4c8"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="12" r="10" fill="#fff" />
+                  <path d="M12 7v5l3 2" />
+                </svg>
+              ))
+            }
+          </div>
+          <p>Through an account manager, then a meeting to book a meeting.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="lsr-cta">
+      <a class="btn btn-primary" href={ctaHref}>{ctaLabel}</a>
+      <span>Talk to the person who'll actually do the work.</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .lsr-compare {
+    color: var(--ink);
+    padding: 72px var(--pad-x) 0;
+  }
+
+  .lsr-compare-inner {
+    max-width: 1040px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 560px) {
+    .lsr-compare {
+      padding-top: 56px;
+    }
+  }
+
+  .lsr-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 32px;
+    align-items: end;
+  }
+
+  .lsr-head h2 {
+    margin-top: 10px;
+    font-size: clamp(28px, 3.6vw, 36px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    text-wrap: balance;
+  }
+
+  .lsr-head p {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--body);
+    text-wrap: pretty;
+  }
+
+  .lsr-table {
+    margin-top: 32px;
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-panel);
+    overflow: hidden;
+  }
+
+  .lsr-thead,
+  .lsr-row {
+    display: grid;
+    grid-template-columns: 200px minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .lsr-thead {
+    background: var(--section-bg);
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .lsr-thead > div {
+    padding: 14px 20px;
+    font-size: 13px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .lsr-thead .lsr-them {
+    color: var(--muted-3);
+  }
+
+  .lsr-row {
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .lsr-row:last-child {
+    border-bottom: 0;
+  }
+
+  .lsr-row-title {
+    padding: 22px 20px;
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1.25;
+    border-right: 1px solid var(--hairline);
+  }
+
+  .lsr-cell {
+    padding: 22px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .lsr-cell-us {
+    background: #fdf5ef;
+  }
+
+  .lsr-cell p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .lsr-cell-us p {
+    color: var(--ink);
+  }
+
+  .lsr-cell-them p {
+    color: var(--muted);
+  }
+
+  .lsr-icons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    min-height: 26px;
+  }
+
+  .lsr-icons-tight {
+    gap: 4px;
+  }
+
+  .lsr-support {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1.5px dashed #f3b48f;
+    border-radius: var(--radius-pill);
+    padding: 4px 10px;
+  }
+
+  .lsr-support-dots {
+    display: flex;
+    gap: 2px;
+  }
+
+  .lsr-support span {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--orange-hover);
+  }
+
+  .lsr-cta {
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+
+  .lsr-cta span {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  @media (max-width: 760px) {
+    .lsr-head {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .lsr-thead {
+      display: none;
+    }
+
+    .lsr-row {
+      grid-template-columns: 1fr;
+    }
+
+    .lsr-row-title {
+      border-right: 0;
+      border-bottom: 1px solid var(--hairline);
+      padding-bottom: 14px;
+    }
+
+    .lsr-cell-us::before {
+      content: 'Local Service Rocket';
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: var(--orange);
+    }
+
+    .lsr-cell-them::before {
+      content: 'Typical agency';
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: var(--muted-3);
+    }
+  }
+</style>
