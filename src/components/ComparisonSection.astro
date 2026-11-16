@@ -1,6 +1,6 @@
 ---
-/* "Why LSR is different" agency comparison table for the homepage.
-   Sits under Success Stories on index.astro. CTA points at /growth-audit.
+/* "Why LSR is different" agency comparison table for the about page.
+   Full site container width (--max). CTA points at /growth-audit.
    Design source: Downloads/comparison-section.html (Manrope already self-hosted). */
 import Logo from './Logo.astro';
 
@@ -209,12 +209,13 @@ const {
 <style>
   .lsr-compare {
     color: var(--ink);
+    max-width: var(--max);
+    margin: 0 auto;
     padding: 72px var(--pad-x) 0;
   }
 
   .lsr-compare-inner {
-    max-width: 1040px;
-    margin: 0 auto;
+    width: 100%;
   }
 
   @media (max-width: 560px) {

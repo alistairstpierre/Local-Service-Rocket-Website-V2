@@ -164,7 +164,7 @@ Old service URLs (`/services/paid-ads`, `/local-seo`, `/websites`, `/hiring`, `/
 │   └── free-report/              # Example report GBP thumbs + one reused Tampa map snapshot
 ├── src/
 │   ├── components/
-│   │   ├── ComparisonSection.astro  # Why LSR is different table (homepage + about)
+│   │   ├── ComparisonSection.astro  # Why LSR is different table (about page)
 │   │   ├── Footer.astro
 │   │   ├── GooglePartnerBadge.astro  # Official 2026 Partner snippet (Hero + PricingOffer)
 │   │   ├── Hero.astro
