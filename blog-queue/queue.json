@@ -107,8 +107,9 @@
       "dek": "Pest control marketing on Google — same spine as Honest Hank's. GBP, LSA, Search, booked jobs.",
       "date": "November 17, 2026",
       "publishAfter": "2026-11-17",
-      "status": "ready",
-      "seo": "pest control marketing"
+      "status": "published",
+      "seo": "pest control marketing",
+      "publishedOn": "2026-11-17"
     },
     {
       "slug": "locksmith-google-marketing",
