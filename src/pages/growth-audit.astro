@@ -1,8 +1,9 @@
 ---
 /* Growth Audit booking page. Replaces /get-started as the main conversion path.
    Design: Growth Audit Page.html (Claude Design). Four-step form ends on the
-   LeadConnector calendar. /get-started 301s here. /free-report stays the
-   self-serve Google report. */
+   LeadConnector calendar. Listens for msgsndr-booking-complete and fires the
+   Google Ads "Growth Audit Booked" conversion (PUBLIC_GOOGLE_ADS_*).
+   /get-started 301s here. /free-report stays the self-serve Google report. */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Picture from '../components/Picture.astro';
 import {
@@ -14,6 +15,10 @@ import {
 } from '../data/schema';
 
 const AUDIT_BOOKING = 'https://api.leadconnectorhq.com/widget/booking/RxERi6yLg9QORxQ2w9WA';
+const adsId = (import.meta.env.PUBLIC_GOOGLE_ADS_ID as string | undefined)?.trim() || '';
+const adsLabel =
+  (import.meta.env.PUBLIC_GOOGLE_ADS_CONVERSION_LABEL as string | undefined)?.trim() || '';
+const adsSendTo = adsId && adsLabel ? `${adsId}/${adsLabel}` : '';
 
 const title = 'Free Growth Audit for Electricians | Local Service Rocket';
 const description =
@@ -90,7 +95,7 @@ const revOpts = ['Under $25k', '$25-50k', '$50-100k', '$100k+'];
         </div>
       </div>
 
-      <form id="audit-form" class="card" novalidate data-booking={AUDIT_BOOKING}>
+      <form id="audit-form" class="card" novalidate data-booking={AUDIT_BOOKING} data-ads-send-to={adsSendTo}>
         <div class="card-head">
           <div class="card-head-row">
             <div class="card-title" id="step-title">Is your area still open?</div>
@@ -530,6 +535,54 @@ const revOpts = ['Under $25k', '$25-50k', '$50-100k', '$100k+'];
     });
 
     render();
+
+    // LeadConnector calendar confirms inside the iframe; fire Ads conversion once.
+    const adsSendTo = form.dataset.adsSendTo || '';
+    let adsFired = false;
+    type GtagFn = (...args: unknown[]) => void;
+    const gtag = () => (window as Window & { gtag?: GtagFn }).gtag;
+    const fireBookingConversion = () => {
+      const send = gtag();
+      if (adsFired || !adsSendTo || typeof send !== 'function') return;
+      adsFired = true;
+      const phoneRaw = (form.elements.namedItem('phone') as HTMLInputElement | null)?.value || '';
+      const digits = phoneRaw.replace(/\D/g, '');
+      if (digits.length >= 10) {
+        const e164 = digits.length === 10 ? `+1${digits}` : `+${digits}`;
+        send('set', 'user_data', { phone_number: e164 });
+      }
+      send('event', 'conversion', {
+        send_to: adsSendTo,
+        value: 1.0,
+        currency: 'NZD',
+      });
+    };
+    const isTrustedBookingOrigin = (origin: string) => {
+      try {
+        const host = new URL(origin).hostname;
+        return (
+          host === 'api.leadconnectorhq.com' ||
+          host.endsWith('.leadconnectorhq.com') ||
+          host === 'msgsndr.com' ||
+          host.endsWith('.msgsndr.com') ||
+          host === 'gohighlevel.com' ||
+          host.endsWith('.gohighlevel.com')
+        );
+      } catch {
+        return false;
+      }
+    };
+    window.addEventListener('message', (event) => {
+      if (!isTrustedBookingOrigin(event.origin)) return;
+      const data = event.data;
+      const isComplete =
+        data === 'msgsndr-booking-complete' ||
+        (Array.isArray(data) && data[0] === 'msgsndr-booking-complete') ||
+        (data &&
+          typeof data === 'object' &&
+          (data as { type?: string }).type === 'msgsndr-booking-complete');
+      if (isComplete) fireBookingConversion();
+    });
   }
 </script>
 

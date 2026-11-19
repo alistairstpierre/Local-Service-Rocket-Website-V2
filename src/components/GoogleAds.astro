@@ -1,0 +1,25 @@
+---
+/* Google Ads base tag (gtag). Loads sitewide when PUBLIC_GOOGLE_ADS_ID is set
+   so ad clicks get a GCLID cookie for attribution. Conversion events fire from
+   page scripts (e.g. LeadConnector booking-complete on /growth-audit). */
+const adsId = (import.meta.env.PUBLIC_GOOGLE_ADS_ID as string | undefined)?.trim();
+---
+
+{
+  adsId && (
+    <>
+      <script
+        is:inline
+        async
+        src={`https://www.googletagmanager.com/gtag/js?id=${adsId}`}
+      />
+      <script is:inline set:html={`
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+window.gtag = gtag;
+gtag('js', new Date());
+gtag('config', '${adsId}');
+`} />
+    </>
+  )
+}

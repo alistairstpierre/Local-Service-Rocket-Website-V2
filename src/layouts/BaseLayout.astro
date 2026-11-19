@@ -4,6 +4,7 @@
    docs/SITE-STRUCTURE-AND-SEO-GUIDE.md mechanics, adapted for the agency site. */
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import GoogleAds from '../components/GoogleAds.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -69,6 +70,7 @@ const siteName = 'Local Service Rocket';
       )
     }
     <script is:inline nowprocket nitro-exclude type="text/javascript" id="sa-dynamic-optimization" data-uuid="80d56b2c-9167-45f8-a8a1-857f128a74a7" src="https://dashboard.searchatlas.com/scripts/dynamic_optimization.js"></script>
+    <GoogleAds />
   </head>
   <body>
     {nav !== 'none' && <Nav variant={nav} />}

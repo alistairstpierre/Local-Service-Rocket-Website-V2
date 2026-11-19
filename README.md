@@ -86,6 +86,18 @@ Railway.
 | --- | --- |
 | `PUBLIC_ANALYSIS_API_URL` | Origin of the Railway API, e.g. `https://api-production-cdde3.up.railway.app`. Local `astro dev` uses `http://localhost:4322` instead so listing search does not burn the live daily cap. |
 
+### Google Ads conversion tracking
+
+Tracks **Growth Audit Booked** when someone finishes the LeadConnector calendar
+on `/growth-audit` (iframe `msgsndr-booking-complete`). No Tag Manager — the
+Google tag loads from `BaseLayout` via `GoogleAds.astro`. Add the same vars on
+Vercel.
+
+| Variable | Purpose |
+| --- | --- |
+| `PUBLIC_GOOGLE_ADS_ID` | Google tag ID, e.g. `AW-18541348920` |
+| `PUBLIC_GOOGLE_ADS_CONVERSION_LABEL` | Label for Growth Audit Booked, e.g. `2gg6CLf1mLsdELiQmolF` |
+
 ## Pages
 
 | Route | Notes |
@@ -166,6 +178,7 @@ Old service URLs (`/services/paid-ads`, `/local-seo`, `/websites`, `/hiring`, `/
 │   ├── components/
 │   │   ├── ComparisonSection.astro  # Why LSR is different table (about page)
 │   │   ├── Footer.astro
+│   │   ├── GoogleAds.astro         # Google Ads gtag base tag (PUBLIC_GOOGLE_ADS_ID)
 │   │   ├── GooglePartnerBadge.astro  # Official 2026 Partner snippet (Hero + PricingOffer)
 │   │   ├── Hero.astro
 │   │   ├── Logo.astro
@@ -184,7 +197,7 @@ Old service URLs (`/services/paid-ads`, `/local-seo`, `/websites`, `/hiring`, `/
 │   │   ├── schema.ts             # Shared JSON-LD helpers (Part 5 of SEO guide)
 │   │   └── trades.ts             # Who We Help trade landing copy + slugs
 │   ├── layouts/
-│   │   ├── BaseLayout.astro      # Shell + canonical/OG/Twitter (+ optional JSON-LD)
+│   │   ├── BaseLayout.astro      # Shell + canonical/OG/Twitter (+ optional JSON-LD + Google Ads)
 │   │   ├── BlogLayout.astro      # Blog article shell + author block, FAQ block, BlogPosting/FAQPage JSON-LD
 │   │   ├── CaseStudyLayout.astro # Shared client story template
 │   │   ├── LegalLayout.astro
