@@ -118,8 +118,9 @@
       "dek": "Locksmith marketing on Google — same spine as Hooked Up Electric. GBP, LSA, Search, booked jobs.",
       "date": "November 24, 2026",
       "publishAfter": "2026-11-24",
-      "status": "ready",
-      "seo": "locksmith marketing"
+      "status": "published",
+      "seo": "locksmith marketing",
+      "publishedOn": "2026-11-24"
     },
     {
       "slug": "appliance-repair-google-marketing",
